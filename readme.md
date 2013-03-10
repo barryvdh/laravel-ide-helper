@@ -9,7 +9,7 @@ The file has been tested in PHPStorm 6.
 
 Require this package in your composer.json:
 
-    "barryvdh/laravel-ide-helper": "dev-master"
+    "barryvdh/ide-helper": "dev-master"
 
 And add the ServiceProvider to the providers array in app/config/app.php
 

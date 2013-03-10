@@ -1,0 +1,21 @@
+{
+    "name": "barryvdh/ide-helper",
+    "description": "",
+    "authors": [
+        {
+            "name": "Barry vd. Heuvel",
+            "email": "barryvdh@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x",
+        "dannykopping/docblock": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Barryvdh\\IdeHelper": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

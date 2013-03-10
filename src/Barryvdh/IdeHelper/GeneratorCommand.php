@@ -57,6 +57,8 @@ class GeneratorCommand extends Command {
 
     protected function parseDocBlocks($aliases){
         $d = new Parser();
+        $d->setAllowInherited(true);
+        $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
         $output = "<?php\r\ndie('Only to be used as an helper for your IDE');\n";
 

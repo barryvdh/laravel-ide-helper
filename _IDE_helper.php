@@ -61,36 +61,6 @@ class App extends Illuminate\Foundation\Application{
     public static function detectEnvironment($environments){}
 
     /**
-     * Set the application environment for a web request.
-     *
-     * @static
-     * @param	string	$base
-     * @param	array|string	$environments
-     * @return string
-     */
-    public static function detectWebEnvironment($base, $environments){}
-
-    /**
-     * Set the application environment from command-line arguments.
-     *
-     * @static
-     * @param	string	$base
-     * @param	mixed	$environments
-     * @param	array	$arguments
-     * @return string
-     */
-    public static function detectConsoleEnvironment($base, $environments, $arguments){}
-
-    /**
-     * Determine if the name matches the machine name.
-     *
-     * @static
-     * @param	string	$name
-     * @return bool
-     */
-    public static function isMachine($name){}
-
-    /**
      * Determine if we are running in the console.
      *
      * @static
@@ -123,15 +93,6 @@ class App extends Illuminate\Foundation\Application{
      * @return void
      */
     public static function loadDeferredProviders(){}
-
-    /**
-     * Load the provider for a deferred service.
-     *
-     * @static
-     * @param	string	$service
-     * @return void
-     */
-    public static function loadDeferredProvider($service){}
 
     /**
      * Resolve the given type from the container.
@@ -243,14 +204,6 @@ class App extends Illuminate\Foundation\Application{
      * @return void
      */
     public static function booted($callback){}
-
-    /**
-     * Call the booting callbacks for the application.
-     *
-     * @static
-     * @return void
-     */
-    public static function fireAppCallbacks($callbacks){}
 
     /**
      * Prepare the request by injecting any services.
@@ -435,24 +388,6 @@ class App extends Illuminate\Foundation\Application{
     public static function alias($abstract, $alias){}
 
     /**
-     * Extract the type and alias from a given definition.
-     *
-     * @static
-     * @param	array	$definition
-     * @return array
-     */
-    public static function extractAlias($definition){}
-
-    /**
-     * Get the concrete type for a given abstract.
-     *
-     * @static
-     * @param	string	$abstract
-     * @return mixed
-     */
-    public static function getConcrete($abstract){}
-
-    /**
      * Instantiate a concrete instance of the given type.
      *
      * @static
@@ -463,24 +398,6 @@ class App extends Illuminate\Foundation\Application{
     public static function build($concrete, $parameters = array()){}
 
     /**
-     * Resolve all of the dependencies from the ReflectionParameters.
-     *
-     * @static
-     * @param	array	$parameters
-     * @return array
-     */
-    public static function getDependencies($parameters){}
-
-    /**
-     * Resolve a non-class hinted dependency.
-     *
-     * @static
-     * @param	ReflectionParameter	$parameter
-     * @return mixed
-     */
-    public static function resolveNonClass($parameter){}
-
-    /**
      * Register a new resolving callback.
      *
      * @static
@@ -488,43 +405,6 @@ class App extends Illuminate\Foundation\Application{
      * @return void
      */
     public static function resolving($callback){}
-
-    /**
-     * Fire all of the resolving callbacks.
-     *
-     * @static
-     * @param	mixed	$object
-     * @return void
-     */
-    public static function fireResolvingCallbacks($object){}
-
-    /**
-     * Determine if a given type is shared.
-     *
-     * @static
-     * @param	string	$abstract
-     * @return bool
-     */
-    public static function isShared($abstract){}
-
-    /**
-     * Determine if the given concrete is buildable.
-     *
-     * @static
-     * @param	mixed	$concrete
-     * @param	string	$abstract
-     * @return bool
-     */
-    public static function isBuildable($concrete, $abstract){}
-
-    /**
-     * Get the alias for an abstract if available.
-     *
-     * @static
-     * @param	string	$abstract
-     * @return string
-     */
-    public static function getAlias($abstract){}
 
     /**
      * Get the container's bindings.
@@ -595,14 +475,6 @@ class Artisan extends Illuminate\Foundation\Artisan{
     public static function call($command, $parameters = array(), $output = null){}
 
     /**
-     * Get the Artisan console instance.
-     *
-     * @static
-     * @return Illuminate\Console\Application
-     */
-    public static function getArtisan(){}
-
-    /**
      * Dynamically pass all missing methods to console Artisan.
      *
      * @static
@@ -648,14 +520,6 @@ class Auth extends Illuminate\Auth\Guard{
      * @return Illuminate\Auth\UserInterface|null
      */
     public static function user(){}
-
-    /**
-     * Get the decrypted recaller cookie for the request.
-     *
-     * @static
-     * @return string|null
-     */
-    public static function getRecaller(){}
 
     /**
      * Log a user into the application without sessions or cookies.
@@ -707,29 +571,12 @@ class Auth extends Illuminate\Auth\Guard{
     public static function loginUsingId($id, $remember = false){}
 
     /**
-     * Create a remember me cookie for a given ID.
-     *
-     * @static
-     * @param	mixed	$id
-     * @return Symfony\Component\HttpFoundation\Cookie
-     */
-    public static function createRecaller($id){}
-
-    /**
      * Log the user out of the application.
      *
      * @static
      * @return void
      */
     public static function logout(){}
-
-    /**
-     * Remove the user data from the session and cookies.
-     *
-     * @static
-     * @return void
-     */
-    public static function clearUserDataFromStorage(){}
 
     /**
      * Get the cookie creator instance used by the guard.
@@ -853,168 +700,6 @@ class Blade extends Illuminate\View\Compilers\BladeCompiler{
     public static function extend($compiler){}
 
     /**
-     * Execute the user defined extensions.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileExtensions($value){}
-
-    /**
-     * Compile Blade template extensions into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileExtends($value){}
-
-    /**
-     * Compile the proper template inheritance for the lines.
-     *
-     * @static
-     * @param	array	$lines
-     * @return array
-     */
-    public static function compileLayoutExtends($lines){}
-
-    /**
-     * Compile Blade comments into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileComments($value){}
-
-    /**
-     * Compile Blade echos into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileEchos($value){}
-
-    /**
-     * Compile the "regular" echo statements.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileRegularEchos($value){}
-
-    /**
-     * Compile the escaped echo statements.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileEscapedEchos($value){}
-
-    /**
-     * Compile Blade structure openings into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileOpenings($value){}
-
-    /**
-     * Compile Blade structure closings into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileClosings($value){}
-
-    /**
-     * Compile Blade else statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileElse($value){}
-
-    /**
-     * Compile Blade unless statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileUnless($value){}
-
-    /**
-     * Compile Blade end unless statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileEndUnless($value){}
-
-    /**
-     * Compile Blade include statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileIncludes($value){}
-
-    /**
-     * Compile Blade each statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileEach($value){}
-
-    /**
-     * Compile Blade yield statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileYields($value){}
-
-    /**
-     * Compile Blade show statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileShows($value){}
-
-    /**
-     * Compile Blade section start statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileSectionStart($value){}
-
-    /**
-     * Compile Blade section stop statements into valid PHP.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function compileSectionStop($value){}
-
-    /**
      * Get the regular expression for a generic Blade function.
      *
      * @static
@@ -1092,53 +777,6 @@ class Blade extends Illuminate\View\Compilers\BladeCompiler{
 }
 
 class Cache extends Illuminate\Cache\Store{
-    /**
-     * Retrieve an item from the cache by key.
-     *
-     * @static
-     * @param	string	$key
-     * @return mixed
-     */
-    public static function retrieveItem($key){}
-
-    /**
-     * Store an item in the cache for a given number of minutes.
-     *
-     * @static
-     * @param	string	$key
-     * @param	mixed	$value
-     * @param	int	$minutes
-     * @return void
-     */
-    public static function storeItem($key, $value, $minutes){}
-
-    /**
-     * Store an item in the cache indefinitely.
-     *
-     * @static
-     * @param	string	$key
-     * @param	mixed	$value
-     * @return void
-     */
-    public static function storeItemForever($key, $value){}
-
-    /**
-     * Remove an item from the cache.
-     *
-     * @static
-     * @param	string	$key
-     * @return void
-     */
-    public static function removeItem($key){}
-
-    /**
-     * Remove all items from the cache.
-     *
-     * @static
-     * @return void
-     */
-    public static function flushItems(){}
-
     /**
      * Determine if an item exists in the cache.
      *
@@ -1414,47 +1052,6 @@ class Config extends Illuminate\Config\Repository{
     public static function set($key, $value){}
 
     /**
-     * Load the configuration group for the key.
-     *
-     * @static
-     * @param	string	$key
-     * @param	string	$namespace
-     * @param	string	$collection
-     * @return void
-     */
-    public static function load($group, $namespace, $collection){}
-
-    /**
-     * Call the after load callback for a namespace.
-     *
-     * @static
-     * @param	string	$namespace
-     * @param	string	$group
-     * @param	array	$items
-     * @return array
-     */
-    public static function callAfterLoad($namespace, $group, $items){}
-
-    /**
-     * Parse an array of namespaced segments.
-     *
-     * @static
-     * @param	string	$key
-     * @return array
-     */
-    public static function parseNamespacedSegments($key){}
-
-    /**
-     * Parse the segments of a package namespace.
-     *
-     * @static
-     * @param	string	$namespace
-     * @param	string	$item
-     * @return array
-     */
-    public static function parsePackageSegments($key, $namespace, $item){}
-
-    /**
      * Register a package for cascading configuration.
      *
      * @static
@@ -1466,16 +1063,6 @@ class Config extends Illuminate\Config\Repository{
     public static function package($package, $hint, $namespace = null){}
 
     /**
-     * Get the configuration namespace for a package.
-     *
-     * @static
-     * @param	string	$package
-     * @param	string	$namespace
-     * @return string
-     */
-    public static function getPackageNamespace($package, $namespace){}
-
-    /**
      * Register an after load callback for a given namespace.
      *
      * @static
@@ -1484,16 +1071,6 @@ class Config extends Illuminate\Config\Repository{
      * @return void
      */
     public static function afterLoading($namespace, $callback){}
-
-    /**
-     * Get the collection identifier.
-     *
-     * @static
-     * @param	string	$group
-     * @param	string	$namespace
-     * @return string
-     */
-    public static function getCollection($group, $namespace = null){}
 
     /**
      * Add a new namespace to the loader.
@@ -1600,15 +1177,6 @@ class Config extends Illuminate\Config\Repository{
     public static function parseKey($key){}
 
     /**
-     * Parse an array of basic segments.
-     *
-     * @static
-     * @param	array	$segments
-     * @return array
-     */
-    public static function parseBasicSegments($segments){}
-
-    /**
      * Set the parsed value of a key.
      *
      * @static
@@ -1642,16 +1210,6 @@ class Controller extends Illuminate\Routing\Controllers\Controller{
     public static function afterFilter($filter, $options = array()){}
 
     /**
-     * Prepare a filter and return the options.
-     *
-     * @static
-     * @param	string	$filter
-     * @param	array	$options
-     * @return array
-     */
-    public static function prepareFilter($filter, $options){}
-
-    /**
      * Execute an action on the controller.
      *
      * @static
@@ -1662,88 +1220,6 @@ class Controller extends Illuminate\Routing\Controllers\Controller{
      * @return Symfony\Component\HttpFoundation\Response
      */
     public static function callAction($container, $router, $method, $parameters){}
-
-    /**
-     * Call the given action with the given parameters.
-     *
-     * @static
-     * @param	string	$method
-     * @param	array	$parameters
-     * @return mixed
-     */
-    public static function callMethod($method, $parameters){}
-
-    /**
-     * Process a controller action response.
-     *
-     * @static
-     * @param	Illuminate\Routing\Router	$router
-     * @param	string	$method
-     * @param	mixed	$response
-     * @return Symfony\Component\HttpFoundation\Response
-     */
-    public static function processResponse($router, $method, $response){}
-
-    /**
-     * Call the before filters on the controller.
-     *
-     * @static
-     * @param	Illuminate\Routing\Router	$router
-     * @param	string	$method
-     * @return mixed
-     */
-    public static function callBeforeFilters($router, $method){}
-
-    /**
-     * Get the before filters for the controller.
-     *
-     * @static
-     * @param	Symfony\Component\HttpFoundation\Request	$request
-     * @param	string	$method
-     * @return array
-     */
-    public static function getBeforeFilters($request, $method){}
-
-    /**
-     * Call the after filters on the controller.
-     *
-     * @static
-     * @param	Illuminate\Routing\Router	$router
-     * @param	string	$method
-     * @param	Symfony\Component\HttpFoundation\Response	$response
-     * @return mixed
-     */
-    public static function callAfterFilters($router, $method, $response){}
-
-    /**
-     * Get the after filters for the controller.
-     *
-     * @static
-     * @param	Symfony\Component\HttpFoundation\Request	$request
-     * @param	string	$method
-     * @return array
-     */
-    public static function getAfterFilters($request, $method){}
-
-    /**
-     * Call the given route filter.
-     *
-     * @static
-     * @param	Illuminate\Routing\Route	$route
-     * @param	string	$filter
-     * @param	Symfony\Component\HttpFoundation\Request	$request
-     * @param	array	$parameters
-     * @return mixed
-     */
-    public static function callFilter($route, $filter, $request, $parameters = array()){}
-
-    /**
-     * Setup the layout used by the controller.
-     *
-     * @static
-     * @return void
-     */
-    public static function setupLayout(){}
 
     /**
      * Get the code registered filters.
@@ -1804,15 +1280,6 @@ class Cookie extends Illuminate\Cookie\CookieJar{
      * @return mixed
      */
     public static function get($key, $default = null){}
-
-    /**
-     * Decrypt the given cookie value.
-     *
-     * @static
-     * @param	string	$value
-     * @return mixed|null
-     */
-    public static function decrypt($value){}
 
     /**
      * Create a new cookie instance.
@@ -1892,16 +1359,6 @@ class Crypt extends Illuminate\Encryption\Encrypter{
     public static function encrypt($value){}
 
     /**
-     * Pad and use mcrypt on the given value and input vector.
-     *
-     * @static
-     * @param	string	$value
-     * @param	string	$iv
-     * @return string
-     */
-    public static function padAndMcrypt($value, $iv){}
-
-    /**
      * Decrypt the given value.
      *
      * @static
@@ -1909,87 +1366,6 @@ class Crypt extends Illuminate\Encryption\Encrypter{
      * @return string
      */
     public static function decrypt($payload){}
-
-    /**
-     * Run the mcrypt decryption routine for the value.
-     *
-     * @static
-     * @param	string	$value
-     * @param	string	$iv
-     * @return string
-     */
-    public static function mcryptDecrypt($value, $iv){}
-
-    /**
-     * Get the JSON array from the given payload.
-     *
-     * @static
-     * @param	string	$payload
-     * @return array
-     */
-    public static function getJsonPayload($payload){}
-
-    /**
-     * Create a MAC for the given value.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function hash($value){}
-
-    /**
-     * Add PKCS7 padding to a given value.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function addPadding($value){}
-
-    /**
-     * Remove the padding from the given value.
-     *
-     * @static
-     * @param	string	$value
-     * @return string
-     */
-    public static function stripPadding($value){}
-
-    /**
-     * Determine if the given padding for a value is valid.
-     *
-     * @static
-     * @param	string	$pad
-     * @param	string	$value
-     * @return bool
-     */
-    public static function paddingIsValid($pad, $value){}
-
-    /**
-     * Verify that the encryption payload is valid.
-     *
-     * @static
-     * @param	array	$data
-     * @return bool
-     */
-    public static function invalidPayload($data){}
-
-    /**
-     * Get the IV size for the cipher.
-     *
-     * @static
-     * @return int
-     */
-    public static function getIvSize(){}
-
-    /**
-     * Get the random data source available for the OS.
-     *
-     * @static
-     * @return int
-     */
-    public static function getRandomizer(){}
 
 }
 
@@ -2015,14 +1391,6 @@ class DB extends Illuminate\Database\Connection{
     public static function useDefaultQueryGrammar(){}
 
     /**
-     * Get the default query grammar instance.
-     *
-     * @static
-     * @return Illuminate\Database\Query\Grammars\Grammar
-     */
-    public static function getDefaultQueryGrammar(){}
-
-    /**
      * Set the schema grammar to the default implementation.
      *
      * @static
@@ -2031,28 +1399,12 @@ class DB extends Illuminate\Database\Connection{
     public static function useDefaultSchemaGrammar(){}
 
     /**
-     * Get the default schema grammar instance.
-     *
-     * @static
-     * @return Illuminate\Database\Schema\Grammars\Grammar
-     */
-    public static function getDefaultSchemaGrammar(){}
-
-    /**
      * Set the query post processor to the default implementation.
      *
      * @static
      * @return void
      */
     public static function useDefaultPostProcessor(){}
-
-    /**
-     * Get the default post processor instance.
-     *
-     * @static
-     * @return Illuminate\Database\Query\Processors\Processor
-     */
-    public static function getDefaultPostProcessor(){}
 
     /**
      * Get a schema builder instance for the connection.
@@ -2185,28 +1537,6 @@ class DB extends Illuminate\Database\Connection{
      * @return array
      */
     public static function pretend($callback){}
-
-    /**
-     * Run a SQL statement and log its execution context.
-     *
-     * @static
-     * @param	string	$query
-     * @param	array	$bindings
-     * @param	Closure	$callback
-     * @return mixed
-     */
-    public static function run($query, $bindings, $callback){}
-
-    /**
-     * Handle an exception that occurred during a query.
-     *
-     * @static
-     * @param	Exception	$e
-     * @param	string	$query
-     * @param	array	$bindings
-     * @return void
-     */
-    public static function handleQueryException($e, $query, $bindings){}
 
     /**
      * Log a query in the connection's query log.
@@ -2424,14 +1754,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
     public static function __construct($attributes = array()){}
 
     /**
-     * The "booting" method of the model.
-     *
-     * @static
-     * @return void
-     */
-    public static function boot(){}
-
-    /**
      * Fill the model with an array of attributes.
      *
      * @static
@@ -2636,16 +1958,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
     public static function created($callback){}
 
     /**
-     * Register a model event with the dispatcher.
-     *
-     * @static
-     * @param	string	$event
-     * @param	Closure	$callback
-     * @return void
-     */
-    public static function registerModelEvent($event, $callback){}
-
-    /**
      * Save the model to the database.
      *
      * @static
@@ -2654,55 +1966,12 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
     public static function save(){}
 
     /**
-     * Perform a model update operation.
-     *
-     * @static
-     * @param	Illuminate\Database\Eloquent\Builder
-     * @return bool
-     */
-    public static function performUpdate($query){}
-
-    /**
-     * Perform a model insert operation.
-     *
-     * @static
-     * @param	Illuminate\Database\Eloquent\Builder
-     * @return bool
-     */
-    public static function performInsert($query){}
-
-    /**
-     * Fire the given event for the model.
-     *
-     * @static
-     * @return mixed
-     */
-    public static function fireModelEvent($event, $halt = true){}
-
-    /**
-     * Set the keys for a save update query.
-     *
-     * @static
-     * @param	Illuminate\Database\Eloquent\Builder
-     * @return void
-     */
-    public static function setKeysForSaveQuery($query){}
-
-    /**
      * Update the model's update timestamp.
      *
      * @static
      * @return bool
      */
     public static function touch(){}
-
-    /**
-     * Update the creation and update timestamps.
-     *
-     * @static
-     * @return void
-     */
-    public static function updateTimestamps(){}
 
     /**
      * Set the value of the "created at" attribute.
@@ -2755,14 +2024,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
     public static function newQuery(){}
 
     /**
-     * Get a new query builder instance for the connection.
-     *
-     * @static
-     * @return Illuminate\Database\Query\Builder
-     */
-    public static function newBaseQueryBuilder(){}
-
-    /**
      * Create a new Eloquent Collection instance.
      *
      * @static
@@ -2811,17 +2072,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
      * @return bool
      */
     public static function usesTimestamps(){}
-
-    /**
-     * Get the polymorphic relationship columns.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$type
-     * @param	string	$id
-     * @return array
-     */
-    public static function getMorphs($name, $type, $id){}
 
     /**
      * Get the number of models to return per page.
@@ -2943,14 +2193,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
     public static function attributesToArray(){}
 
     /**
-     * Get an attribute array of all accessible attributes.
-     *
-     * @static
-     * @return array
-     */
-    public static function getAccessibleAttributes(){}
-
-    /**
      * Get the model's relationships in array form.
      *
      * @static
@@ -2968,24 +2210,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
     public static function getAttribute($key){}
 
     /**
-     * Get a plain attribute (not a relationship).
-     *
-     * @static
-     * @param	string	$key
-     * @return mixed
-     */
-    public static function getAttributeValue($key){}
-
-    /**
-     * Get an attribute from the $attributes array.
-     *
-     * @static
-     * @param	string	$key
-     * @return mixed
-     */
-    public static function getAttributeFromArray($key){}
-
-    /**
      * Determine if a get mutator exists for an attribute.
      *
      * @static
@@ -2993,16 +2217,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
      * @return bool
      */
     public static function hasGetMutator($key){}
-
-    /**
-     * Get the value of an attribute using its mutator.
-     *
-     * @static
-     * @param	string	$key
-     * @param	mixed	$value
-     * @return mixed
-     */
-    public static function mutateAttribute($key, $value){}
 
     /**
      * Set a given attribute on the model.
@@ -3022,32 +2236,6 @@ class Eloquent extends Illuminate\Database\Eloquent\Model{
      * @return bool
      */
     public static function hasSetMutator($key){}
-
-    /**
-     * Convert a DateTime to a storable string.
-     *
-     * @static
-     * @param	DateTime	$value
-     * @return string
-     */
-    public static function fromDateTime($value){}
-
-    /**
-     * Return a timestamp as DateTime object.
-     *
-     * @static
-     * @param	mixed	$value
-     * @return DateTime
-     */
-    public static function asDateTime($value){}
-
-    /**
-     * Get the format for database stored dates.
-     *
-     * @static
-     * @return string
-     */
-    public static function getDateFormat(){}
 
     /**
      * Get all of the current attributes on the model.
@@ -3622,14 +2810,6 @@ class File extends Illuminate\Filesystem\Filesystem{
 
 class Form extends Illuminate\Support\Facades\Form{
     /**
-     * Get the registered name of the component.
-     *
-     * @static
-     * @return string
-     */
-    public static function getFacadeAccessor(){}
-
-    /**
      * Hotswap the underlying instance behind the facade.
      *
      * @static
@@ -3654,15 +2834,6 @@ class Form extends Illuminate\Support\Facades\Form{
      * @return mixed
      */
     public static function getFacadeRoot(){}
-
-    /**
-     * Resolve the facade root instance from the container.
-     *
-     * @static
-     * @param	string	$name
-     * @return mixed
-     */
-    public static function resolveFacadeInstance($name){}
 
     /**
      * Clear all of the resolved instances.
@@ -3764,39 +2935,6 @@ class Html extends Illuminate\Html\HtmlBuilder{
     public static function ul($list, $attributes = array()){}
 
     /**
-     * Create a listing HTML element.
-     *
-     * @static
-     * @param	string	$type
-     * @param	array	$list
-     * @param	array	$attributes
-     * @return string
-     */
-    public static function listing($type, $list, $attributes){}
-
-    /**
-     * Create the HTML for a listing element.
-     *
-     * @static
-     * @param	mixed	$key
-     * @param	string	$type
-     * @param	string	$value
-     * @return string
-     */
-    public static function listingElement($key, $type, $value){}
-
-    /**
-     * Create the HTML for a nested listing attribute.
-     *
-     * @static
-     * @param	mixed	$key
-     * @param	string	$type
-     * @param	string	$value
-     * @return string
-     */
-    public static function nestedListing($key, $type, $value){}
-
-    /**
      * Build an HTML attribute string from an array.
      *
      * @static
@@ -3804,16 +2942,6 @@ class Html extends Illuminate\Html\HtmlBuilder{
      * @return string
      */
     public static function attributes($attributes){}
-
-    /**
-     * Build a single attribute element.
-     *
-     * @static
-     * @param	string	$key
-     * @param	string	$value
-     * @return string
-     */
-    public static function attributeElement($key, $value){}
 
 }
 
@@ -4052,17 +3180,6 @@ class Input extends Illuminate\Http\Request{
     public static function flush(){}
 
     /**
-     * Retrieve a parameter item from a given source.
-     *
-     * @static
-     * @param	string	$source
-     * @param	string	$key
-     * @param	mixed	$default
-     * @return string
-     */
-    public static function retrieveItem($source, $key, $default){}
-
-    /**
      * Merge new input into the current request's input array.
      *
      * @static
@@ -4089,14 +3206,6 @@ class Input extends Illuminate\Http\Request{
      * @return mixed
      */
     public static function json($key = null, $default = null){}
-
-    /**
-     * Get the input source for the request.
-     *
-     * @static
-     * @return Symfony\Component\HttpFoundation\ParameterBag
-     */
-    public static function getInputSource(){}
 
     /**
      * Get the Illuminate session store implementation.
@@ -4753,63 +3862,6 @@ class Input extends Illuminate\Http\Request{
      */
     public static function splitHttpAcceptHeader($header){}
 
-    /**
-     *
-     *
-     * @static
-     * @return void
-     */
-    public static function prepareRequestUri(){}
-
-    /**
-     * Prepares the base URL.
-     *
-     * @static
-     * @return string
-     */
-    public static function prepareBaseUrl(){}
-
-    /**
-     * Prepares the base path.
-     *
-     * @static
-     * @return string base path
-     */
-    public static function prepareBasePath(){}
-
-    /**
-     * Prepares the path info.
-     *
-     * @static
-     * @return string path info
-     */
-    public static function preparePathInfo(){}
-
-    /**
-     * Initializes HTTP request formats.
-     *
-     * @static
-     * @return void
-     */
-    public static function initializeFormats(){}
-
-    /**
-     * Sets the default PHP locale.
-     *
-     * @static
-     * @param	string $locale
-     * @return void
-     */
-    public static function setPhpDefaultLocale($locale){}
-
-    /**
-     *
-     *
-     * @static
-     * @return void
-     */
-    public static function getUrlencodedPrefix($string, $prefix){}
-
 }
 
 class Lang extends Illuminate\Translation\Translator{
@@ -4824,16 +3876,6 @@ class Lang extends Illuminate\Translation\Translator{
      * @return void
      */
     public static function __construct($loader, $default, $fallback){}
-
-    /**
-     * Create a new Symfony translator instance.
-     *
-     * @static
-     * @param	string	$default
-     * @param	string	$fallback
-     * @return Symfony\Component\Translation\Translator
-     */
-    public static function createSymfonyTranslator($default, $fallback){}
 
     /**
      * Determine if a translation exists.
@@ -4905,57 +3947,6 @@ class Lang extends Illuminate\Translation\Translator{
     public static function load($group, $namespace, $locale){}
 
     /**
-     * Get the locales to be loaded.
-     *
-     * @static
-     * @param	string	$locale
-     * @return array
-     */
-    public static function getLocales($locale){}
-
-    /**
-     * Add an array resource to the Symfony translator.
-     *
-     * @static
-     * @param	array	$lines
-     * @param	string	$locale
-     * @param	string	$domain
-     * @return void
-     */
-    public static function addResource($lines, $locale, $domain){}
-
-    /**
-     * Format the parameter array.
-     *
-     * @static
-     * @param	array	$parameters
-     * @return array
-     */
-    public static function formatParameters($parameters){}
-
-    /**
-     * Determine if the given group has been loaded.
-     *
-     * @static
-     * @param	string	$group
-     * @param	string	$namespace
-     * @param	string	$locale
-     * @return bool
-     */
-    public static function loaded($group, $namespace, $locale){}
-
-    /**
-     * Set the given translation group as being loaded.
-     *
-     * @static
-     * @param	string	$group
-     * @param	string	$namespace
-     * @param	string	$locale
-     * @return void
-     */
-    public static function setLoaded($group, $namespace, $locale){}
-
-    /**
      * Add a new namespace to the loader.
      *
      * @static
@@ -5009,24 +4000,6 @@ class Lang extends Illuminate\Translation\Translator{
     public static function parseKey($key){}
 
     /**
-     * Parse an array of basic segments.
-     *
-     * @static
-     * @param	array	$segments
-     * @return array
-     */
-    public static function parseBasicSegments($segments){}
-
-    /**
-     * Parse an array of namespaced segments.
-     *
-     * @static
-     * @param	string	$key
-     * @return array
-     */
-    public static function parseNamespacedSegments($key){}
-
-    /**
      * Set the parsed value of a key.
      *
      * @static
@@ -5071,15 +4044,6 @@ class Log extends Illuminate\Log\Writer{
     public static function useDailyFiles($path, $days = '0', $level = 'debug'){}
 
     /**
-     * Parse the string level into a Monolog constant.
-     *
-     * @static
-     * @param	string	$level
-     * @return int
-     */
-    public static function parseLevel($level){}
-
-    /**
      * Get the underlying Monolog instance.
      *
      * @static
@@ -5113,16 +4077,6 @@ class Log extends Illuminate\Log\Writer{
      * @return void
      */
     public static function setEventDispatcher($dispatcher){}
-
-    /**
-     * Fires a log event.
-     *
-     * @static
-     * @param	string	$level
-     * @param	array	$parameters
-     * @return void
-     */
-    public static function fireLogEvent($level, $message, $context = array()){}
 
     /**
      * Dynamically handle error additions.
@@ -5178,73 +4132,6 @@ class Mail extends Illuminate\Mail\Mailer{
      * @return void
      */
     public static function send($view, $data, $callback){}
-
-    /**
-     * Add the content to a given message.
-     *
-     * @static
-     * @param	Illuminate\Mail\Message	$message
-     * @param	string	$view
-     * @param	string	$plain
-     * @param	array	$data
-     * @return void
-     */
-    public static function addContent($message, $view, $plain, $data){}
-
-    /**
-     * Parse the given view name or array.
-     *
-     * @static
-     * @param	string|array	$view
-     * @return array
-     */
-    public static function parseView($view){}
-
-    /**
-     * Send a Swift Message instance.
-     *
-     * @static
-     * @param	Swift_Message	$message
-     * @return void
-     */
-    public static function sendSwiftMessage($message){}
-
-    /**
-     * Log that a message was sent.
-     *
-     * @static
-     * @param	Swift_Message	$message
-     * @return void
-     */
-    public static function logMessage($message){}
-
-    /**
-     * Call the provided message builder.
-     *
-     * @static
-     * @param	Closure|string	$callback
-     * @param	Illuminate\Mail\Message	$message
-     * @return void
-     */
-    public static function callMessageBuilder($callback, $message){}
-
-    /**
-     * Create a new message instance.
-     *
-     * @static
-     * @return Illuminate\Mail\Message
-     */
-    public static function createMessage(){}
-
-    /**
-     * Render the given view.
-     *
-     * @static
-     * @param	string	$view
-     * @param	array	$data
-     * @return Illuminate\View\View
-     */
-    public static function getView($view, $data){}
 
     /**
      * Tell the mailer to not really send messages.
@@ -5320,24 +4207,6 @@ class Paginator extends Illuminate\Pagination\Paginator{
      * @return Illuminate\Pagination\Paginator
      */
     public static function setupPaginationContext(){}
-
-    /**
-     * Get the current page for the request.
-     *
-     * @static
-     * @param	int	$lastPage
-     * @return int
-     */
-    public static function calculateCurrentPage($lastPage){}
-
-    /**
-     * Determine if the given value is a valid page number.
-     *
-     * @static
-     * @param	int	$page
-     * @return bool
-     */
-    public static function isValidPageNumber($page){}
 
     /**
      * Get the pagination links view.
@@ -5518,32 +4387,6 @@ class Password extends Illuminate\Auth\Reminders\PasswordBroker{
     public static function reset($credentials, $callback){}
 
     /**
-     * Validate a password reset for the given credentials.
-     *
-     * @static
-     * @param	array	$credenitals
-     * @return Illuminate\Auth\RemindableInterface
-     */
-    public static function validateReset($credentials){}
-
-    /**
-     * Determine if the passwords match for the request.
-     *
-     * @static
-     * @return bool
-     */
-    public static function validNewPasswords(){}
-
-    /**
-     * Make an error redirect response.
-     *
-     * @static
-     * @param	string	$reason
-     * @return Illuminate\Http\RedirectResponse
-     */
-    public static function makeErrorRedirect($reason = ''){}
-
-    /**
      * Get the user for the given credentials.
      *
      * @static
@@ -5551,38 +4394,6 @@ class Password extends Illuminate\Auth\Reminders\PasswordBroker{
      * @return Illuminate\Auth\RemindableInterface
      */
     public static function getUser($credentials){}
-
-    /**
-     * Get the current request object.
-     *
-     * @static
-     * @return Illuminate\Http\Request
-     */
-    public static function getRequest(){}
-
-    /**
-     * Get the reset token for the current request.
-     *
-     * @static
-     * @return string
-     */
-    public static function getToken(){}
-
-    /**
-     * Get the password for the current request.
-     *
-     * @static
-     * @return string
-     */
-    public static function getPassword(){}
-
-    /**
-     * Get the confirmed password.
-     *
-     * @static
-     * @return string
-     */
-    public static function getConfirmedPassword(){}
 
 }
 
@@ -5606,24 +4417,6 @@ class Queue extends Illuminate\Queue\QueueManager{
     public static function connection($name = null){}
 
     /**
-     * Resolve a queue connection.
-     *
-     * @static
-     * @param	string	$name
-     * @return Illuminate\Queue\QueueInterface
-     */
-    public static function resolve($name){}
-
-    /**
-     * Get the connector for a given driver.
-     *
-     * @static
-     * @param	string	$driver
-     * @return Illuminate\Queue\Connectors\ConnectorInterface
-     */
-    public static function getConnector($driver){}
-
-    /**
      * Add a queue connection resolver.
      *
      * @static
@@ -5632,23 +4425,6 @@ class Queue extends Illuminate\Queue\QueueManager{
      * @return void
      */
     public static function addConnector($driver, $resolver){}
-
-    /**
-     * Get the queue connection configuration.
-     *
-     * @static
-     * @param	string	$name
-     * @return array
-     */
-    public static function getConfig($name){}
-
-    /**
-     * Get the name of the default queue connection.
-     *
-     * @static
-     * @return string
-     */
-    public static function getDefault(){}
 
     /**
      * Dynamically pass calls to the default connection.
@@ -5740,17 +4516,6 @@ class Redirect extends Illuminate\Routing\Redirector{
     public static function action($action, $parameters = array(), $status = '302', $headers = array()){}
 
     /**
-     * Create a new redirect response.
-     *
-     * @static
-     * @param	string	$path
-     * @param	int	$status
-     * @param	array	$headers
-     * @return Illuminate\Http\RedirectResponse
-     */
-    public static function createRedirect($path, $status, $headers){}
-
-    /**
      * Get the URL generator instance.
      *
      * @static
@@ -5826,51 +4591,6 @@ class Redis extends Illuminate\Redis\Database{
      * @return mixed
      */
     public static function parseResponse($response){}
-
-    /**
-     * Parse an inline response from the database.
-     *
-     * @static
-     * @param	string	$response
-     * @return string
-     */
-    public static function parseInlineResponse($response){}
-
-    /**
-     * Parse a bulk response from the database.
-     *
-     * @static
-     * @param	string	$response
-     * @return string
-     */
-    public static function parseBulkResponse($response){}
-
-    /**
-     * Read the next block of bytes for a bulk response.
-     *
-     * @static
-     * @param	int	$total
-     * @param	int	$read
-     * @return string
-     */
-    public static function readBulkBlock($total, $read){}
-
-    /**
-     * Parse a multi-bulk response from the database.
-     *
-     * @static
-     * @param	string	$response
-     * @return array
-     */
-    public static function parseMultiResponse($response){}
-
-    /**
-     * Get the socket connection to the database.
-     *
-     * @static
-     * @return resource
-     */
-    public static function openSocket(){}
 
     /**
      * Read the specified number of bytes from the file resource.
@@ -6154,17 +4874,6 @@ class Request extends Illuminate\Http\Request{
     public static function flush(){}
 
     /**
-     * Retrieve a parameter item from a given source.
-     *
-     * @static
-     * @param	string	$source
-     * @param	string	$key
-     * @param	mixed	$default
-     * @return string
-     */
-    public static function retrieveItem($source, $key, $default){}
-
-    /**
      * Merge new input into the current request's input array.
      *
      * @static
@@ -6191,14 +4900,6 @@ class Request extends Illuminate\Http\Request{
      * @return mixed
      */
     public static function json($key = null, $default = null){}
-
-    /**
-     * Get the input source for the request.
-     *
-     * @static
-     * @return Symfony\Component\HttpFoundation\ParameterBag
-     */
-    public static function getInputSource(){}
 
     /**
      * Get the Illuminate session store implementation.
@@ -6854,63 +5555,6 @@ class Request extends Illuminate\Http\Request{
      * @return array Array indexed by the values of the Accept-* header in preferred order
      */
     public static function splitHttpAcceptHeader($header){}
-
-    /**
-     *
-     *
-     * @static
-     * @return void
-     */
-    public static function prepareRequestUri(){}
-
-    /**
-     * Prepares the base URL.
-     *
-     * @static
-     * @return string
-     */
-    public static function prepareBaseUrl(){}
-
-    /**
-     * Prepares the base path.
-     *
-     * @static
-     * @return string base path
-     */
-    public static function prepareBasePath(){}
-
-    /**
-     * Prepares the path info.
-     *
-     * @static
-     * @return string path info
-     */
-    public static function preparePathInfo(){}
-
-    /**
-     * Initializes HTTP request formats.
-     *
-     * @static
-     * @return void
-     */
-    public static function initializeFormats(){}
-
-    /**
-     * Sets the default PHP locale.
-     *
-     * @static
-     * @param	string $locale
-     * @return void
-     */
-    public static function setPhpDefaultLocale($locale){}
-
-    /**
-     *
-     *
-     * @static
-     * @return void
-     */
-    public static function getUrlencodedPrefix($string, $prefix){}
 
 }
 
@@ -7544,16 +6188,6 @@ class Route extends Illuminate\Routing\Router{
     public static function controller($uri, $controller){}
 
     /**
-     * Add a fallthrough route for a controller.
-     *
-     * @static
-     * @param	string	$controller
-     * @param	string	$uri
-     * @return void
-     */
-    public static function addFallthroughRoute($controller, $uri){}
-
-    /**
      * Route a resource to a controller.
      *
      * @static
@@ -7565,115 +6199,6 @@ class Route extends Illuminate\Routing\Router{
     public static function resource($resource, $controller, $options = array()){}
 
     /**
-     * Get the applicable resource methods.
-     *
-     * @static
-     * @param	array	$defaults
-     * @param	array	$options
-     * @return array
-     */
-    public static function getResourceMethods($defaults, $options){}
-
-    /**
-     * Add the index method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addResourceIndex($name, $base, $controller){}
-
-    /**
-     * Add the create method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addResourceCreate($name, $base, $controller){}
-
-    /**
-     * Add the store method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addResourceStore($name, $base, $controller){}
-
-    /**
-     * Add the show method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addResourceShow($name, $base, $controller){}
-
-    /**
-     * Add the edit method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addResourceEdit($name, $base, $controller){}
-
-    /**
-     * Add the update method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addResourceUpdate($name, $base, $controller){}
-
-    /**
-     * Add the update method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addPutResourceUpdate($name, $base, $controller){}
-
-    /**
-     * Add the update method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addPatchResourceUpdate($name, $base, $controller){}
-
-    /**
-     * Add the destroy method for a resourceful route.
-     *
-     * @static
-     * @param	string	$name
-     * @param	string	$base
-     * @param	string	$controller
-     * @return void
-     */
-    public static function addResourceDestroy($name, $base, $controller){}
-
-    /**
      * Get the base resource URI for a given resource.
      *
      * @static
@@ -7681,36 +6206,6 @@ class Route extends Illuminate\Routing\Router{
      * @return string
      */
     public static function getResourceUri($resource){}
-
-    /**
-     * Get the action array for a resource route.
-     *
-     * @static
-     * @param	string	$resource
-     * @param	string	$controller
-     * @param	string	$method
-     * @return array
-     */
-    public static function getResourceAction($resource, $controller, $method){}
-
-    /**
-     * Get the resource prefix for a resource route.
-     *
-     * @static
-     * @param	string	$resource
-     * @param	string	$method
-     * @return string
-     */
-    public static function getResourcePrefix($resource, $method){}
-
-    /**
-     * Get the base resource from a resource name.
-     *
-     * @static
-     * @param	string	$resource
-     * @return string
-     */
-    public static function getBaseResource($resource){}
 
     /**
      * Create a route group with shared attributes.
@@ -7723,121 +6218,6 @@ class Route extends Illuminate\Routing\Router{
     public static function group($attributes, $callback){}
 
     /**
-     * Update the group stack array.
-     *
-     * @static
-     * @param	array	$attributes
-     * @return void
-     */
-    public static function updateGroupStack($attributes){}
-
-    /**
-     * Create a new route instance.
-     *
-     * @static
-     * @param	string	$method
-     * @param	string	$pattern
-     * @param	mixed	$action
-     * @return Illuminate\Routing\Route
-     */
-    public static function createRoute($method, $pattern, $action){}
-
-    /**
-     * Parse the given route action into array form.
-     *
-     * @static
-     * @param	mixed	$action
-     * @return array
-     */
-    public static function parseAction($action){}
-
-    /**
-     * Merge the current group stack into a given action.
-     *
-     * @static
-     * @param	array	$action
-     * @param	int	$index
-     * @return array
-     */
-    public static function mergeGroup($action, $index){}
-
-    /**
-     * Get the full group prefix for the current stack.
-     *
-     * @static
-     * @return string
-     */
-    public static function getGroupPrefix(){}
-
-    /**
-     * Get the fully merged prefix for a given action.
-     *
-     * @static
-     * @param	array	$action
-     * @return string
-     */
-    public static function mergeGroupPrefix($action){}
-
-    /**
-     * Add the given prefix to the given URI pattern.
-     *
-     * @static
-     * @param	string	$pattern
-     * @param	string	$prefix
-     * @return string
-     */
-    public static function addPrefix($pattern, $prefix){}
-
-    /**
-     * Set the attributes and requirements on the route.
-     *
-     * @static
-     * @param	Illuminate\Routing\Route	$route
-     * @param	array	$action
-     * @param	array	$optional
-     * @return void
-     */
-    public static function setAttributes($route, $action, $optional){}
-
-    /**
-     * Modify the pattern and extract optional parameters.
-     *
-     * @static
-     * @param	string	$pattern
-     * @return array
-     */
-    public static function getOptional($pattern){}
-
-    /**
-     * Get the name of the route.
-     *
-     * @static
-     * @param	string	$method
-     * @param	string	$pattern
-     * @param	array	$action
-     * @return string
-     */
-    public static function getName($method, $pattern, $action){}
-
-    /**
-     * Get the callback from the given action array.
-     *
-     * @static
-     * @param	array	$action
-     * @return Closure
-     */
-    public static function getCallback($action){}
-
-    /**
-     * Create the controller callback for a route.
-     *
-     * @static
-     * @param	string	$attribute
-     * @return Closure
-     */
-    public static function createControllerCallback($attribute){}
-
-    /**
      * Get the response for a given request.
      *
      * @static
@@ -7845,24 +6225,6 @@ class Route extends Illuminate\Routing\Router{
      * @return Symfony\Component\HttpFoundation\Response
      */
     public static function dispatch($request){}
-
-    /**
-     * Match the given request to a route object.
-     *
-     * @static
-     * @param	Symfony\Component\HttpFoundation\Request	$request
-     * @return Illuminate\Routing\Route
-     */
-    public static function findRoute($request){}
-
-    /**
-     * Format the request path info for routing.
-     *
-     * @static
-     * @param	Illuminate\Http\Request	$request
-     * @return string
-     */
-    public static function formatRequestPath($request){}
 
     /**
      * Register a "before" routing filter.
@@ -7901,15 +6263,6 @@ class Route extends Illuminate\Routing\Router{
     public static function finish($callback){}
 
     /**
-     * Build a global filter definition for the router.
-     *
-     * @static
-     * @param	Closure|string	$callback
-     * @return Closure
-     */
-    public static function buildGlobalFilter($callback){}
-
-    /**
      * Register a new filter with the application.
      *
      * @static
@@ -7927,15 +6280,6 @@ class Route extends Illuminate\Routing\Router{
      * @return Closure
      */
     public static function getFilter($name){}
-
-    /**
-     * Get a callable array for a class based filter.
-     *
-     * @static
-     * @param	string	$filter
-     * @return array
-     */
-    public static function getClassBasedFilter($filter){}
 
     /**
      * Tie a registered filter to a URI pattern.
@@ -7957,16 +6301,6 @@ class Route extends Illuminate\Routing\Router{
     public static function findPatternFilters($request){}
 
     /**
-     * Call the "after" global filters.
-     *
-     * @static
-     * @param	Symfony\Component\HttpFoundation\Request	$request
-     * @param	Symfony\Component\HttpFoundation\Response	$response
-     * @return mixed
-     */
-    public static function callAfterFilter($request, $response){}
-
-    /**
      * Call the "finish" global filter.
      *
      * @static
@@ -7975,17 +6309,6 @@ class Route extends Illuminate\Routing\Router{
      * @return mixed
      */
     public static function callFinishFilter($request, $response){}
-
-    /**
-     * Call a given global filter with the parameters.
-     *
-     * @static
-     * @param	Symfony\Component\HttpFoundation\Request	$request
-     * @param	string	$name
-     * @param	array	$parameters
-     * @return mixed
-     */
-    public static function callGlobalFilter($request, $name, $parameters = array()){}
 
     /**
      * Set a global where pattern on all routes
@@ -8046,15 +6369,6 @@ class Route extends Illuminate\Routing\Router{
      * @return Symfony\Component\HttpFoundation\Response
      */
     public static function prepare($value, $request){}
-
-    /**
-     * Convert routing exception to HttpKernel version.
-     *
-     * @static
-     * @param	Exception	$e
-     * @return void
-     */
-    public static function handleRoutingException($e){}
 
     /**
      * Determine if the current route has a given name.
@@ -8146,15 +6460,6 @@ class Route extends Illuminate\Routing\Router{
      * @return array
      */
     public static function getGlobalFilters(){}
-
-    /**
-     * Create a new URL matcher instance.
-     *
-     * @static
-     * @param	Symfony\Component\HttpFoundation\Request	$request
-     * @return Symfony\Component\Routing\Matcher\UrlMatcher
-     */
-    public static function getUrlMatcher($request){}
 
     /**
      * Get the controller inspector instance.
@@ -8260,25 +6565,6 @@ class Schema extends Illuminate\Database\Schema\Builder{
     public static function rename($from, $to){}
 
     /**
-     * Execute the blueprint to build / modify the table.
-     *
-     * @static
-     * @param	Illuminate\Database\Schema\Blueprint	$blueprint
-     * @return void
-     */
-    public static function build($blueprint){}
-
-    /**
-     * Create a new command set with a Closure.
-     *
-     * @static
-     * @param	string	$table
-     * @param	Closure	$callback
-     * @return Illuminate\Database\Schema\Blueprint
-     */
-    public static function createBlueprint($table, $callback = null){}
-
-    /**
      * Get the database connection instance.
      *
      * @static
@@ -8316,15 +6602,6 @@ class Seeder extends Illuminate\Database\Seeder{
     public static function call($class){}
 
     /**
-     * Resolve an instance of the given seeder class.
-     *
-     * @static
-     * @param	string	$class
-     * @return Illuminate\Database\Seeder
-     */
-    public static function resolve($class){}
-
-    /**
      * Set the IoC container instance.
      *
      * @static
@@ -8336,14 +6613,6 @@ class Seeder extends Illuminate\Database\Seeder{
 }
 
 class Session extends Illuminate\Support\Facades\Session{
-    /**
-     * Get the registered name of the component.
-     *
-     * @static
-     * @return string
-     */
-    public static function getFacadeAccessor(){}
-
     /**
      * Hotswap the underlying instance behind the facade.
      *
@@ -8369,15 +6638,6 @@ class Session extends Illuminate\Support\Facades\Session{
      * @return mixed
      */
     public static function getFacadeRoot(){}
-
-    /**
-     * Resolve the facade root instance from the container.
-     *
-     * @static
-     * @param	string	$name
-     * @return mixed
-     */
-    public static function resolveFacadeInstance($name){}
 
     /**
      * Clear all of the resolved instances.
@@ -8632,15 +6892,6 @@ class URL extends Illuminate\Routing\UrlGenerator{
     public static function secureAsset($path){}
 
     /**
-     * Get the scheme for a raw URL.
-     *
-     * @static
-     * @param	bool	$secure
-     * @return string
-     */
-    public static function getScheme($secure){}
-
-    /**
      * Get the URL to a named route.
      *
      * @static
@@ -8652,25 +6903,6 @@ class URL extends Illuminate\Routing\UrlGenerator{
     public static function route($name, $parameters = array(), $absolute = true){}
 
     /**
-     * Determine if we're short circuiting the parameter list.
-     *
-     * @static
-     * @param	array	$parameters
-     * @return bool
-     */
-    public static function usingQuickParameters($parameters){}
-
-    /**
-     * Build the parameter list for short circuit parameters.
-     *
-     * @static
-     * @param	Illuminate\Routing\Route	$route
-     * @param	array	$params
-     * @return array
-     */
-    public static function buildParameterList($route, $params){}
-
-    /**
      * Get the URL to a controller action.
      *
      * @static
@@ -8680,15 +6912,6 @@ class URL extends Illuminate\Routing\UrlGenerator{
      * @return string
      */
     public static function action($action, $parameters = array(), $absolute = true){}
-
-    /**
-     * Get the base URL for the request.
-     *
-     * @static
-     * @param	string	$scheme
-     * @return string
-     */
-    public static function getRootUrl($scheme){}
 
     /**
      * Determine if the given path is a valid URL.
@@ -8755,17 +6978,6 @@ class Validator extends Illuminate\Validation\Factory{
      * @return Illuminate\Validation\Validator
      */
     public static function make($data, $rules, $messages = array()){}
-
-    /**
-     * Resolve a new Validator instance.
-     *
-     * @static
-     * @param	array	$data
-     * @param	array	$rules
-     * @param	array	$messages
-     * @return Illuminate\Validation\Validator
-     */
-    public static function resolve($data, $rules, $messages){}
 
     /**
      * Register a custom validator extension.
@@ -8867,24 +7079,6 @@ class View extends Illuminate\View\Environment{
     public static function renderEach($view, $data, $iterator, $empty = 'raw|'){}
 
     /**
-     * Get the appropriate view engine for the given path.
-     *
-     * @static
-     * @param	string	$path
-     * @return Illuminate\View\Engines\EngineInterface
-     */
-    public static function getEngineFromPath($path){}
-
-    /**
-     * Get the extension used by the view file.
-     *
-     * @static
-     * @param	string	$path
-     * @return string
-     */
-    public static function getExtension($path){}
-
-    /**
      * Add a piece of shared data to the environment.
      *
      * @static
@@ -8903,44 +7097,6 @@ class View extends Illuminate\View\Environment{
      * @return Closure
      */
     public static function composer($views, $callback){}
-
-    /**
-     * Add a composer for a given view.
-     *
-     * @static
-     * @param	string	$view
-     * @param	Closure|string	$callback
-     * @return Closure
-     */
-    public static function addComposer($view, $callback){}
-
-    /**
-     * Register a class based view composer.
-     *
-     * @static
-     * @param	string	$view
-     * @param	string	$class
-     * @return Closure
-     */
-    public static function addClassComposer($view, $class){}
-
-    /**
-     * Build a class based container callback Closure.
-     *
-     * @static
-     * @param	string	$class
-     * @return Closure
-     */
-    public static function buildClassComposerCallback($class){}
-
-    /**
-     * Parse a class based composer name.
-     *
-     * @static
-     * @param	string	$class
-     * @return array
-     */
-    public static function parseClassComposer($class){}
 
     /**
      * Call the composer for a given view.
@@ -8986,16 +7142,6 @@ class View extends Illuminate\View\Environment{
      * @return string
      */
     public static function stopSection(){}
-
-    /**
-     * Append content to a given section.
-     *
-     * @static
-     * @param	string	$section
-     * @param	string	$content
-     * @return void
-     */
-    public static function extendSection($section, $content){}
 
     /**
      * Get the string contents of a section.

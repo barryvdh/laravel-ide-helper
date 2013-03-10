@@ -9,11 +9,11 @@ The file has been tested in PHPStorm 6.
 
 Require this package in your composer.json:
 
-    "barryvdh/ide-helper": "dev-master"
+    "barryvdh/laravel-ide-helper": "dev-master"
 
 And add the ServiceProvider to the providers array in app/config/app.php
 
-    'Barryvdh\IdeHelper\IdeHelperServiceProvider',
+    'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
 You can now re-generate the docs yourself (for future updates) in arisan
 
@@ -21,7 +21,7 @@ You can now re-generate the docs yourself (for future updates) in arisan
 
 You can also publish the config-file to add extra facades (ie. for bundles).
 
-    php artisan config:publish barryvdh/ide-helper
+    php artisan config:publish barryvdh/laravel-ide-helper
 
 You can just add the Facade and the 'real' class, like the rest of the classes.
 

@@ -1,4 +1,4 @@
-<?php namespace Barryvdh\IdeHelper;
+<?php namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -18,7 +18,7 @@ class IdeHelperServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('barryvdh/ide-helper');
+		$this->package('barryvdh/laravel-ide-helper');
 	}
 
 	/**

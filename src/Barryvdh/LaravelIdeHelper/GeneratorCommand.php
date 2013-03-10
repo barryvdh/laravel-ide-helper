@@ -1,4 +1,4 @@
-<?php namespace Barryvdh\IdeHelper;
+<?php namespace Barryvdh\LaravelIdeHelper;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,7 +30,7 @@ class GeneratorCommand extends Command {
     {
         $filename = $this->argument('filename');
 
-        $aliases = \Config::get('ide-helper::aliases');
+        $aliases = \Config::get('laravel-ide-helper::aliases');
         $content = $this->parseDocBlocks($aliases);
 
         $written = \File::put($filename, $content);
@@ -51,7 +51,7 @@ class GeneratorCommand extends Command {
     protected function getArguments()
     {
         return array(
-            array('filename', InputArgument::OPTIONAL, 'The path to the helper file', \Config::get('ide-helper::filename')),
+            array('filename', InputArgument::OPTIONAL, 'The path to the helper file', \Config::get('laravel-ide-helper::filename')),
         );
     }
 

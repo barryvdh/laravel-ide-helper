@@ -1,5 +1,5 @@
 {
-    "name": "barryvdh/ide-helper",
+    "name": "barryvdh/laravel-ide-helper",
     "description": "",
     "authors": [
         {
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Barryvdh\\IdeHelper": "src/"
+            "Barryvdh\\LaravelIdeHelper": "src/"
         }
     },
     "minimum-stability": "dev"

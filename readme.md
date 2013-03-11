@@ -25,6 +25,10 @@ You can also publish the config-file to add extra facades (ie. for bundles).
 
     php artisan config:publish barryvdh/laravel-ide-helper
 
+You can choose to include helper files. The Illuminate/Support/helpers.php file is included by default. This can be changed in the config.
+
+        'helpers' => array(),
+
 You can just add the Facade and the 'real' class, like the rest of the classes.
 
     'Eloquent'  => 'Illuminate\Database\Eloquent\Model',

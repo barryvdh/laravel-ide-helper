@@ -31,7 +31,8 @@ class GeneratorCommand extends Command {
         $filename = $this->argument('filename');
 
         $aliases = \Config::get('laravel-ide-helper::aliases');
-        $content = $this->parseDocBlocks($aliases);
+        $helpers = \Config::get('laravel-ide-helper::helpers');
+        $content = $this->generateDocs($aliases, $helpers);
 
         $written = \File::put($filename, $content);
 
@@ -55,12 +56,18 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function parseDocBlocks($aliases){
+    protected function generateDocs($aliases, $helpers){
         $d = new Parser();
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
         $output = "<?php die('Only to be used as an helper for your IDE');\n";
+
+        if(!empty($helpers)){
+            foreach($helpers as $helper){
+                $output .= str_replace(array('<?php', '?>'), '', \File::get($helper));
+            }
+        }
 
         foreach($aliases as $alias => $className){
 
@@ -72,65 +79,71 @@ class GeneratorCommand extends Command {
 
             foreach ($methods as $method)
             {
-                $returnAnnotations = $method->getAnnotations(array("return"));
-                if(!empty($returnAnnotations)){
-                    foreach ($returnAnnotations as $annotation)
-                    {
-                        $returnValue = $annotation->values[0];
-                    }
-                }else{
-                    $returnValue = 'void';
-                }
-
-                $annotations = $method->getAnnotations(array("param"));
-
-                $description = str_replace("\n", "\n\t * ", trim($method->description));
-                $output .= "\t/**\n\t * ".$description."\n\t *\n\t * @static\n";
-
-                if(!empty($annotations)){
-                    foreach ($annotations as $annotation)
-                    {
-                        $output .="\t * @param\t".implode($annotation->values, "\t")."\n";
-                    }
-                }
-                if($returnValue !== "void"){
-                    $output .= "\t * @return ".$returnValue."\n";
-                }
-                $output .= "\t */\n\t public static function ".$method->name."(";
-
-
-                $reflection = $method->getReflectionObject();
-                $params = array();
-                $paramsWithDefault = array();
-
-                foreach ($reflection->getParameters() as $param) {
-                    $paramStr = '$'.$param->getName();
-                    $params[] = $paramStr;
-                    if ($param->isOptional()) {
-                        $default = $param->getDefaultValue();
-                        if(is_bool($default)){
-                            $default = $default? 'true':'false';
-                        }elseif(is_array($default)){
-                            $default = 'array()';
-                        }elseif(is_null($default)){
-                            $default = 'null';
-                        }else{
-                            $default = "'".trim($default)."'";
-                        }
-
-                        $paramStr .= " = $default";
-                    }
-                    $paramsWithDefault[] = $paramStr;
-                }
-                $output .= implode($paramsWithDefault, ", ");
-
-                $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '')."self::\$realClass->".$method->name."(".implode($params, ", ").");\r\n\t }\n\n";
-
-
+                $output .= $this->parseMethod($method);
             }
             $output .= "}\n\n";
 
         }
+
+        return $output;
+    }
+
+    protected function parseMethod($method){
+        $output = '';
+
+        $returnAnnotations = $method->getAnnotations(array("return"));
+        if(!empty($returnAnnotations)){
+            foreach ($returnAnnotations as $annotation)
+            {
+                $returnValue = $annotation->values[0];
+            }
+        }else{
+            $returnValue = 'void';
+        }
+
+        $annotations = $method->getAnnotations(array("param"));
+
+        $description = str_replace("\n", "\n\t * ", trim($method->description));
+        $output .= "\t/**\n\t * ".$description."\n\t *\n\t * @static\n";
+
+        if(!empty($annotations)){
+            foreach ($annotations as $annotation)
+            {
+                $output .="\t * @param\t".implode($annotation->values, "\t")."\n";
+            }
+        }
+        if($returnValue !== "void"){
+            $output .= "\t * @return ".$returnValue."\n";
+        }
+        $output .= "\t */\n\t public static function ".$method->name."(";
+
+
+        $reflection = $method->getReflectionObject();
+        $params = array();
+        $paramsWithDefault = array();
+
+        foreach ($reflection->getParameters() as $param) {
+            $paramStr = '$'.$param->getName();
+            $params[] = $paramStr;
+            if ($param->isOptional()) {
+                $default = $param->getDefaultValue();
+                if(is_bool($default)){
+                    $default = $default? 'true':'false';
+                }elseif(is_array($default)){
+                    $default = 'array()';
+                }elseif(is_null($default)){
+                    $default = 'null';
+                }else{
+                    $default = "'".trim($default)."'";
+                }
+
+                $paramStr .= " = $default";
+            }
+            $paramsWithDefault[] = $paramStr;
+        }
+        $output .= implode($paramsWithDefault, ", ");
+
+        $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '')."self::\$realClass->".$method->name."(".implode($params, ", ").");\r\n\t }\n\n";
 
         return $output;
     }

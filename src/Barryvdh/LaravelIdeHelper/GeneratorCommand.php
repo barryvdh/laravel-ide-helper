@@ -60,13 +60,14 @@ class GeneratorCommand extends Command {
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
-        $output = "<?php\r\ndie('Only to be used as an helper for your IDE');\n";
+        $output = "<?php die('Only to be used as an helper for your IDE');\n";
 
         foreach($aliases as $alias => $className){
 
             $d->analyze($className);
-            $output .= "class $alias extends $className{\r\n";
 
+            $output .= " class $alias{\r\n";
+            $output .= "\t/**\n\t * @var $className \$realClass\n\t */\n\t static private \$realClass;\n\n";
             $methods = $d->getMethods();
 
             foreach ($methods as $method)
@@ -83,20 +84,28 @@ class GeneratorCommand extends Command {
 
                 $annotations = $method->getAnnotations(array("param"));
 
-                $output .= "/**\n * ".trim($method->description)."\n *\n * @static\n";
-                $params = array();
+                $description = str_replace("\n", "\n\t * ", trim($method->description));
+                $output .= "\t/**\n\t * ".$description."\n\t *\n\t * @static\n";
+
                 if(!empty($annotations)){
                     foreach ($annotations as $annotation)
                     {
-                        $output .=" * @param\t".implode($annotation->values, "\t")."\n";
+                        $output .="\t * @param\t".implode($annotation->values, "\t")."\n";
                     }
                 }
+                if($returnValue !== "void"){
+                    $output .= "\t * @return ".$returnValue."\n";
+                }
+                $output .= "\t */\n\t public static function ".$method->name."(";
 
-                $output .= " * @return ".$returnValue."\n */\n public static function ".$method->name."(";
 
                 $reflection = $method->getReflectionObject();
+                $params = array();
+                $paramsWithDefault = array();
+
                 foreach ($reflection->getParameters() as $param) {
                     $paramStr = '$'.$param->getName();
+                    $params[] = $paramStr;
                     if ($param->isOptional()) {
                         $default = $param->getDefaultValue();
                         if(is_bool($default)){
@@ -111,12 +120,11 @@ class GeneratorCommand extends Command {
 
                         $paramStr .= " = $default";
                     }
-                    $params[] = $paramStr;
+                    $paramsWithDefault[] = $paramStr;
                 }
-                $output .= implode($params, ", ");
+                $output .= implode($paramsWithDefault, ", ");
 
-
-                $output .= "){}\n\n";
+                $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '')."self::\$realClass->".$method->name."(".implode($params, ", ").");\r\n\t }\n\n";
 
 
             }

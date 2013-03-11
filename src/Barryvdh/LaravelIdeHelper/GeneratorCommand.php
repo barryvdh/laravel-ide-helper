@@ -31,7 +31,13 @@ class GeneratorCommand extends Command {
         $filename = $this->argument('filename');
 
         $aliases = \Config::get('laravel-ide-helper::aliases');
-        $helpers = \Config::get('laravel-ide-helper::helpers');
+
+        if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
+            $helpers = \Config::get('laravel-ide-helper::helper_files');
+        }else{
+            $helpers = array();
+        }
+
         $content = $this->generateDocs($aliases, $helpers);
 
         $written = \File::put($filename, $content);
@@ -53,6 +59,19 @@ class GeneratorCommand extends Command {
     {
         return array(
             array('filename', InputArgument::OPTIONAL, 'The path to the helper file', \Config::get('laravel-ide-helper::filename')),
+        );
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return array(
+            array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
+            array('nohelpers', "N", InputOption::VALUE_NONE, 'Do not include the helper files'),
         );
     }
 

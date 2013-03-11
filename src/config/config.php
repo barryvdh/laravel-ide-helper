@@ -18,11 +18,14 @@ return array(
     | Helper files to include
     |--------------------------------------------------------------------------
     |
-    | Include all user-defined functions.
+    | Include helper files. By default not included, but can be toggled with the
+    | -- helpers (-H) option. Extra helper files can be included.
     |
     */
 
-    'helpers' => array(
+    'include_helpers' => false,
+
+    'helper_files' => array(
         base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
     ),
 

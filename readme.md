@@ -3,7 +3,9 @@
 ### Complete phpDocs, directly from the source
 
 Add the _IDE_helper.php to your laravel folder (not in a public folder). The file isn't used by Laravel, but it has to be indexed by your IDE.
-The file has been tested in PHPStorm 6.
+You can also add Laravel/framework/preload/compiled.php to your dependencies/libraries to include all real namespaces (Laravel & Symfony), so you can link through to the original implementation.
+This way you don't need to index/download your entire vendor folder.
+The file has been tested in Netbeans 7.3 and PHPStorm 6.
 
 ### Automatic phpDoc generation for Laravel Facades
 

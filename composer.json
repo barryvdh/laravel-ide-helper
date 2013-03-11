@@ -1,6 +1,6 @@
 {
     "name": "barryvdh/laravel-ide-helper",
-    "description": "",
+    "description": "Laravel IDE Helper, generates correct PHPDocs for all Facade classes, to improve auto-completion.",
     "authors": [
         {
             "name": "Barry vd. Heuvel",

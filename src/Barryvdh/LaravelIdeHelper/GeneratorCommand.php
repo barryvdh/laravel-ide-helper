@@ -82,12 +82,6 @@ class GeneratorCommand extends Command {
 
         $output = "<?php die('Only to be used as an helper for your IDE');\n";
 
-        if(!empty($helpers)){
-            foreach($helpers as $helper){
-                $output .= str_replace(array('<?php', '?>'), '', \File::get($helper));
-            }
-        }
-
         foreach($aliases as $alias => $className){
 
             $d->analyze($className);
@@ -102,6 +96,12 @@ class GeneratorCommand extends Command {
             }
             $output .= "}\n\n";
 
+        }
+
+        if(!empty($helpers)){
+            foreach($helpers as $helper){
+                $output .= str_replace(array('<?php', '?>'), '', \File::get($helper));
+            }
         }
 
         return $output;

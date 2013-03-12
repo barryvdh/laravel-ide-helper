@@ -80,7 +80,7 @@ class GeneratorCommand extends Command {
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
-        $output = "<?php die('Only to be used as an helper for your IDE');\n";
+        $output = "<?php die('Only to be used as an helper for your IDE');\n\n";
 
         foreach($aliases as $alias => $className){
 

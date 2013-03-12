@@ -1,4 +1,5 @@
 <?php die('Only to be used as an helper for your IDE');
+
  class App{
 	/**
 	 * @var Illuminate\Foundation\Application $realClass

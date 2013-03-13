@@ -1,5 +1,6 @@
 <?php die('Only to be used as an helper for your IDE');
 
+namespace  {
  class App{
 	/**
 	 * @var Illuminate\Foundation\Application $realClass
@@ -524,8 +525,10 @@
 		self::$realClass->offsetUnset($key);
 	 }
 
+ }
 }
 
+namespace  {
  class Artisan{
 	/**
 	 * @var Illuminate\Foundation\Artisan $realClass
@@ -566,8 +569,10 @@
 		return self::$realClass->__call($method, $parameters);
 	 }
 
+ }
 }
 
+namespace  {
  class Auth{
 	/**
 	 * @var Illuminate\Auth\Guard $realClass
@@ -792,8 +797,10 @@
 		return self::$realClass->getRecallerName();
 	 }
 
+ }
 }
 
+namespace  {
  class Blade{
 	/**
 	 * @var Illuminate\View\Compilers\BladeCompiler $realClass
@@ -919,8 +926,10 @@
 		return self::$realClass->isExpired($path);
 	 }
 
+ }
 }
 
+namespace  {
  class Cache{
 	/**
 	 * @var Illuminate\Cache\Store $realClass
@@ -1123,8 +1132,10 @@
 		self::$realClass->offsetUnset($key);
 	 }
 
+ }
 }
 
+namespace  {
  class ClassLoader{
 	/**
 	 * @var Illuminate\Support\ClassLoader $realClass
@@ -1191,8 +1202,10 @@
 		return self::$realClass->getDirectories();
 	 }
 
+ }
 }
 
+namespace  {
  class Config{
 	/**
 	 * @var Illuminate\Config\Repository $realClass
@@ -1416,8 +1429,10 @@
 		self::$realClass->setParsedKey($key, $parsed);
 	 }
 
+ }
 }
 
+namespace  {
  class Controller{
 	/**
 	 * @var Illuminate\Routing\Controllers\Controller $realClass
@@ -1493,8 +1508,10 @@
 		return self::$realClass->__call($method, $parameters);
 	 }
 
+ }
 }
 
+namespace  {
  class Cookie{
 	/**
 	 * @var Illuminate\Cookie\CookieJar $realClass
@@ -1603,8 +1620,10 @@
 		return self::$realClass->getEncrypter();
 	 }
 
+ }
 }
 
+namespace  {
  class Crypt{
 	/**
 	 * @var Illuminate\Encryption\Encrypter $realClass
@@ -1643,8 +1662,10 @@
 		return self::$realClass->decrypt($payload);
 	 }
 
+ }
 }
 
+namespace  {
  class DB{
 	/**
 	 * @var Illuminate\Database\Connection $realClass
@@ -2094,8 +2115,10 @@
 		return self::$realClass->withTablePrefix($grammar);
 	 }
 
+ }
 }
 
+namespace  {
  class Eloquent{
 	/**
 	 * @var Illuminate\Database\Eloquent\Model $realClass
@@ -2986,8 +3009,10 @@
 		return self::$realClass->__toString();
 	 }
 
+ }
 }
 
+namespace  {
  class Event{
 	/**
 	 * @var Illuminate\Events\Event $realClass
@@ -3127,8 +3152,10 @@
 		self::$realClass->setName($name);
 	 }
 
+ }
 }
 
+namespace  {
  class File{
 	/**
 	 * @var Illuminate\Filesystem\Filesystem $realClass
@@ -3371,8 +3398,10 @@
 		self::$realClass->cleanDirectory($directory);
 	 }
 
+ }
 }
 
+namespace  {
  class Form{
 	/**
 	 * @var Illuminate\Support\Facades\Form $realClass
@@ -3451,8 +3480,10 @@
 		return self::$realClass->__callStatic($method, $args);
 	 }
 
+ }
 }
 
+namespace  {
  class Hash{
 	/**
 	 * @var Illuminate\Hashing\BcryptHasher $realClass
@@ -3483,8 +3514,10 @@
 		return self::$realClass->check($value, $hashedValue, $options);
 	 }
 
+ }
 }
 
+namespace  {
  class Html{
 	/**
 	 * @var Illuminate\Html\HtmlBuilder $realClass
@@ -3548,8 +3581,10 @@
 		return self::$realClass->attributes($attributes);
 	 }
 
+ }
 }
 
+namespace  {
  class Input{
 	/**
 	 * @var Illuminate\Http\Request $realClass
@@ -4639,8 +4674,10 @@
 		return self::$realClass->splitHttpAcceptHeader($header);
 	 }
 
+ }
 }
 
+namespace  {
  class Lang{
 	/**
 	 * @var Illuminate\Translation\Translator $realClass
@@ -4814,8 +4851,10 @@
 		self::$realClass->setParsedKey($key, $parsed);
 	 }
 
+ }
 }
 
+namespace  {
  class Log{
 	/**
 	 * @var Illuminate\Log\Writer $realClass
@@ -4909,8 +4948,10 @@
 		return self::$realClass->__call($method, $parameters);
 	 }
 
+ }
 }
 
+namespace  {
  class Mail{
 	/**
 	 * @var Illuminate\Mail\Mailer $realClass
@@ -5023,8 +5064,10 @@
 		self::$realClass->setContainer($container);
 	 }
 
+ }
 }
 
+namespace  {
  class Paginator{
 	/**
 	 * @var Illuminate\Pagination\Paginator $realClass
@@ -5212,8 +5255,10 @@
 		self::$realClass->offsetUnset($key);
 	 }
 
+ }
 }
 
+namespace  {
  class Password{
 	/**
 	 * @var Illuminate\Auth\Reminders\PasswordBroker $realClass
@@ -5282,8 +5327,10 @@
 		return self::$realClass->getUser($credentials);
 	 }
 
+ }
 }
 
+namespace  {
  class Queue{
 	/**
 	 * @var Illuminate\Queue\QueueManager $realClass
@@ -5334,8 +5381,10 @@
 		return self::$realClass->__call($method, $parameters);
 	 }
 
+ }
 }
 
+namespace  {
  class Redirect{
 	/**
 	 * @var Illuminate\Routing\Redirector $realClass
@@ -5451,8 +5500,10 @@
 		self::$realClass->setSession($session);
 	 }
 
+ }
 }
 
+namespace  {
  class Redis{
 	/**
 	 * @var Illuminate\Redis\Database $realClass
@@ -5578,8 +5629,10 @@
 		return self::$realClass->__call($method, $parameters);
 	 }
 
+ }
 }
 
+namespace  {
  class Request{
 	/**
 	 * @var Illuminate\Http\Request $realClass
@@ -6669,8 +6722,10 @@
 		return self::$realClass->splitHttpAcceptHeader($header);
 	 }
 
+ }
 }
 
+namespace  {
  class Response{
 	/**
 	 * @var Illuminate\Http\Response $realClass
@@ -7314,8 +7369,10 @@ status codes and left empty otherwise.
 		return self::$realClass->isEmpty();
 	 }
 
+ }
 }
 
+namespace  {
  class Route{
 	/**
 	 * @var Illuminate\Routing\Router $realClass
@@ -7799,8 +7856,10 @@ status codes and left empty otherwise.
 		self::$realClass->setContainer($container);
 	 }
 
+ }
 }
 
+namespace  {
  class Schema{
 	/**
 	 * @var Illuminate\Database\Schema\Builder $realClass
@@ -7907,8 +7966,10 @@ status codes and left empty otherwise.
 		return self::$realClass->setConnection($connection);
 	 }
 
+ }
 }
 
+namespace  {
  class Seeder{
 	/**
 	 * @var Illuminate\Database\Seeder $realClass
@@ -7944,8 +8005,10 @@ status codes and left empty otherwise.
 		self::$realClass->setContainer($container);
 	 }
 
+ }
 }
 
+namespace  {
  class Session{
 	/**
 	 * @var Illuminate\Support\Facades\Session $realClass
@@ -8024,8 +8087,10 @@ status codes and left empty otherwise.
 		return self::$realClass->__callStatic($method, $args);
 	 }
 
+ }
 }
 
+namespace  {
  class Str{
 	/**
 	 * @var Illuminate\Support\Str $realClass
@@ -8208,8 +8273,10 @@ status codes and left empty otherwise.
 		return self::$realClass->studly($value);
 	 }
 
+ }
 }
 
+namespace  {
  class URL{
 	/**
 	 * @var Illuminate\Routing\UrlGenerator $realClass
@@ -8371,8 +8438,10 @@ status codes and left empty otherwise.
 		self::$realClass->setGenerator($generator);
 	 }
 
+ }
 }
 
+namespace  {
  class Validator{
 	/**
 	 * @var Illuminate\Validation\Factory $realClass
@@ -8464,8 +8533,10 @@ status codes and left empty otherwise.
 		self::$realClass->setPresenceVerifier($presenceVerifier);
 	 }
 
+ }
 }
 
+namespace  {
  class View{
 	/**
 	 * @var Illuminate\View\Environment $realClass
@@ -8757,5 +8828,6 @@ status codes and left empty otherwise.
 		return self::$realClass->getSections();
 	 }
 
+ }
 }
 

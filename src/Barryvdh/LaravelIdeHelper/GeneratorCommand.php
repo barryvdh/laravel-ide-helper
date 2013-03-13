@@ -84,9 +84,17 @@ class GeneratorCommand extends Command {
 
         foreach($aliases as $alias => $className){
 
+            if(strpos($alias, '\\') !== false){
+                $parts = explode('\\', $alias);
+                $alias = array_pop($parts);
+                $namespace = implode($parts, '\\');
+            }else{
+                $namespace = '';
+            }
+
             $d->analyze($className);
 
-            $output .= " class $alias{\r\n";
+            $output .= "namespace $namespace {\n class $alias{\r\n";
             $output .= "\t/**\n\t * @var $className \$realClass\n\t */\n\t static private \$realClass;\n\n";
             $methods = $d->getMethods();
 
@@ -94,7 +102,7 @@ class GeneratorCommand extends Command {
             {
                 $output .= $this->parseMethod($method);
             }
-            $output .= "}\n\n";
+            $output .= " }\n}\n\n";
 
         }
 

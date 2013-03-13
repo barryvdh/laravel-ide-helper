@@ -2165,8 +2165,8 @@ namespace  {
 	 * @param	array	$attributes
 	 * @return Illuminate\Database\Eloquent\Model
 	 */
-	 public static function newExisting($attributes = array()){
-		return self::$realClass->newExisting($attributes);
+	 public static function newFromBuilder($attributes = array()){
+		return self::$realClass->newFromBuilder($attributes);
 	 }
 
 	/**

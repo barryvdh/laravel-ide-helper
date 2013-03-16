@@ -28,8 +28,7 @@ You can just add the Facade and the 'real' class, like the rest of the classes.
     'Basset'  => 'Basset\Basset',
 
 You can choose to include helper files. This is not enabled by default, but you can override this with the --helpers (-H) or --nohelpers (-N) option.
-The Illuminate/Support/helpers.php and laravel/framework/preload/compiled.php are already set-up, but you can add/remove your own files in the config file.
-Using this option, allows you to have more complete code completion without having to include the vendor dir.
+The Illuminate/Support/helpers.php is already set-up, but you can add/remove your own files in the config file.
 
 
 

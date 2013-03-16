@@ -100,7 +100,7 @@ namespace  {
 	 * Register a service provider with the application.
 	 *
 	 * @static
-	 * @param	Illuminate\Support\ServiceProvider	$provider
+	 * @param	Illuminate\Support\ServiceProvider|string	$provider
 	 * @param	array	$options
 	 */
 	 public static function register($provider, $options = array()){
@@ -972,6 +972,40 @@ namespace  {
 	 }
 
 	/**
+	 * Store an item in the cache if the key does not exist.
+	 *
+	 * @static
+	 * @param	string	$key
+	 * @param	mixed	$value
+	 * @param	int	$minutes
+	 */
+	 public static function add($key, $value, $minutes){
+		self::$realClass->add($key, $value, $minutes);
+	 }
+
+	/**
+	 * Increment the value at a given key.
+	 *
+	 * @static
+	 * @param	string	$key
+	 * @param	int	$value
+	 */
+	 public static function increment($key, $value = '1'){
+		self::$realClass->increment($key, $value);
+	 }
+
+	/**
+	 * Decrement the value at a given key.
+	 *
+	 * @static
+	 * @param	string	$key
+	 * @param	int	$value
+	 */
+	 public static function decrement($key, $value = '1'){
+		self::$realClass->decrement($key, $value);
+	 }
+
+	/**
 	 * Store an item in the cache indefinitely.
 	 *
 	 * @static
@@ -1065,28 +1099,6 @@ namespace  {
 	 */
 	 public static function getMemory(){
 		return self::$realClass->getMemory();
-	 }
-
-	/**
-	 * Get the value of an item in memory.
-	 *
-	 * @static
-	 * @param	string	$key
-	 * @return mixed
-	 */
-	 public static function getFromMemory($key){
-		return self::$realClass->getFromMemory($key);
-	 }
-
-	/**
-	 * Set the value of an item in memory.
-	 *
-	 * @static
-	 * @param	string	$key
-	 * @param	mixed	$value
-	 */
-	 public static function setInMemory($key, $value){
-		self::$realClass->setInMemory($key, $value);
 	 }
 
 	/**
@@ -1524,10 +1536,9 @@ namespace  {
 	 * @static
 	 * @param	Symfony\Component\HttpFoundation\Request	$request
 	 * @param	Illuminate\Encryption\Encrypter	$encrypter
-	 * @param	array	$defaults
 	 */
-	 public static function __construct($request, $encrypter, $defaults){
-		self::$realClass->__construct($request, $encrypter, $defaults);
+	 public static function __construct($request, $encrypter){
+		self::$realClass->__construct($request, $encrypter);
 	 }
 
 	/**
@@ -1560,10 +1571,14 @@ namespace  {
 	 * @param	string	$name
 	 * @param	string	$value
 	 * @param	int	$minutes
+	 * @param	string	$path
+	 * @param	string	$domain
+	 * @param	bool	$secure
+	 * @param	bool	$httpOnly
 	 * @return Symfony\Component\HttpFoundation\Cookie
 	 */
-	 public static function make($name, $value, $minutes = '0'){
-		return self::$realClass->make($name, $value, $minutes);
+	 public static function make($name, $value, $minutes = '0', $path = '/', $domain = null, $secure = false, $httpOnly = true){
+		return self::$realClass->make($name, $value, $minutes, $path, $domain, $secure, $httpOnly);
 	 }
 
 	/**
@@ -1572,10 +1587,14 @@ namespace  {
 	 * @static
 	 * @param	string	$name
 	 * @param	string	$value
+	 * @param	string	$path
+	 * @param	string	$domain
+	 * @param	bool	$secure
+	 * @param	bool	$httpOnly
 	 * @return Symfony\Component\HttpFoundation\Cookie
 	 */
-	 public static function forever($name, $value){
-		return self::$realClass->forever($name, $value);
+	 public static function forever($name, $value, $path = '/', $domain = null, $secure = false, $httpOnly = true){
+		return self::$realClass->forever($name, $value, $path, $domain, $secure, $httpOnly);
 	 }
 
 	/**
@@ -1587,17 +1606,6 @@ namespace  {
 	 */
 	 public static function forget($name){
 		return self::$realClass->forget($name);
-	 }
-
-	/**
-	 * Set the value of a cookie option.
-	 *
-	 * @static
-	 * @param	string	$option
-	 * @param	string	$value
-	 */
-	 public static function setDefault($option, $value){
-		self::$realClass->setDefault($option, $value);
 	 }
 
 	/**
@@ -1679,10 +1687,10 @@ namespace  {
 	 * @param	PDO	$pdo
 	 * @param	string	$database
 	 * @param	string	$tablePrefix
-	 * @param	string	$name
+	 * @param	array	$config
 	 */
-	 public static function __construct($pdo, $database = '', $tablePrefix = '', $name = null){
-		self::$realClass->__construct($pdo, $database, $tablePrefix, $name);
+	 public static function __construct($pdo, $database = '', $tablePrefix = '', $config = array()){
+		self::$realClass->__construct($pdo, $database, $tablePrefix, $config);
 	 }
 
 	/**
@@ -1901,6 +1909,17 @@ namespace  {
 	 */
 	 public static function getName(){
 		return self::$realClass->getName();
+	 }
+
+	/**
+	 * Get an option from the configuration options.
+	 *
+	 * @static
+	 * @param	string	$option
+	 * @return mixed
+	 */
+	 public static function getConfig($option){
+		return self::$realClass->getConfig($option);
 	 }
 
 	/**
@@ -3550,7 +3569,7 @@ namespace  {
 	 * Generate an ordered list of items.
 	 *
 	 * @static
-	 * @param	array	$items
+	 * @param	array	$list
 	 * @param	array	$attributes
 	 * @return string
 	 */
@@ -3562,7 +3581,7 @@ namespace  {
 	 * Generate an un-ordered list of items.
 	 *
 	 * @static
-	 * @param	array	$items
+	 * @param	array	$list
 	 * @param	array	$attributes
 	 * @return string
 	 */
@@ -7453,6 +7472,18 @@ namespace  {
 	 * Add a new route to the collection.
 	 *
 	 * @static
+	 * @param	string	$pattern
+	 * @param	mixed	$action
+	 * @return Illuminate\Routing\Route
+	 */
+	 public static function options($pattern, $action){
+		return self::$realClass->options($pattern, $action);
+	 }
+
+	/**
+	 * Add a new route to the collection.
+	 *
+	 * @static
 	 * @param	string	$method
 	 * @param	string	$pattern
 	 * @param	mixed	$action
@@ -8181,6 +8212,19 @@ namespace  {
 	 }
 
 	/**
+	 * Limit the number of words in a string.
+	 *
+	 * @static
+	 * @param	string	$value
+	 * @param	int	$words
+	 * @param	string	$end
+	 * @return string
+	 */
+	 public static function words($value, $words = '100', $end = '...'){
+		return self::$realClass->words($value, $words, $end);
+	 }
+
+	/**
 	 * Get the plural form of an English word.
 	 *
 	 * @static
@@ -8319,7 +8363,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$path
-	 * @param	array	$parameters
+	 * @param	mixed	$parameters
 	 * @param	bool	$secure
 	 * @return string
 	 */
@@ -8366,7 +8410,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$name
-	 * @param	array	$parameters
+	 * @param	mixed	$parameters
 	 * @param	bool	$absolute
 	 * @return string
 	 */
@@ -8379,7 +8423,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$action
-	 * @param	array	$parameters
+	 * @param	mixed	$parameters
 	 * @param	bool	$absolute
 	 * @return string
 	 */

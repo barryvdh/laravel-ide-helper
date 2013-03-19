@@ -3423,80 +3423,274 @@ namespace  {
 namespace  {
  class Form{
 	/**
-	 * @var Illuminate\Support\Facades\Form $realClass
+	 * @var Illuminate\Html\FormBuilder $realClass
 	 */
 	 static private $realClass;
 
 	/**
-	 * Hotswap the underlying instance behind the facade.
+	 * Create a new form builder instance.
 	 *
 	 * @static
-	 * @param	mixed	$instance
+	 * @param	Illuminate\Routing\UrlGenerator	$url
+	 * @param	string	$csrfToken
 	 */
-	 public static function swap($instance){
-		self::$realClass->swap($instance);
+	 public static function __construct($url, $csrfToken){
+		self::$realClass->__construct($url, $csrfToken);
 	 }
 
 	/**
-	 * Initiate a mock expectation on the facade.
+	 * Open up a new HTML form.
 	 *
 	 * @static
-	 * @param	dynamic
-	 * @return Mockery\Expectation
+	 * @param	array	$options
+	 * @return string
 	 */
-	 public static function shouldReceive(){
-		return self::$realClass->shouldReceive();
+	 public static function open($options = array()){
+		return self::$realClass->open($options);
 	 }
 
 	/**
-	 * Get the root object behind the facade.
+	 * Create a new model based form builder.
 	 *
 	 * @static
-	 * @return mixed
+	 * @param	mixed	$model
+	 * @param	array	$options
+	 * @return string
 	 */
-	 public static function getFacadeRoot(){
-		return self::$realClass->getFacadeRoot();
+	 public static function model($model, $options = array()){
+		return self::$realClass->model($model, $options);
 	 }
 
 	/**
-	 * Clear all of the resolved instances.
+	 * Close the current form.
 	 *
 	 * @static
+	 * @return string
 	 */
-	 public static function clearResolvedInstances(){
-		self::$realClass->clearResolvedInstances();
+	 public static function close(){
+		return self::$realClass->close();
 	 }
 
 	/**
-	 * Get the application instance behind the facade.
+	 * Generate a hidden field with the current CSRF token.
 	 *
 	 * @static
-	 * @return Illuminate\Foundation\Application
+	 * @return string
 	 */
-	 public static function getFacadeApplication(){
-		return self::$realClass->getFacadeApplication();
+	 public static function token(){
+		return self::$realClass->token();
 	 }
 
 	/**
-	 * Set the application instance.
+	 * Create a form label element.
 	 *
 	 * @static
-	 * @param	Illuminate\Foundation\Application	$app
+	 * @param	string	$name
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
 	 */
-	 public static function setFacadeApplication($app){
-		self::$realClass->setFacadeApplication($app);
+	 public static function label($name, $value, $options = array()){
+		return self::$realClass->label($name, $value, $options);
 	 }
 
 	/**
-	 * Handle dynamic, static calls to the object.
+	 * Create a form input field.
+	 *
+	 * @static
+	 * @param	string	$type
+	 * @param	string	$name
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function input($type, $name, $value = null, $options = array()){
+		return self::$realClass->input($type, $name, $value, $options);
+	 }
+
+	/**
+	 * Create a text input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function text($name, $value = null, $options = array()){
+		return self::$realClass->text($name, $value, $options);
+	 }
+
+	/**
+	 * Create a password input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function password($name, $options = array()){
+		return self::$realClass->password($name, $options);
+	 }
+
+	/**
+	 * Create a hidden input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function hidden($name, $value = null, $options = array()){
+		return self::$realClass->hidden($name, $value, $options);
+	 }
+
+	/**
+	 * Create an e-mail input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function email($name, $value = null, $options = array()){
+		return self::$realClass->email($name, $value, $options);
+	 }
+
+	/**
+	 * Create a file input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function file($name, $options = array()){
+		return self::$realClass->file($name, $options);
+	 }
+
+	/**
+	 * Create a textarea input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function textarea($name, $value = null, $options = array()){
+		return self::$realClass->textarea($name, $value, $options);
+	 }
+
+	/**
+	 * Create a select box field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	array	$list
+	 * @param	string	$selected
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function select($name, $list = array(), $selected = null, $options = array()){
+		return self::$realClass->select($name, $list, $selected, $options);
+	 }
+
+	/**
+	 * Create a checkbox input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	mixed	$value
+	 * @param	bool	$checked
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function checkbox($name, $value = '1', $checked = null, $options = array()){
+		return self::$realClass->checkbox($name, $value, $checked, $options);
+	 }
+
+	/**
+	 * Create a radio button input field.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	mixed	$value
+	 * @param	bool	$checked
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function radio($name, $value = null, $checked = null, $options = array()){
+		return self::$realClass->radio($name, $value, $checked, $options);
+	 }
+
+	/**
+	 * Create a submit button element.
+	 *
+	 * @static
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function submit($value = null, $options = array()){
+		return self::$realClass->submit($value, $options);
+	 }
+
+	/**
+	 * Create a button element.
+	 *
+	 * @static
+	 * @param	string	$value
+	 * @param	array	$options
+	 * @return string
+	 */
+	 public static function button($value = null, $options = array()){
+		return self::$realClass->button($value, $options);
+	 }
+
+	/**
+	 * Register a custom form macro.
+	 *
+	 * @static
+	 * @param	string	$name
+	 * @param	callable	$macro
+	 */
+	 public static function macro($name, $macro){
+		self::$realClass->macro($name, $macro);
+	 }
+
+	/**
+	 * Get the session store implementation.
+	 *
+	 * @static
+	 * @param	Illuminate\Session\Store	$session
+	 */
+	 public static function getSessionStore(){
+		self::$realClass->getSessionStore();
+	 }
+
+	/**
+	 * Set the session store implementation.
+	 *
+	 * @static
+	 * @param	Illuminate\Session\Store	$session
+	 */
+	 public static function setSessionStore($session){
+		self::$realClass->setSessionStore($session);
+	 }
+
+	/**
+	 * Dynamically handle calls to the form builder.
 	 *
 	 * @static
 	 * @param	string	$method
-	 * @param	array	$args
+	 * @param	array	$parameters
 	 * @return mixed
 	 */
-	 public static function __callStatic($method, $args){
-		return self::$realClass->__callStatic($method, $args);
+	 public static function __call($method, $parameters){
+		return self::$realClass->__call($method, $parameters);
 	 }
 
  }
@@ -5097,80 +5291,48 @@ namespace  {
 namespace  {
  class Paginator{
 	/**
-	 * @var Illuminate\Pagination\Paginator $realClass
+	 * @var Illuminate\Pagination\Environment $realClass
 	 */
 	 static private $realClass;
 
 	/**
-	 * Create a new Paginator instance.
+	 * Create a new pagination environment.
 	 *
 	 * @static
-	 * @param	Illuminate\Pagination\Environment	$env
-	 * @param	array	$items
-	 * @param	int	$total
-	 * @param	int	$perPage
+	 * @param	Symfony\Component\HttpFoundation\Request	$request
+	 * @param	Illuminate\View\Environment	$view
+	 * @param	Illuminate\Translation\TranslatorInterface	$trans
 	 */
-	 public static function __construct($env, $items, $total, $perPage){
-		self::$realClass->__construct($env, $items, $total, $perPage);
+	 public static function __construct($request, $view, $trans){
+		self::$realClass->__construct($request, $view, $trans);
 	 }
 
 	/**
-	 * Setup the pagination context (current and last page).
+	 * Get a new paginator instance.
 	 *
 	 * @static
+	 * @param	array	$items
+	 * @param	int	$perPage
+	 * @param	int	$total
 	 * @return Illuminate\Pagination\Paginator
 	 */
-	 public static function setupPaginationContext(){
-		return self::$realClass->setupPaginationContext();
+	 public static function make($items, $total, $perPage){
+		return self::$realClass->make($items, $total, $perPage);
 	 }
 
 	/**
-	 * Get the pagination links view.
+	 * Get the pagination view.
 	 *
 	 * @static
+	 * @param	Illuminate\Pagination\Paginator	$paginator
 	 * @return Illuminate\View\View
 	 */
-	 public static function links(){
-		return self::$realClass->links();
+	 public static function getPaginationView($paginator){
+		return self::$realClass->getPaginationView($paginator);
 	 }
 
 	/**
-	 * Get a URL for a given page number.
-	 *
-	 * @static
-	 * @param	int	$page
-	 * @return string
-	 */
-	 public static function getUrl($page){
-		return self::$realClass->getUrl($page);
-	 }
-
-	/**
-	 * Add a query string value to the paginator.
-	 *
-	 * @static
-	 * @param	string	$key
-	 * @param	string	$value
-	 * @return Illuminate\Pagination\Paginator
-	 */
-	 public static function appends($key, $value){
-		return self::$realClass->appends($key, $value);
-	 }
-
-	/**
-	 * Add a query string value to the paginator.
-	 *
-	 * @static
-	 * @param	string	$key
-	 * @param	string	$value
-	 * @return Illuminate\Pagination\Paginator
-	 */
-	 public static function addQuery($key, $value){
-		return self::$realClass->addQuery($key, $value);
-	 }
-
-	/**
-	 * Get the current page for the request.
+	 * Get the number of the current page.
 	 *
 	 * @static
 	 * @return int
@@ -5180,106 +5342,123 @@ namespace  {
 	 }
 
 	/**
-	 * Get the last page that should be available.
+	 * Set the number of the current page.
 	 *
 	 * @static
-	 * @return int
+	 * @param	int	$number
 	 */
-	 public static function getLastPage(){
-		return self::$realClass->getLastPage();
+	 public static function setCurrentPage($number){
+		self::$realClass->setCurrentPage($number);
 	 }
 
 	/**
-	 * Get the items being paginated.
+	 * Get the root URL for the request.
 	 *
 	 * @static
-	 * @return array
+	 * @return string
 	 */
-	 public static function getItems(){
-		return self::$realClass->getItems();
+	 public static function getCurrentUrl(){
+		return self::$realClass->getCurrentUrl();
 	 }
 
 	/**
-	 * Get the total number of items in the collection.
+	 * Set the base URL in use by the paginator.
 	 *
 	 * @static
-	 * @return int
+	 * @param	string	$baseUrl
 	 */
-	 public static function getTotal(){
-		return self::$realClass->getTotal();
+	 public static function setBaseUrl($baseUrl){
+		self::$realClass->setBaseUrl($baseUrl);
 	 }
 
 	/**
-	 * Get an iterator for the items.
+	 * Get the name of the pagination view.
 	 *
 	 * @static
-	 * @return ArrayIterator
+	 * @return string
 	 */
-	 public static function getIterator(){
-		return self::$realClass->getIterator();
+	 public static function getViewName(){
+		return self::$realClass->getViewName();
 	 }
 
 	/**
-	 * Determine if the list of items is empty or not.
+	 * Set the name of the pagination view.
 	 *
 	 * @static
-	 * @return bool
+	 * @param	string	$viewName
 	 */
-	 public static function isEmpty(){
-		return self::$realClass->isEmpty();
+	 public static function setViewName($viewName){
+		self::$realClass->setViewName($viewName);
 	 }
 
 	/**
-	 * Get the number of items for the current page.
+	 * Get the locale of the paginator.
 	 *
 	 * @static
-	 * @return int
+	 * @return string
 	 */
-	 public static function count(){
-		return self::$realClass->count();
+	 public static function getLocale(){
+		return self::$realClass->getLocale();
 	 }
 
 	/**
-	 * Determine if the given item exists.
+	 * Set the locale of the paginator.
 	 *
 	 * @static
-	 * @param	mixed	$key
-	 * @return bool
+	 * @param	string	$locale
 	 */
-	 public static function offsetExists($key){
-		return self::$realClass->offsetExists($key);
+	 public static function setLocale($locale){
+		self::$realClass->setLocale($locale);
 	 }
 
 	/**
-	 * Get the item at the given offset.
+	 * Get the active request instance.
 	 *
 	 * @static
-	 * @param	mixed	$key
-	 * @return mixed
+	 * @return Symfony\Component\HttpFoundation\Request
 	 */
-	 public static function offsetGet($key){
-		return self::$realClass->offsetGet($key);
+	 public static function getRequest(){
+		return self::$realClass->getRequest();
 	 }
 
 	/**
-	 * Set the item at the given offset.
+	 * Set the active request instance.
 	 *
 	 * @static
-	 * @param	mixed	$key
-	 * @param	mixed	$value
+	 * @param	Symfony\Component\HttpFoundation\Request	$request
 	 */
-	 public static function offsetSet($key, $value){
-		self::$realClass->offsetSet($key, $value);
+	 public static function setRequest($request){
+		self::$realClass->setRequest($request);
 	 }
 
 	/**
-	 * Unset the item at the given key.
+	 * Get the current view driver.
 	 *
 	 * @static
-	 * @param	mixed	$key
+	 * @return Illuminate\View\Environment
 	 */
-	 public static function offsetUnset($key){
-		self::$realClass->offsetUnset($key);
+	 public static function getViewDriver(){
+		return self::$realClass->getViewDriver();
+	 }
+
+	/**
+	 * Set the current view driver.
+	 *
+	 * @static
+	 * @param	Illuminate\View\Environment	$view
+	 */
+	 public static function setViewDriver($view){
+		self::$realClass->setViewDriver($view);
+	 }
+
+	/**
+	 * Get the translator instance.
+	 *
+	 * @static
+	 * @return Symfony\Component\Translation\TranslatorInterface
+	 */
+	 public static function getTranslator(){
+		return self::$realClass->getTranslator();
 	 }
 
  }
@@ -5360,52 +5539,44 @@ namespace  {
 namespace  {
  class Queue{
 	/**
-	 * @var Illuminate\Queue\QueueManager $realClass
+	 * @var Illuminate\Queue\QueueInterface $realClass
 	 */
 	 static private $realClass;
 
 	/**
-	 * Create a new queue manager instance.
+	 * Push a new job onto the queue.
 	 *
 	 * @static
-	 * @param	Illuminate\Foundation\Application	$app
+	 * @param	string	$job
+	 * @param	mixed	$data
+	 * @param	string	$queue
 	 */
-	 public static function __construct($app){
-		self::$realClass->__construct($app);
+	 public static function push($job, $data = '', $queue = null){
+		self::$realClass->push($job, $data, $queue);
 	 }
 
 	/**
-	 * Resolve a queue connection instance.
+	 * Push a new job onto the queue after a delay.
 	 *
 	 * @static
-	 * @param	string	$name
-	 * @return Illuminate\Queue\QueueInterface
+	 * @param	int	$delay
+	 * @param	string	$job
+	 * @param	mixed	$data
+	 * @param	string	$queue
 	 */
-	 public static function connection($name = null){
-		return self::$realClass->connection($name);
+	 public static function later($delay, $job, $data = '', $queue = null){
+		self::$realClass->later($delay, $job, $data, $queue);
 	 }
 
 	/**
-	 * Add a queue connection resolver.
+	 * Pop the next job off of the queue.
 	 *
 	 * @static
-	 * @param	string	$driver
-	 * @param	Closure	$resolver
+	 * @param	string	$queue
+	 * @return Illuminate\Queue\Jobs\Job|nul
 	 */
-	 public static function addConnector($driver, $resolver){
-		self::$realClass->addConnector($driver, $resolver);
-	 }
-
-	/**
-	 * Dynamically pass calls to the default connection.
-	 *
-	 * @static
-	 * @param	string	$method
-	 * @param	array	$parameters
-	 * @return mixed
-	 */
-	 public static function __call($method, $parameters){
-		return self::$realClass->__call($method, $parameters);
+	 public static function pop($queue = null){
+		return self::$realClass->pop($queue);
 	 }
 
  }

@@ -4707,13 +4707,11 @@ namespace  {
 	 * Create a new translator instance.
 	 *
 	 * @static
-	 * @param	Illuminate\Translation\LoaderInterface
-	 * @param	array	$locales
-	 * @param	string	$default
-	 * @param	string	$fallback
+	 * @param	Illuminate\Translation\LoaderInterface	$loader
+	 * @param	string	$locale
 	 */
-	 public static function __construct($loader, $default, $fallback){
-		self::$realClass->__construct($loader, $default, $fallback);
+	 public static function __construct($loader, $locale){
+		self::$realClass->__construct($loader, $locale);
 	 }
 
 	/**
@@ -4729,16 +4727,16 @@ namespace  {
 	 }
 
 	/**
-	 * Get the translation for a given key.
+	 * Get the translation for the given key.
 	 *
 	 * @static
-	 * @param	string	$id
-	 * @param	array	$parameters
+	 * @param	string	$key
+	 * @param	array	$replace
 	 * @param	string	$locale
 	 * @return string
 	 */
-	 public static function get($key, $parameters = array(), $locale = null){
-		return self::$realClass->get($key, $parameters, $locale);
+	 public static function get($key, $replace = array(), $locale = null){
+		return self::$realClass->get($key, $replace, $locale);
 	 }
 
 	/**
@@ -4747,12 +4745,12 @@ namespace  {
 	 * @static
 	 * @param	string	$id
 	 * @param	int	$number
-	 * @param	array	$parameters
+	 * @param	array	$replace
 	 * @param	string	$locale
 	 * @return string
 	 */
-	 public static function choice($key, $number, $parameters = array(), $locale = null){
-		return self::$realClass->choice($key, $number, $parameters, $locale);
+	 public static function choice($key, $number, $replace = array(), $locale = null){
+		return self::$realClass->choice($key, $number, $replace, $locale);
 	 }
 
 	/**
@@ -4788,13 +4786,13 @@ namespace  {
 	 * Load the specified language group.
 	 *
 	 * @static
-	 * @param	string	$group
 	 * @param	string	$namespace
+	 * @param	string	$group
 	 * @param	string	$locale
 	 * @return string
 	 */
-	 public static function load($group, $namespace, $locale){
-		return self::$realClass->load($group, $namespace, $locale);
+	 public static function load($namespace, $group, $locale){
+		return self::$realClass->load($namespace, $group, $locale);
 	 }
 
 	/**
@@ -4806,6 +4804,47 @@ namespace  {
 	 */
 	 public static function addNamespace($namespace, $hint){
 		self::$realClass->addNamespace($namespace, $hint);
+	 }
+
+	/**
+	 * Parse a key into namespace, group, and item.
+	 *
+	 * @static
+	 * @param	string	$key
+	 * @return array
+	 */
+	 public static function parseKey($key){
+		return self::$realClass->parseKey($key);
+	 }
+
+	/**
+	 * Get the message selector instance.
+	 *
+	 * @static
+	 * @return Symfony\Component\Translation\MessageSelector
+	 */
+	 public static function getSelector(){
+		return self::$realClass->getSelector();
+	 }
+
+	/**
+	 * Set the message selector instance.
+	 *
+	 * @static
+	 * @param	Symfony\Component\Translation\MessageSelector	$selector
+	 */
+	 public static function setSelector($selector){
+		self::$realClass->setSelector($selector);
+	 }
+
+	/**
+	 * Get the language line loader implementation.
+	 *
+	 * @static
+	 * @return Illuminate\Translation\LoaderInterface
+	 */
+	 public static function getLoader(){
+		return self::$realClass->getLoader();
 	 }
 
 	/**
@@ -4826,37 +4865,6 @@ namespace  {
 	 */
 	 public static function setLocale($locale){
 		self::$realClass->setLocale($locale);
-	 }
-
-	/**
-	 * Get the base Symfony translator instance.
-	 *
-	 * @static
-	 * @return Symfony\Translation\Translator
-	 */
-	 public static function getSymfonyTranslator(){
-		return self::$realClass->getSymfonyTranslator();
-	 }
-
-	/**
-	 * Get the base Symfony translator instance.
-	 *
-	 * @static
-	 * @param	Symfony\Translation\Translator	$trans
-	 */
-	 public static function setSymfonyTranslator($trans){
-		self::$realClass->setSymfonyTranslator($trans);
-	 }
-
-	/**
-	 * Parse a key into namespace, group, and item.
-	 *
-	 * @static
-	 * @param	string	$key
-	 * @return array
-	 */
-	 public static function parseKey($key){
-		return self::$realClass->parseKey($key);
 	 }
 
 	/**

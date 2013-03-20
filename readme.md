@@ -23,9 +23,7 @@ You can also publish the config-file to add extra facades (ie. for bundles).
 
     php artisan config:publish barryvdh/laravel-ide-helper
 
-You can just add the Facade and the 'real' class, like the rest of the classes.
-
-    'Basset'  => 'Basset\Basset',
+The generator tries to identify the real class, but if it cannot be found, you can define it in the config file.
 
 You can choose to include helper files. This is not enabled by default, but you can override this with the --helpers (-H) or --nohelpers (-N) option.
 The Illuminate/Support/helpers.php is already set-up, but you can add/remove your own files in the config file.

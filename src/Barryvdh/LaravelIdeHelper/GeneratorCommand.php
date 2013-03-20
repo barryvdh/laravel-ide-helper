@@ -30,7 +30,10 @@ class GeneratorCommand extends Command {
     {
         $filename = $this->argument('filename');
 
+        $this->setupDefaults();
+
         $aliases = \Config::get('laravel-ide-helper::aliases');
+        $aliases += \Config::get('app.aliases');
 
         if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
             $helpers = \Config::get('laravel-ide-helper::helper_files');
@@ -48,6 +51,12 @@ class GeneratorCommand extends Command {
             $this->error("The helper file could not be created at $filename");
         }
 
+    }
+
+    protected function setupDefaults(){
+        //Create memory database driver, to avoid connection errors on Database facades
+        \Config::set('database.connections.sqlite.database',':memory');
+        \Config::set('database.default', 'sqlite');
     }
 
     /**
@@ -75,14 +84,20 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function generateDocs($aliases, $helpers){
+    protected function generateDocs($aliases, $helpers = array()){
         $d = new Parser();
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
         $output = "<?php die('Only to be used as an helper for your IDE');\n\n";
 
-        foreach($aliases as $alias => $className){
+        foreach($aliases as $alias => $facade){
+
+            if(method_exists($facade, 'getFacadeRoot')){
+                $root = get_class($facade::getFacadeRoot());
+            }else{
+                $root = $facade;
+            }
 
             if(strpos($alias, '\\') !== false){
                 $parts = explode('\\', $alias);
@@ -92,10 +107,10 @@ class GeneratorCommand extends Command {
                 $namespace = '';
             }
 
-            $d->analyze($className);
+            $d->analyze($root);
 
             $output .= "namespace $namespace {\n class $alias{\r\n";
-            $output .= "\t/**\n\t * @var $className \$realClass\n\t */\n\t static private \$realClass;\n\n";
+            $output .= "\t/**\n\t * @var $root \$root\n\t */\n\t static private \$root;\n\n";
             $methods = $d->getMethods();
 
             foreach ($methods as $method)
@@ -172,7 +187,7 @@ class GeneratorCommand extends Command {
         }
         $output .= implode($paramsWithDefault, ", ");
 
-        $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '')."self::\$realClass->".$method->name."(".implode($params, ", ").");\r\n\t }\n\n";
+        $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '')."self::\$root->".$method->name."(".implode($params, ", ").");\r\n\t }\n\n";
 
         return $output;
     }

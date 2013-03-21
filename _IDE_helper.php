@@ -1,4 +1,7 @@
-<?php die('Only to be used as an helper for your IDE');
+<?php
+namespace {
+	die('Only to be used as an helper for your IDE');
+}
 
 namespace  {
  class Auth{
@@ -8470,19 +8473,6 @@ namespace  {
 	 */
 	 public static function limit($value, $limit = 100, $end = '...'){
 		return self::$root->limit($value, $limit, $end);
-	 }
-
-	/**
-	 * Limit the number of words in a string.
-	 *
-	 * @static
-	 * @param	string	$value
-	 * @param	int	$words
-	 * @param	string	$end
-	 * @return string
-	 */
-	 public static function words($value, $words = 100, $end = '...'){
-		return self::$root->words($value, $words, $end);
 	 }
 
 	/**

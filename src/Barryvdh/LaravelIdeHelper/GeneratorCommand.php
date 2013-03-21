@@ -54,8 +54,11 @@ class GeneratorCommand extends Command {
     }
 
     protected function setupDefaults(){
-        //Create memory database driver, to avoid connection errors on Database facades
-        \Config::set('database.connections.sqlite.database',':memory');
+        //Use a sqlite database in memory, to avoid connection errors on Database facades
+        \Config::set('database.connections.sqlite',array(
+                'driver'   => 'sqlite',
+                'database' => ':memory:',
+            ));
         \Config::set('database.default', 'sqlite');
     }
 

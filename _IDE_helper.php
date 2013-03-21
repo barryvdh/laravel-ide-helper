@@ -4124,7 +4124,7 @@ namespace  {
 	 * @param	array	$options
 	 * @return string
 	 */
-	 public static function submit($value = null, $options = array()){
+	 public static function submit($value = 'Submit', $options = array()){
 		return self::$root->submit($value, $options);
 	 }
 

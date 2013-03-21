@@ -289,7 +289,7 @@ namespace  {
 	 * @param	string	$key
 	 * @param	int	$value
 	 */
-	 public static function increment($key, $value = '1'){
+	 public static function increment($key, $value = 1){
 		self::$root->increment($key, $value);
 	 }
 
@@ -300,7 +300,7 @@ namespace  {
 	 * @param	string	$key
 	 * @param	int	$value
 	 */
-	 public static function decrement($key, $value = '1'){
+	 public static function decrement($key, $value = 1){
 		self::$root->decrement($key, $value);
 	 }
 
@@ -972,7 +972,7 @@ namespace  {
 	 * @param	int	$database
 	 * @param	string	$password
 	 */
-	 public static function __construct($host, $port, $database = '0', $password = null){
+	 public static function __construct($host, $port, $database = 0, $password = null){
 		self::$root->__construct($host, $port, $database, $password);
 	 }
 
@@ -1294,7 +1294,7 @@ namespace  {
 	 * @param	bool	$catch
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	 public static function handle($request, $type = '1', $catch = true){
+	 public static function handle($request, $type = 1, $catch = true){
 		return self::$root->handle($request, $type, $catch);
 	 }
 
@@ -2545,7 +2545,7 @@ namespace  {
 	 * @param	bool	$httpOnly
 	 * @return Symfony\Component\HttpFoundation\Cookie
 	 */
-	 public static function make($name, $value, $minutes = '0', $path = '/', $domain = null, $secure = false, $httpOnly = true){
+	 public static function make($name, $value, $minutes = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true){
 		return self::$root->make($name, $value, $minutes, $path, $domain, $secure, $httpOnly);
 	 }
 
@@ -3160,7 +3160,7 @@ namespace  {
 	 * @param	int	$options
 	 * @return string
 	 */
-	 public static function toJson($options = '0'){
+	 public static function toJson($options = 0){
 		return self::$root->toJson($options);
 	 }
 
@@ -3560,7 +3560,7 @@ namespace  {
 	 * @param	mixed	$listener
 	 * @param	int	$priority
 	 */
-	 public static function listen($event, $listener, $priority = '0'){
+	 public static function listen($event, $listener, $priority = 0){
 		self::$root->listen($event, $listener, $priority);
 	 }
 
@@ -3845,7 +3845,7 @@ namespace  {
 	 * @param	int	$flags
 	 * @return array
 	 */
-	 public static function glob($pattern, $flags = '0'){
+	 public static function glob($pattern, $flags = 0){
 		return self::$root->glob($pattern, $flags);
 	 }
 
@@ -3869,7 +3869,7 @@ namespace  {
 	 * @param	bool	$recursive
 	 * @return bool
 	 */
-	 public static function makeDirectory($path, $mode = '511', $recursive = false){
+	 public static function makeDirectory($path, $mode = 511, $recursive = false){
 		return self::$root->makeDirectory($path, $mode, $recursive);
 	 }
 
@@ -4098,7 +4098,7 @@ namespace  {
 	 * @param	array	$options
 	 * @return string
 	 */
-	 public static function checkbox($name, $value = '1', $checked = null, $options = array()){
+	 public static function checkbox($name, $value = 1, $checked = null, $options = array()){
 		return self::$root->checkbox($name, $value, $checked, $options);
 	 }
 
@@ -5602,7 +5602,7 @@ namespace  {
 	 * @param	int	$days
 	 * @param	string	$level
 	 */
-	 public static function useDailyFiles($path, $days = '0', $level = 'debug'){
+	 public static function useDailyFiles($path, $days = 0, $level = 'debug'){
 		self::$root->useDailyFiles($path, $days, $level);
 	 }
 
@@ -6051,7 +6051,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Illuminate\Http\RedirectResponse
 	 */
-	 public static function back($status = '302', $headers = array()){
+	 public static function back($status = 302, $headers = array()){
 		return self::$root->back($status, $headers);
 	 }
 
@@ -6063,7 +6063,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Illuminate\Http\RedirectResponse
 	 */
-	 public static function refresh($status = '302', $headers = array()){
+	 public static function refresh($status = 302, $headers = array()){
 		return self::$root->refresh($status, $headers);
 	 }
 
@@ -6077,7 +6077,7 @@ namespace  {
 	 * @param	bool	$secure
 	 * @return Illuminate\Http\RedirectResponse
 	 */
-	 public static function to($path, $status = '302', $headers = array(), $secure = null){
+	 public static function to($path, $status = 302, $headers = array(), $secure = null){
 		return self::$root->to($path, $status, $headers, $secure);
 	 }
 
@@ -6090,7 +6090,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Illuminate\Http\RedirectResponse
 	 */
-	 public static function secure($path, $status = '302', $headers = array()){
+	 public static function secure($path, $status = 302, $headers = array()){
 		return self::$root->secure($path, $status, $headers);
 	 }
 
@@ -6104,7 +6104,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Illuminate\Http\RedirectResponse
 	 */
-	 public static function route($route, $parameters = array(), $status = '302', $headers = array()){
+	 public static function route($route, $parameters = array(), $status = 302, $headers = array()){
 		return self::$root->route($route, $parameters, $status, $headers);
 	 }
 
@@ -6118,7 +6118,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Illuminate\Http\RedirectResponse
 	 */
-	 public static function action($action, $parameters = array(), $status = '302', $headers = array()){
+	 public static function action($action, $parameters = array(), $status = 302, $headers = array()){
 		return self::$root->action($action, $parameters, $status, $headers);
 	 }
 
@@ -7254,7 +7254,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
-	 public static function make($content = '', $status = '200', $headers = array()){
+	 public static function make($content = '', $status = 200, $headers = array()){
 		return self::$root->make($content, $status, $headers);
 	 }
 
@@ -7267,7 +7267,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Symfony\Component\HttpFoundation\JsonResponse
 	 */
-	 public static function json($data = array(), $status = '200', $headers = array()){
+	 public static function json($data = array(), $status = 200, $headers = array()){
 		return self::$root->json($data, $status, $headers);
 	 }
 
@@ -7280,7 +7280,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	 public static function stream($callback, $status = '200', $headers = array()){
+	 public static function stream($callback, $status = 200, $headers = array()){
 		return self::$root->stream($callback, $status, $headers);
 	 }
 
@@ -7293,7 +7293,7 @@ namespace  {
 	 * @param	array	$headers
 	 * @return Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
-	 public static function download($file, $status = '200', $headers = array()){
+	 public static function download($file, $status = 200, $headers = array()){
 		return self::$root->download($file, $status, $headers);
 	 }
 
@@ -8468,7 +8468,7 @@ namespace  {
 	 * @param	string	$end
 	 * @return string
 	 */
-	 public static function limit($value, $limit = '100', $end = '...'){
+	 public static function limit($value, $limit = 100, $end = '...'){
 		return self::$root->limit($value, $limit, $end);
 	 }
 
@@ -8481,7 +8481,7 @@ namespace  {
 	 * @param	string	$end
 	 * @return string
 	 */
-	 public static function words($value, $words = '100', $end = '...'){
+	 public static function words($value, $words = 100, $end = '...'){
 		return self::$root->words($value, $words, $end);
 	 }
 
@@ -8493,7 +8493,7 @@ namespace  {
 	 * @param	int	$count
 	 * @return string
 	 */
-	 public static function plural($value, $count = '2'){
+	 public static function plural($value, $count = 2){
 		return self::$root->plural($value, $count);
 	 }
 
@@ -8504,7 +8504,7 @@ namespace  {
 	 * @param	int	$length
 	 * @return string
 	 */
-	 public static function random($length = '16'){
+	 public static function random($length = 16){
 		return self::$root->random($length);
 	 }
 
@@ -8516,7 +8516,7 @@ namespace  {
 	 * @param	int	$length
 	 * @return string
 	 */
-	 public static function quickRandom($length = '16'){
+	 public static function quickRandom($length = 16){
 		return self::$root->quickRandom($length);
 	 }
 

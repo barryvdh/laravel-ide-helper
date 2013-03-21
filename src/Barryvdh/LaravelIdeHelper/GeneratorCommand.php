@@ -180,6 +180,8 @@ class GeneratorCommand extends Command {
                     $default = 'array()';
                 }elseif(is_null($default)){
                     $default = 'null';
+                }elseif(is_int($default)){
+                    //$default = $default;
                 }else{
                     $default = "'".trim($default)."'";
                 }

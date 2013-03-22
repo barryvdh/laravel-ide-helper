@@ -136,6 +136,9 @@ class GeneratorCommand extends Command {
     }
 
     protected function parseMethod($method){
+        if($method->name === '__clone'){
+            return '';
+        }
         $output = '';
 
         $returnAnnotations = $method->getAnnotations(array("return"));

@@ -122,7 +122,7 @@ namespace  {
 	 * Get the cookie creator instance used by the guard.
 	 *
 	 * @static
-	 * @return Illuminate\CookieJar
+	 * @return Illuminate\Cookie\CookieJar
 	 */
 	 public static function getCookieJar(){
 		return self::$root->getCookieJar();
@@ -132,7 +132,7 @@ namespace  {
 	 * Set the cookie creator instance used by the guard.
 	 *
 	 * @static
-	 * @param	Illuminate\CookieJar	$cookie
+	 * @param	Illuminate\Cookie\CookieJar	$cookie
 	 */
 	 public static function setCookieJar($cookie){
 		self::$root->setCookieJar($cookie);
@@ -325,7 +325,7 @@ namespace  {
 	 * @param	string	$key
 	 * @param	int	$minutes
 	 * @param	Closure	$callback
-	 * @return 
+	 * @return mixed
 	 */
 	 public static function remember($key, $minutes, $callback){
 		return self::$root->remember($key, $minutes, $callback);
@@ -337,7 +337,7 @@ namespace  {
 	 * @static
 	 * @param	string	$key
 	 * @param	Closure	$callback
-	 * @return 
+	 * @return mixed
 	 */
 	 public static function rememberForever($key, $callback){
 		return self::$root->rememberForever($key, $callback);
@@ -662,6 +662,7 @@ namespace  {
 	 * @static
 	 * @param	string	$query
 	 * @param	array	$bindings
+	 * @param	$time
 	 */
 	 public static function logQuery($query, $bindings, $time = null){
 		self::$root->logQuery($query, $bindings, $time);
@@ -1002,13 +1003,16 @@ namespace  {
 
 	/**
 	 * Build the Redis command syntax.
+	 * 
 	 * Redis protocol states that a command should conform to the following format:
+	 * 
 	 * *<number of arguments> CR LF
 	 * $<number of bytes of argument 1> CR LF
 	 * <argument data> CR LF
 	 * ...
 	 * $<number of bytes of argument N> CR LF
 	 * <argument data> CR LF
+	 * 
 	 * More information regarding the Redis protocol: http://redis.io/topics/protocol
 	 *
 	 * @static
@@ -1206,6 +1210,7 @@ namespace  {
 
 	/**
 	 * Resolve the given type from the container.
+	 * 
 	 * (Overriding Container::make)
 	 *
 	 * @static
@@ -1280,7 +1285,7 @@ namespace  {
 	 * Handle the given request and get the response.
 	 *
 	 * @static
-	 * @param	Illuminate\Foundation\Request	$request
+	 * @param	Illuminate\Http\Request	$request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
 	 public static function dispatch($request){
@@ -1289,10 +1294,11 @@ namespace  {
 
 	/**
 	 * Handle the given request and get the response.
+	 * 
 	 * Provides compatibility with BrowserKit functional testing.
 	 *
 	 * @static
-	 * @param	Illuminate\Foundation\Request	$request
+	 * @param	Illuminate\Http\Request	$request
 	 * @param	int	$type
 	 * @param	bool	$catch
 	 * @return Symfony\Component\HttpFoundation\Response
@@ -1334,8 +1340,8 @@ namespace  {
 	 * Prepare the request by injecting any services.
 	 *
 	 * @static
-	 * @param	Illuminate\Foundation\Request	$request
-	 * @return Illuminate\Foundation\Request
+	 * @param	Illuminate\Http\Request	$request
+	 * @return Illuminate\Http\Request
 	 */
 	 public static function prepareRequest($request){
 		return self::$root->prepareRequest($request);
@@ -1346,7 +1352,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	mixed	$value
-	 * @param	Illuminate\Foundation\Request	$request
+	 * @param	Illuminate\Http\Request	$request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
 	 public static function prepareResponse($value, $request){
@@ -2066,7 +2072,7 @@ namespace  {
 	 * @static
 	 * @param	string	$openTag
 	 * @param	string	$closeTag
-	 * @param	array	$raw
+	 * @param	boolean	$raw
 	 */
 	 public static function setContentTags($openTag, $closeTag, $raw = false){
 		self::$root->setContentTags($openTag, $closeTag, $raw);
@@ -2087,6 +2093,7 @@ namespace  {
 	 * Create a new compiler instance.
 	 *
 	 * @static
+	 * @param	Illuminate\Filesystem\Filesystem	$files
 	 * @param	string	$cachePath
 	 */
 	 public static function __construct($files, $cachePath){
@@ -2310,10 +2317,10 @@ namespace  {
 	 * Set the loader implementation.
 	 *
 	 * @static
-	 * @return Illuminate\Config\LoaderInterface
+	 * @param	Illuminate\Config\LoaderInterface	$loader
 	 */
 	 public static function setLoader($loader){
-		return self::$root->setLoader($loader);
+		self::$root->setLoader($loader);
 	 }
 
 	/**
@@ -2373,10 +2380,10 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$key
-	 * @return bool
+	 * @param	string	$value
 	 */
 	 public static function offsetSet($key, $value){
-		return self::$root->offsetSet($key, $value);
+		self::$root->offsetSet($key, $value);
 	 }
 
 	/**
@@ -2384,10 +2391,9 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$key
-	 * @return bool
 	 */
 	 public static function offsetUnset($key){
-		return self::$root->offsetUnset($key);
+		self::$root->offsetUnset($key);
 	 }
 
 	/**
@@ -2448,7 +2454,7 @@ namespace  {
 	 * Execute an action on the controller.
 	 *
 	 * @static
-	 * @param	Illuminate\Container	$container
+	 * @param	Illuminate\Container\Container	$container
 	 * @param	Illuminate\Routing\Router	$router
 	 * @param	string	$method
 	 * @param	array	$parameters
@@ -2548,7 +2554,7 @@ namespace  {
 	 * @param	bool	$httpOnly
 	 * @return Symfony\Component\HttpFoundation\Cookie
 	 */
-	 public static function make($name, $value, $minutes = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true){
+	 public static function make($name, $value, $minutes = 0, $path = null, $domain = null, $secure = false, $httpOnly = true){
 		return self::$root->make($name, $value, $minutes, $path, $domain, $secure, $httpOnly);
 	 }
 
@@ -2564,7 +2570,7 @@ namespace  {
 	 * @param	bool	$httpOnly
 	 * @return Symfony\Component\HttpFoundation\Cookie
 	 */
-	 public static function forever($name, $value, $path = '/', $domain = null, $secure = false, $httpOnly = true){
+	 public static function forever($name, $value, $path = null, $domain = null, $secure = false, $httpOnly = true){
 		return self::$root->forever($name, $value, $path, $domain, $secure, $httpOnly);
 	 }
 
@@ -2577,6 +2583,17 @@ namespace  {
 	 */
 	 public static function forget($name){
 		return self::$root->forget($name);
+	 }
+
+	/**
+	 * Set the default path and domain for the jar.
+	 *
+	 * @static
+	 * @param	string	$path
+	 * @param	string	$domain
+	 */
+	 public static function setDefaultPathAndDomain($path, $domain){
+		self::$root->setDefaultPathAndDomain($path, $domain);
 	 }
 
 	/**
@@ -2593,7 +2610,7 @@ namespace  {
 	 * Get the encrypter instance.
 	 *
 	 * @static
-	 * @return Illuminate\Encrypter
+	 * @return Illuminate\Encryption\Encrypter
 	 */
 	 public static function getEncrypter(){
 		return self::$root->getEncrypter();
@@ -2634,7 +2651,7 @@ namespace  {
 	 * Decrypt the given value.
 	 *
 	 * @static
-	 * @param	string	$value
+	 * @param	string	$payload
 	 * @return string
 	 */
 	 public static function decrypt($payload){
@@ -2757,7 +2774,7 @@ namespace  {
 	 * @static
 	 * @param	string	$related
 	 * @param	string	$foreignKey
-	 * @return Illuminate\Database\Eloquent\Relation\HasOne
+	 * @return Illuminate\Database\Eloquent\Relations\HasOne
 	 */
 	 public static function hasOne($related, $foreignKey = null){
 		return self::$root->hasOne($related, $foreignKey);
@@ -2771,7 +2788,7 @@ namespace  {
 	 * @param	string	$name
 	 * @param	string	$type
 	 * @param	string	$id
-	 * @return Illuminate\Database\Eloquent\Relation\MorphOne
+	 * @return Illuminate\Database\Eloquent\Relations\MorphOne
 	 */
 	 public static function morphOne($related, $name, $type = null, $id = null){
 		return self::$root->morphOne($related, $name, $type, $id);
@@ -2822,7 +2839,7 @@ namespace  {
 	 * @param	string	$name
 	 * @param	string	$type
 	 * @param	string	$id
-	 * @return Illuminate\Database\Eloquent\Relation\MorphMany
+	 * @return Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
 	 public static function morphMany($related, $name, $type = null, $id = null){
 		return self::$root->morphMany($related, $name, $type, $id);
@@ -3549,7 +3566,7 @@ namespace  {
 	 * Create a new event dispatcher instance.
 	 *
 	 * @static
-	 * @param	Illuminate\Container	$container
+	 * @param	Illuminate\Container\Container	$container
 	 */
 	 public static function __construct($container = null){
 		self::$root->__construct($container);
@@ -3627,6 +3644,7 @@ namespace  {
 	 * @static
 	 * @param	string	$event
 	 * @param	mixed	$payload
+	 * @param	boolean $halt
 	 */
 	 public static function fire($event, $payload = array(), $halt = false){
 		self::$root->fire($event, $payload, $halt);
@@ -3890,6 +3908,7 @@ namespace  {
 
 	/**
 	 * Recursively delete a directory.
+	 * 
 	 * The directory itself may be optionally preserved.
 	 *
 	 * @static
@@ -4158,10 +4177,10 @@ namespace  {
 	 * Get the session store implementation.
 	 *
 	 * @static
-	 * @param	Illuminate\Session\Store	$session
+	 * @return Illuminate\Session\Store
 	 */
 	 public static function getSessionStore(){
-		self::$root->getSessionStore();
+		return self::$root->getSessionStore();
 	 }
 
 	/**
@@ -4201,6 +4220,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$value
+	 * @param	array	$options
 	 * @return string
 	 */
 	 public static function make($value, $options = array()){
@@ -4716,17 +4736,6 @@ namespace  {
 	 */
 	 public static function duplicate($query = null, $request = null, $attributes = null, $cookies = null, $files = null, $server = null){
 		return self::$root->duplicate($query, $request, $attributes, $cookies, $files, $server);
-	 }
-
-	/**
-	 * Clones the current request.
-	 * Note that the session is not cloned as duplicated requests
-	 * are most of the time sub-requests of the main one.
-	 *
-	 * @static
-	 */
-	 public static function __clone(){
-		self::$root->__clone();
 	 }
 
 	/**
@@ -5430,7 +5439,7 @@ namespace  {
 	 * Get a translation according to an integer value.
 	 *
 	 * @static
-	 * @param	string	$id
+	 * @param	string	$key
 	 * @param	int	$number
 	 * @param	array	$replace
 	 * @param	string	$locale
@@ -5772,7 +5781,7 @@ namespace  {
 	 * Set the IoC container instance.
 	 *
 	 * @static
-	 * @param	Illuminate\Container	$container
+	 * @param	Illuminate\Container\Container	$container
 	 */
 	 public static function setContainer($container){
 		self::$root->setContainer($container);
@@ -5794,7 +5803,7 @@ namespace  {
 	 * @static
 	 * @param	Symfony\Component\HttpFoundation\Request	$request
 	 * @param	Illuminate\View\Environment	$view
-	 * @param	Illuminate\Translation\TranslatorInterface	$trans
+	 * @param	Symfony\Component\Translation\TranslatorInterface	$trans
 	 */
 	 public static function __construct($request, $view, $trans){
 		self::$root->__construct($request, $view, $trans);
@@ -5968,9 +5977,9 @@ namespace  {
 	 * Create a new password broker instance.
 	 *
 	 * @static
-	 * @param	Illuminate\Auth\ReminderRepositoryInterface	$reminders
+	 * @param	Illuminate\Auth\Reminders\ReminderRepositoryInterface	$reminders
 	 * @param	Illuminate\Auth\UserProviderInterface	$users
-	 * @param	Illuminate\Routing\Redirector	$redirector
+	 * @param	Illuminate\Routing\Redirector	$redirect
 	 * @param	Illuminate\Mail\Mailer	$mailer
 	 * @param	string	$reminderView
 	 */
@@ -5994,7 +6003,7 @@ namespace  {
 	 * Send the password reminder e-mail.
 	 *
 	 * @static
-	 * @param	Illuminate\Auth\RemindableInterface	$user
+	 * @param	Illuminate\Auth\Reminders\RemindableInterface	$user
 	 * @param	string	$token
 	 * @param	Closure	$callback
 	 */
@@ -6006,8 +6015,7 @@ namespace  {
 	 * Reset the password for the given token.
 	 *
 	 * @static
-	 * @param	string	$token
-	 * @param	string	$newPassword
+	 * @param	array	$credentials
 	 * @param	Closure	$callback
 	 * @return mixed
 	 */
@@ -6020,7 +6028,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	array	$credentials
-	 * @return Illuminate\Auth\RemindableInterface
+	 * @return Illuminate\Auth\Reminders\RemindableInterface
 	 */
 	 public static function getUser($credentials){
 		return self::$root->getUser($credentials);
@@ -6574,17 +6582,6 @@ namespace  {
 	 */
 	 public static function duplicate($query = null, $request = null, $attributes = null, $cookies = null, $files = null, $server = null){
 		return self::$root->duplicate($query, $request, $attributes, $cookies, $files, $server);
-	 }
-
-	/**
-	 * Clones the current request.
-	 * Note that the session is not cloned as duplicated requests
-	 * are most of the time sub-requests of the main one.
-	 *
-	 * @static
-	 */
-	 public static function __clone(){
-		self::$root->__clone();
 	 }
 
 	/**
@@ -7314,7 +7311,7 @@ namespace  {
 	 * Create a new router instance.
 	 *
 	 * @static
-	 * @param	Illuminate\Container	$container
+	 * @param	Illuminate\Container\Container	$container
 	 */
 	 public static function __construct($container = null){
 		self::$root->__construct($container);
@@ -7561,7 +7558,7 @@ namespace  {
 	 * Find the patterned filters matching a request.
 	 *
 	 * @static
-	 * @param	Illuminate\Foundation\Request	$request
+	 * @param	Illuminate\Http\Request	$request
 	 * @return array
 	 */
 	 public static function findPatternFilters($request){
@@ -7642,7 +7639,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	mixed	$value
-	 * @param	Illuminate\Foundation\Request	$request
+	 * @param	Illuminate\Http\Request	$request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
 	 public static function prepare($value, $request){
@@ -7903,7 +7900,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	Illuminate\Database\Connection
-	 * @return Illuminate\Database\Schema
+	 * @return Illuminate\Database\Schema\Builder
 	 */
 	 public static function setConnection($connection){
 		return self::$root->setConnection($connection);
@@ -7962,7 +7959,7 @@ namespace  {
 	 * Create a new Cookie based session store.
 	 *
 	 * @static
-	 * @param	Illuminate\CookieJar	$cookies
+	 * @param	Illuminate\Cookie\CookieJar	$cookies
 	 * @param	string	$payload
 	 */
 	 public static function __construct($cookies, $payload = 'illuminate_payload'){
@@ -8018,7 +8015,7 @@ namespace  {
 	 * Get the cookie jar instance.
 	 *
 	 * @static
-	 * @return Illuminate\CookieJar
+	 * @return Illuminate\Cookie\CookieJar
 	 */
 	 public static function getCookieJar(){
 		return self::$root->getCookieJar();
@@ -8028,7 +8025,7 @@ namespace  {
 	 * Load the session for the request.
 	 *
 	 * @static
-	 * @param	Illuminate\CookieJar	$cookies
+	 * @param	Illuminate\Cookie\CookieJar	$cookies
 	 * @param	string	$name
 	 */
 	 public static function start($cookies, $name){
@@ -8476,6 +8473,30 @@ namespace  {
 	 }
 
 	/**
+	 * Convert the given string to lower-case.
+	 *
+	 * @static
+	 * @param	string	$value
+	 * @return string
+	 */
+	 public static function lower($value){
+		return self::$root->lower($value);
+	 }
+
+	/**
+	 * Limit the number of words in a string.
+	 *
+	 * @static
+	 * @param	string	$value
+	 * @param	int	$words
+	 * @param	string	$end
+	 * @return string
+	 */
+	 public static function words($value, $words = 100, $end = '...'){
+		return self::$root->words($value, $words, $end);
+	 }
+
+	/**
 	 * Get the plural form of an English word.
 	 *
 	 * @static
@@ -8500,6 +8521,7 @@ namespace  {
 
 	/**
 	 * Generate a "random" alpha-numeric string.
+	 * 
 	 * Should not be considered sufficient for cryptography, etc.
 	 *
 	 * @static
@@ -8508,6 +8530,17 @@ namespace  {
 	 */
 	 public static function quickRandom($length = 16){
 		return self::$root->quickRandom($length);
+	 }
+
+	/**
+	 * Convert the given string to upper-case.
+	 *
+	 * @static
+	 * @param	string	$value
+	 * @return string
+	 */
+	 public static function upper($value){
+		return self::$root->upper($value);
 	 }
 
 	/**
@@ -8550,7 +8583,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$haystack
-	 * @param	string|array	$needle
+	 * @param	string|array	$needles
 	 * @return bool
 	 */
 	 public static function startsWith($haystack, $needles){
@@ -8627,6 +8660,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$path
+	 * @param	array	$parameters
 	 * @return string
 	 */
 	 public static function secure($path, $parameters = array()){
@@ -8855,7 +8889,7 @@ namespace  {
 	 *
 	 * @static
 	 * @param	string	$view
-	 * @param	array	$data
+	 * @param	mixed	$data
 	 * @return Illuminate\View\View
 	 */
 	 public static function make($view, $data = array()){
@@ -9067,7 +9101,7 @@ namespace  {
 	 * Get the view finder instance.
 	 *
 	 * @static
-	 * @return Illuminate\View\ViewFinder
+	 * @return Illuminate\View\ViewFinderInterface
 	 */
 	 public static function getFinder(){
 		return self::$root->getFinder();
@@ -9087,7 +9121,7 @@ namespace  {
 	 * Get the IoC container instance.
 	 *
 	 * @static
-	 * @return Illuminate\Container
+	 * @return Illuminate\Container\Container
 	 */
 	 public static function getContainer(){
 		return self::$root->getContainer();
@@ -9097,7 +9131,7 @@ namespace  {
 	 * Set the IoC container instance.
 	 *
 	 * @static
-	 * @param	Illuminate\Container	$container
+	 * @param	Illuminate\Container\Container	$container
 	 */
 	 public static function setContainer($container){
 		self::$root->setContainer($container);

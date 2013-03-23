@@ -15,6 +15,18 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
+    | Sublime version
+    |--------------------------------------------------------------------------
+    |
+    | Use a different code format, better for SublimeText (instead of Netbeans/phpStorm)
+    | Can also be used with the --sublime (-S) option.
+    |
+    */
+
+    'sublime' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Helper files to include
     |--------------------------------------------------------------------------
     |

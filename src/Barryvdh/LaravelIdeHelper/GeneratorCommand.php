@@ -41,7 +41,9 @@ class GeneratorCommand extends Command {
             $helpers = array();
         }
 
-        $content = $this->generateDocs($aliases, $helpers, $this->option('sublime'));
+        $sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
+
+        $content = $this->generateDocs($aliases, $helpers, $sublime);
 
         $written = \File::put($filename, $content);
 

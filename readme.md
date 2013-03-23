@@ -4,7 +4,7 @@
 
 Add the helper file to your laravel folder (not in a public folder). The file isn't used by Laravel, but it has to be indexed by your IDE.
 
-* Netbeans 7 and PHPStorm 6 version: https://gist.github.com/barryvdh/5227822
+* Netbeans and PHPStorm version: https://gist.github.com/barryvdh/5227822
 * SublimeText CodeIntel version: https://gist.github.com/barryvdh/5227814
 
 ### Automatic phpDoc generation for Laravel Facades
@@ -25,7 +25,7 @@ If you use SublimeText CodeIntel, the format is a bit different. So add --sublim
 
     php artisan ide-helper:generate -S
 
-You can also publish the config-file to add extra facades (ie. for bundles).
+You can also publish the config-file to add extra facades (ie. for bundles) or set defaults for --helpers or --sublime.
 
     php artisan config:publish barryvdh/laravel-ide-helper
 

@@ -4,8 +4,8 @@
 
 Add the helper file to your laravel folder (not in a public folder). The file isn't used by Laravel, but it has to be indexed by your IDE.
 
-    Netbeans 7 and PHPStorm 6 version: https://gist.github.com/barryvdh/5227822
-    SublimeText CodeIntel version: https://gist.github.com/barryvdh/5227814
+* Netbeans 7 and PHPStorm 6 version: https://gist.github.com/barryvdh/5227822
+* SublimeText CodeIntel version: https://gist.github.com/barryvdh/5227814
 
 ### Automatic phpDoc generation for Laravel Facades
 

@@ -41,7 +41,7 @@ class GeneratorCommand extends Command {
             $helpers = array();
         }
 
-        $content = $this->generateDocs($aliases, $helpers);
+        $content = $this->generateDocs($aliases, $helpers, $this->option('sublime'));
 
         $written = \File::put($filename, $content);
 
@@ -84,10 +84,11 @@ class GeneratorCommand extends Command {
         return array(
             array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
             array('nohelpers', "N", InputOption::VALUE_NONE, 'Do not include the helper files'),
+            array('sublime', "S", InputOption::VALUE_NONE, 'Use different style for SublimeText CodeIntel'),
         );
     }
 
-    protected function generateDocs($aliases, $helpers = array()){
+    protected function generateDocs($aliases, $helpers = array(), $sublime = false){
         $d = new Parser();
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
@@ -112,13 +113,18 @@ class GeneratorCommand extends Command {
 
             $d->analyze($root);
 
-            $output .= "namespace $namespace {\n class $alias{\r\n";
-            $output .= "\t/**\n\t * @var $root \$root\n\t */\n\t static private \$root;\n\n";
+            $output .= "namespace $namespace {\n";
+            if($sublime){
+                $output .= " class $alias extends $root{\n";
+            }else{
+                $output .= " class $alias{\n";
+                $output .= "\t/**\n\t * @var $root \$root\n\t */\n\t static private \$root;\n\n";
+            }
             $methods = $d->getMethods();
 
             foreach ($methods as $method)
             {
-                $output .= $this->parseMethod($method);
+                $output .= $this->parseMethod($method, $sublime);
             }
             $output .= " }\n}\n\n";
 
@@ -135,7 +141,7 @@ class GeneratorCommand extends Command {
         return $output;
     }
 
-    protected function parseMethod($method){
+    protected function parseMethod($method, $sublime=false){
         if($method->name === '__clone'){
             return '';
         }
@@ -195,7 +201,13 @@ class GeneratorCommand extends Command {
         }
         $output .= implode($paramsWithDefault, ", ");
 
-        $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '')."self::\$root->".$method->name."(".implode($params, ", ").");\r\n\t }\n\n";
+        $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '');
+        if($sublime){
+            $output .= "parent::";
+        }else{
+            $output .= "self::\$root->";
+        }
+        $output .= $method->name."(".implode($params, ", ").");\r\n\t }\n\n";
 
         return $output;
     }

@@ -2,8 +2,10 @@
 
 ### Complete phpDocs, directly from the source
 
-Add the _IDE_helper.php to your laravel folder (not in a public folder). The file isn't used by Laravel, but it has to be indexed by your IDE.
-The file has been tested in Netbeans 7.3 and PHPStorm 6.
+Add the helper file to your laravel folder (not in a public folder). The file isn't used by Laravel, but it has to be indexed by your IDE.
+
+    Netbeans 7 and PHPStorm 6 version: https://gist.github.com/barryvdh/5227822
+    SublimeText CodeIntel version: https://gist.github.com/barryvdh/5227814
 
 ### Automatic phpDoc generation for Laravel Facades
 
@@ -18,6 +20,10 @@ And add the ServiceProvider to the providers array in app/config/app.php
 You can now re-generate the docs yourself (for future updates) in arisan
 
     php artisan ide-helper:generate
+
+If you use SublimeText CodeIntel, the format is a bit different. So add --sublime (or -S) to your command
+
+    php artisan ide-helper:generate -S
 
 You can also publish the config-file to add extra facades (ie. for bundles).
 

@@ -52,7 +52,7 @@ return array(
 
     'aliases' => array(
         'Auth'      => 'Illuminate\Auth\Guard',
-        'Cache'     => 'Illuminate\Cache\Store',
+        'Cache'     => 'Illuminate\Cache\StoreInterface',
         'DB'        => 'Illuminate\Database\Connection',
         'Queue'     => 'Illuminate\Queue\QueueInterface',
         'Redis'     => 'Illuminate\Redis\Database',

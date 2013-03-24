@@ -104,6 +104,10 @@ class GeneratorCommand extends Command {
             }else{
                 $root = $facade;
             }
+            if(!class_exists($root) && !interface_exists($root)){
+                $this->error("Class $root is not found.");
+                continue;
+            }
 
             if(strpos($alias, '\\') !== false){
                 $parts = explode('\\', $alias);

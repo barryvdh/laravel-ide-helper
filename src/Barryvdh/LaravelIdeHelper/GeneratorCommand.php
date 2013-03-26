@@ -30,7 +30,9 @@ class GeneratorCommand extends Command {
     {
         $filename = $this->argument('filename');
 
-        $this->setupDefaults();
+        if($this->option('memory')){
+            $this->useMemoryDriver();
+        }
 
         $aliases = \Config::get('laravel-ide-helper::aliases');
         $aliases += \Config::get('app.aliases');
@@ -55,7 +57,7 @@ class GeneratorCommand extends Command {
 
     }
 
-    protected function setupDefaults(){
+    protected function useMemoryDriver(){
         //Use a sqlite database in memory, to avoid connection errors on Database facades
         \Config::set('database.connections.sqlite',array(
                 'driver'   => 'sqlite',
@@ -85,7 +87,7 @@ class GeneratorCommand extends Command {
     {
         return array(
             array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
-            array('nohelpers', "N", InputOption::VALUE_NONE, 'Do not include the helper files'),
+            array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
             array('sublime', "S", InputOption::VALUE_NONE, 'Use different style for SublimeText CodeIntel'),
         );
     }
@@ -99,13 +101,21 @@ class GeneratorCommand extends Command {
 
         foreach($aliases as $alias => $facade){
 
-            if(method_exists($facade, 'getFacadeRoot')){
-                $root = get_class($facade::getFacadeRoot());
-            }else{
-                $root = $facade;
-            }
-            if(!class_exists($root) && !interface_exists($root)){
-                $this->error("Class $root is not found.");
+            try{
+                if(method_exists($facade, 'getFacadeRoot')){
+                    $root = get_class($facade::getFacadeRoot());
+                }else{
+                    $root = $facade;
+                }
+                if(!class_exists($root) && !interface_exists($root)){
+                    $this->error("Class $root is not found.");
+                    continue;
+                }
+            }catch(\PDOException $e){
+                $this->error("PDOException: ".$e->getMessage()."\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade.");
+                continue;
+            }catch(\Exception $e){
+                $this->error("Exception: ".$e->getMessage()."\nSkipping $facade.");
                 continue;
             }
 
@@ -117,22 +127,27 @@ class GeneratorCommand extends Command {
                 $namespace = '';
             }
 
-            $d->analyze($root);
+            try{
+                $d->analyze($root);
 
-            $output .= "namespace $namespace {\n";
-            if($sublime){
-                $output .= " class $alias extends $root{\n";
-            }else{
-                $output .= " class $alias{\n";
-                $output .= "\t/**\n\t * @var $root \$root\n\t */\n\t static private \$root;\n\n";
-            }
-            $methods = $d->getMethods();
+                $output .= "namespace $namespace {\n";
+                if($sublime){
+                    $output .= " class $alias extends $root{\n";
+                }else{
+                    $output .= " class $alias{\n";
+                    $output .= "\t/**\n\t * @var $root \$root\n\t */\n\t static private \$root;\n\n";
+                }
+                $methods = $d->getMethods();
 
-            foreach ($methods as $method)
-            {
-                $output .= $this->parseMethod($method, $sublime);
+                foreach ($methods as $method)
+                {
+                    $output .= $this->parseMethod($method, $sublime);
+                }
+                $output .= " }\n}\n\n";
+
+            }catch(\Exception $e){
+                $this->error("Exception: ".$e->getMessage()."\nCould not analyze $root.");
             }
-            $output .= " }\n}\n\n";
 
         }
 

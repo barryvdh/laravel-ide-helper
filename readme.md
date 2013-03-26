@@ -31,7 +31,10 @@ You can also publish the config-file to add extra facades (ie. for bundles) or s
 
 The generator tries to identify the real class, but if it cannot be found, you can define it in the config file.
 
-You can choose to include helper files. This is not enabled by default, but you can override this with the --helpers (-H) or --nohelpers (-N) option.
+Some classes need a working database connection. If you do not have a working default connection, some facades will not be included.
+You can use a in-memory sqlite driver, using the -M option.
+
+You can choose to include helper files. This is not enabled by default, but you can override this with the --helpers (-H) option.
 The Illuminate/Support/helpers.php is already set-up, but you can add/remove your own files in the config file.
 
 

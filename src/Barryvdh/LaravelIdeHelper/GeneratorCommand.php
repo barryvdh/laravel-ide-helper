@@ -132,10 +132,10 @@ class GeneratorCommand extends Command {
 
                 $output .= "namespace $namespace {\n";
                 if($sublime){
-                    $output .= " class $alias extends $root{\n";
+                    $output .= " class $alias extends \\$root{\n";
                 }else{
                     $output .= " class $alias{\n";
-                    $output .= "\t/**\n\t * @var $root \$root\n\t */\n\t static private \$root;\n\n";
+                    $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
                 }
                 $methods = $d->getMethods();
 

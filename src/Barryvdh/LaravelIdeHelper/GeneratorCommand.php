@@ -139,7 +139,12 @@ class GeneratorCommand extends Command {
                 if($sublime){
                     $output .= " class $alias extends \\$root{\n";
                 }else{
-                    $output .= " class $alias{\n";
+                    //If the root class is not the same as the facade extend it.
+                    if($root !== $facade){
+                        $output .= " class $alias extends $facade{\n";
+                    }else{
+                        $output .= " class $alias{\n";
+                    }
                     $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
                 }
                 $methods = $d->getMethods();

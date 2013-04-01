@@ -34,8 +34,8 @@ class GeneratorCommand extends Command {
             $this->useMemoryDriver();
         }
 
-        $aliases = \Config::get('laravel-ide-helper::aliases');
-        $aliases += \Config::get('app.aliases');
+        $replace = \Config::get('laravel-ide-helper::replace');
+        $aliases = \Config::get('app.aliases');
 
         if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
             $helpers = \Config::get('laravel-ide-helper::helper_files');
@@ -45,7 +45,7 @@ class GeneratorCommand extends Command {
 
         $sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
 
-        $content = $this->generateDocs($aliases, $helpers, $sublime);
+        $content = $this->generateDocs($aliases, $replace, $helpers, $sublime);
 
         $written = \File::put($filename, $content);
 
@@ -92,7 +92,7 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function generateDocs($aliases, $helpers = array(), $sublime = false){
+    protected function generateDocs($aliases, $replace, $helpers = array(), $sublime = false){
         $d = new Parser();
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
@@ -107,6 +107,11 @@ class GeneratorCommand extends Command {
                 }else{
                     $root = $facade;
                 }
+
+                if(in_array($root, $replace)){
+                    $root = $replace[$root];
+                }
+
                 if(!class_exists($root) && !interface_exists($root)){
                     $this->error("Class $root is not found.");
                     continue;

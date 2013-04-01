@@ -25,7 +25,7 @@ If you use SublimeText CodeIntel, the format is a bit different. So add --sublim
 
     php artisan ide-helper:generate -S
 
-You can also publish the config-file to add extra facades (ie. for bundles) or set defaults for --helpers or --sublime.
+You can also publish the config-file to change implementations (ie. interface to specific class) or set defaults for --helpers or --sublime.
 
     php artisan config:publish barryvdh/laravel-ide-helper
 

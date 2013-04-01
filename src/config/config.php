@@ -43,19 +43,19 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Custom Facades
+    | Replaced classes (Managers)
     |--------------------------------------------------------------------------
     |
-    | These facades cannot be found directly, because of a Manager class.
+    | These implementations cannot be found directly, because of a Manager class.
     |
     */
 
-    'aliases' => array(
-        'Auth'      => 'Illuminate\Auth\Guard',
-        'Cache'     => 'Illuminate\Cache\StoreInterface',
-        'DB'        => 'Illuminate\Database\Connection',
-        'Queue'     => 'Illuminate\Queue\QueueInterface',
-        'Redis'     => 'Illuminate\Redis\Database',
+    'replace' => array(
+        'Illuminate\Auth\AuthManager'           => 'Illuminate\Auth\Guard',
+        'Illuminate\Cache\CacheManager'         => 'Illuminate\Cache\StoreInterface',
+        'Illuminate\Database\DatabaseManager'   => 'Illuminate\Database\Connection',
+        'Illuminate\Queue\QueueManager'         => 'Illuminate\Queue\QueueInterface',
+        'Illuminate\Redis\RedisManager'         => 'Illuminate\Redis\Database',
     ),
 
 );

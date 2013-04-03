@@ -108,7 +108,7 @@ class GeneratorCommand extends Command {
                     $root = $facade;
                 }
 
-                if(in_array($root, $replace)){
+                if(array_key_exists($root, $replace)){
                     $root = $replace[$root];
                 }
 

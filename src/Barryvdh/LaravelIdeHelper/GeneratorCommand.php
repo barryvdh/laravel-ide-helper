@@ -35,6 +35,7 @@ class GeneratorCommand extends Command {
         }
 
         $replace = \Config::get('laravel-ide-helper::replace');
+        $onlyExtend = \Config::get('laravel-ide-helper::only_extend');
         $aliases = \Config::get('app.aliases');
 
         if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
@@ -45,7 +46,7 @@ class GeneratorCommand extends Command {
 
         $sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
 
-        $content = $this->generateDocs($aliases, $replace, $helpers, $sublime);
+        $content = $this->generateDocs($aliases, $replace, $onlyExtend, $helpers, $sublime);
 
         $written = \File::put($filename, $content);
 
@@ -92,7 +93,7 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function generateDocs($aliases, $replace, $helpers = array(), $sublime = false){
+    protected function generateDocs($aliases, $replace, $onlyExtend = array(), $helpers = array(), $sublime = false){
         $d = new Parser();
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
@@ -140,18 +141,22 @@ class GeneratorCommand extends Command {
                     $output .= " class $alias extends \\$root{\n";
                 }else{
                     //If the root class is not the same as the facade extend it.
-                    if($root !== $facade){
+                    if($root !== $facade || in_array($alias, $onlyExtend)){
                         $output .= " class $alias extends $facade{\n";
                     }else{
                         $output .= " class $alias{\n";
                     }
                     $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
                 }
-                $methods = $d->getMethods();
 
-                foreach ($methods as $method)
+                if(!in_array($alias, $onlyExtend) || $sublime)
                 {
-                    $output .= $this->parseMethod($method, $sublime);
+                    $methods = $d->getMethods();
+
+                    foreach ($methods as $method)
+                    {
+                        $output .= $this->parseMethod($method, $sublime);
+                    }
                 }
                 $output .= " }\n}\n\n";
 

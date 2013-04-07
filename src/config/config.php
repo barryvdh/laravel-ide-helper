@@ -58,4 +58,17 @@ return array(
         'Illuminate\Redis\RedisManager'         => 'Illuminate\Redis\Database',
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Only extend
+    |--------------------------------------------------------------------------
+    |
+    | These implementations aren't called static, so only extend them.
+    |
+    */
+
+    'only_extend' => array(
+        'Seeder',
+    ),
+
 );

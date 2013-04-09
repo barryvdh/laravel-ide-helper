@@ -17,7 +17,7 @@ And add the ServiceProvider to the providers array in app/config/app.php
 
     'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
-You can now re-generate the docs yourself (for future updates) in arisan
+You can now re-generate the docs yourself (for future updates) in artisan
 
     php artisan ide-helper:generate
 

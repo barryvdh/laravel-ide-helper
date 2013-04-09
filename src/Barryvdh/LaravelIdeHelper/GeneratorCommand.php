@@ -3,6 +3,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use DocBlock\Parser;
+use Illuminate\Foundation\AliasLoader;
 
 class GeneratorCommand extends Command {
 
@@ -36,7 +37,6 @@ class GeneratorCommand extends Command {
 
         $replace = \Config::get('laravel-ide-helper::replace');
         $onlyExtend = \Config::get('laravel-ide-helper::only_extend');
-        $aliases = \Config::get('app.aliases');
 
         if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
             $helpers = \Config::get('laravel-ide-helper::helper_files');
@@ -46,7 +46,7 @@ class GeneratorCommand extends Command {
 
         $sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
 
-        $content = $this->generateDocs($aliases, $replace, $onlyExtend, $helpers, $sublime);
+        $content = $this->generateDocs($replace, $onlyExtend, $helpers, $sublime);
 
         $written = \File::put($filename, $content);
 
@@ -93,14 +93,17 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function generateDocs($aliases, $replace, $onlyExtend = array(), $helpers = array(), $sublime = false){
+    protected function generateDocs($replace, $onlyExtend = array(), $helpers = array(), $sublime = false){
+
+        $aliasLoader = AliasLoader::getInstance();
+
         $d = new Parser();
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
         $output = "<?php\nnamespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
-        foreach($aliases as $alias => $facade){
+        foreach($aliasLoader->getAliases() as $alias => $facade){
 
             try{
                 if(method_exists($facade, 'getFacadeRoot')){

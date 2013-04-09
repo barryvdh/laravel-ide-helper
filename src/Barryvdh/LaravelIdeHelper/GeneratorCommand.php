@@ -93,9 +93,10 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function generateDocs($replace, $onlyExtend = array(), $helpers = array(), $sublime = false){
+    protected function generateDocs($replace = array(), $onlyExtend = array(), $helpers = array(), $sublime = false){
 
         $aliasLoader = AliasLoader::getInstance();
+
 
         $d = new Parser();
         $d->setAllowInherited(true);

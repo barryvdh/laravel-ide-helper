@@ -104,7 +104,9 @@ class GeneratorCommand extends Command {
 
         $output = "<?php\nnamespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
-        foreach($aliasLoader->getAliases() as $alias => $facade){
+        $aliases = $aliasLoader->getAliases();
+        $aliases += array('QueryBuilder' => "Illuminate\Database\Query\Builder");
+        foreach($aliases as $alias => $facade){
 
             try{
                 if(method_exists($facade, 'getFacadeRoot')){
@@ -142,8 +144,10 @@ class GeneratorCommand extends Command {
 
                 $output .= "namespace $namespace {\n";
 
-                //If the root class is not the same as the facade extend it.
-                if($root !== $facade || in_array($alias, $onlyExtend)){
+                if($alias == "Eloquent"){
+                    $output .= " class $alias extends QueryBuilder{\n";
+                }elseif($root !== $facade || in_array($alias, $onlyExtend)){
+                    //If the root class is not the same as the facade extend it.
                     $output .= " class $alias extends $facade{\n";
                 }else{
                     $output .= " class $alias{\n";

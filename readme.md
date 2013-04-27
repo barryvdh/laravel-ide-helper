@@ -40,6 +40,14 @@ You can choose to include helper files. This is not enabled by default, but you 
 The Illuminate/Support/helpers.php is already set-up, but you can add/remove your own files in the config file.
 
 
+### Work in progress: Model docs
 
+If you don't want to write your properties yourself, you can use the (experimental) command `ide-helper:models` to generate
+phpDocs, based on table columns, relations and getters/setters. Very alpha, so please provide feedback if you want.
+Docs are written to a phpfile in the root of the project, so you can move the docs to the real model.
+
+For now, only models in app/models are scanned, with the same name as the file (eg. app/models/user.php -> User).
+With the -M option, you can generate just one model.
+`php artisan ide-helper:models -M Post`
 
 

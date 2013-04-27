@@ -4,7 +4,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use DocBlock\Parser;
 use Illuminate\Foundation\AliasLoader;
-
+/**
+ * A command to generate autocomplete information for your IDE
+ *
+ * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ */
 class GeneratorCommand extends Command {
 
     /**

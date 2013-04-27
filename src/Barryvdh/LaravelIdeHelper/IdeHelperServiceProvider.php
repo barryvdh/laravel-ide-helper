@@ -34,6 +34,12 @@ class IdeHelperServiceProvider extends ServiceProvider {
             return new GeneratorCommand;
         });
         $this->commands('command.ide-helper.generate');
+
+        $this->app['command.ide-helper.models'] = $this->app->share(function($app)
+            {
+                return new ModelsCommand();
+            });
+        $this->commands('command.ide-helper.models');
 	}
 
 	/**
@@ -43,7 +49,7 @@ class IdeHelperServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-        return array('command.ide-helper.generate');
+        return array('command.ide-helper.generate', 'command.ide-helper.models');
 	}
 
 }

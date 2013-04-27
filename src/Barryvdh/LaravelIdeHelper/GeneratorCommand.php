@@ -102,7 +102,14 @@ class GeneratorCommand extends Command {
         $d->setAllowInherited(true);
         $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
-        $output = "<?php\nnamespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
+        $output = "<?php
+/**
+ * An helper file for Laravel 4, to provide autocomplete information to your IDE
+ * Generated with https://github.com/barryvdh/laravel-ide-helper
+ *
+ * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ */
+namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $aliases = $aliasLoader->getAliases();
         $aliases += array('QueryBuilder' => "Illuminate\Database\Query\Builder");

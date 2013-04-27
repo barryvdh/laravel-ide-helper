@@ -141,17 +141,14 @@ class GeneratorCommand extends Command {
                 $d->analyze($root);
 
                 $output .= "namespace $namespace {\n";
-                if($sublime){
-                    $output .= " class $alias extends \\$root{\n";
+
+                //If the root class is not the same as the facade extend it.
+                if($root !== $facade || in_array($alias, $onlyExtend)){
+                    $output .= " class $alias extends $facade{\n";
                 }else{
-                    //If the root class is not the same as the facade extend it.
-                    if($root !== $facade || in_array($alias, $onlyExtend)){
-                        $output .= " class $alias extends $facade{\n";
-                    }else{
-                        $output .= " class $alias{\n";
-                    }
-                    $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
+                    $output .= " class $alias{\n";
                 }
+                $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
 
                 if(!in_array($alias, $onlyExtend) || $sublime)
                 {
@@ -159,7 +156,7 @@ class GeneratorCommand extends Command {
 
                     foreach ($methods as $method)
                     {
-                        $output .= $this->parseMethod($method, $sublime);
+                        $output .= $this->parseMethod($method, $root, $sublime);
                     }
                 }
                 $output .= " }\n}\n\n";
@@ -181,7 +178,7 @@ class GeneratorCommand extends Command {
         return $output;
     }
 
-    protected function parseMethod($method, $sublime=false){
+    protected function parseMethod($method, $root, $sublime){
         if($method->name === '__clone'){
             return '';
         }
@@ -241,13 +238,20 @@ class GeneratorCommand extends Command {
         }
         $output .= implode($paramsWithDefault, ", ");
 
-        $output .= "){\r\n\t\t".($returnValue !== "void" ? 'return ' : '');
+        $output .= "){\r\n";
+
+        $return = $returnValue !== "void" ? 'return' : '';
+
         if($sublime){
-            $output .= "parent::";
+            $output .= "\t\t\$root = new $root();\r\n";
+            $output .=  "\t\t$return \$root->";
         }else{
-            $output .= "self::\$root->";
+            $output .=  "\t\t$return static::\$root->";
         }
-        $output .= $method->name."(".implode($params, ", ").");\r\n\t }\n\n";
+        $output .=  $method->name."(".implode($params, ", ").");\r\n";
+
+        $output .= "\t }\n\n";
+
 
         return $output;
     }

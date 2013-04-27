@@ -25,6 +25,8 @@ If you use SublimeText CodeIntel, the format is a bit different. So add --sublim
 
     php artisan ide-helper:generate -S
 
+Note: You do need CodeIntel for Sublime Text: https://github.com/Kronuz/SublimeCodeIntel
+
 You can also publish the config-file to change implementations (ie. interface to specific class) or set defaults for --helpers or --sublime.
 
     php artisan config:publish barryvdh/laravel-ide-helper

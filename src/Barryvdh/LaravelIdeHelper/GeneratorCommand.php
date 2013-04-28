@@ -168,10 +168,12 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 if(!in_array($alias, $onlyExtend) || $sublime)
                 {
                     $methods = $d->getMethods();
-
-                    foreach ($methods as $method)
+                    if($methods) 
                     {
-                        $output .= $this->parseMethod($method, $root, $sublime);
+                        foreach ($methods as $method)
+                        {
+                            $output .= $this->parseMethod($method, $root, $sublime);
+                        }
                     }
                 }
                 $output .= " }\n}\n\n";

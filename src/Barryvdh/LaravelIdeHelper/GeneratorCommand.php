@@ -165,7 +165,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 }
                 $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
 
-                if(!in_array($alias, $onlyExtend) || $sublime)
+                if(!in_array($alias, $onlyExtend))
                 {
                     $methods = $d->getMethods();
                     if($methods)

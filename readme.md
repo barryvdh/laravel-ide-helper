@@ -27,6 +27,15 @@ If you use SublimeText CodeIntel, the format is a bit different. So add --sublim
 
 Note: You do need CodeIntel for Sublime Text: https://github.com/Kronuz/SublimeCodeIntel
 
+You can configure your composer.json to do this after each commit:
+
+    "scripts":{
+        "post-update-cmd":[
+            "php artisan optimize",
+            "php artisan ide-helper:generate",
+        ]
+    },
+
 You can also publish the config-file to change implementations (ie. interface to specific class) or set defaults for --helpers or --sublime.
 
     php artisan config:publish barryvdh/laravel-ide-helper
@@ -48,5 +57,10 @@ Docs are written to a phpfile in the root of the project, so you can move the do
 
 For now, only models in app/models are scanned. The optional argument tells what models to use.
 `php artisan ide-helper:models Post,User`
+
+This creates a file with the phpDocs for each Model. You should check and change them to be more accurate.
+It doesn't know if datetimes are returned as string or DateTime/Carbon, that depends on your $dates attribute.
+Also, all relations are Eloquent by default, you can change them to the actual Model.
+After copying the phpdocs to your model, you can clear the file, so your IDE only uses the real source.
 
 

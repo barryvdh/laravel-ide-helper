@@ -168,7 +168,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 if(!in_array($alias, $onlyExtend) || $sublime)
                 {
                     $methods = $d->getMethods();
-                    if($methods) 
+                    if($methods)
                     {
                         foreach ($methods as $method)
                         {

@@ -33,8 +33,8 @@ class ModelsCommand extends Command {
      */
     public function fire()
     {
-        $filename = $this->argument('filename');
-        $model = $this->option('model');
+        $filename = $this->option('filename');
+        $model = $this->argument('model');
 
         $content = $this->generateDocs($model);
 
@@ -57,7 +57,8 @@ class ModelsCommand extends Command {
     protected function getArguments()
     {
         return array(
-            array('filename', InputArgument::OPTIONAL, 'The path to the helper file', 'model_phpdocs.php'),
+            array('model', InputArgument::OPTIONAL, 'Which models to include', '*'),
+
         );
     }
 
@@ -69,7 +70,7 @@ class ModelsCommand extends Command {
     protected function getOptions()
     {
         return array(
-            array('model', "M", InputOption::VALUE_OPTIONAL, 'Which models to include', '*'),
+            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', '_ide_helper_models.php'),
         );
     }
 
@@ -89,15 +90,22 @@ class ModelsCommand extends Command {
         if($model === '*'){
             $models = $this->loadModels();
         }else{
-            $models = array($model);
+            $models = explode(',', $model);
         }
 
         foreach($models as $name){
             $this->properties = array();
-            $model = new $name();
-            $this->getPropertiesFromTable($model);
-            $this->getPropertiesFromMethods($model);
-            $output .= $this->createPhpDocs($name);
+            if(class_exists($name)){
+                try{
+                    $model = new $name();
+                    $this->getPropertiesFromTable($model);
+                    $this->getPropertiesFromMethods($model);
+                    $output .= $this->createPhpDocs($name);
+                }catch(\Exception $e){
+                    $this->error("Exception: ".$e->getMessage()."\nCould not analyze class $name.");
+                }
+            }
+
         }
 
         return $output;
@@ -107,10 +115,9 @@ class ModelsCommand extends Command {
 
     protected function loadModels(){
         $models = array();
-       foreach(\File::files(app_path().'/models') as $file){
-           list($name, $ext) = explode('.', basename($file));
-           $models[] = ucfirst($name);
-       }
+        foreach(self::createMap(app_path().'/models') as $model=> $path){
+            $models[] = $model;
+        }
         return $models;
     }
 
@@ -121,60 +128,65 @@ class ModelsCommand extends Command {
         $columns = $schema->listTableColumns($table);
 
         $properties = array();
-        foreach ($columns as $column) {
-            $name = $column->getName();
-            $type =  $column->getType()->getName();
-            switch($type){
-                case 'string':
-                case 'text':
-                case 'date':
-                case 'time':
-                case 'guid':
-                    $type = 'string';
-                    break;
-                case 'integer':
-                case 'bigint':
-                case 'smallint':
-                    $type = 'integer';
-                    break;
-                case 'decimal':
-                    case 'float':
-                    $type = 'float';
-                    break;
-                case 'boolean':
-                    $type = 'boolean';
-                    break;
-                case 'datetimetz':  //String or DateTime, depending on $dates
-                case 'datetime':
-                    $type = 'string|DateTime';
-                    break;
-                default:
-                    $type = 'mixed';
-                    break;
+        if($columns){
+            foreach ($columns as $column) {
+                $name = $column->getName();
+                $type =  $column->getType()->getName();
+                switch($type){
+                    case 'string':
+                    case 'text':
+                    case 'date':
+                    case 'time':
+                    case 'guid':
+                        $type = 'string';
+                        break;
+                    case 'integer':
+                    case 'bigint':
+                    case 'smallint':
+                        $type = 'integer';
+                        break;
+                    case 'decimal':
+                        case 'float':
+                        $type = 'float';
+                        break;
+                    case 'boolean':
+                        $type = 'boolean';
+                        break;
+                    case 'datetimetz':  //String or DateTime, depending on $dates
+                    case 'datetime':
+                        $type = 'string|DateTime';
+                        break;
+                    default:
+                        $type = 'mixed';
+                        break;
+                }
+                $this->setProperty($name, $type, true, true);
             }
-            $this->setProperty($name, $type, true, true);
         }
     }
 
     protected function getPropertiesFromMethods($model){
-       foreach(get_class_methods($model) as $method){
-           if(\Str::startsWith($method, 'get') && \Str::endsWith($method, 'Attribute') && $method !== 'setAttribute'){
-               //Magic get<name>Attribute
-               $name =  \Str::snake(substr($method, 3, -9));
-               if(!empty($name)){
-                    $this->setProperty($name, null, true, null);
+        $methods = get_class_methods($model);
+        if($methods){
+           foreach($methods as $method){
+               if(\Str::startsWith($method, 'get') && \Str::endsWith($method, 'Attribute') && $method !== 'setAttribute'){
+                   //Magic get<name>Attribute
+                   $name =  \Str::snake(substr($method, 3, -9));
+                   if(!empty($name)){
+                        $this->setProperty($name, null, true, null);
+                   }
+               }elseif(\Str::startsWith($method, 'set') && \Str::endsWith($method, 'Attribute') && $method !== 'setAttribute'){
+                   //Magic set<name>Attribute
+                   $name =  \Str::snake(substr($method, 3, -9));
+                   if(!empty($name)){
+                        $this->setProperty($name, null, null, true);
+                   }
+               }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
+                   //If not declared in parent class, assuming relation.
+                   $this->setProperty($method, 'Eloquent', true, null);
                }
-           }elseif(\Str::startsWith($method, 'set') && \Str::endsWith($method, 'Attribute') && $method !== 'setAttribute'){
-               //Magic set<name>Attribute
-               $name =  \Str::snake(substr($method, 3, -9));
-               if(!empty($name)){
-                    $this->setProperty($name, null, null, true);
-               }
-           }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
-               //If not declared in parent class, assuming relation.
-               $this->setProperty($method, 'Eloquent', true, null);
            }
-       }
+        }
     }
 
     protected function setProperty($name, $type = null, $read = null, $write = null){
@@ -214,6 +226,122 @@ class ModelsCommand extends Command {
         }
         $output .= " *\n */\nclass $class {}\n\n";
         return $output;
+    }
+
+
+    /**
+     * Copy from Composer\Autoload\ClassMapGenerator
+     * @author Gyula Sallai <salla016@gmail.com>
+     *
+     * Iterate over all files in the given directory searching for classes
+     *
+     * @param Iterator|string $path      The path to search in or an iterator
+     * @param string          $whitelist Regex that matches against the file path
+     *
+     * @return array A class map array
+     *
+     * @throws \RuntimeException When the path is neither an existing file nor directory
+     */
+    public static function createMap($path, $whitelist = null)
+    {
+        if (is_string($path)) {
+            if (is_file($path)) {
+                $path = array(new \SplFileInfo($path));
+            } elseif (is_dir($path)) {
+                $path = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
+            } else {
+                throw new \RuntimeException(
+                    'Could not scan for classes inside "'.$path.
+                        '" which does not appear to be a file nor a folder'
+                );
+            }
+        }
+
+        $map = array();
+
+        foreach ($path as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
+
+            $filePath = $file->getRealPath();
+
+            if (!in_array(pathinfo($filePath, PATHINFO_EXTENSION), array('php', 'inc'))) {
+                continue;
+            }
+
+            if ($whitelist && !preg_match($whitelist, strtr($filePath, '\\', '/'))) {
+                continue;
+            }
+
+            $classes = self::findClasses($filePath);
+
+            foreach ($classes as $class) {
+                $map[$class] = $filePath;
+            }
+
+        }
+
+        return $map;
+    }
+
+    /**
+     * Extract the classes in the given file
+     *
+     * @param string $path The file to check
+     *
+     * @return array The found classes
+     */
+    private static function findClasses($path)
+    {
+        $traits = version_compare(PHP_VERSION, '5.4', '<') ? '' : '|trait';
+
+        try {
+            $contents = php_strip_whitespace($path);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Could not scan for classes inside '.$path.": \n".$e->getMessage(), 0, $e);
+        }
+
+        // return early if there is no chance of matching anything in this file
+        if (!preg_match('{\b(?:class|interface'.$traits.')\b}i', $contents)) {
+            return array();
+        }
+
+        // strip heredocs/nowdocs
+        $contents = preg_replace('{<<<\'?(\w+)\'?(?:\r\n|\n|\r)(?:.*?)(?:\r\n|\n|\r)\\1(?=\r\n|\n|\r|;)}s', 'null', $contents);
+        // strip strings
+        $contents = preg_replace('{"[^"\\\\]*(\\\\.[^"\\\\]*)*"|\'[^\'\\\\]*(\\\\.[^\'\\\\]*)*\'}', 'null', $contents);
+        // strip leading non-php code if needed
+        if (substr($contents, 0, 2) !== '<?') {
+            $contents = preg_replace('{^.+?<\?}s', '<?', $contents);
+        }
+        // strip non-php blocks in the file
+        $contents = preg_replace('{\?>.+<\?}s', '?><?', $contents);
+        // strip trailing non-php code if needed
+        $pos = strrpos($contents, '?>');
+        if (false !== $pos && false === strpos(substr($contents, $pos), '<?')) {
+            $contents = substr($contents, 0, $pos);
+        }
+
+        preg_match_all('{
+            (?:
+                 \b(?<![\$:>])(?P<type>class|interface'.$traits.') \s+ (?P<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)
+               | \b(?<![\$:>])(?P<ns>namespace) (?P<nsname>\s+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\s*\\\\\s*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*)? \s*[\{;]
+            )
+        }ix', $contents, $matches);
+
+        $classes = array();
+        $namespace = '';
+
+        for ($i = 0, $len = count($matches['type']); $i < $len; $i++) {
+            if (!empty($matches['ns'][$i])) {
+                $namespace = str_replace(array(' ', "\t", "\r", "\n"), '', $matches['nsname'][$i]) . '\\';
+            } else {
+                $classes[] = ltrim($namespace . $matches['name'][$i], '\\');
+            }
+        }
+
+        return $classes;
     }
 
 }

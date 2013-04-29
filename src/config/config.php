@@ -11,7 +11,7 @@ return array(
     |
     */
 
-    'filename' => '_IDE_helper.php',
+    'filename' => '_ide_helper.php',
 
     /*
     |--------------------------------------------------------------------------

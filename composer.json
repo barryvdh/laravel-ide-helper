@@ -12,7 +12,8 @@
         "illuminate/support": "4.0.x",
         "illuminate/console": "4.0.x",
         "illuminate/filesystem": "4.0.x",
-        "dannykopping/docblock": "dev-master"
+        "dannykopping/docblock": "dev-master",
+        "symfony/class-loader": "2.3.*"
     },
     "autoload": {
         "psr-0": {

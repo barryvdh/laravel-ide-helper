@@ -222,10 +222,11 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 $output .="\t * @param\t".implode($annotation->values, "\t")."\n";
             }
         }
-        if(!$sublime && $root == 'Illuminate\Database\Eloquent\Model' &&
-            in_array($method->name, array('fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))){
+        if(!$sublime and ($root == 'Illuminate\Database\Eloquent\Model' or $root == 'Illuminate\Database\Query\Builder') and
+            (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
+                or $returnValue === '\Illuminate\Database\Query\Builder')){
             //Reference the calling class, to provide more accurate auto-complete
-            $output .= "\t * @return \$this\n";
+            $output .= "\t * @return static\n";
         }else{
             $output .= "\t * @return ".$returnValue."\n";
         }

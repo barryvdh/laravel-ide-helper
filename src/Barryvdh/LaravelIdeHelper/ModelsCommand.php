@@ -155,7 +155,7 @@ class ModelsCommand extends Command {
                         break;
                     case 'datetimetz':  //String or DateTime, depending on $dates
                     case 'datetime':
-                        $type = 'string|DateTime';
+                        $type = '\Carbon\Carbon';
                         break;
                     default:
                         $type = 'mixed';
@@ -184,7 +184,7 @@ class ModelsCommand extends Command {
                    }
                }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
                    //If not declared in parent class, assuming relation.
-                   $this->setProperty($method, 'Eloquent', true, null);
+                   $this->setProperty($method, 'Eloquent|Eloquent[]', true, null);
                }
            }
         }

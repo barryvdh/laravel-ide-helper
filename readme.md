@@ -59,8 +59,8 @@ For now, only models in app/models are scanned. The optional argument tells what
 `php artisan ide-helper:models Post,User`
 
 This creates a file with the phpDocs for each Model. You should check and change them to be more accurate.
-It doesn't know if datetimes are returned as string or DateTime/Carbon, that depends on your $dates attribute.
-Also, all relations are Eloquent by default, you can change them to the actual Model.
+It doesn't know if datetimes are returned as string or DateTime/Carbon, but I assume they are.
+Also, all relations are Eloquent|Eloquent[] by default, you can change them to the actual Model.
 After copying the phpdocs to your model, you can clear the file, so your IDE only uses the real source.
 
 

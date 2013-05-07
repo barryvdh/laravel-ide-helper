@@ -117,6 +117,8 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $aliases = $aliasLoader->getAliases();
         $aliases += array('QueryBuilder' => "Illuminate\Database\Query\Builder");
+        $aliases += array('Manager' => "Illuminate\Support\Manager");
+
         foreach($aliases as $alias => $facade){
 
             try{
@@ -155,9 +157,11 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
                 $output .= "namespace $namespace {\n";
 
-                if($alias == "Eloquent"){
+                if($alias === "Eloquent"){
                     $output .= " class $alias extends QueryBuilder{\n";
-                }elseif($root !== $facade || in_array($alias, $onlyExtend)){
+                }elseif($alias === "Auth" or $alias === "Cache"){
+                    $output .= " class $alias extends Manager{\n";
+                }elseif($root !== $facade or in_array($alias, $onlyExtend)){
                     //If the root class is not the same as the facade extend it.
                     $output .= " class $alias extends $facade{\n";
                 }else{

@@ -199,15 +199,19 @@ class ModelsCommand extends Command {
                    $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
                    $begin = stripos($code, 'return $this->');
-                   list($relation, $returnModel, $rest) = explode("'", substr($code, $begin+14),3);  //"return $this->" is 14 chars
-                   $relation = trim($relation, ' (');
-
-                   if($relation === "belongsTo" or $relation === 'hasOne'){
-                       //Single model is returned
-                       $this->setProperty($method, $returnModel, true, null);
-                   }elseif($relation === "belongsToMany" or $relation === 'hasMany'){
-                       //Collection or array of models (because Collection is Arrayable)
-                       $this->setProperty($method,  '\Illuminate\Database\Eloquent\Collection|'.$returnModel.'[]', true, null);
+                   $parts = explode("'", substr($code, $begin+14),3);  //"return $this->" is 14 chars
+                   if (isset($parts[2]))
+                   {
+                       list($relation, $returnModel, $rest) = $parts;
+                       $relation = trim($relation, ' (');
+    
+                       if($relation === "belongsTo" or $relation === 'hasOne'){
+                           //Single model is returned
+                           $this->setProperty($method, $returnModel, true, null);
+                       }elseif($relation === "belongsToMany" or $relation === 'hasMany'){
+                           //Collection or array of models (because Collection is Arrayable)
+                           $this->setProperty($method,  '\Illuminate\Database\Eloquent\Collection|'.$returnModel.'[]', true, null);
+                       }
                    }else{
                        //Not a relation
                    }

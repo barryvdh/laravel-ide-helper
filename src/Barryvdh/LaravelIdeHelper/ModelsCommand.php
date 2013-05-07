@@ -183,8 +183,35 @@ class ModelsCommand extends Command {
                         $this->setProperty($name, null, null, true);
                    }
                }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
-                   //If not declared in parent class, assuming relation.
-                   $this->setProperty($method, 'Eloquent|Eloquent[]', true, null);
+
+                   //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
+                   $reflection = new \ReflectionMethod($model, $method);
+
+                   $file = new \SplFileObject($reflection->getFileName());
+                   $file->seek($reflection->getStartLine() - 1);
+
+                   $code = '';
+                   while ($file->key() < $reflection->getEndLine())
+                   {
+                       $code .= $file->current(); $file->next();
+                   }
+                   $begin = strpos($code, 'function(');
+                   $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
+
+                   $begin = stripos($code, 'return $this->');
+                   list($relation, $returnModel, $rest) = explode("'", substr($code, $begin+14),3);  //"return $this->" is 14 chars
+                   $relation = trim($relation, ' (');
+
+                   if($relation === "belongsTo" or $relation === 'hasOne'){
+                       //Single model is returned
+                       $this->setProperty($method, $returnModel, true, null);
+                   }elseif($relation === "belongsToMany" or $relation === 'hasMany'){
+                       //Collection or array of models (because Collection is Arrayable)
+                       $this->setProperty($method,  '\Illuminate\Database\Eloquent\Collection|'.$returnModel.'[]', true, null);
+                   }else{
+                       //Not a relation
+                   }
+
                }
            }
         }

@@ -205,6 +205,7 @@ class ModelsCommand extends Command {
                    if (isset($parts[2]))
                    {
                        list($relation, $returnModel, $rest) = $parts;
+                       $returnModel = "\\".ltrim($returnModel, "\\");
                        $relation = trim($relation, ' (');
     
                        if($relation === "belongsTo" or $relation === 'hasOne'){

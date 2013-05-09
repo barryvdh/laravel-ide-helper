@@ -41,21 +41,36 @@ return array(
         base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
     ),
 
+
     /*
     |--------------------------------------------------------------------------
-    | Replaced classes (Managers)
+    | Extra classes
     |--------------------------------------------------------------------------
     |
-    | These implementations cannot be found directly, because of a Manager class.
+    | These implementations are not really extended, but called with magic functions
     |
     */
 
-    'replace' => array(
-        'Illuminate\Auth\AuthManager'           => 'Illuminate\Auth\Guard',
-        'Illuminate\Cache\CacheManager'         => 'Illuminate\Cache\StoreInterface',
-        'Illuminate\Database\DatabaseManager'   => 'Illuminate\Database\Connection',
-        'Illuminate\Queue\QueueManager'         => 'Illuminate\Queue\QueueInterface',
-        'Illuminate\Redis\RedisManager'         => 'Illuminate\Redis\Database',
+    'extra' => array(
+        'Auth'      => array('Illuminate\Auth\Guard'),
+        'Cache'     => array('Illuminate\Cache\StoreInterface'),
+        'DB'        => array('Illuminate\Database\Connection'),
+        'Eloquent'  => array('Illuminate\Database\Query\Builder'),
+        'Queue'     => array('Illuminate\Queue\QueueInterface'),
+    ),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Skipped methods
+    |--------------------------------------------------------------------------
+    |
+    | These functions aren't actually facade calls, so don't include them as helper
+    |
+    */
+
+    'skip' => array(
+        'Eloquent'  => array('freshTimestamp'),
     ),
 
     /*

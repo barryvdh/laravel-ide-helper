@@ -39,7 +39,8 @@ class GeneratorCommand extends Command {
             $this->useMemoryDriver();
         }
 
-        $replace = \Config::get('laravel-ide-helper::replace');
+        $extra = \Config::get('laravel-ide-helper::extra');
+        $skip = \Config::get('laravel-ide-helper::skip');
         $onlyExtend = \Config::get('laravel-ide-helper::only_extend');
 
         if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
@@ -50,7 +51,7 @@ class GeneratorCommand extends Command {
 
         $sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
 
-        $content = $this->generateDocs($replace, $onlyExtend, $helpers, $sublime);
+        $content = $this->generateDocs($extra, $skip, $onlyExtend, $helpers, $sublime);
 
         $written = \File::put($filename, $content);
 
@@ -97,7 +98,7 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function generateDocs($replace = array(), $onlyExtend = array(), $helpers = array(), $sublime = false){
+    protected function generateDocs($extra = array(), $skip = array(), $onlyExtend = array(), $helpers = array(), $sublime = false){
 
         $aliasLoader = AliasLoader::getInstance();
 
@@ -116,8 +117,6 @@ class GeneratorCommand extends Command {
 namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $aliases = $aliasLoader->getAliases();
-        $aliases += array('QueryBuilder' => "Illuminate\Database\Query\Builder");
-        $aliases += array('Manager' => "Illuminate\Support\Manager");
 
         foreach($aliases as $alias => $facade){
 
@@ -126,10 +125,6 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                     $root = get_class($facade::getFacadeRoot());
                 }else{
                     $root = $facade;
-                }
-
-                if(array_key_exists($root, $replace)){
-                    $root = $replace[$root];
                 }
 
                 if(!class_exists($root) && !interface_exists($root)){
@@ -157,11 +152,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
                 $output .= "namespace $namespace {\n";
 
-                if($alias === "Eloquent"){
-                    $output .= " class $alias extends QueryBuilder{\n";
-                }elseif($alias === "Auth" or $alias === "Cache"){
-                    $output .= " class $alias extends Manager{\n";
-                }elseif($root !== $facade or in_array($alias, $onlyExtend)){
+                if($root !== $facade or in_array($alias, $onlyExtend)){
                     //If the root class is not the same as the facade extend it.
                     $output .= " class $alias extends $facade{\n";
                 }else{
@@ -171,12 +162,47 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
                 if(!in_array($alias, $onlyExtend))
                 {
+                    if(array_key_exists($alias, $skip)){
+                        $skipMethods = $skip[$alias];
+                    }else{
+                        $skipMethods = array();
+                    }
+
                     $methods = $d->getMethods();
                     if($methods)
                     {
                         foreach ($methods as $method)
                         {
-                            $output .= $this->parseMethod($method, $root, $sublime);
+                            if(!in_array($method->name, $skipMethods)){
+                                $output .= $this->parseMethod($method, $alias, $sublime);
+                                $skipMethods[] = $method->name;
+                            }
+                        }
+                    }
+
+                    if(array_key_exists($alias, $extra)){
+                        foreach($extra[$alias] as $extraClass){
+                            $i =2;
+                            if(!class_exists($extraClass) && !interface_exists($extraClass)){
+                                continue;
+                            }
+                            $d->analyze($extraClass);
+
+                            $methods = $d->getMethods();
+                            if($methods)
+                            {
+                                $rootParam = "root".$i++;
+                                $output .= "\t/**\n\t * @var \\$extraClass \$$rootParam\n\t */\n\t static private \$$rootParam;\n\n";
+                                foreach ($methods as $method)
+                                {
+                                    if(!in_array($method->name, $skipMethods)){
+                                        $output .= $this->parseMethod($method, $alias, $sublime, $rootParam);
+                                        $skipMethods[] = $method->name;
+                                    }
+
+                                }
+                            }
+
                         }
                     }
                 }
@@ -199,7 +225,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         return $output;
     }
 
-    protected function parseMethod($method, $root, $sublime){
+    protected function parseMethod($method, $alias, $sublime, $rootParam = 'root'){
         if($method->name === '__clone'){
             return '';
         }
@@ -226,11 +252,13 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 $output .="\t * @param\t".implode($annotation->values, "\t")."\n";
             }
         }
-        if(!$sublime and ($root == 'Illuminate\Database\Eloquent\Model' or $root == 'Illuminate\Database\Query\Builder') and
+        if(!$sublime and $alias == 'Eloquent' and
             (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
                 or $returnValue === '\Illuminate\Database\Query\Builder')){
             //Reference the calling class, to provide more accurate auto-complete
             $output .= "\t * @return static\n";
+        }elseif(!$sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
+            $output .= "\t * @return array|Eloquent[]|static[]\n";
         }else{
             $output .= "\t * @return ".$returnValue."\n";
         }
@@ -270,9 +298,9 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         if($sublime){
             $output .= "\t\t\$root = new $root();\r\n";
-            $output .=  "\t\t$return \$root->";
+            $output .=  "\t\t$return \$$rootParam->";
         }else{
-            $output .=  "\t\t$return static::\$root->";
+            $output .=  "\t\t$return static::\$$rootParam->";
         }
         $output .=  $method->name."(".implode($params, ", ").");\r\n";
 

@@ -105,6 +105,8 @@ class ModelsCommand extends Command {
                 }catch(\Exception $e){
                     $this->error("Exception: ".$e->getMessage()."\nCould not analyze class $name.");
                 }
+            }else{
+                $this->error("Class $name does not exist");
             }
 
         }
@@ -240,7 +242,16 @@ class ModelsCommand extends Command {
     }
 
     protected function createPhpDocs($class){
-        $output = "/**\n *\n * Generated properties for $class\n *\n";
+
+        if(strpos($class, '\\') !== false){
+            $parts = explode('\\', $class);
+            $class = array_pop($parts);
+            $namespace = implode($parts, '\\');
+        }else{
+            $namespace = '';
+        }
+        $output = "namespace $namespace{\n";
+        $output .= "/**\n *\n * Generated properties for $class\n *\n";
         foreach($this->properties as $name => $property){
 
             if($property['read'] && $property['write']){
@@ -253,10 +264,10 @@ class ModelsCommand extends Command {
             $type = $property['type'];
             //TODO; check if returned as date
 
-            $output .= " * @$attr $type \$$name \n";
+            $output .= "\t * @$attr $type \$$name \n";
 
         }
-        $output .= " *\n */\nclass $class {}\n\n";
+        $output .= "\t *\n\t */\n\tclass $class {}\n}\n\n";
         return $output;
     }
 

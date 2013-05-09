@@ -58,6 +58,9 @@ Docs are written to a phpfile in the root of the project, so you can move the do
 For now, only models in app/models are scanned. The optional argument tells what models to use.
 `php artisan ide-helper:models Post,User`
 
+Note: With namespaces, uses \\ instead of \
+`php artisan ide-helper:models API\\User`
+
 This creates a file with the phpDocs for each Model. You should check and change them to be more accurate.
 It doesn't know if datetimes are returned as string or DateTime/Carbon, but I assume they are.
 Also, all relations are Eloquent|Eloquent[] by default, you can change them to the actual Model.

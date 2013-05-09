@@ -174,7 +174,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                         foreach ($methods as $method)
                         {
                             if(!in_array($method->name, $skipMethods)){
-                                $output .= $this->parseMethod($method, $alias, $sublime);
+                                $output .= $this->parseMethod($method, $alias, $root, $sublime);
                                 $skipMethods[] = $method->name;
                             }
                         }
@@ -196,7 +196,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                                 foreach ($methods as $method)
                                 {
                                     if(!in_array($method->name, $skipMethods)){
-                                        $output .= $this->parseMethod($method, $alias, $sublime, $rootParam);
+                                        $output .= $this->parseMethod($method, $alias, $extraClass, $sublime, $rootParam);
                                         $skipMethods[] = $method->name;
                                     }
 
@@ -225,7 +225,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         return $output;
     }
 
-    protected function parseMethod($method, $alias, $sublime, $rootParam = 'root'){
+    protected function parseMethod($method, $alias, $root, $sublime, $rootParam = 'root'){
         if($method->name === '__clone'){
             return '';
         }
@@ -297,7 +297,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         $return = $returnValue !== "void" ? 'return' : '';
 
         if($sublime){
-            $output .= "\t\t\$root = new $root();\r\n";
+            $output .= "\t\t\$$rootParam = new $root();\r\n";
             $output .=  "\t\t$return \$$rootParam->";
         }else{
             $output .=  "\t\t$return static::\$$rootParam->";

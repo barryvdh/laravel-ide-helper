@@ -62,15 +62,15 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Skipped methods
+    | Non-static methods
     |--------------------------------------------------------------------------
     |
-    | These functions aren't actually facade calls, so don't include them as helper
+    | These functions aren't actually facade calls, so don't make them static
     |
     */
 
-    'skip' => array(
-        'Eloquent'  => array('freshTimestamp'),
+    'nonstatic' => array(
+        'Eloquent'  => array('freshTimestamp', 'newCollection', 'toArray', 'toJson', 'toSql'),
     ),
 
     /*

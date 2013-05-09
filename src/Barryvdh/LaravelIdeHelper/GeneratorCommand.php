@@ -40,7 +40,7 @@ class GeneratorCommand extends Command {
         }
 
         $extra = \Config::get('laravel-ide-helper::extra');
-        $skip = \Config::get('laravel-ide-helper::skip');
+        $nonstatic = \Config::get('laravel-ide-helper::nonstatic');
         $onlyExtend = \Config::get('laravel-ide-helper::only_extend');
 
         if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
@@ -51,7 +51,7 @@ class GeneratorCommand extends Command {
 
         $sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
 
-        $content = $this->generateDocs($extra, $skip, $onlyExtend, $helpers, $sublime);
+        $content = $this->generateDocs($extra, $nonstatic, $onlyExtend, $helpers, $sublime);
 
         $written = \File::put($filename, $content);
 
@@ -98,7 +98,7 @@ class GeneratorCommand extends Command {
         );
     }
 
-    protected function generateDocs($extra = array(), $skip = array(), $onlyExtend = array(), $helpers = array(), $sublime = false){
+    protected function generateDocs($extra = array(), $nonstatic = array(), $onlyExtend = array(), $helpers = array(), $sublime = false){
 
         $aliasLoader = AliasLoader::getInstance();
 
@@ -162,20 +162,23 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
                 if(!in_array($alias, $onlyExtend))
                 {
-                    if(array_key_exists($alias, $skip)){
-                        $skipMethods = $skip[$alias];
+                    $usedMethods = array();
+                    if(array_key_exists($alias, $nonstatic) ){
+                        $nonstaticMethods = $nonstatic[$alias];
                     }else{
-                        $skipMethods = array();
+                        $nonstaticMethods = array();
                     }
+
 
                     $methods = $d->getMethods();
                     if($methods)
                     {
                         foreach ($methods as $method)
                         {
-                            if(!in_array($method->name, $skipMethods)){
-                                $output .= $this->parseMethod($method, $alias, $root, $sublime);
-                                $skipMethods[] = $method->name;
+                            if(!in_array($method->name, $usedMethods)){
+                                $static = !in_array($method->name, $nonstaticMethods);
+                                $output .= $this->parseMethod($method, $alias, $root, $sublime, $static);
+                                $usedMethods[] = $method->name;
                             }
                         }
                     }
@@ -195,9 +198,10 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                                 $output .= "\t/**\n\t * @var \\$extraClass \$$rootParam\n\t */\n\t static private \$$rootParam;\n\n";
                                 foreach ($methods as $method)
                                 {
-                                    if(!in_array($method->name, $skipMethods)){
-                                        $output .= $this->parseMethod($method, $alias, $extraClass, $sublime, $rootParam);
-                                        $skipMethods[] = $method->name;
+                                    if(!in_array($method->name, $usedMethods)){
+                                        $static = !in_array($method->name, $nonstaticMethods);
+                                        $output .= $this->parseMethod($method, $alias, $extraClass, $sublime, $static, $rootParam);
+                                        $usedMethods[] = $method->name;
                                     }
 
                                 }
@@ -225,7 +229,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         return $output;
     }
 
-    protected function parseMethod($method, $alias, $root, $sublime, $rootParam = 'root'){
+    protected function parseMethod($method, $alias, $root, $sublime, $static = true, $rootParam = 'root'){
         if($method->name === '__clone'){
             return '';
         }
@@ -262,7 +266,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         }else{
             $output .= "\t * @return ".$returnValue."\n";
         }
-        $output .= "\t */\n\t public static function ".$method->name."(";
+        $output .= "\t */\n\t public ".($static ? 'static' : '')." function ".$method->name."(";
 
 
         $reflection = $method->getReflectionObject();

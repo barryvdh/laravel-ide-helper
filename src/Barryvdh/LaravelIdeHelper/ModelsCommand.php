@@ -252,7 +252,7 @@ class ModelsCommand extends Command {
             $namespace = '';
         }
         $output = "namespace $namespace{\n";
-        $output .= "/**\n *\n * Generated properties for $class\n *\n";
+        $output .= "\t/**\n\t *\n\t * Generated properties for $class\n\t *\n";
         foreach($this->properties as $name => $property){
 
             if($property['read'] && $property['write']){
@@ -263,7 +263,6 @@ class ModelsCommand extends Command {
                 $attr = 'property-read';
             }
             $type = $property['type'];
-            //TODO; check if returned as date
 
             $output .= "\t * @$attr $type \$$name \n";
 

@@ -184,8 +184,8 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                     }
 
                     if(array_key_exists($alias, $extra)){
+                        $i = 2;
                         foreach($extra[$alias] as $extraClass){
-                            $i =2;
                             if(!class_exists($extraClass) && !interface_exists($extraClass)){
                                 continue;
                             }

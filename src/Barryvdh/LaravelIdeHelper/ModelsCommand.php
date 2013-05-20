@@ -25,6 +25,7 @@ class ModelsCommand extends Command {
     protected $description = 'Generate autocompletion for models';
 
     protected $properties = array();
+    protected $methods = array();
 
 
     /**
@@ -96,6 +97,7 @@ class ModelsCommand extends Command {
 
         foreach($models as $name){
             $this->properties = array();
+            $this->methods = array();
             if(class_exists($name)){
                 try{
                     $model = new $name();
@@ -184,6 +186,12 @@ class ModelsCommand extends Command {
                    if(!empty($name)){
                         $this->setProperty($name, null, null, true);
                    }
+               }elseif(\Str::startsWith($method, 'scope') && $method !== 'scopeQuery'){
+                   //Magic set<name>Attribute
+                   $name =  \Str::snake(substr($method, 5));
+                   if(!empty($name)){
+                       $this->setMethod($name, 'static');
+                   }
                }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
 
                    //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
@@ -242,6 +250,16 @@ class ModelsCommand extends Command {
         }
     }
 
+    protected function setMethod($name, $type = null){
+        if(!isset($this->methods[$name])){
+            $this->methods[$name] = array();
+            $this->methods[$name]['type'] = 'static';
+        }
+        if($type !== null){
+            $this->methods[$name]['type'] = $type;
+        }
+    }
+
     protected function createPhpDocs($class){
 
         if(strpos($class, '\\') !== false){
@@ -254,7 +272,6 @@ class ModelsCommand extends Command {
         $output = "namespace $namespace{\n";
         $output .= "\t/**\n\t *\n\t * Generated properties for $class\n\t *\n";
         foreach($this->properties as $name => $property){
-
             if($property['read'] && $property['write']){
                 $attr = 'property';
             }elseif($property['write']){
@@ -263,10 +280,14 @@ class ModelsCommand extends Command {
                 $attr = 'property-read';
             }
             $type = $property['type'];
-
             $output .= "\t * @$attr $type \$$name \n";
-
         }
+
+        foreach($this->methods as $name => $method){
+            $type = $method['type'];
+            $output .= "\t * @method $type $name() \n";
+        }
+
         $output .= "\t *\n\t */\n\tclass $class {}\n}\n\n";
         return $output;
     }

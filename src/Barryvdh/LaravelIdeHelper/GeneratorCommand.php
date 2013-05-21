@@ -242,7 +242,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 $returnValue = $annotation->values[0];
             }
         }else{
-            $returnValue = 'void';
+            $returnValue = null;
         }
 
         $annotations = $method->getAnnotations(array("param"));
@@ -263,7 +263,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $output .= "\t * @return static\n";
         }elseif(!$sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
             $output .= "\t * @return array|Eloquent[]|static[]\n";
-        }else{
+        }elseif($returnValue){
             $output .= "\t * @return ".$returnValue."\n";
         }
         $output .= "\t */\n\t public ".($static ? 'static' : '')." function ".$method->name."(";

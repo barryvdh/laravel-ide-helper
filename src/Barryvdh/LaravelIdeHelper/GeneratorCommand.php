@@ -98,14 +98,17 @@ class GeneratorCommand extends Command {
         );
     }
 
+    /**
+     * @param array $extra
+     * @param array $nonstatic
+     * @param array $onlyExtend
+     * @param array $helpers
+     * @param bool $sublime
+     * @return string
+     */
     protected function generateDocs($extra = array(), $nonstatic = array(), $onlyExtend = array(), $helpers = array(), $sublime = false){
 
         $aliasLoader = AliasLoader::getInstance();
-
-
-        $d = new Parser();
-        $d->setAllowInherited(true);
-        $d->setMethodFilter(\ReflectionMethod::IS_PUBLIC);
 
         $output = "<?php
 /**
@@ -148,7 +151,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }
 
             try{
-                $d->analyze($root);
+                $reflection = new \ReflectionClass($root);
 
                 $output .= "namespace $namespace {\n";
 
@@ -170,7 +173,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                     }
 
 
-                    $methods = $d->getMethods();
+                    $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                     if($methods)
                     {
                         foreach ($methods as $method)
@@ -189,9 +192,9 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                             if(!class_exists($extraClass) && !interface_exists($extraClass)){
                                 continue;
                             }
-                            $d->analyze($extraClass);
+                            $reflection = new \ReflectionClass($extraClass);
 
-                            $methods = $d->getMethods();
+                            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                             if($methods)
                             {
                                 $rootParam = "root".$i++;
@@ -229,51 +232,64 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         return $output;
     }
 
+    /**
+     * @param \ReflectionMethod $method
+     * @param string $alias
+     * @param string $root
+     * @param bool $sublime
+     * @param bool $static
+     * @param string $rootParam
+     * @return string
+     */
     protected function parseMethod($method, $alias, $root, $sublime, $static = true, $rootParam = 'root'){
-        if($method->name === '__clone'){
-            return '';
-        }
         $output = '';
+        if($method->name === '__clone'){
+            return $output;
+        }
 
-        $returnAnnotations = $method->getAnnotations(array("return"));
-        if(!empty($returnAnnotations)){
-            foreach ($returnAnnotations as $annotation)
+        $phpdoc = new \phpDocumentor\Reflection\DocBlock($method);
+
+        $shortDescription = $phpdoc->getShortDescription();
+        $output .= "\t/**\n\t * ".$shortDescription."\n";
+
+        $longDescription = $phpdoc->getLongDescription()->getContents();
+        if($longDescription){
+            $longDescription = str_replace("\n", "\n\t * ", $longDescription);
+            $output .= "\t * ".$longDescription."\n";
+        }
+        $output .= "\t *\n\t * @static\n";
+
+        $paramTags = $phpdoc->getTagsByName('param');
+        if(!empty($paramTags)){
+            foreach ($paramTags as $tag)
             {
-                $returnValue = $annotation->values[0];
+                $output .="\t * @param\t".$tag->getType()."\t".$tag->getVariableName()."\t".$tag->getDescription()."\n";
             }
+        }
+
+        $returnTags = $phpdoc->getTagsByName('return');
+        if($returnTags){
+            $tag = reset($returnTags);
+            $returnValue = $tag->getType();
+
+            if(!$sublime and $alias == 'Eloquent' and
+                (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
+                    or $returnValue === '\Illuminate\Database\Query\Builder')){
+                //Reference the calling class, to provide more accurate auto-complete
+                $returnValue = "static";
+            }elseif(!$sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
+                $returnValue .= "|Eloquent[]|static[]";
+            }
+            $output .= "\t * @return\t".$returnValue."\t".$tag->getDescription()."\n";
         }else{
             $returnValue = null;
         }
 
-        $annotations = $method->getAnnotations(array("param"));
-
-        $description = str_replace("\n", "\n\t * ", trim($method->description));
-        $output .= "\t/**\n\t * ".$description."\n\t *\n\t * @static\n";
-
-        if(!empty($annotations)){
-            foreach ($annotations as $annotation)
-            {
-                $output .="\t * @param\t".implode($annotation->values, "\t")."\n";
-            }
-        }
-        if(!$sublime and $alias == 'Eloquent' and
-            (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
-                or $returnValue === '\Illuminate\Database\Query\Builder')){
-            //Reference the calling class, to provide more accurate auto-complete
-            $output .= "\t * @return static\n";
-        }elseif(!$sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
-            $output .= "\t * @return array|Eloquent[]|static[]\n";
-        }elseif($returnValue){
-            $output .= "\t * @return ".$returnValue."\n";
-        }
         $output .= "\t */\n\t public ".($static ? 'static' : '')." function ".$method->name."(";
 
-
-        $reflection = $method->getReflectionObject();
         $params = array();
         $paramsWithDefault = array();
-
-        foreach ($reflection->getParameters() as $param) {
+        foreach ($method->getParameters() as $param) {
             $paramStr = '$'.$param->getName();
             $params[] = $paramStr;
             if ($param->isOptional()) {
@@ -289,13 +305,11 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 }else{
                     $default = "'".trim($default)."'";
                 }
-
                 $paramStr .= " = $default";
             }
             $paramsWithDefault[] = $paramStr;
         }
         $output .= implode($paramsWithDefault, ", ");
-
         $output .= "){\r\n";
 
         $return = $returnValue !== "void" ? 'return' : '';
@@ -307,9 +321,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $output .=  "\t\t$return static::\$$rootParam->";
         }
         $output .=  $method->name."(".implode($params, ", ").");\r\n";
-
         $output .= "\t }\n\n";
-
 
         return $output;
     }

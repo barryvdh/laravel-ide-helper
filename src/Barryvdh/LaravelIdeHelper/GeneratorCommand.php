@@ -249,14 +249,30 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $phpdoc = new \phpDocumentor\Reflection\DocBlock($method);
 
-        $shortDescription = $phpdoc->getShortDescription();
-        $output .= "\t/**\n\t * ".$shortDescription."\n";
-
+        $description = $phpdoc->getShortDescription();
         $longDescription = $phpdoc->getLongDescription()->getContents();
         if($longDescription){
-            $longDescription = str_replace("\n", "\n\t * ", $longDescription);
-            $output .= "\t * ".$longDescription."\n";
+            $description .= "\n".$longDescription;
         }
+        if(strpos($description, '{@inheritdoc}') !== false){
+            $inheritdoc = $this->getInheritDoc($method);
+            $inheritDescription = $inheritdoc->getShortDescription();
+
+            $inheritLongDescription = $inheritdoc->getLongDescription()->getContents();
+            if($inheritLongDescription){
+                $inheritDescription .= "\n".$inheritLongDescription;
+            }
+            $description = str_replace('{@inheritdoc}', $inheritDescription, $description);
+            $inheritTags = $inheritdoc->getTags();
+            if($inheritTags){
+                foreach($inheritTags as $tag){
+                    $tag->setDocBlock();
+                    $phpdoc->appendTag($tag);
+                }
+            }
+        }
+        $description = str_replace("\n", "\n\t * ", $description);
+        $output .= "\t/**\n\t * ".$description."\n";
         $output .= "\t *\n\t * @static\n";
 
         $paramTags = $phpdoc->getTagsByName('param');
@@ -283,6 +299,15 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $output .= "\t * @return\t".$returnValue."\t".$tag->getDescription()."\n";
         }else{
             $returnValue = null;
+        }
+
+        $allTags = $phpdoc->getTags();
+        if($allTags){
+            foreach($allTags as $tag){
+                if(!in_array($tag->getName(), array('return', 'param'))){
+                    $output .= "\t * @".$tag->getName() ." ". $tag->getContent()."\n";
+                }
+            }
         }
 
         $output .= "\t */\n\t public ".($static ? 'static' : '')." function ".$method->name."(";
@@ -324,6 +349,29 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         $output .= "\t }\n\n";
 
         return $output;
+    }
+
+    /**
+     * @param \ReflectionMethod $reflectionMethod
+     * @return string
+     */
+    protected function getInheritDoc($reflectionMethod){
+        $parentClass = $reflectionMethod->getDeclaringClass()->getParentClass();
+
+        if($parentClass){
+            $method = $parentClass->getMethod($reflectionMethod->getName());
+        }else{
+            $method = $reflectionMethod->getPrototype();
+        }
+        if($method){
+            $phpdoc = new \phpDocumentor\Reflection\DocBlock($method);
+            if(strpos($phpdoc->getShortDescription(), '{@inheritdoc}') !== false || strpos($phpdoc->getLongDescription(), '{@inheritdoc}') !== false ){
+                //Not at the end yet, try another parent/interface..
+                return $this->getInheritDoc($method);
+            }else{
+                return $phpdoc;
+            }
+        }
     }
 
 }

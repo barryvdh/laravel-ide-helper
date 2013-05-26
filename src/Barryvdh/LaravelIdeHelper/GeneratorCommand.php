@@ -4,6 +4,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use DocBlock\Parser;
 use Illuminate\Foundation\AliasLoader;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
 /**
  * A command to generate autocomplete information for your IDE
  *
@@ -247,22 +250,18 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             return $output;
         }
 
-        $phpdoc = new \phpDocumentor\Reflection\DocBlock($method);
+        $phpdoc = new DocBlock($method);
+        $serializer = new DocBlockSerializer("\t", 1);
 
-        $description = $phpdoc->getShortDescription();
-        $longDescription = $phpdoc->getLongDescription()->getContents();
-        if($longDescription){
-            $description .= "\n".$longDescription;
-        }
+        $description = $phpdoc->getText();
+
         if(strpos($description, '{@inheritdoc}') !== false){
             $inheritdoc = $this->getInheritDoc($method);
-            $inheritDescription = $inheritdoc->getShortDescription();
+            $inheritDescription = $inheritdoc->getText();
 
-            $inheritLongDescription = $inheritdoc->getLongDescription()->getContents();
-            if($inheritLongDescription){
-                $inheritDescription .= "\n".$inheritLongDescription;
-            }
             $description = str_replace('{@inheritdoc}', $inheritDescription, $description);
+            $phpdoc->setText($description);
+
             $inheritTags = $inheritdoc->getTags();
             if($inheritTags){
                 foreach($inheritTags as $tag){
@@ -271,20 +270,13 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 }
             }
         }
-        $description = str_replace("\n", "\n\t * ", $description);
-        $output .= "\t/**\n\t * ".$description."\n";
-        $output .= "\t *\n\t * @static\n";
 
-        $paramTags = $phpdoc->getTagsByName('param');
-        if(!empty($paramTags)){
-            foreach ($paramTags as $tag)
-            {
-                $output .="\t * @param\t".$tag->getType()."\t".$tag->getVariableName()."\t".$tag->getDescription()."\n";
-            }
-        }
+        $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
+
 
         $returnTags = $phpdoc->getTagsByName('return');
         if($returnTags){
+            /** @var  $tag */
             $tag = reset($returnTags);
             $returnValue = $tag->getType();
 
@@ -296,21 +288,12 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }elseif(!$sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
                 $returnValue .= "|Eloquent[]|static[]";
             }
-            $output .= "\t * @return\t".$returnValue."\t".$tag->getDescription()."\n";
+           $tag->setContent($returnValue . " ". $tag->getDescription());
         }else{
             $returnValue = null;
         }
 
-        $allTags = $phpdoc->getTags();
-        if($allTags){
-            foreach($allTags as $tag){
-                if(!in_array($tag->getName(), array('return', 'param'))){
-                    $output .= "\t * @".$tag->getName() ." ". $tag->getContent()."\n";
-                }
-            }
-        }
-
-        $output .= "\t */\n\t public ".($static ? 'static' : '')." function ".$method->name."(";
+        $output .= $serializer->getDocComment($phpdoc) ."\n\t public ".($static ? 'static' : '')." function ".$method->name."(";
 
         $params = array();
         $paramsWithDefault = array();
@@ -364,8 +347,8 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $method = $reflectionMethod->getPrototype();
         }
         if($method){
-            $phpdoc = new \phpDocumentor\Reflection\DocBlock($method);
-            if(strpos($phpdoc->getShortDescription(), '{@inheritdoc}') !== false || strpos($phpdoc->getLongDescription(), '{@inheritdoc}') !== false ){
+            $phpdoc = new DocBlock($method);
+            if(strpos($phpdoc->getText(), '{@inheritdoc}') !== false ){
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);
             }else{

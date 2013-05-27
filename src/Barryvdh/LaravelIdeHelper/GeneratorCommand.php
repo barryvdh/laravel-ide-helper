@@ -2,9 +2,9 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use DocBlock\Parser;
 use Illuminate\Foundation\AliasLoader;
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Context;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
 /**
@@ -250,7 +250,15 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             return $output;
         }
 
-        $phpdoc = new DocBlock($method);
+        if(strpos($root, '\\') !== false){
+            $parts = explode('\\', $root);
+            $lsen = array_pop($parts);
+            $namespace = implode($parts, '\\');
+        }else{
+            $namespace = '';
+        }
+
+        $phpdoc = new DocBlock($method, new Context($namespace));
         $serializer = new DocBlockSerializer("\t", 1);
 
         $description = $phpdoc->getText();
@@ -273,7 +281,6 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
-
         $returnTags = $phpdoc->getTagsByName('return');
         if($returnTags){
             /** @var  $tag */
@@ -286,7 +293,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 //Reference the calling class, to provide more accurate auto-complete
                 $returnValue = "static";
             }elseif(!$sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
-                $returnValue .= "|Eloquent[]|static[]";
+                $returnValue .= "|\Eloquent[]|static[]";
             }
            $tag->setContent($returnValue . " ". $tag->getDescription());
         }else{

@@ -30,7 +30,7 @@ class GeneratorCommand extends Command {
 
     protected $extra;
     protected $nonstatic;
-    protected $onlyExtended;
+    protected $onlyExtend;
     protected $helpers;
     protected $sublime;
 
@@ -108,11 +108,8 @@ class GeneratorCommand extends Command {
     }
 
     /**
-     * @param array $extra
-     * @param array $nonstatic
-     * @param array $onlyExtend
-     * @param array $helpers
-     * @param bool $sublime
+     * Generate the docs for all facades in the AliasLoader
+     *
      * @return string
      */
     protected function generateDocs(){
@@ -280,13 +277,21 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
+        //Looping through the parameters and re-setting the type, to get the expanded type (with namespace)
+        //Should be fixed in a future version of ReflectionDocBlock I hope..
         $paramTags = $phpdoc->getTagsByName('param');
         if($paramTags){
             /** @var  $tag */
             foreach($paramTags as $tag){
+                $content = $tag->getContent();
+                //Closure should be \Closure..
+                $content = str_replace('\Closure', 'Closure', $content);
+                $content = str_replace('Closure', '\Closure', $content);
+                $tag->setContent($content);
                 $tag->setContent($tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription());
             }
         }
+
         $returnTags = $phpdoc->getTagsByName('return');
         if($returnTags){
             /** @var  $tag */

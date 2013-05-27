@@ -28,6 +28,12 @@ class GeneratorCommand extends Command {
      */
     protected $description = 'Generate a new IDE Helper file.';
 
+    protected $extra;
+    protected $nonstatic;
+    protected $onlyExtended;
+    protected $helpers;
+    protected $sublime;
+
 
     /**
      * Execute the console command.
@@ -42,19 +48,19 @@ class GeneratorCommand extends Command {
             $this->useMemoryDriver();
         }
 
-        $extra = \Config::get('laravel-ide-helper::extra');
-        $nonstatic = \Config::get('laravel-ide-helper::nonstatic');
-        $onlyExtend = \Config::get('laravel-ide-helper::only_extend');
+        $this->extra = \Config::get('laravel-ide-helper::extra');
+        $this->nonstatic = \Config::get('laravel-ide-helper::nonstatic');
+        $this->onlyExtend = \Config::get('laravel-ide-helper::only_extend');
 
         if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
-            $helpers = \Config::get('laravel-ide-helper::helper_files');
+            $this->helpers = \Config::get('laravel-ide-helper::helper_files');
         }else{
-            $helpers = array();
+            $this->helpers = array();
         }
 
-        $sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
+        $this->sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
 
-        $content = $this->generateDocs($extra, $nonstatic, $onlyExtend, $helpers, $sublime);
+        $content = $this->generateDocs();
 
         $written = \File::put($filename, $content);
 
@@ -109,7 +115,7 @@ class GeneratorCommand extends Command {
      * @param bool $sublime
      * @return string
      */
-    protected function generateDocs($extra = array(), $nonstatic = array(), $onlyExtend = array(), $helpers = array(), $sublime = false){
+    protected function generateDocs(){
 
         $aliasLoader = AliasLoader::getInstance();
 
@@ -158,7 +164,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
                 $output .= "namespace $namespace {\n";
 
-                if($root !== $facade or in_array($alias, $onlyExtend)){
+                if($root !== $facade or in_array($alias, $this->onlyExtend)){
                     //If the root class is not the same as the facade extend it.
                     $output .= " class $alias extends $facade{\n";
                 }else{
@@ -166,11 +172,11 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 }
                 $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
 
-                if(!in_array($alias, $onlyExtend))
+                if(!in_array($alias, $this->onlyExtend))
                 {
                     $usedMethods = array();
-                    if(array_key_exists($alias, $nonstatic) ){
-                        $nonstaticMethods = $nonstatic[$alias];
+                    if(array_key_exists($alias, $this->nonstatic) ){
+                        $nonstaticMethods = $this->nonstatic[$alias];
                     }else{
                         $nonstaticMethods = array();
                     }
@@ -183,15 +189,15 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                         {
                             if(!in_array($method->name, $usedMethods)){
                                 $static = !in_array($method->name, $nonstaticMethods);
-                                $output .= $this->parseMethod($method, $alias, $root, $sublime, $static);
+                                $output .= $this->parseMethod($method, $alias, $root, $static);
                                 $usedMethods[] = $method->name;
                             }
                         }
                     }
 
-                    if(array_key_exists($alias, $extra)){
+                    if(array_key_exists($alias, $this->extra)){
                         $i = 2;
-                        foreach($extra[$alias] as $extraClass){
+                        foreach($this->extra[$alias] as $extraClass){
                             if(!class_exists($extraClass) && !interface_exists($extraClass)){
                                 continue;
                             }
@@ -206,7 +212,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                                 {
                                     if(!in_array($method->name, $usedMethods)){
                                         $static = !in_array($method->name, $nonstaticMethods);
-                                        $output .= $this->parseMethod($method, $alias, $extraClass, $sublime, $static, $rootParam);
+                                        $output .= $this->parseMethod($method, $alias, $extraClass, $static, $rootParam);
                                         $usedMethods[] = $method->name;
                                     }
 
@@ -239,27 +245,20 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
      * @param \ReflectionMethod $method
      * @param string $alias
      * @param string $root
-     * @param bool $sublime
      * @param bool $static
      * @param string $rootParam
      * @return string
      */
-    protected function parseMethod($method, $alias, $root, $sublime, $static = true, $rootParam = 'root'){
+    protected function parseMethod($method, $alias, $root, $static = true, $rootParam = 'root'){
         $output = '';
         if($method->name === '__clone'){
             return $output;
         }
 
-        if(strpos($root, '\\') !== false){
-            $parts = explode('\\', $root);
-            $lsen = array_pop($parts);
-            $namespace = implode($parts, '\\');
-        }else{
-            $namespace = '';
-        }
+        $namespace = $method->getDeclaringClass()->getNamespaceName();
 
         $phpdoc = new DocBlock($method, new Context($namespace));
-        $serializer = new DocBlockSerializer("\t", 1);
+        $serializer = new DocBlockSerializer(1, "\t");
 
         $description = $phpdoc->getText();
 
@@ -281,18 +280,25 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
+        $paramTags = $phpdoc->getTagsByName('param');
+        if($paramTags){
+            /** @var  $tag */
+            foreach($paramTags as $tag){
+                $tag->setContent($tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription());
+            }
+        }
         $returnTags = $phpdoc->getTagsByName('return');
         if($returnTags){
             /** @var  $tag */
             $tag = reset($returnTags);
             $returnValue = $tag->getType();
 
-            if(!$sublime and $alias == 'Eloquent' and
+            if(!$this->sublime and $alias == 'Eloquent' and
                 (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
                     or $returnValue === '\Illuminate\Database\Query\Builder')){
                 //Reference the calling class, to provide more accurate auto-complete
                 $returnValue = "static";
-            }elseif(!$sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
+            }elseif(!$this->sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
                 $returnValue .= "|\Eloquent[]|static[]";
             }
            $tag->setContent($returnValue . " ". $tag->getDescription());
@@ -327,9 +333,9 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         $output .= implode($paramsWithDefault, ", ");
         $output .= "){\r\n";
 
-        $return = $returnValue !== "void" ? 'return' : '';
+        $return = ($returnValue && $returnValue !== "void") ? 'return' : '';
 
-        if($sublime){
+        if($this->sublime){
             $output .= "\t\t\$$rootParam = new $root();\r\n";
             $output .=  "\t\t$return \$$rootParam->";
         }else{

@@ -12,7 +12,7 @@
         "illuminate/support": "4.0.x",
         "illuminate/console": "4.0.x",
         "illuminate/filesystem": "4.0.x",
-        "phpdocumentor/reflection-docblock": "dev-master",
+        "phpdocumentor/reflection-docblock": "dev-master#6d705c1a0f9e2a6d73d2e9ec0e538b9dfaf4315f",
         "symfony/class-loader": "2.3.*"
     },
     "autoload": {

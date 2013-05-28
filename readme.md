@@ -11,7 +11,7 @@ Add the helper file to your laravel folder (not in a public folder). The file is
 
 Require this package in your composer.json:
 
-    "barryvdh/laravel-ide-helper": "dev-master"
+    "barryvdh/laravel-ide-helper": "1.*"
 
 And add the ServiceProvider to the providers array in app/config/app.php
 

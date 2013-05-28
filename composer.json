@@ -1,6 +1,8 @@
 {
     "name": "barryvdh/laravel-ide-helper",
     "description": "Laravel IDE Helper, generates correct PHPDocs for all Facade classes, to improve auto-completion.",
+    "keywords": ["laravel", "autocomplete", "phpstorm", "netbeans", "sublime", "codeintel", "phpdoc"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Barry vd. Heuvel",

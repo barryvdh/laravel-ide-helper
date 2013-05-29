@@ -138,7 +138,9 @@ class ModelsCommand extends Command {
 
     protected function getPropertiesFromTable($model){
         $table = $model->getTable();
-        $schema = $model->getConnection()->getDoctrineSchemaManager($table);
+        $connection = $model->getConnection();
+        $connection->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        $schema = $connection->getDoctrineSchemaManager($table);
 
         $columns = $schema->listTableColumns($table);
 

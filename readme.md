@@ -67,3 +67,6 @@ Also, all relations are Eloquent|Eloquent[] by default, you can change them to t
 After copying the phpdocs to your model, you can clear the file, so your IDE only uses the real source.
 
 
+### License
+
+The Laravel IDE Helper Generator is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)

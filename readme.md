@@ -1,4 +1,4 @@
-## Laravel IDE Helper & Generator
+## Laravel IDE Helper Generator
 
 ### Complete phpDocs, directly from the source
 

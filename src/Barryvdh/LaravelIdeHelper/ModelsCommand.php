@@ -146,7 +146,12 @@ class ModelsCommand extends Command {
         if($columns){
             foreach ($columns as $column) {
                 $name = $column->getName();
-                $type =  $column->getType()->getName();
+                try{
+                    $type =  $column->getType()->getName();
+                }catch(\Exception $e){
+                    $type = "string";
+                    $this->info("Could not determine type of column '$name', defaulting to string.");
+                }
                 switch($type){
                     case 'string':
                     case 'text':

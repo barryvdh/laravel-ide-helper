@@ -13,6 +13,10 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\ClassLoader\ClassMapGenerator;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Context;
+use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
 /**
  * A command to generate autocomplete information for your IDE
  *
@@ -291,16 +295,30 @@ class ModelsCommand extends Command {
      */
     protected function createPhpDocs($class){
 
-        if(strpos($class, '\\') !== false){
-            $parts = explode('\\', $class);
-            $class = array_pop($parts);
-            $namespace = implode($parts, '\\');
-        }else{
-            $namespace = '';
+        $reflection = new \ReflectionClass($class);
+        $namespace = $reflection->getNamespaceName();
+        $phpdoc = new DocBlock($reflection, new Context($namespace));
+
+        if(!$phpdoc->getText()){
+            $phpdoc->setText("Generated properties for $class");
         }
-        $output = "namespace $namespace{\n";
-        $output .= "\t/**\n\t *\n\t * Generated properties for $class\n\t *\n";
+
+        $properties = array();
+        $methods = array();
+        foreach($phpdoc->getTags() as $tag){
+            $name = $tag->getName();
+            if($name == "property" || $name == "property-read" || $name == "property-write"){
+                $properties[] =$tag->getVariableName();
+            }elseif($name == "method"){
+                $methods[] = $tag->getMethodName();
+            }
+        }
+
         foreach($this->properties as $name => $property){
+            $name = "\$$name";
+            if(in_array($name, $properties)){
+                continue;
+            }
             if($property['read'] && $property['write']){
                 $attr = 'property';
             }elseif($property['write']){
@@ -308,16 +326,24 @@ class ModelsCommand extends Command {
             }else{
                 $attr = 'property-read';
             }
-            $type = $property['type'];
-            $output .= "\t * @$attr $type \$$name \n";
+            $tag = Tag::createInstance("@{$attr} {$property['type']} {$name}", $phpdoc);
+            $phpdoc->appendTag($tag);
         }
 
         foreach($this->methods as $name => $method){
-            $type = $method['type'];
-            $output .= "\t * @method $type $name() \n";
+            if(in_array($name, $methods)){
+                continue;
+            }
+            $name = "$name()";
+            $tag = Tag::createInstance("@method {$method['type']} {$name}", $phpdoc);
+            $phpdoc->appendTag($tag);
         }
 
-        $output .= "\t *\n\t */\n\tclass $class {}\n}\n\n";
+        $serializer = new DocBlockSerializer(1, "\t");
+        $serializer->getDocComment($phpdoc);
+        $docComment = $serializer->getDocComment($phpdoc);
+
+        $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$class} {}\n}\n\n";
         return $output;
     }
 

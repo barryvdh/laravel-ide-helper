@@ -136,22 +136,23 @@ class ModelsCommand extends Command {
         return $models;
     }
 
+    /**
+     * Load the properties from the database table.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
     protected function getPropertiesFromTable($model){
         $table = $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager($table);
+        $schema->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
         $columns = $schema->listTableColumns($table);
 
-        $properties = array();
         if($columns){
             foreach ($columns as $column) {
                 $name = $column->getName();
-                try{
-                    $type =  $column->getType()->getName();
-                }catch(\Exception $e){
-                    $type = "string";
-                    $this->info("Could not determine type of column '$name', defaulting to string.");
-                }
+                $type =  $column->getType()->getName();
+
                 switch($type){
                     case 'string':
                     case 'text':
@@ -185,6 +186,9 @@ class ModelsCommand extends Command {
         }
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
     protected function getPropertiesFromMethods($model){
         $methods = get_class_methods($model);
         if($methods){
@@ -247,6 +251,12 @@ class ModelsCommand extends Command {
         }
     }
 
+    /**
+     * @param string $name
+     * @param string|null $type
+     * @param bool|null $read
+     * @param bool|null $write
+     */
     protected function setProperty($name, $type = null, $read = null, $write = null){
         if(!isset($this->properties[$name])){
             $this->properties[$name] = array();
@@ -275,6 +285,10 @@ class ModelsCommand extends Command {
         }
     }
 
+    /**
+     * @param string $class
+     * @return string
+     */
     protected function createPhpDocs($class){
 
         if(strpos($class, '\\') !== false){

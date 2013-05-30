@@ -40,8 +40,8 @@ class ModelsCommand extends Command {
 
     protected $properties = array();
     protected $methods = array();
-
     protected $write = false;
+    protected $dir;
 
 
 
@@ -54,6 +54,7 @@ class ModelsCommand extends Command {
     {
         $filename = $this->option('filename');
         $this->write = $this->option('write');
+        $this->dir = $this->option('dir');
         $model = $this->argument('model');
 
         $content = $this->generateDocs($model);
@@ -66,8 +67,6 @@ class ModelsCommand extends Command {
                 $this->error("Failed to write model information to $filename");
             }
         }
-
-
 
     }
 
@@ -94,6 +93,7 @@ class ModelsCommand extends Command {
     {
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', '_ide_helper_models.php'),
+            array('dir', 'D', InputOption::VALUE_OPTIONAL, 'The model dir', app_path().'/models'),
             array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
         );
     }
@@ -141,8 +141,12 @@ class ModelsCommand extends Command {
 
 
     protected function loadModels(){
+        $dir = $this->dir;
+        if(!file_exists($dir)){
+            $dir = base_path().'/'.$dir;
+        }
         $models = array();
-        foreach(ClassMapGenerator::createMap(app_path().'/models') as $model=> $path){
+        foreach(ClassMapGenerator::createMap($dir) as $model=> $path){
             $models[] = $model;
         }
         return $models;
@@ -305,6 +309,7 @@ class ModelsCommand extends Command {
 
         $reflection = new \ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
+        $classname = $reflection->getShortName();
         $originalDoc = $reflection->getDocComment();
         $phpdoc = new DocBlock($reflection, new Context($namespace));
 
@@ -359,8 +364,8 @@ class ModelsCommand extends Command {
             if($originalDoc){
                 $contents = str_replace($originalDoc, $docComment, $contents);
             }else{
-                $needle = "class {$class}";
-                $replace = "{$docComment}\nclass {$class}";
+                $needle = "class {$classname}";
+                $replace = "{$docComment}\nclass {$classname}";
                 $pos = strpos($contents,$needle);
                 if ($pos !== false) {
                     $contents = substr_replace($contents,$replace,$pos,strlen($needle));
@@ -371,7 +376,7 @@ class ModelsCommand extends Command {
             }
         }
 
-        $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$class} {}\n}\n\n";
+        $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$classname} {}\n}\n\n";
         return $output;
     }
 

@@ -52,34 +52,37 @@ class GeneratorCommand extends Command {
      */
     public function fire()
     {
-        $filename = $this->argument('filename');
-
-        if($this->option('memory')){
-            $this->useMemoryDriver();
-        }
-
-        $this->extra = \Config::get('laravel-ide-helper::extra');
-        $this->nonstatic = \Config::get('laravel-ide-helper::nonstatic');
-        $this->onlyExtend = \Config::get('laravel-ide-helper::only_extend');
-
-        if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
-            $this->helpers = \Config::get('laravel-ide-helper::helper_files');
+        if (file_exists($compiled = base_path().'/bootstrap/compiled.php')){
+            $this->error('Error: first delete bootstrap/compiled.php (php artisan clear-compiled)');
         }else{
-            $this->helpers = array();
-        }
-
-        $this->sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
-
-        $content = $this->generateDocs();
-
-        $written = \File::put($filename, $content);
-
-        if($written !== false){
-            $this->info("A new helper file was written to $filename");
-        }else{
-            $this->error("The helper file could not be created at $filename");
-        }
-
+            $filename = $this->argument('filename');
+    
+            if($this->option('memory')){
+                $this->useMemoryDriver();
+            }
+    
+            $this->extra = \Config::get('laravel-ide-helper::extra');
+            $this->nonstatic = \Config::get('laravel-ide-helper::nonstatic');
+            $this->onlyExtend = \Config::get('laravel-ide-helper::only_extend');
+    
+            if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
+                $this->helpers = \Config::get('laravel-ide-helper::helper_files');
+            }else{
+                $this->helpers = array();
+            }
+    
+            $this->sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
+    
+            $content = $this->generateDocs();
+    
+            $written = \File::put($filename, $content);
+    
+            if($written !== false){
+                $this->info("A new helper file was written to $filename");
+            }else{
+                $this->error("The helper file could not be created at $filename");
+            }
+        }    
     }
 
     protected function useMemoryDriver(){

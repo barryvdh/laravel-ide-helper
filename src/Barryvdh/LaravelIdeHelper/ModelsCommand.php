@@ -93,7 +93,7 @@ class ModelsCommand extends Command {
     {
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', '_ide_helper_models.php'),
-            array('dir', 'D', InputOption::VALUE_OPTIONAL, 'The model dir', app_path().'/models'),
+            array('dir', 'D', InputOption::VALUE_OPTIONAL, 'The model dir','models'),
             array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
         );
     }
@@ -141,13 +141,12 @@ class ModelsCommand extends Command {
 
 
     protected function loadModels(){
-        $dir = $this->dir;
-        if(!file_exists($dir)){
-            $dir = base_path().'/'.$dir;
-        }
+        $dir = base_path().'/'.$this->dir;
         $models = array();
-        foreach(ClassMapGenerator::createMap($dir) as $model=> $path){
-            $models[] = $model;
+        if(file_exists($dir)){
+            foreach(ClassMapGenerator::createMap($dir) as $model=> $path){
+                $models[] = $model;
+            }
         }
         return $models;
     }

@@ -41,6 +41,9 @@ class ModelsCommand extends Command {
     protected $properties = array();
     protected $methods = array();
 
+    protected $write = false;
+
+
 
     /**
      * Execute the console command.
@@ -50,17 +53,21 @@ class ModelsCommand extends Command {
     public function fire()
     {
         $filename = $this->option('filename');
+        $this->write = $this->option('write');
         $model = $this->argument('model');
 
         $content = $this->generateDocs($model);
 
-        $written = \File::put($filename, $content);
-
-        if($written !== false){
-            $this->info("Model information was written to $filename");
-        }else{
-            $this->error("Failed to write model information to $filename");
+        if(!$this->write){
+            $written = \File::put($filename, $content);
+            if($written !== false){
+                $this->info("Model information was written to $filename");
+            }else{
+                $this->error("Failed to write model information to $filename");
+            }
         }
+
+
 
     }
 
@@ -87,6 +94,7 @@ class ModelsCommand extends Command {
     {
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', '_ide_helper_models.php'),
+            array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
         );
     }
 
@@ -297,6 +305,7 @@ class ModelsCommand extends Command {
 
         $reflection = new \ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
+        $originalDoc = $reflection->getDocComment();
         $phpdoc = new DocBlock($reflection, new Context($namespace));
 
         if(!$phpdoc->getText()){
@@ -339,9 +348,28 @@ class ModelsCommand extends Command {
             $phpdoc->appendTag($tag);
         }
 
-        $serializer = new DocBlockSerializer(1, "\t");
+        $serializer = new DocBlockSerializer();
         $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
+
+
+        if($this->write){
+            $filename = $reflection->getFileName();
+            $contents = \File::get($filename);
+            if($originalDoc){
+                $contents = str_replace($originalDoc, $docComment, $contents);
+            }else{
+                $needle = "class {$class}";
+                $replace = "{$docComment}\nclass {$class}";
+                $pos = strpos($contents,$needle);
+                if ($pos !== false) {
+                    $contents = substr_replace($contents,$replace,$pos,strlen($needle));
+                }
+            }
+            if(\File::put($filename, $contents)){
+                $this->info('Written new phpDocBlock to '.$filename);
+            }
+        }
 
         $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$class} {}\n}\n\n";
         return $output;

@@ -52,17 +52,19 @@ The Illuminate/Support/helpers.php is already set-up, but you can add/remove you
 ### Work in progress: Model docs
 
 If you don't want to write your properties yourself, you can use the (experimental) command `ide-helper:models` to generate
-phpDocs, based on table columns, relations and getters/setters. Very alpha, so please provide feedback if you want.
-Docs are written to a phpfile in the root of the project, so you can move the docs to the real model.
+phpDocs, based on table columns, relations and getters/setters. Still in beta, so please provide feedback if you want.
+Docs are written to a phpfile (_ide_helper_models.php) in the root of the project, so you can move the docs to the real model.
 
-For now, only models in app/models are scanned. The optional argument tells what models to use.
+You can now also write the comments directly to your Model file, using the -W argument. Please make sure to backup your models, before writing the info.
+It should keep the existing comments and only append new properties/methods.
+
+For now, only models in app/models are scanned. The optional argument tells what models to use (also outside app/models).
 `php artisan ide-helper:models Post,User`
 
 Note: With namespaces, uses \\ instead of \
 `php artisan ide-helper:models API\\User`
 
 This creates a file with the phpDocs for each Model. You should check and change them to be more accurate.
-It doesn't know if datetimes are returned as string or DateTime/Carbon, but I assume they are.
 Also, all relations are Eloquent|Eloquent[] by default, you can change them to the actual Model.
 After copying the phpdocs to your model, you can clear the file, so your IDE only uses the real source.
 

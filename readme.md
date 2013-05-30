@@ -8,6 +8,11 @@ Add the helper file to your laravel folder (not in a public folder). The file is
 * SublimeText CodeIntel version: https://gist.github.com/barryvdh/5227814
 
 ### Automatic phpDoc generation for Laravel Facades
+#### NOTE: run before optimising. If bootstrap/compiled.php is loaded, it doesn't work.
+
+    php artisan clear-compiled
+    php artisan ide-helper:generate
+    php artisan optimize
 
 Require this package in your composer.json:
 
@@ -31,8 +36,8 @@ You can configure your composer.json to do this after each commit:
 
     "scripts":{
         "post-update-cmd":[
-            "php artisan optimize",
             "php artisan ide-helper:generate",
+            "php artisan optimize"
         ]
     },
 

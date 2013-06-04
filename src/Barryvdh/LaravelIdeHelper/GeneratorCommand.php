@@ -316,10 +316,10 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                     or $returnValue === '\Illuminate\Database\Query\Builder')){
                 //Reference the calling class, to provide more accurate auto-complete
                 $returnValue = "static";
-            }elseif(!$this->sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
+            }elseif($alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
                 $returnValue .= "|\Eloquent[]|static[]";
             }elseif($alias == 'Eloquent' and in_array($method->name, array('hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphOne', 'morphTo', 'morphMany'))){
-                $returnValue .= "|\Eloquent";
+                $returnValue .= "|\Eloquent|static";
             }
            $tag->setContent($returnValue . " ". $tag->getDescription());
         }else{

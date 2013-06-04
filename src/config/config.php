@@ -70,7 +70,7 @@ return array(
     */
 
     'nonstatic' => array(
-        'Eloquent'  => array('freshTimestamp', 'newCollection', 'toArray', 'toJson', 'toSql'),
+        'Eloquent'  => array('freshTimestamp', 'newCollection', 'toArray', 'toJson', 'toSql', 'delete'),
     ),
 
     /*

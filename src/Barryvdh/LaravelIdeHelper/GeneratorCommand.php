@@ -53,7 +53,7 @@ class GeneratorCommand extends Command {
     public function fire()
     {
         if (file_exists($compiled = base_path().'/bootstrap/compiled.php')){
-            $this->error('Error: first delete bootstrap/compiled.php (php artisan clear-compiled)');
+            $this->error('Error generating IDE Helper: first delete bootstrap/compiled.php (php artisan clear-compiled)');
         }else{
             $filename = $this->argument('filename');
     
@@ -318,6 +318,8 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 $returnValue = "static";
             }elseif(!$this->sublime and $alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
                 $returnValue .= "|\Eloquent[]|static[]";
+            }elseif($alias == 'Eloquent' and in_array($method->name, array('hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphOne', 'morphTo', 'morphMany'))){
+                $returnValue .= "|\Eloquent";
             }
            $tag->setContent($returnValue . " ". $tag->getDescription());
         }else{

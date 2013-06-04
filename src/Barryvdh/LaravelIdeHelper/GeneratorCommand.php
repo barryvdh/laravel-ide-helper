@@ -319,7 +319,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }elseif($alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
                 $returnValue .= "|\Eloquent[]|static[]";
             }elseif($alias == 'Eloquent' and in_array($method->name, array('hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphOne', 'morphTo', 'morphMany'))){
-                $returnValue .= "|\Eloquent|static";
+                $returnValue .= "|\Eloquent";
             }
            $tag->setContent($returnValue . " ". $tag->getDescription());
         }else{

@@ -311,7 +311,9 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $tag = reset($returnTags);
             $returnValue = $tag->getType();
 
-            if(!$this->sublime and $alias == 'Eloquent' and
+            if($method->name == "__construct"){
+                $returnValue = 'self';
+            }elseif(!$this->sublime and $alias == 'Eloquent' and
                 (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
                     or $returnValue === '\Illuminate\Database\Query\Builder')){
                 //Reference the calling class, to provide more accurate auto-complete
@@ -353,7 +355,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         $output .= implode($paramsWithDefault, ", ");
         $output .= "){\r\n";
 
-        $return = ($returnValue && $returnValue !== "void") ? 'return' : '';
+        $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
 
         if($this->sublime){
             $output .= "\t\t\$$rootParam = new $root();\r\n";

@@ -8,12 +8,6 @@ Add the helper file to your laravel folder (not in a public folder). The file is
 
 ### Automatic phpDoc generation for Laravel Facades
 
-#### NOTE: run before optimising. If bootstrap/compiled.php is loaded, it doesn't work.
-
-    php artisan clear-compiled
-    php artisan ide-helper:generate
-    php artisan optimize
-
 Require this package in your composer.json:
 
     "barryvdh/laravel-ide-helper": "1.*"
@@ -37,6 +31,12 @@ You can configure your composer.json to do this after each commit:
         ]
     },
 
+#### NOTE: run before optimising. If bootstrap/compiled.php is loaded, it doesn't work.
+
+    php artisan clear-compiled
+    php artisan ide-helper:generate
+    php artisan optimize
+
 You can also publish the config-file to change implementations (ie. interface to specific class) or set defaults for --helpers or --sublime.
 
     php artisan config:publish barryvdh/laravel-ide-helper
@@ -50,14 +50,14 @@ You can choose to include helper files. This is not enabled by default, but you 
 The Illuminate/Support/helpers.php is already set-up, but you can add/remove your own files in the config file.
 
 
-### Work in progress: Model docs
+### Automatic phpDocs for Models
 
-If you don't want to write your properties yourself, you can use the (experimental) command `ide-helper:models` to generate
+If you don't want to write your properties yourself, you can use the command `ide-helper:models` to generate
 phpDocs, based on table columns, relations and getters/setters. Still in beta, so please provide feedback if you want.
 Docs are written to a phpfile (_ide_helper_models.php) in the root of the project, so you can move the docs to the real model.
 
 You can now also write the comments directly to your Model file, using the -W argument. Please make sure to backup your models, before writing the info.
-It should keep the existing comments and only append new properties/methods.
+It should keep the existing comments and only append new properties/methods. The existing phpdoc is replaced, or added if not found.
 
 For now, only models in app/models are scanned. The optional argument tells what models to use (also outside app/models).
 `php artisan ide-helper:models Post,User`

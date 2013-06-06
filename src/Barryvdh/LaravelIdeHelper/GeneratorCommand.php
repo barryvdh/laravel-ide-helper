@@ -42,7 +42,6 @@ class GeneratorCommand extends Command {
     protected $nonstatic;
     protected $onlyExtend;
     protected $helpers;
-    protected $sublime;
 
 
     /**
@@ -70,9 +69,7 @@ class GeneratorCommand extends Command {
             }else{
                 $this->helpers = array();
             }
-    
-            $this->sublime = $this->option('sublime') || \Config::get('laravel-ide-helper::sublime');
-    
+
             $content = $this->generateDocs();
     
             $written = \File::put($filename, $content);
@@ -116,7 +113,7 @@ class GeneratorCommand extends Command {
         return array(
             array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
             array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
-            array('sublime', "S", InputOption::VALUE_NONE, 'Use different style for SublimeText CodeIntel'),
+            array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),
         );
     }
 
@@ -180,7 +177,6 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 }else{
                     $output .= " class $alias{\n";
                 }
-                $output .= "\t/**\n\t * @var \\$root \$root\n\t */\n\t static private \$root;\n\n";
 
                 if(!in_array($alias, $this->onlyExtend))
                 {
@@ -313,11 +309,11 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
             if($method->name == "__construct"){
                 $returnValue = 'self';
-            }elseif(!$this->sublime and $alias == 'Eloquent' and
+            }elseif($alias == 'Eloquent' and
                 (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
                     or $returnValue === '\Illuminate\Database\Query\Builder')){
                 //Reference the calling class, to provide more accurate auto-complete
-                $returnValue = "static";
+                $returnValue .= "static";
             }elseif($alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
                 $returnValue .= "|\Eloquent[]|static[]";
             }elseif($alias == 'Eloquent' and in_array($method->name, array('hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphOne', 'morphTo', 'morphMany'))){
@@ -357,11 +353,8 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
 
-        if($this->sublime){
-            $output .=  "\t\t$return $root->";
-        }else{
-            $output .=  "\t\t$return static::\$$rootParam->";
-        }
+
+        $output .=  "\t\t$return $root::";
 
 
         $output .=  $method->name."(".implode($params, ", ").");\r\n";

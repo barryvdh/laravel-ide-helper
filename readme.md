@@ -4,10 +4,10 @@
 
 Add the helper file to your laravel folder (not in a public folder). The file isn't used by Laravel, but it has to be indexed by your IDE.
 
-* Netbeans and PHPStorm version: https://gist.github.com/barryvdh/5227822
-* SublimeText CodeIntel version: https://gist.github.com/barryvdh/5227814
+* Generated version: https://gist.github.com/barryvdh/5227822
 
 ### Automatic phpDoc generation for Laravel Facades
+
 #### NOTE: run before optimising. If bootstrap/compiled.php is loaded, it doesn't work.
 
     php artisan clear-compiled
@@ -26,10 +26,6 @@ You can now re-generate the docs yourself (for future updates) in artisan
 
     php artisan ide-helper:generate
 
-If you use SublimeText CodeIntel, the format is a bit different. So add --sublime (or -S) to your command
-
-    php artisan ide-helper:generate -S
-
 Note: You do need CodeIntel for Sublime Text: https://github.com/Kronuz/SublimeCodeIntel
 
 You can configure your composer.json to do this after each commit:
@@ -37,7 +33,7 @@ You can configure your composer.json to do this after each commit:
     "scripts":{
         "post-update-cmd":[
             "php artisan ide-helper:generate",
-            "php artisan optimize"
+            "php artisan optimize",
         ]
     },
 

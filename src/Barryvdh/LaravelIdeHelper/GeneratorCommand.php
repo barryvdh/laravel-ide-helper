@@ -196,7 +196,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                             if(!in_array($method->name, $usedMethods)){
                                 $static = !in_array($method->name, $nonstaticMethods);
                                 $declaringClass = $method->getDeclaringClass();
-                                $output .= $this->parseMethod($method, $alias, $declaringClass->name, $static);
+                                $output .= $this->parseMethod($method, $alias, "\\$declaringClass->name", $static);
                                 $usedMethods[] = $method->name;
                             }
                         }

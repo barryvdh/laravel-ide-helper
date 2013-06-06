@@ -358,11 +358,12 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
 
         if($this->sublime){
-            $output .= "\t\t\$$rootParam = new $root();\r\n";
-            $output .=  "\t\t$return \$$rootParam->";
+            $output .=  "\t\t$return $root->";
         }else{
             $output .=  "\t\t$return static::\$$rootParam->";
         }
+
+
         $output .=  $method->name."(".implode($params, ", ").");\r\n";
         $output .= "\t }\n\n";
 

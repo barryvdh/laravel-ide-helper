@@ -135,21 +135,26 @@ class GeneratorCommand extends Command {
  */
 namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
+        //Get all aliases
         $aliases = $aliasLoader->getAliases();
 
         foreach($aliases as $alias => $facade){
 
             try{
+                //If possible, get the facade root
                 if(method_exists($facade, 'getFacadeRoot')){
                     $root = get_class($facade::getFacadeRoot());
                 }else{
                     $root = $facade;
                 }
 
+                //If it doesn't exist, skip it
                 if(!class_exists($root) && !interface_exists($root)){
                     $this->error("Class $root is not found.");
                     continue;
                 }
+
+            //When the database connection is not set, some classes will be skipped
             }catch(\PDOException $e){
                 $this->error("PDOException: ".$e->getMessage()."\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade.");
                 continue;
@@ -158,6 +163,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 continue;
             }
 
+            //Get the namespace from the alias.
             if(strpos($alias, '\\') !== false){
                 $parts = explode('\\', $alias);
                 $alias = array_pop($parts);
@@ -167,10 +173,12 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }
 
             try{
+                //Reflect on the class
                 $reflection = new \ReflectionClass($root);
 
                 $output .= "namespace $namespace {\n";
 
+                //Some classes extend the facade
                 if($root !== $facade or in_array($alias, $this->onlyExtend)){
                     //If the root class is not the same as the facade extend it.
                     $output .= " class $alias extends $facade{\n";
@@ -178,32 +186,36 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                     $output .= " class $alias{\n";
                 }
 
+                //If they extend, don't include them.
                 if(!in_array($alias, $this->onlyExtend))
                 {
                     $usedMethods = array();
+
+                    //Check if there are non-static methods for this alias
                     if(array_key_exists($alias, $this->nonstatic) ){
                         $nonstaticMethods = $this->nonstatic[$alias];
                     }else{
                         $nonstaticMethods = array();
                     }
 
-
+                    //Get all public methods for this class
                     $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                     if($methods)
                     {
                         foreach ($methods as $method)
                         {
+                            //Skip methods that are already used
                             if(!in_array($method->name, $usedMethods)){
                                 $static = !in_array($method->name, $nonstaticMethods);
                                 $declaringClass = $method->getDeclaringClass();
-                                $output .= $this->parseMethod($method, $alias, "\\$declaringClass->name", $static);
+                                $output .= $this->parseMethod($method, $alias, $static);
                                 $usedMethods[] = $method->name;
                             }
                         }
                     }
 
+                    //Add extra methods, from other classes (magic calls)
                     if(array_key_exists($alias, $this->extra)){
-                        $i = 2;
                         foreach($this->extra[$alias] as $extraClass){
                             if(!class_exists($extraClass) && !interface_exists($extraClass)){
                                 continue;
@@ -213,13 +225,11 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                             $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                             if($methods)
                             {
-                                $rootParam = "root".$i++;
-                                $output .= "\t/**\n\t * @var \\$extraClass \$$rootParam\n\t */\n\t static private \$$rootParam;\n\n";
                                 foreach ($methods as $method)
                                 {
                                     if(!in_array($method->name, $usedMethods)){
                                         $static = !in_array($method->name, $nonstaticMethods);
-                                        $output .= $this->parseMethod($method, $alias, $extraClass, $static, $rootParam);
+                                        $output .= $this->parseMethod($method, $alias, $static);
                                         $usedMethods[] = $method->name;
                                     }
 
@@ -237,6 +247,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         }
 
+        //Include the helper file, if requested
         if(!empty($helpers)){
             foreach($helpers as $helper){
                 if (file_exists($helper)){
@@ -256,19 +267,24 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
      * @param string $rootParam
      * @return string
      */
-    protected function parseMethod($method, $alias, $root, $static = true, $rootParam = 'root'){
+    protected function parseMethod($method, $alias, $static = true){
         $output = '';
+
+        // Don't add the __clone() functions
         if($method->name === '__clone'){
             return $output;
         }
 
         $namespace = $method->getDeclaringClass()->getNamespaceName();
 
+        //Create a DocBlock and serializer instance
         $phpdoc = new DocBlock($method, new Context($namespace));
         $serializer = new DocBlockSerializer(1, "\t");
 
+        //Get the short + long description from the DocBlock
         $description = $phpdoc->getText();
 
+        //Loop through parents/interfaces, to fill in {@inheritdoc}
         if(strpos($description, '{@inheritdoc}') !== false){
             $inheritdoc = $this->getInheritDoc($method);
             $inheritDescription = $inheritdoc->getText();
@@ -276,6 +292,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $description = str_replace('{@inheritdoc}', $inheritDescription, $description);
             $phpdoc->setText($description);
 
+            //Add the tags that are inherited
             $inheritTags = $inheritdoc->getTags();
             if($inheritTags){
                 foreach($inheritTags as $tag){
@@ -285,6 +302,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }
         }
 
+        //Make the method static
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
         //Looping through the parameters and re-setting the type, to get the expanded type (with namespace)
@@ -302,6 +320,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }
         }
 
+        //Get the return type and adjust them for beter autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
         if($returnTags){
             /** @var  $tag */
@@ -325,8 +344,10 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $returnValue = null;
         }
 
+        //Write the output, using the DocBlock serializer
         $output .= $serializer->getDocComment($phpdoc) ."\n\t public ".($static ? 'static' : '')." function ".$method->name."(";
 
+        //Loop through the default values for paremeters, and make the correct output string
         $params = array();
         $paramsWithDefault = array();
         foreach ($method->getParameters() as $param) {
@@ -352,12 +373,14 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         $output .= implode($paramsWithDefault, ", ");
         $output .= "){\r\n";
 
+        //Only return when not a constructor and not void.
         $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
 
+        //Reference the 'real' function in the declaringclass
+        $root = $method->getDeclaringClass()->getName();
+        $output .=  "\t\t$return \\$root::";
 
-        $output .=  "\t\t$return $root::";
-
-
+        //Write the default parameters in the function call
         $output .=  $method->name."(".implode($params, ", ").");\r\n";
         $output .= "\t }\n\n";
 
@@ -371,6 +394,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
     protected function getInheritDoc($reflectionMethod){
         $parentClass = $reflectionMethod->getDeclaringClass()->getParentClass();
 
+        //Get either a parent or the interface
         if($parentClass){
             $method = $parentClass->getMethod($reflectionMethod->getName());
         }else{

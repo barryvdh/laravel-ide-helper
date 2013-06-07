@@ -2,17 +2,20 @@
 
 ### Complete phpDocs, directly from the source
 
-Add the helper file to your laravel folder (not in a public folder). The file isn't used by Laravel, but it has to be indexed by your IDE.
+This packages generates a file that your IDE can understand, so it can provide accurate autocompletion. Generation is done, based on the files in your project, so they are alway up-to-date.
+If you don't want to generate it, you can add a pre-generated file to the root folder of your laravel project. (But this isn't as up-to-date as self generated files)
 
 * Generated version: https://gist.github.com/barryvdh/5227822
 
+Note: You do need CodeIntel for Sublime Text: https://github.com/Kronuz/SublimeCodeIntel
+
 ### Automatic phpDoc generation for Laravel Facades
 
-Require this package in your composer.json:
+Require this package in your composer.json and run composer update (or run `composer require barryvdh/laravel-ide-helper:1.*` directly):
 
     "barryvdh/laravel-ide-helper": "1.*"
 
-And add the ServiceProvider to the providers array in app/config/app.php
+After updating composer, add the ServiceProvider to the providers array in app/config/app.php
 
     'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
@@ -20,7 +23,7 @@ You can now re-generate the docs yourself (for future updates) in artisan
 
     php artisan ide-helper:generate
 
-Note: You do need CodeIntel for Sublime Text: https://github.com/Kronuz/SublimeCodeIntel
+Note: bootstrap/compiled.php has to be cleared first, so run `php artisan clear-compiled` before generating (and `php artisan optimize` after..)
 
 You can configure your composer.json to do this after each commit:
 
@@ -30,12 +33,6 @@ You can configure your composer.json to do this after each commit:
             "php artisan optimize",
         ]
     },
-
-#### NOTE: run before optimising. If bootstrap/compiled.php is loaded, it doesn't work.
-
-    php artisan clear-compiled
-    php artisan ide-helper:generate
-    php artisan optimize
 
 You can also publish the config-file to change implementations (ie. interface to specific class) or set defaults for --helpers or --sublime.
 

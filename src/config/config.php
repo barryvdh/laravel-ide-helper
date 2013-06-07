@@ -55,7 +55,7 @@ return array(
         'Auth'      => array('Illuminate\Auth\Guard'),
         'Cache'     => array('Illuminate\Cache\StoreInterface', 'Illuminate\Cache\Repository'),
         'DB'        => array('Illuminate\Database\Connection'),
-        'Eloquent'  => array('Illuminate\Database\Query\Builder'),
+        'Eloquent'  => array('Illuminate\Database\Eloquent\Builder', 'Illuminate\Database\Query\Builder'),
         'Queue'     => array('Illuminate\Queue\QueueInterface'),
     ),
 

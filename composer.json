@@ -14,7 +14,7 @@
         "illuminate/support": "4.0.x",
         "illuminate/console": "4.0.x",
         "illuminate/filesystem": "4.0.x",
-        "barryvdh/reflection-docblock": "2.*",
+        "barryvdh/reflection-docblock": ">=2.0.1",
         "symfony/class-loader": "2.3.*"
     },
     "autoload": {

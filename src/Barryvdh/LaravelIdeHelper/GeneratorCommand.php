@@ -305,20 +305,6 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         //Make the method static
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
-        //Looping through the parameters and re-setting the type, to get the expanded type (with namespace)
-        //Should be fixed in a future version of ReflectionDocBlock I hope..
-        $paramTags = $phpdoc->getTagsByName('param');
-        if($paramTags){
-            /** @var  $tag */
-            foreach($paramTags as $tag){
-                $content = $tag->getContent();
-                //Closure should be \Closure..
-                $content = str_replace('\Closure', 'Closure', $content);
-                $content = str_replace('Closure', '\Closure', $content);
-                $tag->setContent($content);
-                $tag->setContent($tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription());
-            }
-        }
 
         //Get the return type and adjust them for beter autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
@@ -328,18 +314,18 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             $returnValue = $tag->getType();
 
             if($method->name == "__construct"){
-                $returnValue = 'self';
+                $tag->setType('self');
             }elseif($alias == 'Eloquent' and
                 (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
                     or $returnValue === '\Illuminate\Database\Query\Builder')){
                 //Reference the calling class, to provide more accurate auto-complete
-                $returnValue .= "static";
+                $tag->addType('static');
             }elseif($alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
-                $returnValue .= "|\Eloquent[]|static[]";
+                $tag->addType('\Eloquent[]');
+                $tag->addType('static[]');
             }elseif($alias == 'Eloquent' and in_array($method->name, array('hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphOne', 'morphTo', 'morphMany'))){
-                $returnValue .= "|\Eloquent";
+                $tag->addType('\Eloquent');
             }
-           $tag->setContent($returnValue . " ". $tag->getDescription());
         }else{
             $returnValue = null;
         }

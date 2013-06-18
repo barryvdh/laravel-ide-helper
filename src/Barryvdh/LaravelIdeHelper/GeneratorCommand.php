@@ -64,7 +64,7 @@ class GeneratorCommand extends Command {
             $this->nonstatic = \Config::get('laravel-ide-helper::nonstatic');
             $this->onlyExtend = \Config::get('laravel-ide-helper::only_extend');
     
-            if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') && ! $this->option('nohelpers'))){
+            if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') )){
                 $this->helpers = \Config::get('laravel-ide-helper::helper_files');
             }else{
                 $this->helpers = array();

@@ -39,7 +39,7 @@ class GeneratorCommand extends Command {
     protected $description = 'Generate a new IDE Helper file.';
 
     protected $extra;
-    protected $nonstatic;
+    protected $extra_nonstatic;
     protected $onlyExtend;
     protected $helpers;
 
@@ -61,9 +61,8 @@ class GeneratorCommand extends Command {
             }
     
             $this->extra = \Config::get('laravel-ide-helper::extra');
-            $this->nonstatic = \Config::get('laravel-ide-helper::nonstatic');
-            $this->onlyExtend = \Config::get('laravel-ide-helper::only_extend');
-    
+            $this->extra_nonstatic = \Config::get('laravel-ide-helper::extra_nonstatic');
+
             if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') )){
                 $this->helpers = \Config::get('laravel-ide-helper::helper_files');
             }else{
@@ -179,66 +178,70 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 $output .= "namespace $namespace {\n";
 
                 //Some classes extend the facade
-                if($root !== $facade or in_array($alias, $this->onlyExtend)){
-                    //If the root class is not the same as the facade extend it.
-                    $output .= " class $alias extends $facade{\n";
-                }else{
-                    $output .= " class $alias{\n";
-                }
+                $output .= " class $alias extends $facade{\n";
 
-                //If they extend, don't include them.
-                if(!in_array($alias, $this->onlyExtend))
+                $usedMethods = array();
+
+                //Get all public methods for this class
+                $methods = $reflection->getMethods();
+                if($methods)
                 {
-                    $usedMethods = array();
-
-                    //Check if there are non-static methods for this alias
-                    if(array_key_exists($alias, $this->nonstatic) ){
-                        $nonstaticMethods = $this->nonstatic[$alias];
-                    }else{
-                        $nonstaticMethods = array();
-                    }
-
-                    //Get all public methods for this class
-                    $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-                    if($methods)
+                    foreach ($methods as $method)
                     {
-                        foreach ($methods as $method)
-                        {
-                            //Skip methods that are already used
-                            if(!in_array($method->name, $usedMethods)){
-                                $static = !in_array($method->name, $nonstaticMethods);
-                                $declaringClass = $method->getDeclaringClass();
-                                $output .= $this->parseMethod($method, $alias, $static);
-                                $usedMethods[] = $method->name;
+                        //Skip methods that are already used
+                        if(!in_array($method->name, $usedMethods)){
+                            if($method->isPublic() && $root !== $facade){
+                                $output .= $this->parseMethod($method, $alias);
                             }
+                            $usedMethods[] = $method->name;
                         }
                     }
+                }
 
-                    //Add extra methods, from other classes (magic calls)
-                    if(array_key_exists($alias, $this->extra)){
-                        foreach($this->extra[$alias] as $extraClass){
-                            if(!class_exists($extraClass) && !interface_exists($extraClass)){
-                                continue;
-                            }
-                            $reflection = new \ReflectionClass($extraClass);
+                //Add extra methods, from other classes (magic static calls)
+                if(array_key_exists($alias, $this->extra)){
+                    foreach($this->extra[$alias] as $extraClass){
+                        if(!class_exists($extraClass) && !interface_exists($extraClass)){
+                            continue;
+                        }
+                        $reflection = new \ReflectionClass($extraClass);
 
-                            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-                            if($methods)
+                        $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                        if($methods)
+                        {
+                            foreach ($methods as $method)
                             {
-                                foreach ($methods as $method)
-                                {
-                                    if(!in_array($method->name, $usedMethods)){
-                                        $static = !in_array($method->name, $nonstaticMethods);
-                                        $output .= $this->parseMethod($method, $alias, $static);
-                                        $usedMethods[] = $method->name;
-                                    }
-
+                                if(!in_array($method->name, $usedMethods)){
+                                    $output .= $this->parseMethod($method, $alias);
+                                    $usedMethods[] = $method->name;
                                 }
                             }
-
                         }
                     }
                 }
+
+                //Add extra methods, from other classes (magic calls)
+                if(array_key_exists($alias, $this->extra_nonstatic)){
+                    foreach($this->extra_nonstatic[$alias] as $extraClass){
+                        if(!class_exists($extraClass) && !interface_exists($extraClass)){
+                            continue;
+                        }
+                        $reflection = new \ReflectionClass($extraClass);
+
+                        $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                        if($methods)
+                        {
+                            foreach ($methods as $method)
+                            {
+                                if(!in_array($method->name, $usedMethods)){
+                                    $output .= $this->parseMethod($method, $alias, false);
+                                    $usedMethods[] = $method->name;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 $output .= " }\n}\n\n";
 
             }catch(\Exception $e){
@@ -331,7 +334,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         }
 
         //Write the output, using the DocBlock serializer
-        $output .= $serializer->getDocComment($phpdoc) ."\n\t public ".($static ? 'static' : '')." function ".$method->name."(";
+        $output .= $serializer->getDocComment($phpdoc) ."\n\t public ".($static ? 'static ' : '')."function ".$method->name."(";
 
         //Loop through the default values for paremeters, and make the correct output string
         $params = array();

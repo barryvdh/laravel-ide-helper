@@ -132,7 +132,7 @@ class GeneratorCommand extends Command {
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
-namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
+exit('Only to be used as an helper for your IDE');\n\n";
 
         //Get all aliases
         $aliases = $aliasLoader->getAliases();

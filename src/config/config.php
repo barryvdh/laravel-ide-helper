@@ -44,8 +44,6 @@ return array(
         'Cache'     => array('Illuminate\Cache\StoreInterface', 'Illuminate\Cache\Repository'),
         'DB'        => array('Illuminate\Database\Connection'),
         'Queue'     => array('Illuminate\Queue\QueueInterface'),
-    ),
-    'extra_nonstatic' => array(
         'Eloquent'  => array('Illuminate\Database\Eloquent\Builder', 'Illuminate\Database\Query\Builder'),
     ),
 

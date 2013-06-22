@@ -39,7 +39,6 @@ class GeneratorCommand extends Command {
     protected $description = 'Generate a new IDE Helper file.';
 
     protected $extra;
-    protected $extra_nonstatic;
     protected $onlyExtend;
     protected $helpers;
 
@@ -61,7 +60,6 @@ class GeneratorCommand extends Command {
             }
     
             $this->extra = \Config::get('laravel-ide-helper::extra');
-            $this->extra_nonstatic = \Config::get('laravel-ide-helper::extra_nonstatic');
 
             if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') )){
                 $this->helpers = \Config::get('laravel-ide-helper::helper_files');
@@ -157,16 +155,13 @@ exit('Only to be used as an helper for your IDE');\n\n";
 
                 //Only add the methods to the output when the root is not the same as the facade.
                 $addOutput = ($root !== $facade);
-                $output .= $this->getMethods($root, $alias, $usedMethods, true, $addOutput);
-
-                if(array_key_exists($alias, $this->extra_nonstatic)){
-                    $output .=  $this->getMethods($this->extra_nonstatic[$alias], $alias, $usedMethods, true);
-                }
+                $output .= $this->getMethods($root, $alias, $usedMethods, $addOutput);
 
                 //Add extra methods, from other classes (magic static calls)
                 if(array_key_exists($alias, $this->extra)){
-                    $output .= $this->getMethods($this->extra[$alias], $alias, $usedMethods, false);
+                    $output .= $this->getMethods($this->extra[$alias], $alias, $usedMethods);
                 }
+
 
                 $output .= "}\n\n";
 
@@ -215,7 +210,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
         }
 
     }
-    protected function getMethods($classes, $alias, &$usedMethods, $static=true, $addOutput = true){
+    protected function getMethods($classes, $alias, &$usedMethods, $addOutput = true){
         if(!is_array($classes)){
             $classes = array($classes);
         }
@@ -233,7 +228,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
                 {
                     if(!in_array($method->name, $usedMethods)){
                         if($method->isPublic() && $addOutput){
-                            $output .= $this->parseMethod($method, $alias, $static);
+                            $output .= $this->parseMethod($method, $alias);
                         }
                         $usedMethods[] = $method->name;
                     }
@@ -250,7 +245,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
      * @param string $rootParam
      * @return string
      */
-    protected function parseMethod($method, $alias, $static = true){
+    protected function parseMethod($method, $alias){
         $output = '';
 
         // Don't add the __clone() functions
@@ -277,7 +272,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
         //Write the output, using the DocBlock serializer
-        $output .= $serializer->getDocComment($phpdoc) ."\n\t public ".($static ? 'static ' : '')."function ".$method->name."(";
+        $output .= $serializer->getDocComment($phpdoc) ."\n\t public static function ".$method->name."(";
 
         $output .= implode($paramsWithDefault, ", ");
         $output .= "){\r\n";

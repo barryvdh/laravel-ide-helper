@@ -144,24 +144,13 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 continue;
             }
 
-            //Get the namespace from the alias.
-            if(strpos($alias, '\\') !== false){
-                $parts = explode('\\', $alias);
-                $alias = array_pop($parts);
-                $namespace = implode($parts, '\\');
-            }else{
-                $namespace = '';
-            }
-
             try{
-
-                $output .= "namespace $namespace {\n";
 
                 //Some classes extend the facade
                 if(class_exists($facade)){
-                    $output .= " class $alias extends $facade{\n";
+                    $output .= "class $alias extends $facade{\n";
                 }else{
-                    $output .= " class $alias{\n";
+                    $output .= "class $alias{\n";
                 }
 
                 $usedMethods = array();
@@ -179,7 +168,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                     $output .= $this->getMethods($this->extra[$alias], $alias, $usedMethods, false);
                 }
 
-                $output .= " }\n}\n\n";
+                $output .= "}\n\n";
 
             }catch(\Exception $e){
                 $this->error("Exception: ".$e->getMessage()."\nCould not analyze $root.");

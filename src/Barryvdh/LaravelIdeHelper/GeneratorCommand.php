@@ -139,26 +139,8 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
 
         foreach($aliases as $alias => $facade){
 
-            try{
-                //If possible, get the facade root
-                if(method_exists($facade, 'getFacadeRoot')){
-                    $root = get_class($facade::getFacadeRoot());
-                }else{
-                    $root = $facade;
-                }
-
-                //If it doesn't exist, skip it
-                if(!class_exists($root) && !interface_exists($root)){
-                    $this->error("Class $root is not found.");
-                    continue;
-                }
-
-            //When the database connection is not set, some classes will be skipped
-            }catch(\PDOException $e){
-                $this->error("PDOException: ".$e->getMessage()."\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade.");
-                continue;
-            }catch(\Exception $e){
-                $this->error("Exception: ".$e->getMessage()."\nSkipping $facade.");
+            $root = $this->getRoot($facade);
+            if(!$root){
                 continue;
             }
 
@@ -172,74 +154,29 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }
 
             try{
-                //Reflect on the class
-                $reflection = new \ReflectionClass($root);
 
                 $output .= "namespace $namespace {\n";
 
                 //Some classes extend the facade
-                $output .= " class $alias extends $facade{\n";
+                if(class_exists($facade)){
+                    $output .= " class $alias extends $facade{\n";
+                }else{
+                    $output .= " class $alias{\n";
+                }
 
                 $usedMethods = array();
 
-                //Get all public methods for this class
-                $methods = $reflection->getMethods();
-                if($methods)
-                {
-                    foreach ($methods as $method)
-                    {
-                        //Skip methods that are already used
-                        if(!in_array($method->name, $usedMethods)){
-                            if($method->isPublic() && $root !== $facade){
-                                $output .= $this->parseMethod($method, $alias);
-                            }
-                            $usedMethods[] = $method->name;
-                        }
-                    }
+                //Only add the methods to the output when the root is not the same as the facade.
+                $addOutput = ($root !== $facade);
+                $output .= $this->getMethods($root, $alias, $usedMethods, true, $addOutput);
+
+                if(array_key_exists($alias, $this->extra_nonstatic)){
+                    $output .=  $this->getMethods($this->extra_nonstatic[$alias], $alias, $usedMethods, true);
                 }
 
                 //Add extra methods, from other classes (magic static calls)
                 if(array_key_exists($alias, $this->extra)){
-                    foreach($this->extra[$alias] as $extraClass){
-                        if(!class_exists($extraClass) && !interface_exists($extraClass)){
-                            continue;
-                        }
-                        $reflection = new \ReflectionClass($extraClass);
-
-                        $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-                        if($methods)
-                        {
-                            foreach ($methods as $method)
-                            {
-                                if(!in_array($method->name, $usedMethods)){
-                                    $output .= $this->parseMethod($method, $alias);
-                                    $usedMethods[] = $method->name;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Add extra methods, from other classes (magic calls)
-                if(array_key_exists($alias, $this->extra_nonstatic)){
-                    foreach($this->extra_nonstatic[$alias] as $extraClass){
-                        if(!class_exists($extraClass) && !interface_exists($extraClass)){
-                            continue;
-                        }
-                        $reflection = new \ReflectionClass($extraClass);
-
-                        $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-                        if($methods)
-                        {
-                            foreach ($methods as $method)
-                            {
-                                if(!in_array($method->name, $usedMethods)){
-                                    $output .= $this->parseMethod($method, $alias, false);
-                                    $usedMethods[] = $method->name;
-                                }
-                            }
-                        }
-                    }
+                    $output .= $this->getMethods($this->extra[$alias], $alias, $usedMethods, false);
                 }
 
                 $output .= " }\n}\n\n";
@@ -262,6 +199,60 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         return $output;
     }
 
+    protected function getRoot($facade){
+        try{
+            //If possible, get the facade root
+            if(method_exists($facade, 'getFacadeRoot')){
+                $root = get_class($facade::getFacadeRoot());
+            }else{
+                $root = $facade;
+            }
+
+            //If it doesn't exist, skip it
+            if(!class_exists($root) && !interface_exists($root)){
+                $this->error("Class $root is not found.");
+                return false;
+            }
+
+            return $root;
+
+            //When the database connection is not set, some classes will be skipped
+        }catch(\PDOException $e){
+            $this->error("PDOException: ".$e->getMessage()."\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade.");
+            return false;
+        }catch(\Exception $e){
+            $this->error("Exception: ".$e->getMessage()."\nSkipping $facade.");
+            return false;
+        }
+
+    }
+    protected function getMethods($classes, $alias, &$usedMethods, $static=true, $addOutput = true){
+        if(!is_array($classes)){
+            $classes = array($classes);
+        }
+        $output = '';
+        foreach($classes as $class){
+            if(!class_exists($class) && !interface_exists($class)){
+                continue;
+            }
+            $reflection = new \ReflectionClass($class);
+
+            $methods = $reflection->getMethods();
+            if($methods)
+            {
+                foreach ($methods as $method)
+                {
+                    if(!in_array($method->name, $usedMethods)){
+                        if($method->isPublic() && $addOutput){
+                            $output .= $this->parseMethod($method, $alias, $static);
+                        }
+                        $usedMethods[] = $method->name;
+                    }
+                }
+            }
+        }
+        return $output;
+    }
     /**
      * @param \ReflectionMethod $method
      * @param string $alias
@@ -284,6 +275,39 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         $phpdoc = new DocBlock($method, new Context($namespace));
         $serializer = new DocBlockSerializer(1, "\t");
 
+        //Normalize the description and inherit the docs from parents/interfaces
+        $this->normalizeDescription($phpdoc, $method);
+
+        //Correct the return values
+        $returnValue = $this->normalizeReturn($phpdoc, $method, $alias);
+
+        //Get the parameters, including formatted default values
+        list($params, $paramsWithDefault) = $this->getParameters($method);
+
+        //Make the method static
+        $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
+
+        //Write the output, using the DocBlock serializer
+        $output .= $serializer->getDocComment($phpdoc) ."\n\t public ".($static ? 'static ' : '')."function ".$method->name."(";
+
+        $output .= implode($paramsWithDefault, ", ");
+        $output .= "){\r\n";
+
+        //Only return when not a constructor and not void.
+        $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
+
+        //Reference the 'real' function in the declaringclass
+        $root = $method->getDeclaringClass()->getName();
+        $output .=  "\t\t$return \\$root::";
+
+        //Write the default parameters in the function call
+        $output .=  $method->name."(".implode($params, ", ").");\r\n";
+        $output .= "\t }\n\n";
+
+        return $output;
+    }
+
+    protected function normalizeDescription(&$phpdoc, $method){
         //Get the short + long description from the DocBlock
         $description = $phpdoc->getText();
 
@@ -304,11 +328,9 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
                 }
             }
         }
+    }
 
-        //Make the method static
-        $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
-
-
+    protected function normalizeReturn(&$phpdoc, $method, $alias){
         //Get the return type and adjust them for beter autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
         if($returnTags){
@@ -332,10 +354,10 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
         }else{
             $returnValue = null;
         }
+        return $returnValue;
+    }
 
-        //Write the output, using the DocBlock serializer
-        $output .= $serializer->getDocComment($phpdoc) ."\n\t public ".($static ? 'static ' : '')."function ".$method->name."(";
-
+    public function getParameters($method){
         //Loop through the default values for paremeters, and make the correct output string
         $params = array();
         $paramsWithDefault = array();
@@ -359,21 +381,7 @@ namespace {\n\tdie('Only to be used as an helper for your IDE');\n}\n\n";
             }
             $paramsWithDefault[] = $paramStr;
         }
-        $output .= implode($paramsWithDefault, ", ");
-        $output .= "){\r\n";
-
-        //Only return when not a constructor and not void.
-        $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
-
-        //Reference the 'real' function in the declaringclass
-        $root = $method->getDeclaringClass()->getName();
-        $output .=  "\t\t$return \\$root::";
-
-        //Write the default parameters in the function call
-        $output .=  $method->name."(".implode($params, ", ").");\r\n";
-        $output .= "\t }\n\n";
-
-        return $output;
+        return array($params, $paramsWithDefault);
     }
 
     /**

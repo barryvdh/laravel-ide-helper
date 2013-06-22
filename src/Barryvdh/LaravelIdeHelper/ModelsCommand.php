@@ -313,7 +313,7 @@ class ModelsCommand extends Command {
         $phpdoc = new DocBlock($reflection, new Context($namespace));
 
         if(!$phpdoc->getText()){
-            $phpdoc->setText("Generated properties for $class");
+            $phpdoc->setText("An Eloquent Model: '$class'");
         }
 
         $properties = array();

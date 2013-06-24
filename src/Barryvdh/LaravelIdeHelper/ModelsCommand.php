@@ -42,6 +42,7 @@ class ModelsCommand extends Command {
     protected $methods = array();
     protected $write = false;
     protected $dir;
+    protected $reset;
 
 
 
@@ -56,6 +57,7 @@ class ModelsCommand extends Command {
         $this->write = $this->option('write');
         $this->dir = $this->option('dir');
         $model = $this->argument('model');
+        $this->reset = $this->option('reset');
 
         $content = $this->generateDocs($model);
 
@@ -95,6 +97,7 @@ class ModelsCommand extends Command {
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', '_ide_helper_models.php'),
             array('dir', 'D', InputOption::VALUE_OPTIONAL, 'The model dir','app/models'),
             array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
+            array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
         );
     }
 
@@ -310,7 +313,12 @@ class ModelsCommand extends Command {
         $namespace = $reflection->getNamespaceName();
         $classname = $reflection->getShortName();
         $originalDoc = $reflection->getDocComment();
-        $phpdoc = new DocBlock($reflection, new Context($namespace));
+
+        if($this->reset){
+            $phpdoc = new DocBlock('', new Context($namespace));
+        }else{
+            $phpdoc = new DocBlock($reflection, new Context($namespace));
+        }
 
         if(!$phpdoc->getText()){
             $phpdoc->setText("An Eloquent Model: '$class'");

@@ -54,19 +54,30 @@ If you don't want to write your properties yourself, you can use the command `id
 phpDocs, based on table columns, relations and getters/setters. Still in beta, so please provide feedback if you want.
 Docs are written to a phpfile (_ide_helper_models.php) in the root of the project, so you can move the docs to the real model.
 
-You can now also write the comments directly to your Model file, using the -W argument. Please make sure to backup your models, before writing the info.
+You can now also write the comments directly to your Model file, using the --write (-W) option. Please make sure to backup your models, before writing the info.
 It should keep the existing comments and only append new properties/methods. The existing phpdoc is replaced, or added if not found.
+With the --reset (-R) option, the existing phpdocs are ignored, only the newly found columns/relations are saved as phpdocs.
+
+    php artisan ide-helper:models Post
+
+    /**
+     * An Eloquent Model: 'Post'
+     *
+     * @property integer $id
+     * @property integer $author_id
+     * @property string $title
+     * @property string $text
+     * @property \Carbon\Carbon $created_at
+     * @property \Carbon\Carbon $updated_at
+     * @property-read \User $author
+     * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
+     */
 
 For now, only models in app/models are scanned. The optional argument tells what models to use (also outside app/models).
 `php artisan ide-helper:models Post,User`
 
 Note: With namespaces, uses \\ instead of \
 `php artisan ide-helper:models API\\User`
-
-This creates a file with the phpDocs for each Model. You should check and change them to be more accurate.
-Also, all relations are Eloquent|Eloquent[] by default, you can change them to the actual Model.
-After copying the phpdocs to your model, you can clear the file, so your IDE only uses the real source.
-
 
 ### License
 

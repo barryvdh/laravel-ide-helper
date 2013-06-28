@@ -183,6 +183,12 @@ exit('Only to be used as an helper for your IDE');\n\n";
         return $output;
     }
 
+    /**
+     * Get the real root of a facade
+     *
+     * @param $facade
+     * @return bool|string
+     */
     protected function getRoot($facade){
         try{
             //If possible, get the facade root
@@ -210,6 +216,16 @@ exit('Only to be used as an helper for your IDE');\n\n";
         }
 
     }
+
+    /**
+     * Get the methods for one or multiple classes.
+     *
+     * @param $classes
+     * @param $alias
+     * @param $usedMethods
+     * @param bool $addOutput
+     * @return string
+     */
     protected function getMethods($classes, $alias, &$usedMethods, $addOutput = true){
         if(!is_array($classes)){
             $classes = array($classes);
@@ -237,12 +253,10 @@ exit('Only to be used as an helper for your IDE');\n\n";
         }
         return $output;
     }
+
     /**
      * @param \ReflectionMethod $method
      * @param string $alias
-     * @param string $root
-     * @param bool $static
-     * @param string $rootParam
      * @return string
      */
     protected function parseMethod($method, $alias){
@@ -291,6 +305,12 @@ exit('Only to be used as an helper for your IDE');\n\n";
         return $output;
     }
 
+    /**
+     * Get the description and get the inherited docs.
+     *
+     * @param $phpdoc
+     * @param $method
+     */
     protected function normalizeDescription(&$phpdoc, $method){
         //Get the short + long description from the DocBlock
         $description = $phpdoc->getText();
@@ -314,6 +334,14 @@ exit('Only to be used as an helper for your IDE');\n\n";
         }
     }
 
+    /**
+     * Make some changes to the return types, if needed.
+     *
+     * @param $phpdoc
+     * @param $method
+     * @param $alias
+     * @return null
+     */
     protected function normalizeReturn(&$phpdoc, $method, $alias){
         //Get the return type and adjust them for beter autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
@@ -333,6 +361,12 @@ exit('Only to be used as an helper for your IDE');\n\n";
         return $returnValue;
     }
 
+    /**
+     * Get the parameters and format them correctly
+     *
+     * @param $method
+     * @return array
+     */
     public function getParameters($method){
         //Loop through the default values for paremeters, and make the correct output string
         $params = array();

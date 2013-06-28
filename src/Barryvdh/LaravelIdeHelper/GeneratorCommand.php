@@ -324,14 +324,6 @@ exit('Only to be used as an helper for your IDE');\n\n";
 
             if($method->name == "__construct"){
                 $tag->setType('self');
-            }elseif($alias == 'Eloquent' and
-                (in_array($method->name, array('pluck', 'first', 'fill', 'newInstance', 'newFromBuilder', 'create', 'find', 'findOrFail'))
-                    or $returnValue === '\Illuminate\Database\Query\Builder')){
-                //Reference the calling class, to provide more accurate auto-complete
-                $tag->addType('static');
-            }elseif($alias == 'Eloquent' and in_array($method->name, array('all', 'get'))){
-                $tag->addType('\Eloquent[]');
-                $tag->addType('static[]');
             }elseif($alias == 'Eloquent' and in_array($method->name, array('hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphOne', 'morphTo', 'morphMany'))){
                 $tag->addType('\Eloquent');
             }

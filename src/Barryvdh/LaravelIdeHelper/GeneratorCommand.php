@@ -221,13 +221,13 @@ exit('Only to be used as an helper for your IDE');\n\n";
             }
             $reflection = new \ReflectionClass($class);
 
-            $methods = $reflection->getMethods();
+            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
             if($methods)
             {
                 foreach ($methods as $method)
                 {
                     if(!in_array($method->name, $usedMethods)){
-                        if($method->isPublic() && $addOutput){
+                        if( $addOutput){
                             $output .= $this->parseMethod($method, $alias);
                         }
                         $usedMethods[] = $method->name;

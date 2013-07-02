@@ -295,8 +295,21 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
 
         //Reference the 'real' function in the declaringclass
-        $root = $method->getDeclaringClass()->getName();
-        $output .=  "\t\t$return \\$root::";
+        $declaringClass = $method->getDeclaringClass();
+        $constructor = $declaringClass->getConstructor();
+        $root = $declaringClass->getName();
+
+        $output .=  "\t\t\ $root = new \\$root(";
+        if(!is_null($constructor)){
+            $constructorParams = array();
+            for($i=0;$i<$constructor->getNumberOfRequiredParameters();$i++){
+                $constructorParams[] = 'null';
+            }
+            $output .= implode($constructorParams, ',');
+        }
+        $output .= ");\n";
+
+        $output .=  "\t\t$return \$root->";
 
         //Write the default parameters in the function call
         $output .=  $method->name."(".implode($params, ", ").");\r\n";

@@ -40,10 +40,6 @@ return array(
     */
 
     'extra' => array(
-        'Auth'      => array('Illuminate\Auth\Guard'),
-        'Cache'     => array('Illuminate\Cache\StoreInterface', 'Illuminate\Cache\Repository'),
-        'DB'        => array('Illuminate\Database\Connection'),
-        'Queue'     => array('Illuminate\Queue\QueueInterface'),
         'Eloquent'  => array('Illuminate\Database\Eloquent\Builder', 'Illuminate\Database\Query\Builder'),
     ),
 

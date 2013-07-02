@@ -157,6 +157,12 @@ exit('Only to be used as an helper for your IDE');\n\n";
                 $addOutput = ($root !== $facade);
                 $output .= $this->getMethods($root, $alias, $usedMethods, $addOutput);
 
+
+                $driver =  $this->getDriver($alias);
+                if($driver){
+                    $output .= $this->getMethods($driver, $alias, $usedMethods);
+                }
+
                 //Add extra methods, from other classes (magic static calls)
                 if(array_key_exists($alias, $this->extra)){
                     $output .= $this->getMethods($this->extra[$alias], $alias, $usedMethods);
@@ -217,6 +223,22 @@ exit('Only to be used as an helper for your IDE');\n\n";
 
     }
 
+    public function getDriver($alias){
+        if($alias == "Auth"){
+            $driver = \Auth::driver();
+        }elseif($alias == "DB"){
+            $driver = \DB::connection();
+        }elseif($alias == "Cache"){
+            $driver = \Cache::driver();
+        }elseif($alias == "Queue"){
+            $driver = \Queue::connection();
+        }else{
+            return false;
+        }
+
+        return get_class($driver);
+    }
+
     /**
      * Get the methods for one or multiple classes.
      *
@@ -244,7 +266,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
                 {
                     if(!in_array($method->name, $usedMethods)){
                         if( $addOutput){
-                            $output .= $this->parseMethod($method, $alias);
+                            $output .= $this->parseMethod($method, $alias, $reflection);
                         }
                         $usedMethods[] = $method->name;
                     }
@@ -259,7 +281,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
      * @param string $alias
      * @return string
      */
-    protected function parseMethod($method, $alias){
+    protected function parseMethod($method, $alias, $class){
         $output = '';
 
         // Don't add the __clone() functions
@@ -292,14 +314,19 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $output .= "){\r\n";
 
         //Only return when not a constructor and not void.
-        $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
+        $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return ' : '';
 
         //Reference the 'real' function in the declaringclass
         $declaringClass = $method->getDeclaringClass();
+        if($declaringClass->isAbstract()){
+            $declaringClass = $class;
+        }
+
         $constructor = $declaringClass->getConstructor();
         $root = $declaringClass->getName();
 
-        $output .=  "\t\t\ $root = new \\$root(";
+
+        $output .=  "\t\t\$root = new \\$root(";
         if(!is_null($constructor)){
             $constructorParams = array();
             for($i=0;$i<$constructor->getNumberOfRequiredParameters();$i++){
@@ -309,7 +336,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
         }
         $output .= ");\n";
 
-        $output .=  "\t\t$return \$root->";
+        $output .=  "\t\t$return\$root->";
 
         //Write the default parameters in the function call
         $output .=  $method->name."(".implode($params, ", ").");\r\n";

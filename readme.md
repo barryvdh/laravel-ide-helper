@@ -8,7 +8,7 @@ If you don't want to generate it, you can add a pre-generated file to the root f
 
 * Generated version: https://gist.github.com/barryvdh/5227822
 
-Note: You do need CodeIntel for Sublime Text: https://github.com/Kronuz/SublimeCodeIntel
+Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeIntel/SublimeCodeIntel
 
 ### Automatic phpDoc generation for Laravel Facades
 

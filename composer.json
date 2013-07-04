@@ -11,11 +11,11 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": "4.0.x",
-        "illuminate/console": "4.0.x",
-        "illuminate/filesystem": "4.0.x",
+        "illuminate/support": "4.x",
+        "illuminate/console": "4.x",
+        "illuminate/filesystem": "4.x",
         "barryvdh/reflection-docblock": ">=2.0.1",
-        "symfony/class-loader": "2.3.*"
+        "symfony/class-loader": "~2.3"
     },
     "autoload": {
         "psr-0": {

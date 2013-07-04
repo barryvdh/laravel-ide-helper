@@ -314,29 +314,17 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $output .= "){\r\n";
 
         //Only return when not a constructor and not void.
-        $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return ' : '';
+        $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
 
         //Reference the 'real' function in the declaringclass
         $declaringClass = $method->getDeclaringClass();
-        if($declaringClass->isAbstract()){
-            $declaringClass = $class;
+        $root = $class->getName();
+
+        if($declaringClass->name != $root){
+            $output .= "\t\t//Method inherited from $declaringClass->name\r\n";
         }
 
-        $constructor = $declaringClass->getConstructor();
-        $root = $declaringClass->getName();
-
-
-        $output .=  "\t\t\$root = new \\$root(";
-        if(!is_null($constructor)){
-            $constructorParams = array();
-            for($i=0;$i<$constructor->getNumberOfRequiredParameters();$i++){
-                $constructorParams[] = 'null';
-            }
-            $output .= implode($constructorParams, ',');
-        }
-        $output .= ");\n";
-
-        $output .=  "\t\t$return\$root->";
+        $output .=  "\t\t$return $root::";
 
         //Write the default parameters in the function call
         $output .=  $method->name."(".implode($params, ", ").");\r\n";

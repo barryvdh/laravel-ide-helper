@@ -224,19 +224,24 @@ exit('Only to be used as an helper for your IDE');\n\n";
     }
 
     public function getDriver($alias){
-        if($alias == "Auth"){
-            $driver = \Auth::driver();
-        }elseif($alias == "DB"){
-            $driver = \DB::connection();
-        }elseif($alias == "Cache"){
-            $driver = \Cache::driver();
-        }elseif($alias == "Queue"){
-            $driver = \Queue::connection();
-        }else{
+        try{
+            if($alias == "Auth"){
+                $driver = \Auth::driver();
+            }elseif($alias == "DB"){
+                $driver = \DB::connection();
+            }elseif($alias == "Cache"){
+                $driver = \Cache::driver();
+            }elseif($alias == "Queue"){
+                $driver = \Queue::connection();
+            }else{
+                return false;
+            }
+
+            return get_class($driver);
+        }catch(\Exception $e){
+            $this->error("Could not determine driver/connection for $alias.");
             return false;
         }
-
-        return get_class($driver);
     }
 
     /**

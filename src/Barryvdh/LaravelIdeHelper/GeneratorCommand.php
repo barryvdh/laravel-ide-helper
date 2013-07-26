@@ -178,8 +178,8 @@ exit('Only to be used as an helper for your IDE');\n\n";
         }
 
         //Include the helper file, if requested
-        if(!empty($helpers)){
-            foreach($helpers as $helper){
+        if(!empty($this->helpers)){
+            foreach($this->helpers as $helper){
                 if (file_exists($helper)){
                     $output .= str_replace(array('<?php', '?>'), '', \File::get($helper));
                 }

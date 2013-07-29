@@ -73,9 +73,13 @@ With the `--reset (-R)` option, the existing phpdocs are ignored, only the newly
      * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
      */
 
-For now, only models in app/models are scanned. The optional argument tells what models to use (also outside app/models).
+By default, models in app/models are scanned. The optional argument tells what models to use (also outside app/models).
 
     php artisan ide-helper:models Post,User
+
+You can also scan a different directory, using the --dir option (relative from the base path):
+
+    php artisan ide-helper:models --dir="app/workbench/name/package/models"
 
 Note: With namespaces, uses `\\` instead of `\`: `php artisan ide-helper:models API\\User`
 

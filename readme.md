@@ -81,7 +81,7 @@ You can also scan a different directory, using the --dir option (relative from t
 
     php artisan ide-helper:models --dir="app/workbench/name/package/models"
 
-Note: With namespaces, uses `\\` instead of `\`: `php artisan ide-helper:models API\\User`
+Note: With namespaces, wrap your model name in " signs: `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
 
 ### License
 

@@ -41,6 +41,7 @@ class GeneratorCommand extends Command {
     protected $extra;
     protected $onlyExtend;
     protected $helpers;
+    protected $magic;
 
 
     /**
@@ -60,6 +61,7 @@ class GeneratorCommand extends Command {
             }
     
             $this->extra = \Config::get('laravel-ide-helper::extra');
+            $this->magic = \Config::get('laravel-ide-helper::magic');
 
             if( $this->option('helpers') || (\Config::get('laravel-ide-helper::include_helpers') )){
                 $this->helpers = \Config::get('laravel-ide-helper::helper_files');
@@ -166,6 +168,11 @@ exit('Only to be used as an helper for your IDE');\n\n";
                 //Add extra methods, from other classes (magic static calls)
                 if(array_key_exists($alias, $this->extra)){
                     $output .= $this->getMethods($this->extra[$alias], $alias, $usedMethods);
+                }
+
+                //Add extra methods, from other classes (magic static calls)
+                if(array_key_exists($alias, $this->magic)){
+                    $output .= $this->addMagicMethods($this->magic[$alias], $alias, $usedMethods);
                 }
 
 
@@ -282,17 +289,51 @@ exit('Only to be used as an helper for your IDE');\n\n";
     }
 
     /**
+     * Get the methods for one or multiple magic methods.
+     *
+     * @param $methods
+     * @param $alias
+     * @param $usedMethods
+     * @param bool $addOutput
+     * @return string
+     */
+    protected function addMagicMethods($methods, $alias, &$usedMethods, $addOutput = true){
+        $output = '';
+        foreach($methods as $magic => $real){
+            list($className, $name) = explode('::', $real);
+            if(!class_exists($className) && !interface_exists($className)){
+                continue;
+            }
+            $method = new \ReflectionMethod($className, $name);
+            $class = new \ReflectionClass($className);
+
+            if(!in_array($method->name, $usedMethods)){
+                if( $addOutput){
+                    $output .= $this->parseMethod($method, $alias, $class, $magic);
+                }
+                $usedMethods[] = $method->name;
+            }
+
+
+            $usedMethods[] = $magic;
+
+        }
+        return $output;
+    }
+
+    /**
      * @param \ReflectionMethod $method
      * @param string $alias
      * @return string
      */
-    protected function parseMethod($method, $alias, $class){
+    protected function parseMethod($method, $alias, $class, $methodName = null){
         $output = '';
 
         // Don't add the __clone() functions
         if($method->name === '__clone'){
             return $output;
         }
+        $methodName = $methodName ?: $method->name;
 
         $namespace = $method->getDeclaringClass()->getNamespaceName();
 
@@ -313,7 +354,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
         //Write the output, using the DocBlock serializer
-        $output .= $serializer->getDocComment($phpdoc) ."\n\t public static function ".$method->name."(";
+        $output .= $serializer->getDocComment($phpdoc) ."\n\t public static function ".$methodName."(";
 
         $output .= implode($paramsWithDefault, ", ");
         $output .= "){\r\n";

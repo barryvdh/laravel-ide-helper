@@ -13,10 +13,10 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Illuminate\Foundation\AliasLoader;
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Context;
+use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
 /**
  * A command to generate autocomplete information for your IDE
  *
@@ -304,7 +304,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $this->normalizeDescription($phpdoc, $method);
 
         //Correct the return values
-        $returnValue = $this->normalizeReturn($phpdoc, $method, $alias);
+        $returnValue = $this->getReturn($phpdoc);
 
         //Get the parameters, including formatted default values
         list($params, $paramsWithDefault) = $this->getParameters($method);
@@ -371,23 +371,15 @@ exit('Only to be used as an helper for your IDE');\n\n";
      * Make some changes to the return types, if needed.
      *
      * @param $phpdoc
-     * @param $method
-     * @param $alias
-     * @return null
+     * @return string|null
      */
-    protected function normalizeReturn(&$phpdoc, $method, $alias){
+    protected function getReturn($phpdoc){
         //Get the return type and adjust them for beter autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
         if($returnTags){
             /** @var  $tag */
             $tag = reset($returnTags);
             $returnValue = $tag->getType();
-
-            if($method->name == "__construct"){
-                $tag->setType('self');
-            }elseif($alias == 'Eloquent' and in_array($method->name, array('hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphOne', 'morphTo', 'morphMany'))){
-                $tag->addType('\Eloquent');
-            }
         }else{
             $returnValue = null;
         }

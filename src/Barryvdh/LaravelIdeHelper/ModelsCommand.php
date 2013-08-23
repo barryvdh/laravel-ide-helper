@@ -234,7 +234,11 @@ class ModelsCommand extends Command {
                    //Magic set<name>Attribute
                    $name =  \Str::snake(substr($method, 5));
                    if(!empty($name)){
-                       $this->setMethod($name, 'static');
+                       $reflection = new \ReflectionMethod($model, $method);
+                       $args = $this->getParameters($reflection);
+                       //Remove the first ($query) argument
+                       array_shift($args);
+                       $this->setMethod($name, 'static', $args);
                    }
                }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
 
@@ -300,13 +304,15 @@ class ModelsCommand extends Command {
         }
     }
 
-    protected function setMethod($name, $type = null){
+    protected function setMethod($name, $type = null, $arguments=array()){
         if(!isset($this->methods[$name])){
             $this->methods[$name] = array();
             $this->methods[$name]['type'] = 'static';
+            $this->methods[$name]['arguments'] = $arguments;
         }
         if($type !== null){
             $this->methods[$name]['type'] = $type;
+            $this->methods[$name]['arguments'] = $arguments;
         }
     }
 
@@ -362,8 +368,8 @@ class ModelsCommand extends Command {
             if(in_array($name, $methods)){
                 continue;
             }
-            $name = "$name()";
-            $tag = Tag::createInstance("@method {$method['type']} {$name}", $phpdoc);
+            $arguments = implode(', ',$method['arguments']);
+            $tag = Tag::createInstance("@method {$method['type']} {$name}({$arguments}) ", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 
@@ -392,6 +398,39 @@ class ModelsCommand extends Command {
 
         $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$classname} {}\n}\n\n";
         return $output;
+    }
+
+    /**
+     * Get the parameters and format them correctly
+     *
+     * @param $method
+     * @return array
+     */
+    public function getParameters($method){
+        //Loop through the default values for paremeters, and make the correct output string
+        $params = array();
+        $paramsWithDefault = array();
+        foreach ($method->getParameters() as $param) {
+            $paramStr = '$'.$param->getName();
+            $params[] = $paramStr;
+            if ($param->isOptional()) {
+                $default = $param->getDefaultValue();
+                if(is_bool($default)){
+                    $default = $default? 'true':'false';
+                }elseif(is_array($default)){
+                    $default = 'array()';
+                }elseif(is_null($default)){
+                    $default = 'null';
+                }elseif(is_int($default)){
+                    //$default = $default;
+                }else{
+                    $default = "'".trim($default)."'";
+                }
+                $paramStr .= " = $default";
+            }
+            $paramsWithDefault[] = $paramStr;
+        }
+        return $paramsWithDefault;
     }
 
 }

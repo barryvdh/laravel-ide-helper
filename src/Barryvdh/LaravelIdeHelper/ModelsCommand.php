@@ -238,7 +238,7 @@ class ModelsCommand extends Command {
                        $args = $this->getParameters($reflection);
                        //Remove the first ($query) argument
                        array_shift($args);
-                       $this->setMethod($name, 'static', $args);
+                       $this->setMethod($name, "static " . $reflection->class, $args);
                    }
                }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
 

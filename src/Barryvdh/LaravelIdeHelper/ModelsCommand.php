@@ -30,6 +30,7 @@ class ModelsCommand extends Command {
      * @var string
      */
     protected $name = 'ide-helper:models';
+    protected $filename = '_ide_helper_models.php';
 
     /**
      * The console command description.
@@ -59,6 +60,13 @@ class ModelsCommand extends Command {
         $model = $this->argument('model');
         $this->reset = $this->option('reset');
 
+        //If filename is default and Write is not specified, ask what to do
+        if(!$this->write && $filename === $this->filename){
+            if($this->confirm("Do you want to overwrite the existing model files for '$model'? Choose no to write to $filename instead? (Yes/No): ")){
+                $this->write = true;
+            }
+        }
+
         $content = $this->generateDocs($model);
 
         if(!$this->write){
@@ -69,7 +77,6 @@ class ModelsCommand extends Command {
                 $this->error("Failed to write model information to $filename");
             }
         }
-
     }
 
 
@@ -94,7 +101,7 @@ class ModelsCommand extends Command {
     protected function getOptions()
     {
         return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', '_ide_helper_models.php'),
+            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
             array('dir', 'D', InputOption::VALUE_OPTIONAL, 'The model dir','app/models'),
             array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
             array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),

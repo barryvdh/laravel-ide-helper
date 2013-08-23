@@ -324,6 +324,8 @@ exit('Only to be used as an helper for your IDE');\n\n";
     /**
      * @param \ReflectionMethod $method
      * @param string $alias
+     * @param $class
+     * @param null $methodName
      * @return string
      */
     protected function parseMethod($method, $alias, $class, $methodName = null){

@@ -238,7 +238,7 @@ class ModelsCommand extends Command {
                        $args = $this->getParameters($reflection);
                        //Remove the first ($query) argument
                        array_shift($args);
-                       $this->setMethod($name, "static " . $reflection->class, $args);
+                       $this->setMethod($name, $reflection->class, $args);
                    }
                }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
 
@@ -304,13 +304,9 @@ class ModelsCommand extends Command {
         }
     }
 
-    protected function setMethod($name, $type = null, $arguments=array()){
+    protected function setMethod($name, $type = '', $arguments=array()){
         if(!isset($this->methods[$name])){
             $this->methods[$name] = array();
-            $this->methods[$name]['type'] = 'static';
-            $this->methods[$name]['arguments'] = $arguments;
-        }
-        if($type !== null){
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;
         }
@@ -369,7 +365,7 @@ class ModelsCommand extends Command {
                 continue;
             }
             $arguments = implode(', ',$method['arguments']);
-            $tag = Tag::createInstance("@method {$method['type']} {$name}({$arguments}) ", $phpdoc);
+            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments}) ", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 

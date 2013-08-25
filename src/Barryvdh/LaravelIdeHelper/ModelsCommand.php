@@ -232,7 +232,7 @@ class ModelsCommand extends Command {
                    }
                }elseif(\Str::startsWith($method, 'scope') && $method !== 'scopeQuery'){
                    //Magic set<name>Attribute
-                   $name =  \Str::snake(substr($method, 5));
+                   $name =  \Str::camel(substr($method, 5));
                    if(!empty($name)){
                        $reflection = new \ReflectionMethod($model, $method);
                        $args = $this->getParameters($reflection);

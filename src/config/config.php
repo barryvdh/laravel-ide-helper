@@ -41,6 +41,7 @@ return array(
 
     'extra' => array(
         'Eloquent'  => array('Illuminate\Database\Eloquent\Builder', 'Illuminate\Database\Query\Builder'),
+        'Session' => array('Illuminate\Session\Store'),
     ),
 
     'magic' => array(

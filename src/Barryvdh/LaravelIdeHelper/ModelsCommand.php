@@ -61,7 +61,7 @@ class ModelsCommand extends Command {
         $this->reset = $this->option('reset');
 
         //If filename is default and Write is not specified, ask what to do
-        if(!$this->write && $filename === $this->filename){
+        if(!$this->write && $filename === $this->filename && !$this->option('nowrite')){
             if($this->confirm("Do you want to overwrite the existing model files for '$model'? Choose no to write to $filename instead? (Yes/No): ")){
                 $this->write = true;
             }
@@ -89,7 +89,7 @@ class ModelsCommand extends Command {
     {
         return array(
             array('model', InputArgument::OPTIONAL, 'Which models to include', '*'),
-
+            array('ignore', InputArgument::OPTIONAL, 'Which models to ignore', null),
         );
     }
 
@@ -104,6 +104,7 @@ class ModelsCommand extends Command {
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
             array('dir', 'D', InputOption::VALUE_OPTIONAL, 'The model dir','app/models'),
             array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
+            array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
             array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
         );
     }
@@ -128,6 +129,7 @@ class ModelsCommand extends Command {
         }
 
         foreach($models as $name){
+
             $this->properties = array();
             $this->methods = array();
             if(class_exists($name)){

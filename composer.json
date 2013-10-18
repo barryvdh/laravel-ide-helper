@@ -15,7 +15,8 @@
         "illuminate/console": "4.x",
         "illuminate/filesystem": "4.x",
         "phpdocumentor/reflection-docblock": "2.0.0",
-        "symfony/class-loader": "~2.3"
+        "symfony/class-loader": "~2.3",
+        "doctrine/dbal": "~2.3"
     },
     "autoload": {
         "psr-0": {

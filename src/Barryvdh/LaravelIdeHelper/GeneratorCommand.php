@@ -147,7 +147,9 @@ exit('Only to be used as an helper for your IDE');\n\n";
             try{
 
                 //Some classes extend the facade
-                if(class_exists($facade)){
+                if(interface_exists($facade)){
+                    $output .= "interface $alias extends $facade{\n";
+                }elseif(class_exists($facade)){
                     $output .= "class $alias extends $facade{\n";
                 }else{
                     $output .= "class $alias{\n";

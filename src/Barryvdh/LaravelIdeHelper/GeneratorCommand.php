@@ -361,7 +361,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $output .= $serializer->getDocComment($phpdoc) ."\n\t public static function ".$methodName."(";
 
         $output .= implode($paramsWithDefault, ", ");
-        $output .= "){\r\n";
+        $output .= "){\n";
 
         //Only return when not a constructor and not void.
         $return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct") ? 'return' : '';
@@ -371,13 +371,13 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $root = $class->getName();
 
         if($declaringClass->name != $root){
-            $output .= "\t\t//Method inherited from $declaringClass->name\r\n";
+            $output .= "\t\t//Method inherited from $declaringClass->name\n";
         }
 
         $output .=  "\t\t$return $root::";
 
         //Write the default parameters in the function call
-        $output .=  $method->name."(".implode($params, ", ").");\r\n";
+        $output .=  $method->name."(".implode($params, ", ").");\n";
         $output .= "\t }\n\n";
 
         return $output;

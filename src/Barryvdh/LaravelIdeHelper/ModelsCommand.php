@@ -183,7 +183,7 @@ class ModelsCommand extends Command {
      * @param \Illuminate\Database\Eloquent\Model $model
      */
     protected function getPropertiesFromTable($model){
-        $table = $model->getTable();
+        $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager($table);
         $schema->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 

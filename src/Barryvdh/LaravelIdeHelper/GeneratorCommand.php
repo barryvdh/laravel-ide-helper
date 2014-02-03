@@ -232,6 +232,12 @@ exit('Only to be used as an helper for your IDE');\n\n";
 
     }
 
+    /**
+     * Get the driver/connection/store from the managers
+     *
+     * @param $alias
+     * @return array|bool|string
+     */
     public function getDriver($alias){
         try{
             if($alias == "Auth"){
@@ -239,7 +245,9 @@ exit('Only to be used as an helper for your IDE');\n\n";
             }elseif($alias == "DB"){
                 $driver = \DB::connection();
             }elseif($alias == "Cache"){
-                $driver = \Cache::driver();
+                $driver = get_class(\Cache::driver());
+                $store = get_class(\Cache::getStore());
+                return array($driver, $store);
             }elseif($alias == "Queue"){
                 $driver = \Queue::connection();
             }else{

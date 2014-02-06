@@ -28,6 +28,18 @@ return array(
     'helper_files' => array(
         base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
     ),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Additional model locations to include
+    |--------------------------------------------------------------------------
+    |
+    | Include additional model locations Useful for if you have models
+    | outside of the /app/models directory.
+    |
+    */
+    
+    'model_locations' => (),
 
 
     /*

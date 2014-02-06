@@ -167,11 +167,14 @@ class ModelsCommand extends Command {
 
 
     protected function loadModels(){
-        $dir = base_path().'/'.$this->dir;
+        $default = (array)(base_path().'/'.$this->dir);
+        $dir = array_merge(\Config::get('laravel-ide-helper::model_locations'),$default);
         $models = array();
-        if(file_exists($dir)){
-            foreach(ClassMapGenerator::createMap($dir) as $model=> $path){
-                $models[] = $model;
+        foreach($dir as $d){
+            if(file_exists($d)){
+                foreach(ClassMapGenerator::createMap($d) as $model=> $path){
+                    $models[] = $model;
+                }
             }
         }
         return $models;

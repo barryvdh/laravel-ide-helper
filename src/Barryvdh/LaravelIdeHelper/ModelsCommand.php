@@ -42,7 +42,7 @@ class ModelsCommand extends Command {
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
-    protected $dir;
+    protected $dirs = array();
     protected $reset;
 
 
@@ -56,7 +56,7 @@ class ModelsCommand extends Command {
     {
         $filename = $this->option('filename');
         $this->write = $this->option('write');
-        $this->dir = $this->option('dir');
+        $this->dirs = array_merge($this->laravel['config']->get('laravel-ide-helper::model_locations'), $this->option('dir'));
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
@@ -102,7 +102,7 @@ class ModelsCommand extends Command {
     {
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
-            array('dir', 'D', InputOption::VALUE_OPTIONAL, 'The model dir','app/models'),
+            array('dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The model dir', array()),
             array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
             array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
             array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
@@ -167,12 +167,11 @@ class ModelsCommand extends Command {
 
 
     protected function loadModels(){
-        $default = (array)(base_path().'/'.$this->dir);
-        $dir = array_merge(\Config::get('laravel-ide-helper::model_locations'),$default);
         $models = array();
-        foreach($dir as $d){
-            if(file_exists($d)){
-                foreach(ClassMapGenerator::createMap($d) as $model=> $path){
+        foreach($this->dirs as $dir){
+            $dir = base_path() . '/' . $dir;
+            if(file_exists($dir)){
+                foreach(ClassMapGenerator::createMap($dir) as $model=> $path){
                     $models[] = $model;
                 }
             }

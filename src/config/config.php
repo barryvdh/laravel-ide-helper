@@ -28,18 +28,20 @@ return array(
     'helper_files' => array(
         base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
     ),
-    
+
     /*
     |--------------------------------------------------------------------------
-    | Additional model locations to include
+    | Model locations to include
     |--------------------------------------------------------------------------
     |
-    | Include additional model locations Useful for if you have models
-    | outside of the /app/models directory.
+    | Define in which directories the ide-helper:models command should look
+    | for models.
     |
     */
-    
-    'model_locations' => (),
+
+    'model_locations' => array(
+        'app/models',
+    ),
 
 
     /*

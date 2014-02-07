@@ -63,7 +63,7 @@ class ModelsCommand extends Command {
 
         //If filename is default and Write is not specified, ask what to do
         if(!$this->write && $filename === $this->filename && !$this->option('nowrite')){
-            if($this->confirm("Do you want to overwrite the existing model files for '$model'? Choose no to write to $filename instead? (Yes/No): ")){
+            if($this->confirm("Do you want to overwrite the existing model files? Choose no to write to $filename instead? (Yes/No): ")){
                 $this->write = true;
             }
         }
@@ -89,7 +89,7 @@ class ModelsCommand extends Command {
     protected function getArguments()
     {
         return array(
-            array('model', InputArgument::OPTIONAL, 'Which models to include', '*'),
+            array('model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', array()),
         );
     }
 
@@ -110,7 +110,7 @@ class ModelsCommand extends Command {
         );
     }
 
-    protected function generateDocs($model, $ignore = ''){
+    protected function generateDocs($loadModels, $ignore = ''){
 
 
         $output = "<?php
@@ -123,10 +123,13 @@ class ModelsCommand extends Command {
  */
 \n\n";
 
-        if($model === '*'){
+        if(empty($loadModels)){
             $models = $this->loadModels();
         }else{
-            $models = explode(',', $model);
+            $models = array();
+            foreach($loadModels as $model){
+                $models = array_merge($models, explode(',', $model));
+            }
         }
 
         $ignore = explode(',', $ignore);

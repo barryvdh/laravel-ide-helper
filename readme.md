@@ -75,11 +75,13 @@ With the `--reset (-R)` option, the existing phpdocs are ignored, only the newly
 
 By default, models in app/models are scanned. The optional argument tells what models to use (also outside app/models).
 
-    php artisan ide-helper:models Post,User
+    php artisan ide-helper:models Post User
 
 You can also scan a different directory, using the --dir option (relative from the base path):
 
-    php artisan ide-helper:models --dir="app/workbench/name/package/models"
+    php artisan ide-helper:models --dir="app/workbench/name/package/models" --dir="app/src/Model"
+   
+You can publish the config file (`php artisan config:publisb barryvdh/laravel-idehelper`) and set the default directories.
 
 Models can be ignored using the --ignore (-I) option
 

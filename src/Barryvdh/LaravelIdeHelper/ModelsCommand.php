@@ -146,6 +146,9 @@ class ModelsCommand extends Command {
                     $reflectionClass = new \ReflectionClass($name);
                     if (!$reflectionClass->IsInstantiable()) {
                         throw new \Exception($name . ' is not instanciable.');
+                    }elseif(!$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Model')){
+                        $this->comment("Class '$name' is not a model");
+                        continue;
                     }
 
                     $model = new $name();

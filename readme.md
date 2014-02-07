@@ -81,7 +81,7 @@ You can also scan a different directory, using the --dir option (relative from t
 
     php artisan ide-helper:models --dir="app/workbench/name/package/models" --dir="app/src/Model"
    
-You can publish the config file (`php artisan config:publisb barryvdh/laravel-idehelper`) and set the default directories.
+You can publish the config file (`php artisan config:publish barryvdh/laravel-ide-helper`) and set the default directories.
 
 Models can be ignored using the --ignore (-I) option
 

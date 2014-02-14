@@ -354,7 +354,11 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $serializer = new DocBlockSerializer(1, "\t");
 
         //Normalize the description and inherit the docs from parents/interfaces
-        $this->normalizeDescription($phpdoc, $method);
+        try{
+            $this->normalizeDescription($phpdoc, $method);
+        }catch(\Exception $e){
+            $this->info("Cannot normalize method $alias::$methodName..");
+        }
 
         //Correct the return values
         $returnValue = $this->getReturn($phpdoc);

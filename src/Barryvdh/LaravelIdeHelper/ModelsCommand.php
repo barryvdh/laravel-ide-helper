@@ -203,36 +203,39 @@ class ModelsCommand extends Command {
         if($columns){
             foreach ($columns as $column) {
                 $name = $column->getName();
-                $type =  $column->getType()->getName();
-
-                switch($type){
-                    case 'string':
-                    case 'text':
-                    case 'date':
-                    case 'time':
-                    case 'guid':
-                        $type = 'string';
-                        break;
-                    case 'integer':
-                    case 'bigint':
-                    case 'smallint':
-                        $type = 'integer';
-                        break;
-                    case 'decimal':
-                    case 'float':
-                        $type = 'float';
-                        break;
-                    case 'boolean':
-                        $type = 'boolean';
-                        break;
-                    case 'datetimetz':  //String or DateTime, depending on $dates
-                    case 'datetime':
-                        $type = '\Carbon\Carbon';
-                        break;
-                    default:
-                        $type = 'mixed';
-                        break;
+                if(in_array($name, $model->getDates())){
+                    $type = '\Carbon\Carbon';
+                }else{
+                    $type =  $column->getType()->getName();
+                    switch($type){
+                        case 'string':
+                        case 'text':
+                        case 'date':
+                        case 'time':
+                        case 'guid':
+                        case 'datetimetz':
+                        case 'datetime':
+                            $type = 'string';
+                            break;
+                        case 'integer':
+                        case 'bigint':
+                        case 'smallint':
+                            $type = 'integer';
+                            break;
+                        case 'decimal':
+                        case 'float':
+                            $type = 'float';
+                            break;
+                        case 'boolean':
+                            $type = 'boolean';
+                            break;
+                        default:
+                            $type = 'mixed';
+                            break;
+                    }
                 }
+
+
                 $this->setProperty($name, $type, true, true);
                 $this->setMethod(Str::camel("where_".$name), '\\'.get_class($model), array('$value'));
             }

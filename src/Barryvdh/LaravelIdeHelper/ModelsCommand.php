@@ -3,13 +3,15 @@
  * Laravel IDE Helper Generator
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
- * @copyright 2013 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
+ * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
 
 namespace Barryvdh\LaravelIdeHelper;
+
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\ClassLoader\ClassMapGenerator;
@@ -17,6 +19,7 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Context;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
+
 /**
  * A command to generate autocomplete information for your IDE
  *
@@ -216,7 +219,7 @@ class ModelsCommand extends Command {
                         $type = 'integer';
                         break;
                     case 'decimal':
-                        case 'float':
+                    case 'float':
                         $type = 'float';
                         break;
                     case 'boolean':
@@ -231,6 +234,7 @@ class ModelsCommand extends Command {
                         break;
                 }
                 $this->setProperty($name, $type, true, true);
+                $this->setMethod(Str::camel("where_".$name), '\\'.get_class($model), array('$value'));
             }
         }
     }
@@ -241,64 +245,64 @@ class ModelsCommand extends Command {
     protected function getPropertiesFromMethods($model){
         $methods = get_class_methods($model);
         if($methods){
-           foreach($methods as $method){
-               if(\Str::startsWith($method, 'get') && \Str::endsWith($method, 'Attribute') && $method !== 'getAttribute'){
-                   //Magic get<name>Attribute
-                   $name =  \Str::snake(substr($method, 3, -9));
-                   if(!empty($name)){
+            foreach($methods as $method){
+                if(Str::startsWith($method, 'get') && Str::endsWith($method, 'Attribute') && $method !== 'getAttribute'){
+                    //Magic get<name>Attribute
+                    $name =  Str::snake(substr($method, 3, -9));
+                    if(!empty($name)){
                         $this->setProperty($name, null, true, null);
-                   }
-               }elseif(\Str::startsWith($method, 'set') && \Str::endsWith($method, 'Attribute') && $method !== 'setAttribute'){
-                   //Magic set<name>Attribute
-                   $name =  \Str::snake(substr($method, 3, -9));
-                   if(!empty($name)){
+                    }
+                }elseif(Str::startsWith($method, 'set') && Str::endsWith($method, 'Attribute') && $method !== 'setAttribute'){
+                    //Magic set<name>Attribute
+                    $name =  Str::snake(substr($method, 3, -9));
+                    if(!empty($name)){
                         $this->setProperty($name, null, null, true);
-                   }
-               }elseif(\Str::startsWith($method, 'scope') && $method !== 'scopeQuery'){
-                   //Magic set<name>Attribute
-                   $name =  \Str::camel(substr($method, 5));
-                   if(!empty($name)){
-                       $reflection = new \ReflectionMethod($model, $method);
-                       $args = $this->getParameters($reflection);
-                       //Remove the first ($query) argument
-                       array_shift($args);
-                       $this->setMethod($name, $reflection->class, $args);
-                   }
-               }elseif(!method_exists('Eloquent', $method) && !\Str::startsWith($method, 'get')){
+                    }
+                }elseif(Str::startsWith($method, 'scope') && $method !== 'scopeQuery'){
+                    //Magic set<name>Attribute
+                    $name =  Str::camel(substr($method, 5));
+                    if(!empty($name)){
+                        $reflection = new \ReflectionMethod($model, $method);
+                        $args = $this->getParameters($reflection);
+                        //Remove the first ($query) argument
+                        array_shift($args);
+                        $this->setMethod($name, '\\'.$reflection->class, $args);
+                    }
+                }elseif(!method_exists('Eloquent', $method) && !Str::startsWith($method, 'get')){
 
-                   //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
-                   $reflection = new \ReflectionMethod($model, $method);
+                    //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
+                    $reflection = new \ReflectionMethod($model, $method);
 
-                   $file = new \SplFileObject($reflection->getFileName());
-                   $file->seek($reflection->getStartLine() - 1);
+                    $file = new \SplFileObject($reflection->getFileName());
+                    $file->seek($reflection->getStartLine() - 1);
 
-                   $code = '';
-                   while ($file->key() < $reflection->getEndLine())
-                   {
-                       $code .= $file->current(); $file->next();
-                   }
-                   $begin = strpos($code, 'function(');
-                   $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
+                    $code = '';
+                    while ($file->key() < $reflection->getEndLine())
+                    {
+                        $code .= $file->current(); $file->next();
+                    }
+                    $begin = strpos($code, 'function(');
+                    $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
-                   foreach(array('hasMany', 'belongsToMany', 'hasOne', 'belongsTo') as $relation){
-                       $search = '$this->'.$relation.'(';
-                       if($pos = stripos($code, $search)){
-                           $code = substr($code, $pos + strlen($search));
-                           $arguments = explode(',', substr($code, 0, stripos($code, ')')));
-                           //Remove quotes, ensure 1 \ in front of the model
-                           $returnModel = "\\".ltrim(trim($arguments[0], " \"'"), "\\");
-                           if($relation === "belongsToMany" or $relation === 'hasMany'){
-                               //Collection or array of models (because Collection is Arrayable)
-                               $this->setProperty($method,  '\Illuminate\Database\Eloquent\Collection|'.$returnModel.'[]', true, null);
-                           }else{
-                               //Single model is returned
-                               $this->setProperty($method, $returnModel, true, null);
-                           }
-                       }
-                   }
+                    foreach(array('hasMany', 'belongsToMany', 'hasOne', 'belongsTo') as $relation){
+                        $search = '$this->'.$relation.'(';
+                        if($pos = stripos($code, $search)){
+                            $code = substr($code, $pos + strlen($search));
+                            $arguments = explode(',', substr($code, 0, stripos($code, ')')));
+                            //Remove quotes, ensure 1 \ in front of the model
+                            $returnModel = "\\".ltrim(trim($arguments[0], " \"'"), "\\");
+                            if($relation === "belongsToMany" or $relation === 'hasMany'){
+                                //Collection or array of models (because Collection is Arrayable)
+                                $this->setProperty($method,  '\Illuminate\Database\Eloquent\Collection|'.$returnModel.'[]', true, null);
+                            }else{
+                                //Single model is returned
+                                $this->setProperty($method, $returnModel, true, null);
+                            }
+                        }
+                    }
 
-               }
-           }
+                }
+            }
         }
     }
 

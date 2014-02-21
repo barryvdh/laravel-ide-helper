@@ -242,7 +242,7 @@ class ModelsCommand extends Command {
         $methods = get_class_methods($model);
         if($methods){
            foreach($methods as $method){
-               if(\Str::startsWith($method, 'get') && \Str::endsWith($method, 'Attribute') && $method !== 'setAttribute'){
+               if(\Str::startsWith($method, 'get') && \Str::endsWith($method, 'Attribute') && $method !== 'getAttribute'){
                    //Magic get<name>Attribute
                    $name =  \Str::snake(substr($method, 3, -9));
                    if(!empty($name)){

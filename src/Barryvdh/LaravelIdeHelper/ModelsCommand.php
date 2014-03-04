@@ -359,7 +359,7 @@ class ModelsCommand extends Command {
         }
 
         if(!$phpdoc->getText()){
-            $phpdoc->setText("An Eloquent Model: '$class'");
+            $phpdoc->setText($class);
         }
 
         $properties = array();

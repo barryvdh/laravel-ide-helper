@@ -30,6 +30,7 @@ You can configure your composer.json to do this after each commit:
 
     "scripts":{
         "post-update-cmd":[
+            "php artisan clear-compiled",
             "php artisan ide-helper:generate",
             "php artisan optimize",
         ]

@@ -138,14 +138,13 @@ class GeneratorCommand extends Command {
         $aliases = $aliasLoader->getAliases();
 
         foreach($aliases as $alias => $facade){
-
+            $facade = '\\'.ltrim($facade, '\\');
             $root = $this->getRoot($facade);
             if(!$root){
                 continue;
             }
 
             try{
-
                 if (strpos($alias, '\\')){
                     $nsParts = explode('\\', $alias);
                     $alias = array_pop($nsParts);
@@ -396,10 +395,11 @@ class GeneratorCommand extends Command {
 
         //Reference the 'real' function in the declaringclass
         $declaringClass = $method->getDeclaringClass();
-        $root = $class->getName();
+        $declaringClassName = '\\'.ltrim($declaringClass->name, '\\');
+        $root = '\\'.ltrim($class->getName(), '\\');
 
         if($declaringClass->name != $root){
-            $output .= "\t\t\t//Method inherited from $declaringClass->name\n";
+            $output .= "\t\t\t//Method inherited from $declaringClassName\n";
         }
 
         $output .=  "\t\t\t$return $root::";

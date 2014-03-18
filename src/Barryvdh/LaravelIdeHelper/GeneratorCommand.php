@@ -125,14 +125,14 @@ class GeneratorCommand extends Command {
 
         $aliasLoader = AliasLoader::getInstance();
 
-        $output = "<?php
+        $outputString = "<?php
 /**
  * An helper file for Laravel 4, to provide autocomplete information to your IDE
  * Generated with https://github.com/barryvdh/laravel-ide-helper
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
- */
-exit('Only to be used as an helper for your IDE');\n\n";
+ */\n\n";
+        $output['__root'] = "\texit('Only to be used as an helper for your IDE');\n\n";
 
         //Get all aliases
         $aliases = $aliasLoader->getAliases();
@@ -146,44 +146,60 @@ exit('Only to be used as an helper for your IDE');\n\n";
 
             try{
 
+                if (strpos($alias, '\\')){
+                    $nsParts = explode('\\', $alias);
+                    $alias = array_pop($nsParts);
+                    $ns = implode('\\', $nsParts);
+                } else {
+                    $ns = '__root';
+                }
+                if (!isset($output[$ns])) $output[$ns] = '';
+
                 //Some classes extend the facade
                 if(interface_exists($facade)){
-                    $output .= "interface $alias extends $facade{\n";
+                    $output[$ns] .= "\tinterface $alias extends $facade{\n";
                 }elseif(class_exists($facade)){
-                    $output .= "class $alias extends $facade{\n";
+                    $output[$ns] .= "\tclass $alias extends $facade{\n";
                 }else{
-                    $output .= "class $alias{\n";
+                    $output[$ns] .= "\tclass $alias{\n";
                 }
 
                 $usedMethods = array();
 
                 //Only add the methods to the output when the root is not the same as the facade.
                 $addOutput = ($root !== $facade);
-                $output .= $this->getMethods($root, $alias, $usedMethods, $addOutput);
+                $output[$ns] .= $this->getMethods($root, $alias, $usedMethods, $addOutput);
 
 
                 $driver =  $this->getDriver($alias);
                 if($driver){
-                    $output .= $this->getMethods($driver, $alias, $usedMethods);
+                    $output[$ns] .= $this->getMethods($driver, $alias, $usedMethods);
                 }
 
                 //Add extra methods, from other classes (magic static calls)
                 if(array_key_exists($alias, $this->extra)){
-                    $output .= $this->getMethods($this->extra[$alias], $alias, $usedMethods);
+                    $output[$ns] .= $this->getMethods($this->extra[$alias], $alias, $usedMethods);
                 }
 
                 //Add extra methods, from other classes (magic static calls)
                 if(array_key_exists($alias, $this->magic)){
-                    $output .= $this->addMagicMethods($this->magic[$alias], $alias, $usedMethods);
+                    $output[$ns] .= $this->addMagicMethods($this->magic[$alias], $alias, $usedMethods);
                 }
 
 
-                $output .= "}\n\n";
+                $output[$ns] .= "\t}\n";
 
             }catch(\Exception $e){
                 $this->error("Exception: ".$e->getMessage()."\nCould not analyze $root.");
             }
 
+        }
+
+        foreach ($output as $ns => $body){
+            if ($ns == '__root') $ns = '';
+            $outputString .= "namespace $ns{\n";
+            $outputString .= $body;
+            $outputString .= "}\n\n";
         }
 
         //Include the helper file, if requested
@@ -195,7 +211,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
             }
         }
 
-        return $output;
+        return $outputString;
     }
 
     /**
@@ -351,7 +367,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
 
         //Create a DocBlock and serializer instance
         $phpdoc = new DocBlock($method, new Context($namespace));
-        $serializer = new DocBlockSerializer(1, "\t");
+        $serializer = new DocBlockSerializer(1, "\t\t");
 
         //Normalize the description and inherit the docs from parents/interfaces
         try{
@@ -370,7 +386,7 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $phpdoc->appendTag(Tag::createInstance('@static', $phpdoc));
 
         //Write the output, using the DocBlock serializer
-        $output .= $serializer->getDocComment($phpdoc) ."\n\t public static function ".$methodName."(";
+        $output .= $serializer->getDocComment($phpdoc) ."\n\t\t public static function ".$methodName."(";
 
         $output .= implode($paramsWithDefault, ", ");
         $output .= "){\n";
@@ -383,14 +399,14 @@ exit('Only to be used as an helper for your IDE');\n\n";
         $root = $class->getName();
 
         if($declaringClass->name != $root){
-            $output .= "\t\t//Method inherited from $declaringClass->name\n";
+            $output .= "\t\t\t//Method inherited from $declaringClass->name\n";
         }
 
-        $output .=  "\t\t$return $root::";
+        $output .=  "\t\t\t$return $root::";
 
         //Write the default parameters in the function call
         $output .=  $method->name."(".implode($params, ", ").");\n";
-        $output .= "\t }\n\n";
+        $output .= "\t\t }\n\n";
 
         return $output;
     }

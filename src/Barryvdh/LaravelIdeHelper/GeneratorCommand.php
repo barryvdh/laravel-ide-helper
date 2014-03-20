@@ -193,21 +193,23 @@ class GeneratorCommand extends Command {
             }
 
         }
-
-        foreach ($output as $ns => $body){
-            if ($ns == '__root') $ns = '';
-            $outputString .= "namespace $ns{\n";
-            $outputString .= $body;
-            $outputString .= "}\n\n";
-        }
-
+        
         //Include the helper file, if requested
         if(!empty($this->helpers)){
             foreach($this->helpers as $helper){
                 if (file_exists($helper)){
-                    $outputString .= str_replace(array('<?php', '?>'), '', \File::get($helper));
+                    $output['__root'] .= str_replace(array('<?php', '?>'), '',  \File::get($helper));
                 }
             }
+        }
+
+        foreach ($output as $ns => $body){
+            if ($ns == '__root'){
+                $ns = '';
+            }
+            $outputString .= "namespace $ns{\n";
+            $outputString .= $body;
+            $outputString .= "}\n\n";
         }
 
         return $outputString;

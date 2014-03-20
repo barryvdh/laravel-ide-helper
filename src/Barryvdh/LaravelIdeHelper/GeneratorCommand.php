@@ -205,7 +205,7 @@ class GeneratorCommand extends Command {
         if(!empty($this->helpers)){
             foreach($this->helpers as $helper){
                 if (file_exists($helper)){
-                    $output .= str_replace(array('<?php', '?>'), '', \File::get($helper));
+                    $outputString .= str_replace(array('<?php', '?>'), '', \File::get($helper));
                 }
             }
         }

@@ -237,7 +237,7 @@ class ModelsCommand extends Command {
 
 
                 $this->setProperty($name, $type, true, true);
-                //$this->setMethod(Str::camel("where_".$name), '\Illuminate\Database\Query\Builder|\\'.get_class($model), array('$value'));
+                $this->setMethod(Str::camel("where_".$name), '\Illuminate\Database\Query\Builder|\\'.get_class($model), array('$value'));
             }
         }
     }

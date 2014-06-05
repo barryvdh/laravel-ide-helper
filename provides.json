@@ -1,0 +1,5 @@
+{
+  "providers": [
+    "Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider"
+  ]
+}

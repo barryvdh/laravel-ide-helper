@@ -3,7 +3,7 @@
 
 ### Complete phpDocs, directly from the source
 
-_Checkout [this Laracast video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
+_Checkout [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
 
 This packages generates a file that your IDE can understand, so it can provide accurate autocompletion. Generation is done, based on the files in your project, so they are alway up-to-date.
 If you don't want to generate it, you can add a pre-generated file to the root folder of your laravel project. (But this isn't as up-to-date as self generated files)

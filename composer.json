@@ -17,6 +17,9 @@
         "phpdocumentor/reflection-docblock": "2.0.x",
         "symfony/class-loader": "~2.3"
     },
+    "require-dev": {
+        "doctrine/dbal": "~2.3"
+    },
     "suggest": {
         "doctrine/dbal": "Load information from the database about models for phpdocs (~2.3)"
     },

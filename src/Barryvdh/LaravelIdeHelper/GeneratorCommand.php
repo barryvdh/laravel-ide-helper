@@ -138,8 +138,8 @@ class GeneratorCommand extends Command {
         $aliases = $aliasLoader->getAliases();
 
         foreach($aliases as $alias => $facade){
-            //Check if the facade is not a Trait (could need a better check..)
-            if(\Str::contains($facade, 'Trait')){
+            //Check if the facade is not a Trait
+            if(function_exists('trait_exists') && trait_exists($facade)){
                 continue;
             }
             $facade = '\\'.ltrim($facade, '\\');

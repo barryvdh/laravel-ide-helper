@@ -126,6 +126,8 @@ class ModelsCommand extends Command {
  */
 \n\n";
 
+        $hasDoctrine = interface_exists('Doctrine\DBAL\Driver');
+        
         if(empty($loadModels)){
             $models = $this->loadModels();
         }else{
@@ -158,7 +160,9 @@ class ModelsCommand extends Command {
                     }
 
                     $model = new $name();
-                    $this->getPropertiesFromTable($model);
+                    if($hasDoctrine){
+                        $this->getPropertiesFromTable($model);
+                    }
                     $this->getPropertiesFromMethods($model);
                     $output .= $this->createPhpDocs($name);
                 }catch(\Exception $e){
@@ -168,6 +172,10 @@ class ModelsCommand extends Command {
                 $this->error("Class $name does not exist");
             }
 
+        }
+        
+        if(!$hasDoctrine){
+            $this->error("Warning: 'doctrine/dbal: ~2.3' is required to load database information. Please require that in your composer.json and run 'composer update'.");
         }
 
         return $output;

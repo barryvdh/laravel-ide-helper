@@ -24,8 +24,8 @@
         "doctrine/dbal": "Load information from the database about models for phpdocs (~2.3)"
     },
     "autoload": {
-        "psr-0": {
-            "Barryvdh\\LaravelIdeHelper": "src/"
+        "psr-4": {
+            "Barryvdh\\LaravelIdeHelper\\": "src"
         }
     },
     "extra": {

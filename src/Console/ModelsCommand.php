@@ -8,7 +8,7 @@
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
 
-namespace Barryvdh\LaravelIdeHelper;
+namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;

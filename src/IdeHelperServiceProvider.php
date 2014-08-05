@@ -12,55 +12,61 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Support\ServiceProvider;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
+use Barryvdh\LaravelIdeHelper\Console\Generator2Command;
 Use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 
-class IdeHelperServiceProvider extends ServiceProvider {
+class IdeHelperServiceProvider extends ServiceProvider
+{
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
 
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-        $this->app['config']->package('barryvdh/laravel-ide-helper', __DIR__ . '/config');
-	}
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->package('barryvdh/laravel-ide-helper', 'laravel-ide-helper', __DIR__);
+    }
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-        $this->app['command.ide-helper.generate'] = $this->app->share(function()
-        {
-            return new GeneratorCommand;
-        });
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
 
-        $this->app['command.ide-helper.models'] = $this->app->share(function()
-            {
+        $this->app['command.ide-helper.generate'] = $this->app->share(
+            function ($app) {
+                return new GeneratorCommand($app['config'], $app['files'], $app['view']);
+            }
+        );
+
+
+        $this->app['command.ide-helper.models'] = $this->app->share(
+            function () {
                 return new ModelsCommand();
-            });
+            }
+        );
 
         $this->commands('command.ide-helper.generate', 'command.ide-helper.models');
-	}
+    }
 
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
         return array('command.ide-helper.generate', 'command.ide-helper.models');
-	}
+    }
 
 }

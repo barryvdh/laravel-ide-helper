@@ -21,8 +21,9 @@ class Generator
     /** @var \Illuminate\View\Factory */
     protected $view;
 
-    protected $extra;
-    protected $magic;
+    protected $extra = array();
+    protected $magic = array();
+    protected $interfaces = array();
     protected $helpers;
 
     /**
@@ -36,9 +37,13 @@ class Generator
     ) {
         $this->config = $config;
         $this->view = $view;
-        $this->extra = $this->config->get('laravel-ide-helper::extra');
-        $this->magic = $this->config->get('laravel-ide-helper::magic');
-        $this->interfaces = $this->config->get('laravel-ide-helper::interfaces');
+
+        // Find the drivers to add to the extra/interfaces
+        $this->detectDrivers();
+
+        $this->extra = array_merge($this->extra, $this->config->get('laravel-ide-helper::extra'));
+        $this->magic = array_merge($this->magic, $this->config->get('laravel-ide-helper::magic'));
+        $this->interfaces = array_merge($this->interfaces, $this->config->get('laravel-ide-helper::interfaces'));
         $this->helpers = $helpers;
     }
 
@@ -56,6 +61,55 @@ class Generator
 
     }
 
+    protected function detectDrivers()
+    {
+        try{
+            if (class_exists('Cache')) {
+                $class = get_class(\Auth::driver());
+                $this->extra['Auth'] = array($class);
+                $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
+            }
+        }catch (\Exception $e) {}
+
+        try{
+            if (class_exists('DB')) {
+                $class = get_class(\DB::connection());
+                $this->extra['DB'] = array($class);
+                $this->interfaces['\Illuminate\Database\ConnectionInterface'] = $class;
+            }
+        }catch (\Exception $e) {}
+
+        try{
+            if (class_exists('Cache')) {
+                $driver = get_class(\Cache::driver());
+                $store = get_class(\Cache::getStore());
+                $this->extra['Cache'] = array($driver, $store);
+                $this->interfaces['\Illuminate\Cache\StoreInterface'] = $store;
+            }
+        }catch (\Exception $e) {}
+
+        try{
+            if (class_exists('Queue')) {
+                $class = get_class(\Queue::connection());
+                $this->extra['Queue'] = array($class);
+                $this->interfaces['\Illuminate\Queue\QueueInterface'] = $class;
+            }
+        }catch (\Exception $e) {}
+
+        try{
+            if (class_exists('SSH')){
+                $class = get_class(\SSH::connection());
+                $this->extra['SSH'] = array($class);
+                $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;
+            }
+        }catch (\Exception $e) {}
+
+        // Make all interface classes absolute
+        foreach ($this->interfaces as &$interface) {
+            $interface = '\\' . ltrim($interface, '\\');
+        }
+    }
+
     /**
      * Find all namespaces/aliases that are valid for us to render
      *
@@ -71,11 +125,6 @@ class Generator
             $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
 
             if ($alias->isValid()) {
-
-                $driver = $this->getDriver($name);
-                if ($driver) {
-                    $alias->addClass($driver);
-                }
 
                 //Add extra methods, from other classes (magic static calls)
                 if (array_key_exists($name, $this->extra)) {

@@ -2,17 +2,18 @@
 
 /**
  * An helper file for Laravel 4, to provide autocomplete information to your IDE
- * Generated with https://github.com/barryvdh/laravel-ide-helper
+ * Generated for Laravel <?= $version ?> on <?= date("Y-m-d") ?>.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ * @see https://github.com/barryvdh/laravel-ide-helper
  */
 
 <?php foreach($namespaces as $namespace => $aliases): ?>
-
 namespace <?= $namespace == '__root' ? '' : $namespace ?>{
-
-    <?= $namespace == '__root' ? $helpers : '' ?>
-
+<?php if($namespace == '__root'): ?>
+    exit("This file should not be included, only analyzed by your IDE");
+<?= $helpers ?>
+<?php endif; ?>
 <?php foreach($aliases as $alias): ?>
 
     <?= $alias->getClassType() ?> <?= $alias->getAlias() ?> <?= $alias->getExtends() ? 'extends ' . $alias->getExtends() : '' ?>{

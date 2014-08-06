@@ -60,9 +60,11 @@ class Generator
      */
     public function generate()
     {
+        $app = app();
         return $this->view->make('laravel-ide-helper::ide-helper')
             ->with('namespaces', $this->getNamespaces())
             ->with('helpers', $this->helpers)
+            ->with('version', $app::VERSION)
             ->render();
     }
 

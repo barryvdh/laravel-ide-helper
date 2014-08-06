@@ -1,7 +1,7 @@
 {
     "name": "barryvdh/laravel-ide-helper",
     "description": "Laravel IDE Helper, generates correct PHPDocs for all Facade classes, to improve auto-completion.",
-    "keywords": ["laravel", "autocomplete", "phpstorm", "netbeans", "sublime", "codeintel", "phpdoc"],
+    "keywords": ["laravel", "autocomplete", "ide", "helper", "phpstorm", "netbeans", "sublime", "codeintel", "phpdoc"],
     "license": "MIT",
     "authors": [
         {
@@ -24,13 +24,13 @@
         "doctrine/dbal": "Load information from the database about models for phpdocs (~2.3)"
     },
     "autoload": {
-        "psr-0": {
-            "Barryvdh\\LaravelIdeHelper": "src/"
+        "psr-4": {
+            "Barryvdh\\LaravelIdeHelper\\": "src"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.10-dev"
+            "dev-master": "1.11-dev"
         }
     }
 }

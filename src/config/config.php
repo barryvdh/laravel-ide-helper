@@ -70,6 +70,9 @@ return array(
             'alert'     => 'Monolog\Logger::addAlert',
             'emergency' => 'Monolog\Logger::addEmergency',
         )
+    ),
+    'interfaces' => array(
+        '\Illuminate\Auth\UserInterface' => '\User',
     )
 
 );

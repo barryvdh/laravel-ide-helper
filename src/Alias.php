@@ -23,10 +23,12 @@ class Alias
     protected $methods = array();
     protected $used_methods = array();
     protected $valid = false;
+    protected $interfaces = array();
 
-    public function __construct($alias, $facade)
+    public function __construct($alias, $facade, $interfaces = array())
     {
         $this->alias = $alias;
+        $this->interfaces = $interfaces;
 
         // Make the class absolute
         $facade = '\\' . ltrim($facade, '\\');
@@ -223,7 +225,7 @@ class Alias
                         // Only add the methods to the output when the root is not the same as the facade.
                         // And don't add the __*() methods
                         if ($this->facade !== $this->root && substr($method->name, 0, 2) !== '__') {
-                            $this->methods[] = new Method($method, $this->alias, $reflection);
+                            $this->methods[] = new Method($method, $this->alias, $reflection, $this->interfaces);
                         }
                         $this->used_methods[] = $method->name;
                     }

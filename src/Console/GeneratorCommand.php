@@ -53,10 +53,7 @@ class GeneratorCommand extends Command
     /** @var \Illuminate\View\Factory */
     protected $view;
 
-    protected $extra;
     protected $onlyExtend;
-    protected $helpers;
-    protected $magic;
 
 
     /**
@@ -94,8 +91,7 @@ class GeneratorCommand extends Command
                 $this->useMemoryDriver();
             }
 
-            $extra = $this->config->get('laravel-ide-helper::extra');
-            $magic = $this->config->get('laravel-ide-helper::magic');
+
             $helpers = '';
             if ($this->option('helpers') || ($this->config->get('laravel-ide-helper::include_helpers'))) {
                 foreach ($this->config->get('laravel-ide-helper::helper_files', array()) as $helper) {
@@ -107,7 +103,7 @@ class GeneratorCommand extends Command
                 $helpers = '';
             }
 
-            $generator = new Generator($this->view, $extra, $magic, $helpers);
+            $generator = new Generator($this->config, $this->view, $helpers);
             $output = $generator->generate();
 
 

@@ -15,6 +15,8 @@ use Illuminate\Config\Repository as ConfigRepository;
 
 class Generator
 {
+    /** @var \Illuminate\Config\Repository */
+    protected $config;
 
     /** @var \Illuminate\View\Factory */
     protected $view;
@@ -24,21 +26,21 @@ class Generator
     protected $helpers;
 
     /**
+     * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
-     * @param array $extra
-     * @param array $magic
      * @param string $helpers
      */
-    public function __construct( /* Illuminate\View\Factory */
-        $view,
-        $extra = array(),
-        $magic = array(),
+    public function __construct(ConfigRepository $config,
+        /* Illuminate\View\Factory */ $view,
         $helpers = ''
     ) {
+        $this->config = $config;
         $this->view = $view;
-        $this->extra = $extra;
-        $this->magic = $magic;
+        $this->extra = $this->config->get('laravel-ide-helper::extra');
+        $this->magic = $this->config->get('laravel-ide-helper::magic');
+        $this->interfaces = $this->config->get('laravel-ide-helper::interfaces');
         $this->helpers = $helpers;
+
     }
 
     /**
@@ -66,7 +68,7 @@ class Generator
 
         // Get all aliases
         foreach (AliasLoader::getInstance()->getAliases() as $name => $facade) {
-            $alias = new Alias($name, $facade);
+            $alias = new Alias($name, $facade, $this->interfaces);
 
             if ($alias->isValid()) {
 

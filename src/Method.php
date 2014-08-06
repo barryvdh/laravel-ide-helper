@@ -24,11 +24,12 @@ class Method
     protected $phpdoc;
     protected $params = array();
     protected $params_with_default = array();
+    protected $interfaces = array();
 
-    public function __construct($method, $alias, $class, $methodName = null)
+    public function __construct($method, $alias, $class, $interfaces = array())
     {
-
-        $this->name = $methodName ?: $method->name;
+        $this->interfaces = $interfaces;
+        $this->name = $method->name;
         $this->namespace = $method->getDeclaringClass()->getNamespaceName();
 
         //Create a DocBlock and serializer instance
@@ -38,7 +39,7 @@ class Method
         try {
             $this->normalizeDescription($method);
         } catch (\Exception $e) {
-            $this->info("Cannot normalize method $alias::$methodName..");
+            $this->info("Cannot normalize method $alias::{$this->name}..");
         }
 
         //Get the parameters, including formatted default values
@@ -173,12 +174,18 @@ class Method
         //Get the return type and adjust them for beter autocomplete
         $returnTags = $this->phpdoc->getTagsByName('return');
         if ($returnTags) {
-            /** @var  $tag */
+            /** @var Tag $tag */
             $tag = reset($returnTags);
             $returnValue = $tag->getType();
+
+            foreach($this->interfaces as $interface => $real){
+                $returnValue = str_replace($interface, $real, $returnValue);
+            }
+            $tag->setContent($returnValue);
         } else {
             $returnValue = null;
         }
+
         return $returnValue;
     }
 

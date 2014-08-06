@@ -3,7 +3,7 @@
  * Laravel IDE Helper Generator
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
- * @copyright 2013 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
+ * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
@@ -16,11 +16,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Illuminate\Foundation\AliasLoader;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Context;
-use phpDocumentor\Reflection\DocBlock\Tag;
-use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
+
 
 /**
  * A command to generate autocomplete information for your IDE
@@ -103,11 +99,9 @@ class GeneratorCommand extends Command
                 $helpers = '';
             }
 
-            $generator = new Generator($this->config, $this->view, $helpers);
-            $output = $generator->generate();
-
-
-            $written = $this->files->put($filename, $output);
+            $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
+            $content = $generator->generate();
+            $written = $this->files->put($filename, $content);
 
             if ($written !== false) {
                 $this->info("A new helper file was written to $filename");

@@ -3,7 +3,7 @@
  * Laravel IDE Helper Generator
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
- * @copyright 2013 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
+ * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
@@ -26,6 +26,12 @@ class Alias
     protected $magicMethods = array();
     protected $interfaces = array();
 
+    /**
+     * @param string $alias
+     * @param string $facade
+     * @param array $magicMethods
+     * @param array $interfaces
+     */
     public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array())
     {
         $this->alias = $alias;
@@ -67,7 +73,6 @@ class Alias
                 echo "Class not exists: $class\r\n";
             }
         }
-
     }
 
     /**
@@ -129,7 +134,6 @@ class Alias
         $this->addMagicMethods();
         $this->detectMethods();
         return $this->methods;
-
     }
 
     /**
@@ -191,11 +195,9 @@ class Alias
             $this->error(
                 "PDOException: " . $e->getMessage() . "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade."
             );
-
         } catch (\Exception $e) {
             $this->error("Exception: " . $e->getMessage() . "\nSkipping $facade.");
         }
-
     }
 
     /**
@@ -212,8 +214,11 @@ class Alias
         return false;
     }
 
-    protected function addMagicMethods(){
-
+    /**
+     * Add magic methods, as defined in the configuration files
+     */
+    protected function addMagicMethods()
+    {
         foreach($this->magicMethods as $magic => $real){
             list($className, $name) = explode('::', $real);
             if(!class_exists($className) && !interface_exists($className)){
@@ -230,6 +235,7 @@ class Alias
             }
         }
     }
+
     /**
      * Get the methods for one or multiple classes.
      *
@@ -257,10 +263,14 @@ class Alias
         }
     }
 
-    // Helper class to log errors
-    protected function error($msg)
+    /**
+     * Output an error.
+     *
+     * @param  string  $string
+     * @return void
+     */
+    protected function error($string)
     {
-        echo $msg . "\r\n";
+        echo $string . "\r\n";
     }
-
 }

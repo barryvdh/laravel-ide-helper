@@ -3,7 +3,7 @@
  * Laravel IDE Helper Generator
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
- * @copyright 2013 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
+ * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
@@ -12,6 +12,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Config\Repository as ConfigRepository;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class Generator
 {
@@ -21,6 +22,9 @@ class Generator
     /** @var \Illuminate\View\Factory */
     protected $view;
 
+    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    protected $output;
+
     protected $extra = array();
     protected $magic = array();
     protected $interfaces = array();
@@ -29,10 +33,12 @@ class Generator
     /**
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string $helpers
      */
     public function __construct(ConfigRepository $config,
         /* Illuminate\View\Factory */ $view,
+        OutputInterface $output = null,
         $helpers = ''
     ) {
         $this->config = $config;
@@ -58,7 +64,6 @@ class Generator
             ->with('namespaces', $this->getNamespaces())
             ->with('helpers', $this->helpers)
             ->render();
-
     }
 
     protected function detectDrivers()
@@ -123,7 +128,6 @@ class Generator
         foreach (AliasLoader::getInstance()->getAliases() as $name => $facade) {
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
             $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
-
             if ($alias->isValid()) {
 
                 //Add extra methods, from other classes (magic static calls)
@@ -173,4 +177,18 @@ class Generator
         }
     }
 
+    /**
+     * Write a string as error output.
+     *
+     * @param  string  $string
+     * @return void
+     */
+    protected function error($string)
+    {
+        if($this->output){
+            $this->output->writeln("<error>$string</error>");
+        }else{
+            echo $string . "\r\n";
+        }
+    }
 }

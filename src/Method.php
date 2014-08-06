@@ -3,7 +3,7 @@
  * Laravel IDE Helper Generator
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
- * @copyright 2013 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
+ * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
@@ -17,16 +17,24 @@ use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
 
 class Method
 {
+    /** @var \phpDocumentor\Reflection\DocBlock  */
+    protected $phpdoc;
 
     protected $output = '';
     protected $name;
     protected $namespace;
-    protected $phpdoc;
     protected $params = array();
     protected $params_with_default = array();
     protected $interfaces = array();
 
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = array())
+    /**
+     * @param \ReflectionMethod $method
+     * @param string $alias
+     * @param string $class
+     * @param string|null $methodName
+     * @param array $interfaces
+     */
+    public function __construct(\ReflectionMethod $method, $alias, $class, $methodName = null, $interfaces = array())
     {
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
@@ -39,7 +47,7 @@ class Method
         try {
             $this->normalizeDescription($method);
         } catch (\Exception $e) {
-            $this->info("Cannot normalize method $alias::{$this->name}..");
+            $this->error("Cannot normalize method $alias::{$this->name}..");
         }
 
         //Get the parameters, including formatted default values
@@ -57,8 +65,6 @@ class Method
         $declaringClass = $method->getDeclaringClass();
         $this->declaringClassName = '\\' . ltrim($declaringClass->name, '\\');
         $this->root = '\\' . ltrim($class->getName(), '\\');
-
-
     }
 
     /**
@@ -121,7 +127,7 @@ class Method
      */
     public function getParams($implode = true)
     {
-        return implode(', ', $this->params);
+        return $implode ? implode(', ', $this->params) : $this->params;
     }
 
     /**
@@ -132,7 +138,7 @@ class Method
      */
     public function getParamsWithDefault($implode = true)
     {
-        return implode(', ', $this->params_with_default);
+        return $implode ? implode(', ', $this->params_with_default) : $this->params_with_default;
     }
 
     /**
@@ -250,4 +256,14 @@ class Method
         }
     }
 
+    /**
+     * Output an error.
+     *
+     * @param  string  $string
+     * @return void
+     */
+    protected function error($string)
+    {
+        echo $string . "\r\n";
+    }
 }

@@ -3,7 +3,7 @@
  * Laravel IDE Helper Generator
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
- * @copyright 2013 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
+ * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
@@ -42,13 +42,11 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         $this->app['command.ide-helper.generate'] = $this->app->share(
             function ($app) {
                 return new GeneratorCommand($app['config'], $app['files'], $app['view']);
             }
         );
-
 
         $this->app['command.ide-helper.models'] = $this->app->share(
             function () {

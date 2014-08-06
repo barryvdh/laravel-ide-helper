@@ -20,8 +20,10 @@ namespace <?= $namespace == '__root' ? '' : $namespace ?>{
 
         <?= trim($method->getDocComment()) ?>
 
-        public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>){
+        public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>){<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
+
             //Method inherited from <?= $method->getDeclaringClass() ?>
+            <?php endif; ?>
 
             <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRoot() ?>::<?= $method->getName() ?>(<?= $method->getParams() ?>);
         }

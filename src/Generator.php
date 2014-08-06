@@ -40,7 +40,6 @@ class Generator
         $this->magic = $this->config->get('laravel-ide-helper::magic');
         $this->interfaces = $this->config->get('laravel-ide-helper::interfaces');
         $this->helpers = $helpers;
-
     }
 
     /**
@@ -68,7 +67,8 @@ class Generator
 
         // Get all aliases
         foreach (AliasLoader::getInstance()->getAliases() as $name => $facade) {
-            $alias = new Alias($name, $facade, $this->interfaces);
+            $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
+            $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
 
             if ($alias->isValid()) {
 
@@ -80,11 +80,6 @@ class Generator
                 //Add extra methods, from other classes (magic static calls)
                 if (array_key_exists($name, $this->extra)) {
                     $alias->addClass($this->extra[$name]);
-                }
-
-                //Add extra methods, from other classes (magic static calls)
-                if (array_key_exists($name, $this->magic)) {
-                    $alias->addClass($this->magic[$name]);
                 }
 
                 $namespace = $alias->getNamespace();

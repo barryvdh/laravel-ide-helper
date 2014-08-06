@@ -16,18 +16,20 @@ class Alias
     protected $alias;
     protected $facade;
     protected $extends = null;
-    protected $classTYpe = 'class';
+    protected $classType = 'class';
     protected $namespace = '__root';
     protected $root = null;
     protected $classes = array();
     protected $methods = array();
-    protected $used_methods = array();
+    protected $usedMethods = array();
     protected $valid = false;
+    protected $magicMethods = array();
     protected $interfaces = array();
 
-    public function __construct($alias, $facade, $interfaces = array())
+    public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array())
     {
         $this->alias = $alias;
+        $this->magicMethods = $magicMethods;
         $this->interfaces = $interfaces;
 
         // Make the class absolute
@@ -61,6 +63,8 @@ class Alias
         foreach ($classes as $class) {
             if (class_exists($class) || interface_exists($class)) {
                 $this->classes[] = $class;
+            }else{
+                echo "Class not exists: $class\r\n";
             }
         }
 
@@ -122,6 +126,7 @@ class Alias
      */
     public function getMethods()
     {
+        $this->addMagicMethods();
         $this->detectMethods();
         return $this->methods;
 
@@ -207,6 +212,24 @@ class Alias
         return false;
     }
 
+    protected function addMagicMethods(){
+
+        foreach($this->magicMethods as $magic => $real){
+            list($className, $name) = explode('::', $real);
+            if(!class_exists($className) && !interface_exists($className)){
+                continue;
+            }
+            $method = new \ReflectionMethod($className, $name);
+            $class = new \ReflectionClass($className);
+
+            if(!in_array($method->name, $this->usedMethods)){
+                if($class !== $this->root){
+                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
+                }
+                $this->usedMethods[] = $magic;
+            }
+        }
+    }
     /**
      * Get the methods for one or multiple classes.
      *
@@ -221,13 +244,13 @@ class Alias
             $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
             if ($methods) {
                 foreach ($methods as $method) {
-                    if (!in_array($method->name, $this->used_methods)) {
-                        // Only add the methods to the output when the root is not the same as the facade.
+                    if (!in_array($method->name, $this->usedMethods)) {
+                        // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
-                        if ($this->facade !== $this->root && substr($method->name, 0, 2) !== '__') {
-                            $this->methods[] = new Method($method, $this->alias, $reflection, $this->interfaces);
+                        if ($this->extends !== $class && $method->name !== '__clone') {
+                            $this->methods[] = new Method($method, $this->alias, $reflection, $method->name, $this->interfaces);
                         }
-                        $this->used_methods[] = $method->name;
+                        $this->usedMethods[] = $method->name;
                     }
                 }
             }

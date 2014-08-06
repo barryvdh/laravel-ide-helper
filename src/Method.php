@@ -26,10 +26,10 @@ class Method
     protected $params_with_default = array();
     protected $interfaces = array();
 
-    public function __construct($method, $alias, $class, $interfaces = array())
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = array())
     {
         $this->interfaces = $interfaces;
-        $this->name = $method->name;
+        $this->name = $methodName ?: $method->name;
         $this->namespace = $method->getDeclaringClass()->getNamespaceName();
 
         //Create a DocBlock and serializer instance

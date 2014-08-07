@@ -13,6 +13,8 @@ namespace Barryvdh\LaravelIdeHelper;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Context;
 use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
+use phpDocumentor\Reflection\DocBlock\Tag\ParamTag;
 use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
 
 class Method
@@ -20,12 +22,16 @@ class Method
     /** @var \phpDocumentor\Reflection\DocBlock  */
     protected $phpdoc;
 
+    /** @var \ReflectionMethod  */
+    protected $method;
+
     protected $output = '';
     protected $name;
     protected $namespace;
     protected $params = array();
     protected $params_with_default = array();
     protected $interfaces = array();
+    protected $return = null;
 
     /**
      * @param \ReflectionMethod $method
@@ -36,6 +42,7 @@ class Method
      */
     public function __construct(\ReflectionMethod $method, $alias, $class, $methodName = null, $interfaces = array())
     {
+        $this->method = $method;
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
         $this->namespace = $method->getDeclaringClass()->getNamespaceName();
@@ -45,21 +52,16 @@ class Method
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
-            $this->normalizeDescription($method);
-        } catch (\Exception $e) {
-            $this->error("Cannot normalize method $alias::{$this->name}..");
-        }
+            $this->normalizeDescription();
+            $this->normalizeParams();
+            $this->normalizeReturn();
+        } catch (\Exception $e) {}
 
         //Get the parameters, including formatted default values
         $this->getParameters($method);
 
         //Make the method static
         $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
-
-        //Correct the return values
-        $returnValue = $this->getReturn();
-        //Only return when not a constructor and not void.
-        $this->return = ($returnValue && $returnValue !== "void" && $method->name !== "__construct");
 
         //Reference the 'real' function in the declaringclass
         $declaringClass = $method->getDeclaringClass();
@@ -75,16 +77,6 @@ class Method
     public function getDeclaringClass()
     {
         return $this->declaringClassName;
-    }
-
-    /**
-     * Should the function return a value?
-     *
-     * @return bool
-     */
-    public function shouldReturn()
-    {
-        return $this->return;
     }
 
     /**
@@ -144,16 +136,15 @@ class Method
     /**
      * Get the description and get the inherited docs.
      *
-     * @param $method
      */
-    protected function normalizeDescription($method)
+    protected function normalizeDescription()
     {
         //Get the short + long description from the DocBlock
         $description = $this->phpdoc->getText();
 
         //Loop through parents/interfaces, to fill in {@inheritdoc}
         if (strpos($description, '{@inheritdoc}') !== false) {
-            $inheritdoc = $this->getInheritDoc($method);
+            $inheritdoc = $this->getInheritDoc($this->method);
             $inheritDescription = $inheritdoc->getText();
 
             $description = str_replace('{@inheritdoc}', $inheritDescription, $description);
@@ -171,28 +162,79 @@ class Method
     }
 
     /**
-     * Make some changes to the return types, if needed.
-     *
-     * @return string|null
+     * Normalize the parameters
      */
-    protected function getReturn()
+    protected function normalizeParams()
+    {
+        //Get the return type and adjust them for beter autocomplete
+        $paramTags = $this->phpdoc->getTagsByName('param');
+        if ($paramTags) {
+            /** @var ParamTag $tag */
+            foreach($paramTags as $tag){
+                // Convert the keywords
+                $content = $this->convertKeywords($tag->getContent());
+                $tag->setContent($content);
+
+                // Get the expanded type and re-set the content
+                $content = $tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
+                $tag->setContent(trim($content));
+            }
+        }
+    }
+
+    /**
+     * Normalize the return tag (make full namespace, replace interfaces)
+     */
+    protected function normalizeReturn()
     {
         //Get the return type and adjust them for beter autocomplete
         $returnTags = $this->phpdoc->getTagsByName('return');
         if ($returnTags) {
-            /** @var Tag $tag */
+            /** @var ReturnTag $tag */
             $tag = reset($returnTags);
+            // Get the expanded type
             $returnValue = $tag->getType();
 
+            // Replace the interfaces
             foreach($this->interfaces as $interface => $real){
                 $returnValue = str_replace($interface, $real, $returnValue);
             }
-            $tag->setContent($returnValue);
-        } else {
-            $returnValue = null;
+
+            // Set the changed content
+            $tag->setContent($returnValue . ' ' . $tag->getDescription());
+            $this->return = $returnValue;
+        }else{
+            $this->return = null;
+        }
+    }
+
+    /**
+     * Convert keywwords that are incorrect.
+     *
+     * @param  string $string
+     * @return string
+     */
+    protected function convertKeywords($string)
+    {
+        $string = str_replace('\Closure', 'Closure', $string);
+        $string = str_replace('Closure', '\Closure', $string);
+        $string = str_replace('dynamic', 'mixed', $string);
+
+        return $string;
+    }
+
+    /**
+     * Should the function return a value?
+     *
+     * @return bool
+     */
+    public function shouldReturn()
+    {
+        if($this->return !== "void" && $this->method->name !== "__construct"){
+            return true;
         }
 
-        return $returnValue;
+        return false;
     }
 
     /**
@@ -254,16 +296,5 @@ class Method
                 return $phpdoc;
             }
         }
-    }
-
-    /**
-     * Output an error.
-     *
-     * @param  string  $string
-     * @return void
-     */
-    protected function error($string)
-    {
-        echo $string . "\r\n";
     }
 }

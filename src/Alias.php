@@ -184,7 +184,7 @@ class Alias
 
             //If it doesn't exist, skip it
             if (!class_exists($root) && !interface_exists($root)) {
-                $this->error("Class $this->root is not found.");
+                $this->error("Class $root is not found.");
                 return;
             }
 

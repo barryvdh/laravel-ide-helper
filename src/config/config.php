@@ -71,6 +71,17 @@ return array(
             'emergency' => 'Monolog\Logger::addEmergency',
         )
     ),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Interface implementations
+    |--------------------------------------------------------------------------
+    |
+    | These interfaces will be replaced with the implementing class. Some interfaces
+    | are detected by the helpers, others can be listed below.
+    |
+    */
+    
     'interfaces' => array(
         '\Illuminate\Auth\UserInterface' => '\User',
     )

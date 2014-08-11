@@ -175,6 +175,8 @@ class ModelsCommand extends Command
                 } catch (\Exception $e) {
                     $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.");
                 }
+            } elseif (interface_exists($name) || (function_exists('trait_exists') && trait_exists($name))) {
+                $this->info("Skipping interface/trait $name");
             } else {
                 $this->error("Class $name does not exist");
             }

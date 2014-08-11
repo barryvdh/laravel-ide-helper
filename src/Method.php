@@ -297,7 +297,9 @@ class Method
             $method = $reflectionMethod->getPrototype();
         }
         if ($method) {
-            $phpdoc = new DocBlock($method, new Context($method->getNamespaceName()));
+            $namespace = $method->getDeclaringClass()->getNamespaceName();
+            $phpdoc = new DocBlock($method, new Context($namespace));
+            
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);

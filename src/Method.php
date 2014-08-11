@@ -52,9 +52,9 @@ class Method
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
-            $this->normalizeDescription();
-            $this->normalizeParams();
-            $this->normalizeReturn();
+            $this->normalizeParams($this->phpdoc);
+            $this->normalizeReturn($this->phpdoc);
+            $this->normalizeDescription($this->phpdoc);
         } catch (\Exception $e) {}
 
         //Get the parameters, including formatted default values
@@ -136,11 +136,12 @@ class Method
     /**
      * Get the description and get the inherited docs.
      *
+     * @param DocBlock $phpdoc
      */
-    protected function normalizeDescription()
+    protected function normalizeDescription(DocBlock $phpdoc)
     {
         //Get the short + long description from the DocBlock
-        $description = $this->phpdoc->getText();
+        $description = $phpdoc->getText();
 
         //Loop through parents/interfaces, to fill in {@inheritdoc}
         if (strpos($description, '{@inheritdoc}') !== false) {
@@ -148,14 +149,18 @@ class Method
             $inheritDescription = $inheritdoc->getText();
 
             $description = str_replace('{@inheritdoc}', $inheritDescription, $description);
-            $this->phpdoc->setText($description);
+            $phpdoc->setText($description);
+
+            $this->normalizeParams($inheritdoc);
+            $this->normalizeReturn($inheritdoc);
 
             //Add the tags that are inherited
             $inheritTags = $inheritdoc->getTags();
             if ($inheritTags) {
+                /** @var Tag $tag */
                 foreach ($inheritTags as $tag) {
                     $tag->setDocBlock();
-                    $this->phpdoc->appendTag($tag);
+                    $phpdoc->appendTag($tag);
                 }
             }
         }
@@ -163,11 +168,13 @@ class Method
 
     /**
      * Normalize the parameters
+     *
+     * @param DocBlock $phpdoc
      */
-    protected function normalizeParams()
+    protected function normalizeParams(DocBlock $phpdoc)
     {
         //Get the return type and adjust them for beter autocomplete
-        $paramTags = $this->phpdoc->getTagsByName('param');
+        $paramTags = $phpdoc->getTagsByName('param');
         if ($paramTags) {
             /** @var ParamTag $tag */
             foreach($paramTags as $tag){
@@ -184,11 +191,13 @@ class Method
 
     /**
      * Normalize the return tag (make full namespace, replace interfaces)
+     *
+     * @param DocBlock $phpdoc
      */
-    protected function normalizeReturn()
+    protected function normalizeReturn(DocBlock $phpdoc)
     {
         //Get the return type and adjust them for beter autocomplete
-        $returnTags = $this->phpdoc->getTagsByName('return');
+        $returnTags = $phpdoc->getTagsByName('return');
         if ($returnTags) {
             /** @var ReturnTag $tag */
             $tag = reset($returnTags);
@@ -275,7 +284,7 @@ class Method
 
     /**
      * @param \ReflectionMethod $reflectionMethod
-     * @return string
+     * @return DocBlock
      */
     protected function getInheritDoc($reflectionMethod)
     {

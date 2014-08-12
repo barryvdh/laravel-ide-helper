@@ -19,7 +19,7 @@ namespace <?= $namespace == '__root' ? '' : $namespace ?>{
     <?= $alias->getClassType() ?> <?= $alias->getAlias() ?> <?= $alias->getExtends() ? 'extends ' . $alias->getExtends() : '' ?>{
         <?php foreach($alias->getMethods() as $method): ?>
 
-        <?= trim($method->getDocComment()) ?>
+        <?= trim($method->getDocComment('        ')) ?>
 
         public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>){<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
 

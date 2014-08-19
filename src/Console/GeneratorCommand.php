@@ -82,6 +82,14 @@ class GeneratorCommand extends Command
             );
         } else {
             $filename = $this->argument('filename');
+            $format = $this->option('format');
+
+            // Strip the php extension
+            if (substr($filename, -4, 4) == '.php') {
+                $filename = substr($filename, 0, -4);
+            }
+
+            $filename .= '.' . $format;
 
             if ($this->option('memory')) {
                 $this->useMemoryDriver();
@@ -100,7 +108,7 @@ class GeneratorCommand extends Command
             }
 
             $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
-            $content = $generator->generate();
+            $content = $generator->generate($format);
             $written = $this->files->put($filename, $content);
 
             if ($written !== false) {
@@ -131,12 +139,11 @@ class GeneratorCommand extends Command
      */
     protected function getArguments()
     {
+        $filename = $this->config->get('laravel-ide-helper::filename');
+
         return array(
             array(
-                'filename',
-                InputArgument::OPTIONAL,
-                'The path to the helper file',
-                $this->config->get('laravel-ide-helper::filename')
+                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename
             ),
         );
     }
@@ -148,7 +155,10 @@ class GeneratorCommand extends Command
      */
     protected function getOptions()
     {
+        $format = $this->config->get('laravel-ide-helper::format');
+
         return array(
+            array('format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),
             array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
             array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
             array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),

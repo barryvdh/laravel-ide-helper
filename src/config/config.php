@@ -4,14 +4,15 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Filename
+    | Filename & Format
     |--------------------------------------------------------------------------
     |
-    | The default path to the helper file
+    | The default filename (without extension) and the format (php or json)
     |
     */
 
-    'filename' => '_ide_helper.php',
+    'filename'  => '_ide_helper',
+    'format'    => 'php',
 
     /*
     |--------------------------------------------------------------------------

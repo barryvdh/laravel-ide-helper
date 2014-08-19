@@ -56,9 +56,21 @@ class Generator
     /**
      * Generate the helper file contents;
      *
+     * @param  string  $format  The format to generate the helper in (php/json)
      * @return string;
      */
-    public function generate()
+    public function generate($format = 'php')
+    {
+        // Check if the generator for this format exists
+        $method = 'generate'.ucfirst($format).'Helper';
+        if (method_exists($this, $method)) {
+            return $this->$method();
+        }
+
+        return $this->generatePhpHelper();
+    }
+
+    public function generatePhpHelper()
     {
         $app = app();
         return $this->view->make('laravel-ide-helper::ide-helper')
@@ -66,6 +78,33 @@ class Generator
             ->with('helpers', $this->helpers)
             ->with('version', $app::VERSION)
             ->render();
+    }
+
+    public function generateJsonHelper()
+    {
+        $classes = array();
+        foreach ($this->getNamespaces() as $aliases) {
+            foreach($aliases as $alias) {
+                $functions = array();
+                foreach ($alias->getMethods() as $method) {
+                    $functions[$method->getName()] = '('. $method->getParamsWithDefault().')';
+                }
+                $classes[$alias->getAlias()] = array(
+                    'functions' => $functions,
+                );
+            }
+        }
+
+        $flags = JSON_FORCE_OBJECT;
+        if (defined('JSON_PRETTY_PRINT')) {
+            $flags |= JSON_PRETTY_PRINT;
+        }
+
+        return json_encode(array(
+            'php' => array(
+                'classes' => $classes,
+            ),
+        ), $flags);
     }
 
     protected function detectDrivers()

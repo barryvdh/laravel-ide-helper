@@ -98,9 +98,12 @@ class GeneratorCommand extends Command
             } else {
                 $helpers = '';
             }
-
+            
+            $json = false;
+            if ($this->option('format') == "json") $json = true;
+            
             $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
-            $content = $generator->generate();
+            $content = $generator->generate($json);
             $written = $this->files->put($filename, $content);
 
             if ($written !== false) {

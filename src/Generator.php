@@ -58,12 +58,19 @@ class Generator
      *
      * @return string;
      */
-    public function generate()
+    public function generate($json = false)
     {
+        if ($json)
+        return $this->view->make('laravel-ide-helper::ide-helper-json')
+            ->with('namespaces', $this->getNamespaces())
+            ->with('helpers', $this->helpers)
+            ->render();
+        
         return $this->view->make('laravel-ide-helper::ide-helper')
             ->with('namespaces', $this->getNamespaces())
             ->with('helpers', $this->helpers)
             ->render();
+        
     }
 
     protected function detectDrivers()

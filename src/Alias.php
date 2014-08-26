@@ -261,7 +261,7 @@ class Alias
                     if (!in_array($method->name, $this->usedMethods)) {
                         // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
-                        if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
+                        if ($this->extends !== $class && (substr($method->name, 0, 2) !== '__' || $method->name === '__construct')) {
                             $this->methods[] = new Method($method, $this->alias, $reflection, $method->name, $this->interfaces);
                         }
                         $this->usedMethods[] = $method->name;

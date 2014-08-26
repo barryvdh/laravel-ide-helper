@@ -444,7 +444,8 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method {$method['type']} {$name}({$arguments}) ", $phpdoc);
+            $static = (\Config::get('laravel-ide-helper::models-magic-static')) ? " static" : "";
+            $tag = Tag::createInstance("@method{$static} {$method['type']} {$name}({$arguments}) ", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 

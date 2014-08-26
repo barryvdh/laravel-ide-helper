@@ -43,7 +43,16 @@ return array(
     'model_locations' => array(
         'app/models',
     ),
-
+    
+    /*
+      |--------------------------------------------------------------------------
+      | Static keyword for dynamic methods
+      |--------------------------------------------------------------------------
+      |
+      | Define whether the magically documented methods of the model classes should contain the static keyword.
+      |
+     */
+    'models-magic-static' => true,
 
     /*
     |--------------------------------------------------------------------------

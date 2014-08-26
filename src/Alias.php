@@ -12,11 +12,11 @@ namespace Barryvdh\LaravelIdeHelper;
 
 class Alias
 {
-
     protected $alias;
     protected $facade;
     protected $extends = null;
     protected $classType = 'class';
+    protected $short;
     protected $namespace = '__root';
     protected $root = null;
     protected $classes = array();
@@ -42,7 +42,6 @@ class Alias
         $facade = '\\' . ltrim($facade, '\\');
         $this->facade = $facade;
 
-
         $this->detectRoot();
 
         if ((!$this->isTrait() && $this->root)) {
@@ -54,7 +53,6 @@ class Alias
         $this->addClass($this->root);
         $this->detectNamespace();
         $this->detectClassType();
-
 
     }
 
@@ -115,6 +113,12 @@ class Alias
     }
 
     /**
+     * Return the short name (without namespace)
+     */
+    public function getShortName(){
+        return $this->short;
+    }
+    /**
      * Get the namespace from the alias
      *
      * @return string
@@ -145,6 +149,8 @@ class Alias
             $nsParts = explode('\\', $this->alias);
             $this->short = array_pop($nsParts);
             $this->namespace = implode('\\', $nsParts);
+        }else{
+            $this->short = $this->alias;
         }
     }
 

@@ -53,7 +53,10 @@ class Alias
         $this->addClass($this->root);
         $this->detectNamespace();
         $this->detectClassType();
-
+        
+        if($facade === '\Illuminate\Database\Eloquent\Model'){
+            $this->usedMethods = array('decrement', 'increment');
+        }
     }
 
     /**

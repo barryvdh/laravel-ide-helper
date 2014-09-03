@@ -444,7 +444,7 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments}) ", $phpdoc);
+            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 

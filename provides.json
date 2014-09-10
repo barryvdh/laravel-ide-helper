@@ -1,5 +1,5 @@
 {
   "providers": [
-    "Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider"
+    "Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider"
   ]
 }

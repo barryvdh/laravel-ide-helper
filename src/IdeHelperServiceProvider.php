@@ -12,8 +12,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Support\ServiceProvider;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
-use Barryvdh\LaravelIdeHelper\Console\Generator2Command;
-Use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 
 class IdeHelperServiceProvider extends ServiceProvider
 {

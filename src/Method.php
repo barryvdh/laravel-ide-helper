@@ -261,7 +261,7 @@ class Method
             $paramStr = '$' . $param->getName();
             $params[] = $paramStr;
             if ($param->isOptional()) {
-                $default = $param->getDefaultValue();
+                $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';
                 } elseif (is_array($default)) {

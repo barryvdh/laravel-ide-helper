@@ -14,9 +14,9 @@ Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeInte
 
 ### Automatic phpDoc generation for Laravel Facades
 
-Require this package in your composer.json and run composer update (or run `composer require barryvdh/laravel-ide-helper:1.*` directly):
+Require this package with composer using the following command:
 
-    "barryvdh/laravel-ide-helper": "1.*"
+    composer require barryvdh/laravel-ide-helper
 
 After updating composer, add the ServiceProvider to the providers array in app/config/app.php
 

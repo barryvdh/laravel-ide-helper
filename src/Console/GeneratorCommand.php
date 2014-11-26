@@ -100,7 +100,9 @@ class GeneratorCommand extends Command
             if ($this->option('helpers') || ($this->config->get('laravel-ide-helper::include_helpers'))) {
                 foreach ($this->config->get('laravel-ide-helper::helper_files', array()) as $helper) {
                     if (file_exists($helper)) {
-                        $helpers .= str_replace(array('<?php', '?>'), '', $this->files->get($helper));
+                        $helper_contents = str_replace(array('<?php', '?>'), '', $this->files->get($helper));
+                        $helper_contents = preg_replace("/use ([\w\\\\])+;/", '', $helper_contents);
+                        $helpers .= $helper_contents;
                     }
                 }
             } else {

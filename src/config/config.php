@@ -44,6 +44,22 @@ return array(
         'app/models',
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Model locations to exclude
+    |--------------------------------------------------------------------------
+    |
+    | Define in which directories the ide-helper:models command should exclude
+    | when looking for models - recursive.
+    |
+    */
+
+    'ignored_directories' => array(
+        'app/Console',
+        'app/Exceptions',
+        'app/Http',
+        'app/Providers'
+    ),
 
     /*
     |--------------------------------------------------------------------------

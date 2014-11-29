@@ -47,6 +47,7 @@ class ModelsCommand extends Command
     protected $methods = array();
     protected $write = false;
     protected $dirs = array();
+    protected $ignoredDirectories = array();
     protected $reset;
 
 
@@ -63,6 +64,8 @@ class ModelsCommand extends Command
             $this->laravel['config']->get('laravel-ide-helper::model_locations'),
             $this->option('dir')
         );
+
+        $this->ignoredDirectories = $this->laravel['config']->get('laravel-ide-helper::ignored_directories');
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
@@ -199,7 +202,16 @@ class ModelsCommand extends Command
             $dir = base_path() . '/' . $dir;
             if (file_exists($dir)) {
                 foreach (ClassMapGenerator::createMap($dir) as $model => $path) {
-                    $models[] = $model;
+                    $addModel = true;
+                    $relativePath = str_replace(base_path() . '/', '', $path);
+                    foreach($this->ignoredDirectories as $toIgnore){
+                        if (0 === strpos($relativePath, $toIgnore)) {
+                            $addModel = false;
+                        }
+                    }
+                    if($addModel){
+                        $models[] = $model;
+                    }
                 }
             }
         }

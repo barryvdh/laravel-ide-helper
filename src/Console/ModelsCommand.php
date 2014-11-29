@@ -150,8 +150,6 @@ class ModelsCommand extends Command
             if (in_array($name, $ignore)) {
                 $this->comment("Ignoring model '$name'");
                 continue;
-            } else {
-                $this->comment("Loading model '$name'");
             }
             $this->properties = array();
             $this->methods = array();
@@ -159,11 +157,15 @@ class ModelsCommand extends Command
                 try {
                     // handle abstract classes, interfaces, ...
                     $reflectionClass = new \ReflectionClass($name);
+
+                    if (!$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Model')) {
+                        continue;
+                    }
+
+                    $this->comment("Loading model '$name'");
+
                     if (!$reflectionClass->IsInstantiable()) {
                         throw new \Exception($name . ' is not instanciable.');
-                    } elseif (!$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Model')) {
-                        $this->comment("Class '$name' is not a model");
-                        continue;
                     }
 
                     $model = new $name();
@@ -175,10 +177,6 @@ class ModelsCommand extends Command
                 } catch (\Exception $e) {
                     $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.");
                 }
-            } elseif (interface_exists($name) || (function_exists('trait_exists') && trait_exists($name))) {
-                $this->info("Skipping interface/trait $name");
-            } else {
-                $this->error("Class $name does not exist");
             }
 
         }

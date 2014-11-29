@@ -1,4 +1,6 @@
-<?php
+<?php 
+
+use Illuminate\Support\Facades\Config;
 
 return array(
 
@@ -84,7 +86,7 @@ return array(
     */
     
     'interfaces' => array(
-        '\Illuminate\Auth\UserInterface' => '\User',
+        '\Illuminate\Auth\UserInterface' => Config::get('auth.model', 'User'),
     )
 
 );

@@ -50,6 +50,10 @@ class Generator
         $this->extra = array_merge($this->extra, $this->config->get('laravel-ide-helper::extra'));
         $this->magic = array_merge($this->magic, $this->config->get('laravel-ide-helper::magic'));
         $this->interfaces = array_merge($this->interfaces, $this->config->get('laravel-ide-helper::interfaces'));
+        // Make all interface classes absolute
+        foreach ($this->interfaces as &$interface) {
+            $interface = '\\' . ltrim($interface, '\\');
+        }
         $this->helpers = $helpers;
     }
 
@@ -150,10 +154,6 @@ class Generator
             }
         }catch (\Exception $e) {}
 
-        // Make all interface classes absolute
-        foreach ($this->interfaces as &$interface) {
-            $interface = '\\' . ltrim($interface, '\\');
-        }
     }
 
     /**

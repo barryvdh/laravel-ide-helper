@@ -165,7 +165,7 @@ class ModelsCommand extends Command
                     $this->comment("Loading model '$name'");
 
                     if (!$reflectionClass->IsInstantiable()) {
-                        throw new \Exception($name . ' is not instanciable.');
+                        throw new \Exception($name . ' is not instantiable.');
                     }
 
                     $model = new $name();

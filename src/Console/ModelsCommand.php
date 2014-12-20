@@ -333,7 +333,7 @@ class ModelsCommand extends Command
                             $code = substr($code, $pos + strlen($search));
                             $arguments = explode(',', substr($code, 0, stripos($code, ')')));
                             //Remove quotes, ensure 1 \ in front of the model
-                            $returnModel = "\\" . ltrim(trim($arguments[0], " \"'"), "\\");
+                            $returnModel = $this->getClassName($arguments[0]);
                             if ($relation === "belongsToMany" or $relation === 'hasMany' or $relation === 'morphMany' or $relation === 'morphToMany') {
                                 //Collection or array of models (because Collection is Arrayable)
                                 $this->setProperty(
@@ -507,4 +507,14 @@ class ModelsCommand extends Command
         return $paramsWithDefault;
     }
 
+    private function getClassName($className)
+    {
+        // If the class name was resovled via ::class (PHP 5.5+)
+        if(strpos($className, '::class') !== false) {
+            $end = -1 * strlen('::class');
+            return substr($className, 0, $end);
+        }
+
+        return "\\" . ltrim(trim($className, " \"'"), "\\") ;
+    }
 }

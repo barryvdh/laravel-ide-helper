@@ -254,8 +254,8 @@ class ModelsCommand extends Command
                     }
                 }
 
-
-                $this->setProperty($name, $type, true, true);
+                $comment = $column->getComment();
+                $this->setProperty($name, $type, true, true,$comment);
                 $this->setMethod(
                     Str::camel("where_" . $name),
                     '\Illuminate\Database\Query\Builder|\\' . get_class($model),
@@ -359,8 +359,9 @@ class ModelsCommand extends Command
      * @param string|null $type
      * @param bool|null $read
      * @param bool|null $write
+     * @param string|null $comment
      */
-    protected function setProperty($name, $type = null, $read = null, $write = null)
+    protected function setProperty($name, $type = null, $read = null, $write = null,$comment=null)
     {
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = array();
@@ -376,6 +377,9 @@ class ModelsCommand extends Command
         }
         if ($write !== null) {
             $this->properties[$name]['write'] = $write;
+        }
+        if ($comment !== null ) {
+            $this->properties[$name]['comment'] = $comment;
         }
     }
 
@@ -433,7 +437,8 @@ class ModelsCommand extends Command
             } else {
                 $attr = 'property-read';
             }
-            $tag = Tag::createInstance("@{$attr} {$property['type']} {$name}", $phpdoc);
+            $comment = isset($property['comment'])?$property['comment']:'';
+            $tag = Tag::createInstance("@{$attr} {$property['type']} {$name} {$comment}", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 

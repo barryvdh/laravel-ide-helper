@@ -257,7 +257,7 @@ class ModelsCommand extends Command
                 }
 
                 $comment = $column->getComment();
-                $this->setProperty($name, $type, true, true,$comment);
+                $this->setProperty($name, $type, true, true, $comment);
                 $this->setMethod(
                     Str::camel("where_" . $name),
                     '\Illuminate\Database\Query\Builder|\\' . get_class($model),
@@ -363,13 +363,14 @@ class ModelsCommand extends Command
      * @param bool|null $write
      * @param string|null $comment
      */
-    protected function setProperty($name, $type = null, $read = null, $write = null,$comment=null)
+    protected function setProperty($name, $type = null, $read = null, $write = null, $comment='')
     {
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = array();
             $this->properties[$name]['type'] = 'mixed';
             $this->properties[$name]['read'] = false;
             $this->properties[$name]['write'] = false;
+            $this->properties[$name]['comment'] = (string) $comment;
         }
         if ($type !== null) {
             $this->properties[$name]['type'] = $type;
@@ -379,9 +380,6 @@ class ModelsCommand extends Command
         }
         if ($write !== null) {
             $this->properties[$name]['write'] = $write;
-        }
-        if ($comment !== null ) {
-            $this->properties[$name]['comment'] = $comment;
         }
     }
 
@@ -439,8 +437,7 @@ class ModelsCommand extends Command
             } else {
                 $attr = 'property-read';
             }
-            $comment = isset($property['comment'])?$property['comment']:'';
-            $tag = Tag::createInstance("@{$attr} {$property['type']} {$name} {$comment}", $phpdoc);
+            $tag = Tag::createInstance("@{$attr} {$property['type']} {$name} {$property['comment']}", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 
@@ -522,12 +519,12 @@ class ModelsCommand extends Command
     private function getClassName($className, $model)
     {
         // If the class name was resolved via get_class($this) or static::class
-        if(strpos($className, 'get_class($this)') !== false || strpos($className, 'static::class') !== false) {
+        if (strpos($className, 'get_class($this)') !== false || strpos($className, 'static::class') !== false) {
             return get_class($model);
         }
 
         // If the class name was resolved via ::class (PHP 5.5+)
-        if(strpos($className, '::class') !== false) {
+        if (strpos($className, '::class') !== false) {
             $end = -1 * strlen('::class');
             return substr($className, 0, $end);
         }

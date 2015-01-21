@@ -168,7 +168,7 @@ class ModelsCommand extends Command
                         throw new \Exception($name . ' is not instantiable.');
                     }
 
-                    $model = new $name();
+                    $model = \App::make($name);
                     if ($hasDoctrine) {
                         $this->getPropertiesFromTable($model);
                     }

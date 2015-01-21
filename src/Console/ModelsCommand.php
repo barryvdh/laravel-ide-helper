@@ -168,10 +168,12 @@ class ModelsCommand extends Command
                         throw new \Exception($name . ' is not instantiable.');
                     }
 
-                    $model = \App::make($name);
+                    $model = $this->laravel->make($name);
+
                     if ($hasDoctrine) {
                         $this->getPropertiesFromTable($model);
                     }
+
                     $this->getPropertiesFromMethods($model);
                     $output .= $this->createPhpDocs($name);
                 } catch (\Exception $e) {

@@ -185,7 +185,7 @@ class ModelsCommand extends Command
 
         if (!$hasDoctrine) {
             $this->error(
-                "Warning: 'doctrine/dbal: ~2.3' is required to load database information. Please require that in your composer.json and run 'composer update'."
+                'Warning: `"doctrine/dbal": "~2.3"` is required to load database information. Please require that in your composer.json and run `composer update`.'
             );
         }
 

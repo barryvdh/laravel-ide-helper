@@ -34,7 +34,7 @@ You can configure your composer.json to do this after each commit:
         "post-update-cmd":[
             "php artisan clear-compiled",
             "php artisan ide-helper:generate",
-            "php artisan optimize",
+            "php artisan optimize"
         ]
     },
 

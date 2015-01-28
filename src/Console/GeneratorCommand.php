@@ -97,8 +97,8 @@ class GeneratorCommand extends Command
 
 
             $helpers = '';
-            if ($this->option('helpers') || ($this->config->get('laravel-ide-helper::include_helpers'))) {
-                foreach ($this->config->get('laravel-ide-helper::helper_files', array()) as $helper) {
+            if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {
+                foreach ($this->config->get('ide-helper.helper_files', array()) as $helper) {
                     if (file_exists($helper)) {
                         $helpers .= str_replace(array('<?php', '?>'), '', $this->files->get($helper));
                     }
@@ -139,7 +139,7 @@ class GeneratorCommand extends Command
      */
     protected function getArguments()
     {
-        $filename = $this->config->get('laravel-ide-helper::filename');
+        $filename = $this->config->get('ide-helper.filename');
 
         return array(
             array(
@@ -155,7 +155,7 @@ class GeneratorCommand extends Command
      */
     protected function getOptions()
     {
-        $format = $this->config->get('laravel-ide-helper::format');
+        $format = $this->config->get('ide-helper.format');
 
         return array(
             array('format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),

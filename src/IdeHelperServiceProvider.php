@@ -31,7 +31,8 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('barryvdh/laravel-ide-helper', 'laravel-ide-helper', __DIR__);
+        $viewPath = __DIR__.'/../resources/views';
+        $this->loadViewsFrom('ide-helper', $viewPath);
     }
 
     /**
@@ -41,6 +42,10 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $configPath = __DIR__ . '/../config/ide-helper.php';
+        $this->mergeConfigFrom('ide-helper', $configPath);
+        $this->publishes([$configPath => config_path('ide-helper.php')]);
+        
         $this->app['command.ide-helper.generate'] = $this->app->share(
             function ($app) {
                 return new GeneratorCommand($app['config'], $app['files'], $app['view']);
@@ -64,38 +69,6 @@ class IdeHelperServiceProvider extends ServiceProvider
     public function provides()
     {
         return array('command.ide-helper.generate', 'command.ide-helper.models');
-    }
-    
-    /**
-     * Register the package's component namespaces.
-     *
-     * @param  string  $package
-     * @param  string  $namespace
-     * @param  string  $path
-     * @return void
-     */
-    public function package($package, $namespace = null, $path = null)
-    {
-
-        // Is it possible to register the config?
-        if (method_exists($this->app['config'], 'package')) {
-            $this->app['config']->package($package, $path.'/config', $namespace);
-        } else {
-            // Load the config for now..
-            $config = $this->app['files']->getRequire($path .'/config/config.php');
-            foreach($config as $key => $value){
-                $this->app['config']->set($namespace.'::'.$key, $value);
-            }
-        }
-
-        // Register view files
-        $appView = $this->app['path']."/views/packages/{$package}";
-        if ($this->app['files']->isDirectory($appView))
-        {
-            $this->app['view']->addNamespace($namespace, $appView);
-        }
-
-        $this->app['view']->addNamespace($namespace, $path.'/views');
     }
 
 }

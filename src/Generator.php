@@ -114,7 +114,7 @@ class Generator
     protected function detectDrivers()
     {
         try{
-            if (class_exists('Auth')) {
+            if (class_exists('Auth') && method_exists('Auth', 'driver')) {
                 $class = get_class(\Auth::driver());
                 $this->extra['Auth'] = array($class);
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;

@@ -1,7 +1,5 @@
 <?php 
 
-use Illuminate\Support\Facades\Config;
-
 return array(
 
     /*
@@ -43,7 +41,7 @@ return array(
     */
 
     'model_locations' => array(
-        'app/models',
+        'app',
     ),
 
 
@@ -57,7 +55,6 @@ return array(
     */
 
     'extra' => array(
-        'Artisan' => array('Illuminate\Foundation\Artisan'),
         'Eloquent' => array('Illuminate\Database\Eloquent\Builder', 'Illuminate\Database\Query\Builder'),
         'Session' => array('Illuminate\Session\Store'),
     ),
@@ -86,7 +83,7 @@ return array(
     */
     
     'interfaces' => array(
-        '\Illuminate\Auth\UserInterface' => Config::get('auth.model', 'User'),
+        '\Illuminate\Auth\UserInterface' => config('auth.model', 'User'),
     )
 
 );

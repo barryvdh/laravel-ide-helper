@@ -167,6 +167,12 @@ class Generator
 
         // Get all aliases
         foreach (AliasLoader::getInstance()->getAliases() as $name => $facade) {
+            
+            // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
+            if ($facade == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
+                continue;
+            }
+            
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
             $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {

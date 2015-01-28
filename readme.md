@@ -1,5 +1,7 @@
-## Laravel IDE Helper Generator
+## Laravel 5 IDE Helper Generator
 [![Latest Stable Version](https://poser.pugx.org/barryvdh/laravel-ide-helper/version.png)](https://packagist.org/packages/barryvdh/laravel-ide-helper) [![Total Downloads](https://poser.pugx.org/barryvdh/laravel-ide-helper/d/total.png)](https://packagist.org/packages/barryvdh/laravel-ide-helper)
+
+### For Laravel 4.x, check version 1.x
 
 ### Complete phpDocs, directly from the source
 
@@ -18,7 +20,7 @@ Require this package with composer using the following command:
 
     composer require barryvdh/laravel-ide-helper
 
-After updating composer, add the ServiceProvider to the providers array in app/config/app.php
+After updating composer, add the ServiceProvider to the providers array in config/app.php
 
     'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
@@ -53,7 +55,7 @@ The Illuminate/Support/helpers.php is already set-up, but you can add/remove you
 
 ### Automatic phpDocs for Models
 
-> **Note:** Since v1.10 you need to require `doctrine/dbal: ~2.3` in your own composer.json. 
+> You need to require `doctrine/dbal: ~2.3` in your own composer.json to get database columns. 
 
 If you don't want to write your properties yourself, you can use the command `ide-helper:models` to generate
 phpDocs, based on table columns, relations and getters/setters. You can write the comments directly to your Model file, using the `--write (-W)` option. By default, you are asked to overwrite or write to a separate file (\_ide\_helper\_models.php) (You can force No with `--nowrite (-N)`).
@@ -82,9 +84,9 @@ By default, models in app/models are scanned. The optional argument tells what m
 
 You can also scan a different directory, using the --dir option (relative from the base path):
 
-    php artisan ide-helper:models --dir="app/workbench/name/package/models" --dir="app/src/Model"
+    php artisan ide-helper:models --dir="path/to/models" --dir="app/src/Model"
    
-You can publish the config file (`php artisan config:publish barryvdh/laravel-ide-helper`) and set the default directories.
+You can publish the config file (`php artisan vendor:publish`) and set the default directories.
 
 Models can be ignored using the --ignore (-I) option
 

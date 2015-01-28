@@ -1,6 +1,8 @@
 ## Laravel IDE Helper Generator
 [![Latest Stable Version](https://poser.pugx.org/barryvdh/laravel-ide-helper/version.png)](https://packagist.org/packages/barryvdh/laravel-ide-helper) [![Total Downloads](https://poser.pugx.org/barryvdh/laravel-ide-helper/d/total.png)](https://packagist.org/packages/barryvdh/laravel-ide-helper)
 
+### For Laravel 5, check the [2.0 branch](https://github.com/barryvdh/laravel-ide-helper/tree/2.0)
+
 ### Complete phpDocs, directly from the source
 
 _Checkout [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_

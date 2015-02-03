@@ -33,6 +33,9 @@ class IdeHelperServiceProvider extends ServiceProvider
     {
         $viewPath = __DIR__.'/../resources/views';
         $this->loadViewsFrom($viewPath, 'ide-helper');
+        
+        $configPath = __DIR__ . '/../config/ide-helper.php';
+        $this->publishes([$configPath => config_path('ide-helper.php')], 'config');
     }
 
     /**
@@ -44,7 +47,6 @@ class IdeHelperServiceProvider extends ServiceProvider
     {
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
-        $this->publishes([$configPath => config_path('ide-helper.php')]);
         
         $this->app['command.ide-helper.generate'] = $this->app->share(
             function ($app) {

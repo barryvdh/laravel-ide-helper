@@ -1,7 +1,7 @@
 ## Laravel 5 IDE Helper Generator
 [![Latest Stable Version](https://poser.pugx.org/barryvdh/laravel-ide-helper/version.png)](https://packagist.org/packages/barryvdh/laravel-ide-helper) [![Total Downloads](https://poser.pugx.org/barryvdh/laravel-ide-helper/d/total.png)](https://packagist.org/packages/barryvdh/laravel-ide-helper)
 
-### For Laravel 4.x, check version 1.x
+### For Laravel 4.x, check [version 1.x](https://github.com/barryvdh/laravel-ide-helper/tree/v1.x)
 
 ### Complete phpDocs, directly from the source
 

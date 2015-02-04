@@ -114,7 +114,7 @@ class Generator
     protected function detectDrivers()
     {
         try{
-            if (class_exists('Auth') && method_exists('Auth', 'driver')) {
+            if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
                 $class = get_class(\Auth::driver());
                 $this->extra['Auth'] = array($class);
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
@@ -122,7 +122,7 @@ class Generator
         }catch (\Exception $e) {}
 
         try{
-            if (class_exists('DB')) {
+            if (class_exists('DB') && is_a('DB', '\Illuminate\Support\Facades\DB', true)) {
                 $class = get_class(\DB::connection());
                 $this->extra['DB'] = array($class);
                 $this->interfaces['\Illuminate\Database\ConnectionInterface'] = $class;
@@ -130,7 +130,7 @@ class Generator
         }catch (\Exception $e) {}
 
         try{
-            if (class_exists('Cache')) {
+            if (class_exists('Cache') && is_a('Cache', '\Illuminate\Support\Facades\Cache', true)) {
                 $driver = get_class(\Cache::driver());
                 $store = get_class(\Cache::getStore());
                 $this->extra['Cache'] = array($driver, $store);
@@ -139,7 +139,7 @@ class Generator
         }catch (\Exception $e) {}
 
         try{
-            if (class_exists('Queue')) {
+            if (class_exists('Queue') && is_a('Queue', '\Illuminate\Support\Facades\Queue', true)) {
                 $class = get_class(\Queue::connection());
                 $this->extra['Queue'] = array($class);
                 $this->interfaces['\Illuminate\Queue\QueueInterface'] = $class;
@@ -147,7 +147,7 @@ class Generator
         }catch (\Exception $e) {}
 
         try{
-            if (class_exists('SSH')){
+            if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)){
                 $class = get_class(\SSH::connection());
                 $this->extra['SSH'] = array($class);
                 $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;

@@ -18,7 +18,7 @@ Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeInte
 
 Require this package with composer using the following command:
 
-    composer require barryvdh/laravel-ide-helper ~1.11
+    composer require barryvdh/laravel-ide-helper
 
 After updating composer, add the ServiceProvider to the providers array in config/app.php
 

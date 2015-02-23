@@ -42,7 +42,7 @@ You can configure your composer.json to do this after each commit:
 
 You can also publish the config-file to change implementations (ie. interface to specific class) or set defaults for --helpers or --sublime.
 
-    php artisan config:publish barryvdh/laravel-ide-helper
+    php artisan vendor:publish --provider=barryvdh/laravel-ide-helper --tag=config
 
 The generator tries to identify the real class, but if it cannot be found, you can define it in the config file.
 

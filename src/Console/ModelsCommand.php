@@ -357,20 +357,20 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param string $name
+     * @param string      $name
      * @param string|null $type
-     * @param bool|null $read
-     * @param bool|null $write
+     * @param bool|null   $read
+     * @param bool|null   $write
      * @param string|null $comment
      */
-    protected function setProperty($name, $type = null, $read = null, $write = null, $comment='')
+    protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '')
     {
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = array();
             $this->properties[$name]['type'] = 'mixed';
             $this->properties[$name]['read'] = false;
             $this->properties[$name]['write'] = false;
-            $this->properties[$name]['comment'] = (string) $comment;
+            $this->properties[$name]['comment'] = (string)$comment;
         }
         if ($type !== null) {
             $this->properties[$name]['type'] = $type;
@@ -394,6 +394,7 @@ class ModelsCommand extends Command
 
     /**
      * @param string $class
+     *
      * @return string
      */
     protected function createPhpDocs($class)
@@ -481,6 +482,7 @@ class ModelsCommand extends Command
      * Get the parameters and format them correctly
      *
      * @param $method
+     *
      * @return array
      */
     public function getParameters($method)
@@ -532,7 +534,7 @@ class ModelsCommand extends Command
             // If we need to resolve class namespace name
             if ($normalizedClassName[0] !== "\\") {
                 $namespaceName = (new \ReflectionClass($model))->getNamespaceName();
-                return "\\" . $namespaceName . "\\" . $normalizedClassName;
+                return empty($namespaceName) ? "\\$normalizedClassName" : "\\$namespaceName\\$normalizedClassName";
             } else {
                 return $normalizedClassName;
             }

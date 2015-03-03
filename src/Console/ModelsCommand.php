@@ -532,7 +532,7 @@ class ModelsCommand extends Command
             // If we need to resolve class namespace name
             if ($normalizedClassName[0] !== "\\") {
                 $namespaceName = (new \ReflectionClass($model))->getNamespaceName();
-                return "\\" . $namespaceName . "\\" . $normalizedClassName;
+                return empty($namespaceName) ? "\\$normalizedClassName" : "\\$namespaceName\\$normalizedClassName";
             } else {
                 return $normalizedClassName;
             }

@@ -1,10 +1,11 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
+ *
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
 
@@ -28,19 +29,19 @@ class Method
     protected $output = '';
     protected $name;
     protected $namespace;
-    protected $params = array();
-    protected $params_with_default = array();
-    protected $interfaces = array();
+    protected $params = [];
+    protected $params_with_default = [];
+    protected $interfaces = [];
     protected $return = null;
 
     /**
      * @param \ReflectionMethod $method
-     * @param string $alias
-     * @param string $class
-     * @param string|null $methodName
-     * @param array $interfaces
+     * @param string            $alias
+     * @param string            $class
+     * @param string|null       $methodName
+     * @param array             $interfaces
      */
-    public function __construct(\ReflectionMethod $method, $alias, $class, $methodName = null, $interfaces = array())
+    public function __construct(\ReflectionMethod $method, $alias, $class, $methodName = null, $interfaces = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
@@ -55,7 +56,8 @@ class Method
             $this->normalizeParams($this->phpdoc);
             $this->normalizeReturn($this->phpdoc);
             $this->normalizeDescription($this->phpdoc);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         //Get the parameters, including formatted default values
         $this->getParameters($method);
@@ -65,12 +67,12 @@ class Method
 
         //Reference the 'real' function in the declaringclass
         $declaringClass = $method->getDeclaringClass();
-        $this->declaringClassName = '\\' . ltrim($declaringClass->name, '\\');
-        $this->root = '\\' . ltrim($class->getName(), '\\');
+        $this->declaringClassName = '\\'.ltrim($declaringClass->name, '\\');
+        $this->root = '\\'.ltrim($class->getName(), '\\');
     }
 
     /**
-     * Get the class wherein the function resides
+     * Get the class wherein the function resides.
      *
      * @return string
      */
@@ -80,7 +82,7 @@ class Method
     }
 
     /**
-     * Return the class from which this function would be called
+     * Return the class from which this function would be called.
      *
      * @return string
      */
@@ -90,19 +92,21 @@ class Method
     }
 
     /**
-     * Get the docblock for this method
+     * Get the docblock for this method.
      *
      * @param string $prefix
+     *
      * @return mixed
      */
     public function getDocComment($prefix = "\t\t")
     {
         $serializer = new DocBlockSerializer(1, $prefix);
+
         return $serializer->getDocComment($this->phpdoc);
     }
 
     /**
-     * Get the method name
+     * Get the method name.
      *
      * @return string
      */
@@ -112,9 +116,10 @@ class Method
     }
 
     /**
-     * Get the parameters for this method
+     * Get the parameters for this method.
      *
      * @param bool $implode Wether to implode the array or not
+     *
      * @return string
      */
     public function getParams($implode = true)
@@ -123,9 +128,10 @@ class Method
     }
 
     /**
-     * Get the parameters for this method including default values
+     * Get the parameters for this method including default values.
      *
      * @param bool $implode Wether to implode the array or not
+     *
      * @return string
      */
     public function getParamsWithDefault($implode = true)
@@ -167,7 +173,7 @@ class Method
     }
 
     /**
-     * Normalize the parameters
+     * Normalize the parameters.
      *
      * @param DocBlock $phpdoc
      */
@@ -177,20 +183,20 @@ class Method
         $paramTags = $phpdoc->getTagsByName('param');
         if ($paramTags) {
             /** @var ParamTag $tag */
-            foreach($paramTags as $tag){
+            foreach ($paramTags as $tag) {
                 // Convert the keywords
                 $content = $this->convertKeywords($tag->getContent());
                 $tag->setContent($content);
 
                 // Get the expanded type and re-set the content
-                $content = $tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
+                $content = $tag->getType().' '.$tag->getVariableName().' '.$tag->getDescription();
                 $tag->setContent(trim($content));
             }
         }
     }
 
     /**
-     * Normalize the return tag (make full namespace, replace interfaces)
+     * Normalize the return tag (make full namespace, replace interfaces).
      *
      * @param DocBlock $phpdoc
      */
@@ -205,14 +211,14 @@ class Method
             $returnValue = $tag->getType();
 
             // Replace the interfaces
-            foreach($this->interfaces as $interface => $real){
+            foreach ($this->interfaces as $interface => $real) {
                 $returnValue = str_replace($interface, $real, $returnValue);
             }
 
             // Set the changed content
-            $tag->setContent($returnValue . ' ' . $tag->getDescription());
+            $tag->setContent($returnValue.' '.$tag->getDescription());
             $this->return = $returnValue;
-        }else{
+        } else {
             $this->return = null;
         }
     }
@@ -220,7 +226,8 @@ class Method
     /**
      * Convert keywwords that are incorrect.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     protected function convertKeywords($string)
@@ -239,7 +246,7 @@ class Method
      */
     public function shouldReturn()
     {
-        if($this->return !== "void" && $this->method->name !== "__construct"){
+        if ($this->return !== "void" && $this->method->name !== "__construct") {
             return true;
         }
 
@@ -247,18 +254,19 @@ class Method
     }
 
     /**
-     * Get the parameters and format them correctly
+     * Get the parameters and format them correctly.
      *
      * @param $method
+     *
      * @return array
      */
     public function getParameters($method)
     {
         //Loop through the default values for paremeters, and make the correct output string
-        $params = array();
-        $paramsWithDefault = array();
+        $params = [];
+        $paramsWithDefault = [];
         foreach ($method->getParameters() as $param) {
-            $paramStr = '$' . $param->getName();
+            $paramStr = '$'.$param->getName();
             $params[] = $paramStr;
             if ($param->isOptional()) {
                 $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
@@ -271,7 +279,7 @@ class Method
                 } elseif (is_int($default)) {
                     //$default = $default;
                 } else {
-                    $default = "'" . trim($default) . "'";
+                    $default = "'".trim($default)."'";
                 }
                 $paramStr .= " = $default";
             }
@@ -284,6 +292,7 @@ class Method
 
     /**
      * @param \ReflectionMethod $reflectionMethod
+     *
      * @return DocBlock
      */
     protected function getInheritDoc($reflectionMethod)
@@ -299,7 +308,7 @@ class Method
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
             $phpdoc = new DocBlock($method, new Context($namespace));
-            
+
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);

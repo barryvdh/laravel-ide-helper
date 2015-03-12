@@ -1,10 +1,11 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
+ *
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
 
@@ -16,7 +17,6 @@ use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 
 class IdeHelperServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -26,28 +26,24 @@ class IdeHelperServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application events.
-     *
-     * @return void
      */
     public function boot()
     {
         $viewPath = __DIR__.'/../resources/views';
         $this->loadViewsFrom($viewPath, 'ide-helper');
-        
-        $configPath = __DIR__ . '/../config/ide-helper.php';
+
+        $configPath = __DIR__.'/../config/ide-helper.php';
         $this->publishes([$configPath => config_path('ide-helper.php')], 'config');
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
-        $configPath = __DIR__ . '/../config/ide-helper.php';
+        $configPath = __DIR__.'/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
-        
+
         $this->app['command.ide-helper.generate'] = $this->app->share(
             function ($app) {
                 return new GeneratorCommand($app['config'], $app['files'], $app['view']);
@@ -70,7 +66,6 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('command.ide-helper.generate', 'command.ide-helper.models');
+        return ['command.ide-helper.generate', 'command.ide-helper.models'];
     }
-
 }

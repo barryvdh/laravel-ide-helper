@@ -43,8 +43,6 @@ class MetaCommand extends Command {
     
     protected $methods = [
       '\Illuminate\Foundation\Application::make',
-      '\Illuminate\Contracts\Foundation\Application::make',
-      '\Illuminate\Contracts\Container\Container::make',
       '\Illuminate\Container\Container::make',
       '\App::make',
       'app',

@@ -41,12 +41,12 @@ class MetaCommand extends Command {
     /** @var \Illuminate\View\Factory */
     protected $view;
     
-    protected $methods = [
+    protected $methods = array(
       '\Illuminate\Foundation\Application::make',
       '\Illuminate\Container\Container::make',
       '\App::make',
       'app',
-    ];
+    );
 
     /**
      *
@@ -81,10 +81,10 @@ class MetaCommand extends Command {
             }
         }
         
-        $content = $this->view->make('laravel-ide-helper::meta', [
+        $content = $this->view->make('laravel-ide-helper::meta', array(
           'bindings' => $bindings,
           'methods' => $this->methods,
-        ])->render();
+        ))->render();
         
         $written = $this->files->put($filename, $content);
 

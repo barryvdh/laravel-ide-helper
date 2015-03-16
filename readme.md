@@ -18,6 +18,8 @@ Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeInte
 
 It's possible to generate a PhpStorm meta file, to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata). For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container. For example, `events` will return ann `Illuminate\Events\Dispatcher` object, so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.
 
+    php artisan ide-helper:meta
+    
     app('events')->fire();
     \App::make('events')->..    
 

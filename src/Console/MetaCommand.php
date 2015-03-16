@@ -73,7 +73,7 @@ class MetaCommand extends Command {
                 $this->error("Cannot make $abstract: ".$e->getMessage());
             }
         }
-        $content = $this->view->make('laravel-ide-helper::meta', ['bindings' => $bindings])->render();
+        $content = $this->view->make('ide-helper::meta', ['bindings' => $bindings])->render();
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {

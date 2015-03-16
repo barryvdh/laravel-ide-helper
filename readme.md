@@ -21,7 +21,10 @@ It's possible to generate a PhpStorm meta file, to [add support for factory desi
     php artisan ide-helper:meta
     
     app('events')->fire();
-    \App::make('events')->..    
+    \App::make('events')->fire();
+    
+    /** @var \Illuminate\Foundation\Application $app */
+    $app->make('events')->fire();
 
 Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67    
 

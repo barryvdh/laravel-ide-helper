@@ -14,6 +14,16 @@ If you don't want to generate it, you can add a pre-generated file to the root f
 
 Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeIntel/SublimeCodeIntel
 
+### New: PhpStorm Meta for Container instances
+
+It's possible to generate a PhpStorm meta file, to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata). For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container. For example, `events` will return ann `Illuminate\Events\Dispatcher` object, so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.
+
+    app('events')->fire();
+    \App::make('events')->..    
+    
+> Note: This is only available in the `@dev` stability, until a new release is tagged.
+> Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
+
 ### Automatic phpDoc generation for Laravel Facades
 
 Require this package with composer using the following command:
@@ -51,7 +61,6 @@ You can use a in-memory sqlite driver, using the -M option.
 
 You can choose to include helper files. This is not enabled by default, but you can override this with the --helpers (-H) option.
 The Illuminate/Support/helpers.php is already set-up, but you can add/remove your own files in the config file.
-
 
 ### Automatic phpDocs for Models
 

@@ -40,6 +40,12 @@ class MetaCommand extends Command {
 
     /** @var \Illuminate\View\Factory */
     protected $view;
+    
+    protected $methods = [
+      '\Illuminate\Foundation\Application::make',
+      '\App::make',
+      'app'
+    ];
 
     /**
      *
@@ -73,7 +79,12 @@ class MetaCommand extends Command {
                 $this->error("Cannot make $abstract: ".$e->getMessage());
             }
         }
-        $content = $this->view->make('ide-helper::meta', ['bindings' => $bindings])->render();
+
+        $content = $this->view->make('ide-helper::meta', [
+          'bindings' => $bindings,
+          'methods' => $this->methods,
+        ])->render();
+
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {

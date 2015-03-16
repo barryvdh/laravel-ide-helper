@@ -20,7 +20,9 @@ It's possible to generate a PhpStorm meta file, to [add support for factory desi
 
     app('events')->fire();
     \App::make('events')->..    
-    
+
+Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67    
+
 > Note: This is only available in the `@dev` stability, until a new release is tagged.
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
 

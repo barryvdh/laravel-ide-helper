@@ -66,11 +66,8 @@ class MetaCommand extends Command {
      */
     public function fire()
     {
-        $filename = $this->option('filename');
-
         $bindings = array();
-
-        foreach ($this->laravel->getBindings() as $abstract => $options) {
+        foreach ($this->getAbstracts() as $abstract) {
             try {
                 $concrete = $this->laravel->make($abstract);
                 if (is_object($concrete)) {
@@ -86,6 +83,7 @@ class MetaCommand extends Command {
           'methods' => $this->methods,
         ))->render();
         
+        $filename = $this->option('filename');
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {
@@ -93,6 +91,16 @@ class MetaCommand extends Command {
         } else {
             $this->error("The meta file could not be created at $filename");
         }
+    }
+    
+    /**
+     * Get a list of abstracts from the Laravel Application.
+     * 
+     * @return array
+     */
+    protected function getAbstracts()
+    {
+        return array_keys($this->laravel->getBindings());
     }
 
     /**

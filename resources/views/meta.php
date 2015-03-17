@@ -10,6 +10,7 @@
 
     /** @noinspection PhpIllegalArrayKeyTypeInspection */
     /** @noinspection PhpUnusedLocalVariableInspection */
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     $STATIC_METHOD_TYPES = [
 <?php foreach($methods as $method): ?>
         <?= $method ?>('') => [

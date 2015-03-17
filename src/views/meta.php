@@ -11,12 +11,12 @@
     /** @noinspection PhpIllegalArrayKeyTypeInspection */
     /** @noinspection PhpUnusedLocalVariableInspection */
     /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-    $STATIC_METHOD_TYPES = [
+    $STATIC_METHOD_TYPES = array(
 <?php foreach($methods as $method): ?>
-        <?= $method ?>('') => [
+        <?= $method ?>('') => array(
 <?php foreach($bindings as $abstract => $class): ?>
             '<?= $abstract ?>' instanceof \<?= $class ?>,
-<?php endforeach ?>        ],
+<?php endforeach ?>        ),
 <?php endforeach ?>
-    ];
+    );
 }

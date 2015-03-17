@@ -6,9 +6,10 @@
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
-    * @noinspection PhpUnusedLocalVariableInspection
-    * @noinspection PhpIllegalArrayKeyTypeInspection
     */
+
+    /** @noinspection PhpIllegalArrayKeyTypeInspection */
+    /** @noinspection PhpUnusedLocalVariableInspection */
     $STATIC_METHOD_TYPES = [
 <?php foreach($methods as $method): ?>
         <?= $method ?>('') => [

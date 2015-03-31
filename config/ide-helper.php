@@ -43,6 +43,19 @@ return array(
     'model_locations' => array(
         'app',
     ),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Model options
+    |--------------------------------------------------------------------------
+    |
+    | Define additional options for model docblock generation
+    |
+    */
+    
+    'model_options' => array(
+        'include_eloquent_mixin'=>true
+    ),
 
 
     /*

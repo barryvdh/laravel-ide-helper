@@ -1,7 +1,7 @@
 <?= '<?php' ?>
 
 /**
- * An helper file for Laravel 5, to provide autocomplete information to your IDE
+ * A helper file for Laravel 5, to provide autocomplete information to your IDE
  * Generated for Laravel <?= $version ?> on <?= date("Y-m-d") ?>.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>

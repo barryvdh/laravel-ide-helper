@@ -1,10 +1,11 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
+ *
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
 
@@ -19,27 +20,27 @@ class Alias
     protected $short;
     protected $namespace = '__root';
     protected $root = null;
-    protected $classes = array();
-    protected $methods = array();
-    protected $usedMethods = array();
+    protected $classes = [];
+    protected $methods = [];
+    protected $usedMethods = [];
     protected $valid = false;
-    protected $magicMethods = array();
-    protected $interfaces = array();
+    protected $magicMethods = [];
+    protected $interfaces = [];
 
     /**
      * @param string $alias
      * @param string $facade
-     * @param array $magicMethods
-     * @param array $interfaces
+     * @param array  $magicMethods
+     * @param array  $interfaces
      */
-    public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array())
+    public function __construct($alias, $facade, $magicMethods = [], $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
         $this->interfaces = $interfaces;
 
         // Make the class absolute
-        $facade = '\\' . ltrim($facade, '\\');
+        $facade = '\\'.ltrim($facade, '\\');
         $this->facade = $facade;
 
         $this->detectRoot();
@@ -53,24 +54,24 @@ class Alias
         $this->addClass($this->root);
         $this->detectNamespace();
         $this->detectClassType();
-        
-        if($facade === '\Illuminate\Database\Eloquent\Model'){
-            $this->usedMethods = array('decrement', 'increment');
+
+        if ($facade === '\Illuminate\Database\Eloquent\Model') {
+            $this->usedMethods = ['decrement', 'increment'];
         }
     }
 
     /**
-     * Add one or more classes to analyze
+     * Add one or more classes to analyze.
      *
      * @param array|string $classes
      */
     public function addClass($classes)
     {
-        $classes = (array)$classes;
+        $classes = (array) $classes;
         foreach ($classes as $class) {
             if (class_exists($class) || interface_exists($class)) {
                 $this->classes[] = $class;
-            }else{
+            } else {
                 echo "Class not exists: $class\r\n";
             }
         }
@@ -78,6 +79,7 @@ class Alias
 
     /**
      * Check if this class is valid to process.
+     *
      * @return bool
      */
     public function isValid()
@@ -86,7 +88,7 @@ class Alias
     }
 
     /**
-     * Get the classtype, 'interface' or 'class'
+     * Get the classtype, 'interface' or 'class'.
      *
      * @return string
      */
@@ -96,7 +98,7 @@ class Alias
     }
 
     /**
-     * Get the class which this alias extends
+     * Get the class which this alias extends.
      *
      * @return null|string
      */
@@ -106,7 +108,7 @@ class Alias
     }
 
     /**
-     * Get the Alias by which this class is called
+     * Get the Alias by which this class is called.
      *
      * @return string
      */
@@ -116,13 +118,14 @@ class Alias
     }
 
     /**
-     * Return the short name (without namespace)
+     * Return the short name (without namespace).
      */
-    public function getShortName(){
+    public function getShortName()
+    {
         return $this->short;
     }
     /**
-     * Get the namespace from the alias
+     * Get the namespace from the alias.
      *
      * @return string
      */
@@ -132,7 +135,7 @@ class Alias
     }
 
     /**
-     * Get the methods found by this Alias
+     * Get the methods found by this Alias.
      *
      * @return array
      */
@@ -140,11 +143,12 @@ class Alias
     {
         $this->addMagicMethods();
         $this->detectMethods();
+
         return $this->methods;
     }
 
     /**
-     * Detect the namespace
+     * Detect the namespace.
      */
     protected function detectNamespace()
     {
@@ -152,13 +156,13 @@ class Alias
             $nsParts = explode('\\', $this->alias);
             $this->short = array_pop($nsParts);
             $this->namespace = implode('\\', $nsParts);
-        }else{
+        } else {
             $this->short = $this->alias;
         }
     }
 
     /**
-     * Detect the class type
+     * Detect the class type.
      */
     protected function detectClassType()
     {
@@ -175,7 +179,7 @@ class Alias
     }
 
     /**
-     * Get the real root of a facade
+     * Get the real root of a facade.
      *
      * @return bool|string
      */
@@ -201,10 +205,10 @@ class Alias
             //When the database connection is not set, some classes will be skipped
         } catch (\PDOException $e) {
             $this->error(
-                "PDOException: " . $e->getMessage() . "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade."
+                "PDOException: ".$e->getMessage()."\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade."
             );
         } catch (\Exception $e) {
-            $this->error("Exception: " . $e->getMessage() . "\nSkipping $facade.");
+            $this->error("Exception: ".$e->getMessage()."\nSkipping $facade.");
         }
     }
 
@@ -219,24 +223,25 @@ class Alias
         if (function_exists('trait_exists') && trait_exists($this->facade)) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Add magic methods, as defined in the configuration files
+     * Add magic methods, as defined in the configuration files.
      */
     protected function addMagicMethods()
     {
-        foreach($this->magicMethods as $magic => $real){
+        foreach ($this->magicMethods as $magic => $real) {
             list($className, $name) = explode('::', $real);
-            if(!class_exists($className) && !interface_exists($className)){
+            if (!class_exists($className) && !interface_exists($className)) {
                 continue;
             }
             $method = new \ReflectionMethod($className, $name);
             $class = new \ReflectionClass($className);
 
-            if(!in_array($method->name, $this->usedMethods)){
-                if($class !== $this->root){
+            if (!in_array($method->name, $this->usedMethods)) {
+                if ($class !== $this->root) {
                     $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
                 }
                 $this->usedMethods[] = $magic;
@@ -251,7 +256,6 @@ class Alias
      */
     protected function detectMethods()
     {
-
         foreach ($this->classes as $class) {
             $reflection = new \ReflectionClass($class);
 
@@ -274,11 +278,10 @@ class Alias
     /**
      * Output an error.
      *
-     * @param  string  $string
-     * @return void
+     * @param string $string
      */
     protected function error($string)
     {
-        echo $string . "\r\n";
+        echo $string."\r\n";
     }
 }

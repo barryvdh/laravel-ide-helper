@@ -1,10 +1,11 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
+ *
  * @link      https://github.com/barryvdh/laravel-ide-helper
  */
 
@@ -25,16 +26,16 @@ class Generator
     /** @var \Symfony\Component\Console\Output\OutputInterface */
     protected $output;
 
-    protected $extra = array();
-    protected $magic = array();
-    protected $interfaces = array();
+    protected $extra = [];
+    protected $magic = [];
+    protected $interfaces = [];
     protected $helpers;
 
     /**
-     * @param \Illuminate\Config\Repository $config
-     * @param \Illuminate\View\Factory $view
+     * @param \Illuminate\Config\Repository                     $config
+     * @param \Illuminate\View\Factory                          $view
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $helpers
+     * @param string                                            $helpers
      */
     public function __construct(/*ConfigRepository */ $config,
         /* Illuminate\View\Factory */ $view,
@@ -52,15 +53,16 @@ class Generator
         $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'));
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
-            $interface = '\\' . ltrim($interface, '\\');
+            $interface = '\\'.ltrim($interface, '\\');
         }
         $this->helpers = $helpers;
     }
 
     /**
-     * Generate the helper file contents;
+     * Generate the helper file contents;.
      *
-     * @param  string  $format  The format to generate the helper in (php/json)
+     * @param string $format The format to generate the helper in (php/json)
+     *
      * @return string;
      */
     public function generate($format = 'php')
@@ -77,6 +79,7 @@ class Generator
     public function generatePhpHelper()
     {
         $app = app();
+
         return $this->view->make('ide-helper::helper')
             ->with('namespaces', $this->getNamespaces())
             ->with('helpers', $this->helpers)
@@ -86,16 +89,16 @@ class Generator
 
     public function generateJsonHelper()
     {
-        $classes = array();
+        $classes = [];
         foreach ($this->getNamespaces() as $aliases) {
-            foreach($aliases as $alias) {
-                $functions = array();
+            foreach ($aliases as $alias) {
+                $functions = [];
                 foreach ($alias->getMethods() as $method) {
-                    $functions[$method->getName()] = '('. $method->getParamsWithDefault().')';
+                    $functions[$method->getName()] = '('.$method->getParamsWithDefault().')';
                 }
-                $classes[$alias->getAlias()] = array(
+                $classes[$alias->getAlias()] = [
                     'functions' => $functions,
-                );
+                ];
             }
         }
 
@@ -104,76 +107,80 @@ class Generator
             $flags |= JSON_PRETTY_PRINT;
         }
 
-        return json_encode(array(
-            'php' => array(
+        return json_encode([
+            'php' => [
                 'classes' => $classes,
-            ),
-        ), $flags);
+            ],
+        ], $flags);
     }
 
     protected function detectDrivers()
     {
-        try{
+        try {
             if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
                 $class = get_class(\Auth::driver());
-                $this->extra['Auth'] = array($class);
+                $this->extra['Auth'] = [$class];
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
             }
-        }catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
-        try{
+        try {
             if (class_exists('DB') && is_a('DB', '\Illuminate\Support\Facades\DB', true)) {
                 $class = get_class(\DB::connection());
-                $this->extra['DB'] = array($class);
+                $this->extra['DB'] = [$class];
                 $this->interfaces['\Illuminate\Database\ConnectionInterface'] = $class;
             }
-        }catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
-        try{
+        try {
             if (class_exists('Cache') && is_a('Cache', '\Illuminate\Support\Facades\Cache', true)) {
                 $driver = get_class(\Cache::driver());
                 $store = get_class(\Cache::getStore());
-                $this->extra['Cache'] = array($driver, $store);
+                $this->extra['Cache'] = [$driver, $store];
                 $this->interfaces['\Illuminate\Cache\StoreInterface'] = $store;
             }
-        }catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
-        try{
+        try {
             if (class_exists('Queue') && is_a('Queue', '\Illuminate\Support\Facades\Queue', true)) {
                 $class = get_class(\Queue::connection());
-                $this->extra['Queue'] = array($class);
+                $this->extra['Queue'] = [$class];
                 $this->interfaces['\Illuminate\Queue\QueueInterface'] = $class;
             }
-        }catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
-        try{
-            if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)){
+        try {
+            if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)) {
                 $class = get_class(\SSH::connection());
-                $this->extra['SSH'] = array($class);
+                $this->extra['SSH'] = [$class];
                 $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;
             }
-        }catch (\Exception $e) {}
-
+        } catch (\Exception $e) {
+        }
     }
 
     /**
-     * Find all namespaces/aliases that are valid for us to render
+     * Find all namespaces/aliases that are valid for us to render.
      *
      * @return array
      */
     protected function getNamespaces()
     {
-        $namespaces = array();
+        $namespaces = [];
 
         // Get all aliases
         foreach (AliasLoader::getInstance()->getAliases() as $name => $facade) {
-            
+
             // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
             if ($facade == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
-            
-            $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
+
+            $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
             $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
 
@@ -184,20 +191,20 @@ class Generator
 
                 $namespace = $alias->getNamespace();
                 if (!isset($namespaces[$namespace])) {
-                    $namespaces[$namespace] = array();
+                    $namespaces[$namespace] = [];
                 }
                 $namespaces[$namespace][] = $alias;
             }
-
         }
 
         return $namespaces;
     }
 
     /**
-     * Get the driver/connection/store from the managers
+     * Get the driver/connection/store from the managers.
      *
      * @param $alias
+     *
      * @return array|bool|string
      */
     public function getDriver($alias)
@@ -210,7 +217,8 @@ class Generator
             } elseif ($alias == "Cache") {
                 $driver = get_class(\Cache::driver());
                 $store = get_class(\Cache::getStore());
-                return array($driver, $store);
+
+                return [$driver, $store];
             } elseif ($alias == "Queue") {
                 $driver = \Queue::connection();
             } else {
@@ -220,6 +228,7 @@ class Generator
             return get_class($driver);
         } catch (\Exception $e) {
             $this->error("Could not determine driver/connection for $alias.");
+
             return false;
         }
     }
@@ -227,15 +236,14 @@ class Generator
     /**
      * Write a string as error output.
      *
-     * @param  string  $string
-     * @return void
+     * @param string $string
      */
     protected function error($string)
     {
-        if($this->output){
+        if ($this->output) {
             $this->output->writeln("<error>$string</error>");
-        }else{
-            echo $string . "\r\n";
+        } else {
+            echo $string."\r\n";
         }
     }
 }

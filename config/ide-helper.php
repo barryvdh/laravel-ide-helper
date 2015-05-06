@@ -84,6 +84,22 @@ return array(
     
     'interfaces' => array(
         '\Illuminate\Contracts\Auth\Authenticatable' => config('auth.model', 'App\User'),
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Platform specific datatype mappings
+    |--------------------------------------------------------------------------
+    |
+    | These mappings will translate specific database types to php datatypes. The
+    | platform names are from the \Doctrine\DBAL library.
+    |
+    */
+
+    'datatype_mappings' => array(
+        'postgresql' => array(
+            'json' => 'string'
+        )
     )
 
 );

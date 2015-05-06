@@ -219,6 +219,15 @@ class ModelsCommand extends Command
         $schema = $model->getConnection()->getDoctrineSchemaManager($table);
         $schema->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
+        // Register platform specific dataTypes
+        $platform_name = $schema->getDatabasePlatform()->getName();
+        $datatype_mappings = $this->laravel['config']->get('ide-helper.datatype_mappings');
+        if(array_key_exists($platform_name, $datatype_mappings)){
+            foreach($datatype_mappings[$platform_name] as $datatype => $mapping){
+                $schema->getDatabasePlatform()->registerDoctrineTypeMapping($datatype, $mapping);
+            }
+        }
+
         $columns = $schema->listTableColumns($table);
 
         if ($columns) {

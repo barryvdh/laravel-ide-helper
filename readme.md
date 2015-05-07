@@ -36,7 +36,7 @@ Require this package with composer using the following command:
 
     composer require barryvdh/laravel-ide-helper ~1.11
 
-After updating composer, add the ServiceProvider to the providers array in app/config/app.php
+After updating composer, add the ServiceProvider to the providers array in `app/config/app.php`
 
     'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 

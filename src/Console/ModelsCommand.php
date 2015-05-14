@@ -226,7 +226,12 @@ class ModelsCommand extends Command
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
 
-        $columns = $schema->listTableColumns($table);
+        $database = null;
+        if (strpos($table, '.')) {
+            list($database, $table) = explode('.', $table);
+        }
+
+        $columns = $schema->listTableColumns($table, $database);
 
         if ($columns) {
             foreach ($columns as $column) {

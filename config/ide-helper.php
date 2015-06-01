@@ -116,4 +116,26 @@ return array(
 
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Meta options
+    |--------------------------------------------------------------------------
+    |
+    | These options are for meta command.
+    |
+    | In the methds part can list container aliases.
+    |
+    */
+
+    'meta'            => array(
+        'methods' => array(
+            '\Illuminate\Foundation\Application::make',
+            '\Illuminate\Contracts\Foundation\Application::make',
+            '\Illuminate\Contracts\Container\Container::make',
+            '\Illuminate\Container\Container::make',
+            '\App::make',
+            'app',
+        ),
+    ),
+
 );

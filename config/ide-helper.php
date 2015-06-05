@@ -123,19 +123,28 @@ return array(
     |
     | These options are for meta command.
     |
-    | In the methds part can list container aliases.
+    | In the methods part can list container and config aliases.
     |
     */
 
-    'meta'            => array(
-        'methods' => array(
-            '\Illuminate\Foundation\Application::make',
-            '\Illuminate\Contracts\Foundation\Application::make',
-            '\Illuminate\Contracts\Container\Container::make',
-            '\Illuminate\Container\Container::make',
-            '\App::make',
-            'app',
-        ),
-    ),
+    'meta'            => [
+        'methods' => [
+            'loc'    => [
+                '\Illuminate\Foundation\Application::make',
+                '\Illuminate\Contracts\Foundation\Application::make',
+                '\Illuminate\Contracts\Container\Container::make',
+                '\Illuminate\Container\Container::make',
+                '\App::make',
+                'app',
+            ],
+            'config' => [
+                '\Illuminate\Contracts\Config\Repository::get',
+                '\Illuminate\Contracts\Config\Repository::set',
+                '\Illuminate\Config\Repository::get',
+                '\Illuminate\Config\Repository::set',
+                'config',
+            ],
+        ],
+    ],
 
-);
+];

@@ -60,11 +60,11 @@ class IdeHelperServiceProvider extends ServiceProvider
                 return new ModelsCommand();
             }
         );
-        
+
         $this->app['command.ide-helper.meta'] = $this->app->share(
-          function ($app) {
-              return new MetaCommand($app['files'], $app['view']);
-          }
+            function ($app) {
+                return new MetaCommand($app['files'], $app['view'], $app['config']);
+            }
         );
 
         $this->commands('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta');

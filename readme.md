@@ -31,6 +31,13 @@ Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
 > Note: When you receive a FatalException about a class that is not found, check your config (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
 
+This command not only generates metadata for container, but for config too. This is useful for auto-complete config options.
+
+![config autocomplete](http://i.imgur.com/12zu6oH.png)
+
+> Note: PhpStorm auto-complete not only first argument, but all arguments in config. 
+
+
 ### Automatic phpDoc generation for Laravel Facades
 
 Require this package with composer using the following command:

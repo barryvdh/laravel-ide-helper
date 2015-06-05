@@ -10,7 +10,10 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -27,6 +30,8 @@ class MetaCommand extends Command
      * @var string
      */
     protected $name = 'ide-helper:meta';
+
+    /** @var string */
     protected $filename = '.phpstorm.meta.php';
 
     /**
@@ -36,21 +41,26 @@ class MetaCommand extends Command
      */
     protected $description = 'Generate metadata for PhpStorm';
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
+    /** @var \Illuminate\Filesystem\Filesystem */
     protected $files;
 
     /** @var \Illuminate\Contracts\View\Factory */
     protected $view;
 
+    /** @var \Illuminate\Config\Repository */
+    protected $config;
+
     /**
      *
-     * @param \Illuminate\Contracts\Filesystem\Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory          $view
+     * @param \Illuminate\Filesystem\Filesystem  $files
+     * @param \Illuminate\Contracts\View\Factory $view
+     * @param \Illuminate\Config\Repository      $config
      */
-    public function __construct($files, $view)
+    public function __construct(Filesystem $files, Factory $view, Repository $config)
     {
-        $this->files = $files;
-        $this->view = $view;
+        $this->files  = $files;
+        $this->view   = $view;
+        $this->config = $config;
         parent::__construct();
     }
 
@@ -73,13 +83,22 @@ class MetaCommand extends Command
             }
         }
 
+        $config = new Repository();
+        $config->get('');
+
         $content = $this->view->make('ide-helper::meta', [
-            'bindings' => $bindings,
-            'methods'  => config('ide-helper.meta.methods'),
+            'loc'    => [
+                'bindings' => $bindings,
+                'methods'  => config('ide-helper.meta.methods.loc'),
+            ],
+            'config' => [
+                'keys'    => $this->getConfigKeys(),
+                'methods' => config('ide-helper.meta.methods.config'),
+            ],
         ])->render();
 
         $filename = $this->option('filename');
-        $written = $this->files->put($filename, $content);
+        $written  = $this->files->put($filename, $content);
 
         if ($written !== false) {
             $this->info("A new meta file was written to $filename");
@@ -107,7 +126,7 @@ class MetaCommand extends Command
             unset($abstracts['redis']);
         }
 
-        $aliases = method_exists($this->laravel, 'getAliases') ? $this->laravel->getAliases() : [];
+        $aliases   = method_exists($this->laravel, 'getAliases') ? $this->laravel->getAliases() : [];
         $instances = method_exists($this->laravel, 'getInstances') ? $this->laravel->getInstances() : [];
 
         $temp = [];
@@ -122,14 +141,52 @@ class MetaCommand extends Command
     }
 
     /**
+     * Get list of all config keys
+     *
+     * @return string[]
+     */
+    protected function getConfigKeys()
+    {
+        return $this->getConfigKeysRecursive($this->config->all());
+    }
+
+    /**
+     * @param array  $values
+     * @param string $key
+     *
+     * @return array
+     */
+    protected function getConfigKeysRecursive(array $values, $key = '')
+    {
+        $result          = [];
+        $recursiveResult = [];
+        foreach ($values as $subKey => $value) {
+            $result[$key . $subKey] = 'arr';
+            if (is_array($value)) {
+                $recursiveResult[] = $this->getConfigKeysRecursive($value, $key . $subKey . '.');
+            } elseif (is_int($value)) {
+                $result[$key . $subKey] = 'int';
+            } elseif (is_float($value)) {
+                $result[$key . $subKey] = 'float';
+            } elseif (is_string($value)) {
+                $result[$key . $subKey] = 'string';
+            } elseif (is_bool($value)) {
+                $result[$key . $subKey] = 'bool';
+            }
+        }
+
+        return array_merge($result, ...$recursiveResult);
+    }
+
+    /**
      * Get the console command options.
      *
      * @return array
      */
     protected function getOptions()
     {
-        return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $this->filename),
-        );
+        return [
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $this->filename],
+        ];
     }
 }

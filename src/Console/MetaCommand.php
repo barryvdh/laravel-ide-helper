@@ -68,6 +68,8 @@ class MetaCommand extends Command {
      */
     public function fire()
     {
+        $this->registerClassAutoloadExceptions();
+
         $bindings = array();
         foreach ($this->getAbstracts() as $abstract) {
             try {
@@ -76,7 +78,7 @@ class MetaCommand extends Command {
                     $bindings[$abstract] = get_class($concrete);
                 }
             }catch (\Exception $e) {
-                $this->error("Cannot make $abstract: ".$e->getMessage());
+                $this->comment("Cannot make '$abstract': ".$e->getMessage());
             }
         }
 
@@ -96,7 +98,7 @@ class MetaCommand extends Command {
     }
 
     /**
-     * Get a filtered list of abstracts from the Laravel Application.
+     * Get a list of abstracts from the Laravel Application.
      * 
      * @return array
      */
@@ -104,18 +106,18 @@ class MetaCommand extends Command {
     {
         $abstracts = $this->laravel->getBindings();
         
-        // Remove the S3 cloud driver when not available
-        if (config('filesystems.cloud') === 's3' && !class_exists('League\Flysystem\AwsS3v2\AwsS3Adapter')) {
-            unset($abstracts['filesystem.cloud']);
-        }
-        
-        // Remove Redis when not available
-        if (isset($abstracts['redis']) && !class_exists('Predis\Client')) {
-            unset($abstracts['redis']);
-        }
-
         // Return the abstract names only
         return array_keys($abstracts);
+    }
+
+    /**
+     * Register an autoloader the throws exceptions when a class is not found.
+     */
+    protected function registerClassAutoloadExceptions()
+    {
+        spl_autoload_register(function ($class) {
+            throw new \Exception("Class '$class' not found.");
+        });
     }
 
     /**

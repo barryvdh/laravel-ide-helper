@@ -39,7 +39,7 @@ Require this package with composer using the following command:
 
 After updating composer, add the service provider to the `providers` array in `config/app.php`
 
-    'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+    Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
 You can now re-generate the docs yourself (for future updates)
 

@@ -14,7 +14,7 @@
         "illuminate/support": "5.0.x|5.1.x",
         "illuminate/console": "5.0.x|5.1.x",
         "illuminate/filesystem": "5.0.x|5.1.x",
-        "phpdocumentor/reflection-docblock": "2.0.x",
+        "phpdocumentor/reflection-docblock": "2.0.4",
         "symfony/class-loader": "~2.3"
     },
     "require-dev": {

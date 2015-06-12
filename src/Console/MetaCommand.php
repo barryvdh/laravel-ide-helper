@@ -71,6 +71,8 @@ class MetaCommand extends Command
      */
     public function fire()
     {
+        $this->registerClassAutoloadExceptions();
+
         $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
             try {
@@ -78,6 +80,8 @@ class MetaCommand extends Command
                 if (is_object($concrete)) {
                     $bindings[$abstract] = get_class($concrete);
                 }
+            }catch (\Exception $e) {
+                $this->comment("Cannot make '$abstract': ".$e->getMessage());
             } catch (\Exception $e) {
                 $this->error("Cannot make $abstract: " . $e->getMessage());
             }
@@ -116,16 +120,6 @@ class MetaCommand extends Command
     {
         $abstracts = $this->laravel->getBindings();
 
-        // Remove the S3 cloud driver when not available
-        if (config('filesystems.cloud') === 's3' && !class_exists('League\Flysystem\AwsS3v2\AwsS3Adapter')) {
-            unset($abstracts['filesystem.cloud']);
-        }
-
-        // Remove Redis when not available
-        if (isset($abstracts['redis']) && !class_exists('Predis\Client')) {
-            unset($abstracts['redis']);
-        }
-
         $aliases   = method_exists($this->laravel, 'getAliases') ? $this->laravel->getAliases() : [];
         $instances = method_exists($this->laravel, 'getInstances') ? $this->laravel->getInstances() : [];
 
@@ -138,6 +132,16 @@ class MetaCommand extends Command
 
         // Return the abstract names only
         return array_unique(array_merge(array_keys($instances), array_keys($abstracts), $temp));
+    }
+
+    /**
+     * Register an autoloader the throws exceptions when a class is not found.
+     */
+    protected function registerClassAutoloadExceptions()
+    {
+        spl_autoload_register(function ($class) {
+            throw new \Exception("Class '$class' not found.");
+        });
     }
 
     /**

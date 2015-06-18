@@ -43,12 +43,10 @@ class MetaCommand extends Command {
     protected $view;
     
     protected $methods = [
-      '\Illuminate\Foundation\Application::make',
-      '\Illuminate\Contracts\Foundation\Application::make',
-      '\Illuminate\Contracts\Container\Container::make',
-      '\Illuminate\Container\Container::make',
-      '\App::make',
-      'app',
+      'new \Illuminate\Contracts\Container\Container',
+      '\Illuminate\Contracts\Container\Container::make(\'\')',
+      '\App::make(\'\')',
+      'app(\'\')',
     ];
 
     /**

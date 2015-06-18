@@ -1,4 +1,6 @@
-<?= '<?php' ?> namespace PHPSTORM_META {
+<?= '<?php' ?>
+
+namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
@@ -7,13 +9,9 @@
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
     */
-
-    /** @noinspection PhpIllegalArrayKeyTypeInspection */
-    /** @noinspection PhpUnusedLocalVariableInspection */
-    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
     $STATIC_METHOD_TYPES = [
 <?php foreach($methods as $method): ?>
-        <?= $method ?>('') => [
+        <?= $method ?> => [
 <?php foreach($bindings as $abstract => $class): ?>
             '<?= $abstract ?>' instanceof \<?= $class ?>,
 <?php endforeach ?>        ],

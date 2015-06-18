@@ -14,6 +14,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\ClassLoader\ClassMapGenerator;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Context;
@@ -148,7 +149,9 @@ class ModelsCommand extends Command
 
         foreach ($models as $name) {
             if (in_array($name, $ignore)) {
-                $this->comment("Ignoring model '$name'");
+                if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                    $this->comment("Ignoring model '$name'");
+                }
                 continue;
             }
             $this->properties = array();
@@ -162,7 +165,9 @@ class ModelsCommand extends Command
                         continue;
                     }
 
-                    $this->comment("Loading model '$name'");
+                    if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                        $this->comment("Loading model '$name'");
+                    }
 
                     if (!$reflectionClass->IsInstantiable()) {
                         throw new \Exception($name . ' is not instantiable.');

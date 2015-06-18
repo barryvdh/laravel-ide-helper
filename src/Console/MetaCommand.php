@@ -12,6 +12,7 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * A command to generate phpstorm meta data
@@ -78,7 +79,9 @@ class MetaCommand extends Command {
                     $bindings[$abstract] = get_class($concrete);
                 }
             }catch (\Exception $e) {
-                $this->comment("Cannot make '$abstract': ".$e->getMessage());
+                if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                    $this->comment("Cannot make '$abstract': ".$e->getMessage());
+                }
             }
         }
 

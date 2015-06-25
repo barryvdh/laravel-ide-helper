@@ -25,6 +25,9 @@ It's possible to generate a PhpStorm meta file, to [add support for factory desi
 
     /** @var \Illuminate\Foundation\Application $app */
     $app->make('events')->fire();
+    
+    // When the key is not found, it uses the argument as class name
+    app('App\SomeClass');
 
 Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 

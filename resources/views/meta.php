@@ -12,6 +12,7 @@ namespace PHPSTORM_META {
     $STATIC_METHOD_TYPES = [
 <?php foreach($methods as $method): ?>
         <?= $method ?> => [
+            '' == '@',
 <?php foreach($bindings as $abstract => $class): ?>
             '<?= $abstract ?>' instanceof \<?= $class ?>,
 <?php endforeach ?>        ],

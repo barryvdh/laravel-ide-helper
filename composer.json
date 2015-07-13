@@ -20,6 +20,9 @@
     "require-dev": {
         "doctrine/dbal": "~2.3"
     },
+    "bin": [
+        "bin/ide-helper"
+    ],
     "suggest": {
         "doctrine/dbal": "Load information from the database about models for phpdocs (~2.3)"
     },

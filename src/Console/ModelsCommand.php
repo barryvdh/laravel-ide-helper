@@ -362,6 +362,9 @@ class ModelsCommand extends Command
                                     true,
                                     null
                                 );
+                            } elseif ($relation === "morphTo") {
+                                // model isn't specified (because relation is polymorphic)
+                                $this->setProperty($method, '\Illuminate\Database\Eloquent\Model', true, null);
                             } else {
                                 //Single model is returned
                                 $this->setProperty($method, $returnModel, true, null);

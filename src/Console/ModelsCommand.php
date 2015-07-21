@@ -344,6 +344,7 @@ class ModelsCommand extends Command
                                  'hasOne',
                                  'belongsTo',
                                  'morphTo',
+                                 'morphOne',
                                  'morphMany',
                                  'morphToMany'
                              ) as $relation) {

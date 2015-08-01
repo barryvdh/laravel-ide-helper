@@ -181,6 +181,7 @@ class ModelsCommand extends Command
 
                     $this->getPropertiesFromMethods($model);
                     $output .= $this->createPhpDocs($name);
+                    $ignore[] = $name;
                 } catch (\Exception $e) {
                     $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.");
                 }

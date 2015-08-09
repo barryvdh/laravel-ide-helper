@@ -336,6 +336,7 @@ class ModelsCommand extends Command
                         $code .= $file->current();
                         $file->next();
                     }
+                    $code = trim(preg_replace('/\s\s+/', '', $code));
                     $begin = strpos($code, 'function(');
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
@@ -351,24 +352,29 @@ class ModelsCommand extends Command
                         $search = '$this->' . $relation . '(';
                         if ($pos = stripos($code, $search)) {
                             $code = substr($code, $pos + strlen($search));
-                            $arguments = explode(',', substr($code, 0, strpos($code, ')')));
-                            //Remove quotes, ensure 1 \ in front of the model
-                            $returnModel = $this->getClassName($arguments[0], $model);
-                            if ($relation === "belongsToMany" or $relation === 'hasMany' or $relation === 'morphMany' or $relation === 'morphToMany') {
-                                //Collection or array of models (because Collection is Arrayable)
-                                $this->setProperty(
-                                    $method,
-                                    '\Illuminate\Database\Eloquent\Collection|' . $returnModel . '[]',
-                                    true,
-                                    null
-                                );
-                            } else {
-                                //Single model is returned
-                                $this->setProperty($method, $returnModel, true, null);
+                            $end = strpos($code, ')->') ?:strpos($code, ');');
+                            if (false !== $end) {
+                                $arguments = substr($code, 0, $end);
+                                $arguments = array_map(function($item) {
+                                    return trim($item, ' \'\"');
+                                }, explode(',', $arguments));
+                                //Remove quotes, ensure 1 \ in front of the model
+                                $returnModel = $this->getClassName($arguments[0], $model);
+                                if ($relation === "belongsToMany" or $relation === 'hasMany' or $relation === 'morphMany' or $relation === 'morphToMany') {
+                                    //Collection or array of models (because Collection is Arrayable)
+                                    $this->setProperty(
+                                        $method,
+                                        '\Illuminate\Database\Eloquent\Collection|' . $returnModel . '[]',
+                                        true,
+                                        null
+                                    );
+                                } else {
+                                    //Single model is returned
+                                    $this->setProperty($method, $returnModel, true, null);
+                                }
                             }
                         }
                     }
-
                 }
             }
         }
@@ -538,7 +544,7 @@ class ModelsCommand extends Command
     {
         // If the class name was resolved via get_class($this) or static::class
         if (strpos($className, 'get_class($this)') !== false || strpos($className, 'static::class') !== false) {
-            return get_class($model);
+            return "\\" . get_class($model);
         }
 
         // If the class name was resolved via ::class (PHP 5.5+)

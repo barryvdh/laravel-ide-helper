@@ -71,6 +71,11 @@ class MetaCommand extends Command {
 
         $bindings = array();
         foreach ($this->getAbstracts() as $abstract) {
+            // Validator causes problems in Lumen
+            if ($abstract == 'validator') {
+                continue;
+            }
+            
             try {
                 $concrete = $this->laravel->make($abstract);
                 if (is_object($concrete)) {

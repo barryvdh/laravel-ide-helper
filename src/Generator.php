@@ -80,7 +80,7 @@ class Generator
         return $this->view->make('ide-helper::helper')
             ->with('namespaces', $this->getNamespaces())
             ->with('helpers', $this->helpers)
-            ->with('version', $app::VERSION)
+            ->with('version', $app->version())
             ->render();
     }
 
@@ -166,8 +166,7 @@ class Generator
         $namespaces = array();
 
         // Get all aliases
-        foreach (AliasLoader::getInstance()->getAliases() as $name => $facade) {
-            
+        foreach ($this->getAliases() as $name => $facade) {
             // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
             if ($facade == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
                 continue;
@@ -192,6 +191,39 @@ class Generator
         }
 
         return $namespaces;
+    }
+
+    protected function getAliases()
+    {
+        // For Laravel, use the AliasLoader
+        if (class_exists('Illuminate\Foundation\AliasLoader')) {
+            return AliasLoader::getInstance()->getAliases();
+        }
+
+        $facades = [
+            'Illuminate\Support\Facades\App' => 'App',
+            'Illuminate\Support\Facades\Auth' => 'Auth',
+            'Illuminate\Support\Facades\Bus' => 'Bus',
+            'Illuminate\Support\Facades\DB' => 'DB',
+            'Illuminate\Support\Facades\Cache' => 'Cache',
+            'Illuminate\Support\Facades\Cookie' => 'Cookie',
+            'Illuminate\Support\Facades\Crypt' => 'Crypt',
+            'Illuminate\Support\Facades\Event' => 'Event',
+            'Illuminate\Support\Facades\Hash' => 'Hash',
+            'Illuminate\Support\Facades\Log' => 'Log',
+            'Illuminate\Support\Facades\Mail' => 'Mail',
+            'Illuminate\Support\Facades\Queue' => 'Queue',
+            'Illuminate\Support\Facades\Request' => 'Request',
+            'Illuminate\Support\Facades\Schema' => 'Schema',
+            'Illuminate\Support\Facades\Session' => 'Session',
+            'Illuminate\Support\Facades\Storage' => 'Storage',
+          //  'Illuminate\Support\Facades\Validator' => 'Validator',
+        ];
+
+        // Only return the ones that actually exist
+        return array_filter($facades, function($alias){
+            return class_exists($alias);
+        });
     }
 
     /**

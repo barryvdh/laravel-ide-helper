@@ -61,8 +61,8 @@ class IdeHelperServiceProvider extends ServiceProvider
         );
 
         $this->app['command.ide-helper.models'] = $this->app->share(
-            function () {
-                return new ModelsCommand();
+            function ($app) {
+                return new ModelsCommand($app['files']);
             }
         );
         

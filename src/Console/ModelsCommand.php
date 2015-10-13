@@ -352,12 +352,12 @@ class ModelsCommand extends Command
                         $search = '$this->' . $relation . '(';
                         $pos = stripos($code, $search);
                         if (!$pos) {
-                            return ;
+                            continue;
                         }
                         $code = substr($code, $pos + strlen($search));
                         $end = strpos($code, ')->') ?:strpos($code, ');');
                         if (false === $end) {
-                            return;
+                            continue;
                         }
                         $arguments = substr($code, 0, $end);
                         $arguments = array_map(function($item) {

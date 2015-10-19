@@ -367,23 +367,20 @@ class ModelsCommand extends Command
                             $code = substr($code, $pos + strlen($search));
                             $end = strpos($code, ')->') ?:strpos($code, ');');
                             if (false !== $end) {
-                                $arguments = substr($code, 0, $end);
-                                $arguments = array_map(function($item) {
-                                    return trim($item, ' \'\"');
-                                }, explode(',', $arguments));
-                                //Remove quotes, ensure 1 \ in front of the model
-                                $returnModel = $this->getClassName($arguments[0], $model);
+                                //Resolve the relation's model to a fully-qualified class name.
+                                $relatedModel = '\\' . get_class($model->$method()->getRelated());
+
                                 if ($relation === "belongsToMany" or $relation === 'hasMany' or $relation === 'morphMany' or $relation === 'morphToMany') {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
                                         $method,
-                                        '\Illuminate\Database\Eloquent\Collection|' . $returnModel . '[]',
+                                        $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
                                         true,
                                         null
                                     );
                                 } else {
                                     //Single model is returned
-                                    $this->setProperty($method, $returnModel, true, null);
+                                    $this->setProperty($method, $relatedModel, true, null);
                                 }
                             }
                         }
@@ -550,23 +547,22 @@ class ModelsCommand extends Command
     }
 
     /**
+     * Determine a model classes' collection type.
+     *
+     * @see http://laravel.com/docs/eloquent-collections#custom-collections
      * @param string $className
-     * @param \Illuminate\Database\Eloquent\Model $model
      * @return string
      */
-    private function getClassName($className, $model)
+    private function getCollectionClass($className)
     {
-        // If the class name was resolved via get_class($this) or static::class
-        if (strpos($className, 'get_class($this)') !== false || strpos($className, 'static::class') !== false) {
-            return "\\" . get_class($model);
+        // Return something in the very very unlikely scenario the model doesn't
+        // have a newCollection() method.
+        if (!method_exists($className, 'newCollection')) {
+            return '\Illuminate\Database\Eloquent\Collection';
         }
 
-        // If the class name was resolved via ::class (PHP 5.5+)
-        if (strpos($className, '::class') !== false) {
-            $end = -1 * strlen('::class');
-            return substr($className, 0, $end);
-        }
-
-        return "\\" . ltrim(trim($className, " \"'"), "\\") ;
+        /** @var \Illuminate\Database\Eloquent\Model $model */
+        $model = new $className;
+        return '\\' . get_class($model->newCollection());
     }
 }

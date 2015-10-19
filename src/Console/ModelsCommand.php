@@ -290,11 +290,6 @@ class ModelsCommand extends Command
 
                 $comment = $column->getComment();
                 $this->setProperty($name, $type, true, true, $comment);
-                $this->setMethod(
-                  Str::camel("where_" . $name),
-                  '\Illuminate\Database\Query\Builder|\\' . get_class($model),
-                  array('$value')
-                );
             }
         }
     }

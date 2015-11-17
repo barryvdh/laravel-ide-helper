@@ -37,3 +37,26 @@ namespace <?= $namespace == '__root' ? '' : $namespace ?>{
 }
 
 <?php endforeach; ?>
+
+namespace Illuminate\Support {
+    /**
+    * Methods commonly used in migrations
+    *
+    * @method Fluent nullable()
+    * @method Fluent default($value)
+    * @method Fluent unsigned()
+    * @method Fluent unique()
+    * @method Fluent charset($charset)
+    * @method Fluent collation($collation)
+    * @method Fluent onUpdate($action)
+    * @method Fluent onDelete($action)
+    * @method Fluent references($table)
+    * @method Fluent on($column)
+    * @method Fluent after($column)
+    * @method Fluent first()
+    * @method Fluent comment($comment)
+    */
+    class Fluent {
+        //
+    }
+}

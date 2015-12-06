@@ -520,10 +520,11 @@ class ModelsCommand extends Command
         //Loop through the default values for paremeters, and make the correct output string
         $params = array();
         $paramsWithDefault = array();
+        /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
             $paramStr = '$' . $param->getName();
             $params[] = $paramStr;
-            if ($param->isOptional()) {
+            if ($param->isOptional() && $param->isDefaultValueAvailable()) {
                 $default = $param->getDefaultValue();
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';

@@ -270,6 +270,8 @@ class Method
                     $default = 'null';
                 } elseif (is_int($default)) {
                     //$default = $default;
+                } elseif (is_resource($default)) {
+                    //skip to not fail
                 } else {
                     $default = "'" . trim($default) . "'";
                 }

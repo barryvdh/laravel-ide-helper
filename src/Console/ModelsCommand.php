@@ -416,7 +416,9 @@ class ModelsCommand extends Command
 
     protected function setMethod($name, $type = '', $arguments = array())
     {
-        if (!isset($this->methods[$name])) {
+        $methods = array_change_key_case($this->methods, CASE_LOWER);
+
+        if (!isset($methods[strtolower($name)])) {
             $this->methods[$name] = array();
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;

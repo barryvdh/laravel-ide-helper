@@ -11,6 +11,7 @@
 namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Application;
 use Illuminate\Config\Repository as ConfigRepository;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -117,7 +118,8 @@ class Generator
         
         try{
             if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
-                $class = get_class(\Auth::driver());
+                $authMethod = version_compare(Application::VERSION, '5.2', '>=') ? 'guard' : 'driver';
+                $class = get_class(\Auth::$authMethod());
                 $this->extra['Auth'] = array($class);
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
             }

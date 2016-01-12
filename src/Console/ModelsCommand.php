@@ -484,6 +484,10 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
+        if ($this->write) {
+            $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
+        }
+
         $serializer = new DocBlockSerializer();
         $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
@@ -507,7 +511,7 @@ class ModelsCommand extends Command
             }
         }
 
-        $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$classname} {}\n}\n\n";
+        $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$classname} extends \Eloquent {}\n}\n\n";
         return $output;
     }
 

@@ -184,7 +184,8 @@ class ModelsCommand extends Command
                     }
 
                     if (!$reflectionClass->IsInstantiable()) {
-                        throw new \Exception($name . ' is not instantiable.');
+                        // ignore abstract class or interface
+                        continue;
                     }
 
                     $model = $this->laravel->make($name);

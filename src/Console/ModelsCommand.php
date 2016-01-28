@@ -292,7 +292,7 @@ class ModelsCommand extends Command
                 $this->setProperty($name, $type, true, true, $comment);
                 /*
                     Only add whereXXX() helper function comment to _ide_helper_models.php,
-                    keep modal file as simple as possible.
+                    keep model file as simple as possible.
                 */
                 if (!$this->write) {
                     $this->setMethod(

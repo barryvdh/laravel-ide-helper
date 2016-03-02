@@ -114,7 +114,7 @@ class Generator
 
     protected function detectDrivers()
     {
-        $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = config('auth.model', 'App\User');
+        $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = config('auth.providers.users.model', config('auth.model', 'App\User'));
         
         try{
             if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {

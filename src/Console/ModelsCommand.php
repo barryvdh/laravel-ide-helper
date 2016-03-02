@@ -356,6 +356,7 @@ class ModelsCommand extends Command
                                'belongsToMany',
                                'hasOne',
                                'belongsTo',
+                               'morphOne',
                                'morphTo',
                                'morphMany',
                                'morphToMany'
@@ -377,6 +378,9 @@ class ModelsCommand extends Command
                                       true,
                                       null
                                     );
+                                } elseif ($relation === "morphTo") {
+                                    // Model isn't specified because relation is polymorphic
+                                    $this->setProperty($method, '\Illuminate\Database\Eloquent\Model|\Eloquent', true, null);
                                 } else {
                                     //Single model is returned
                                     $this->setProperty($method, $relatedModel, true, null);

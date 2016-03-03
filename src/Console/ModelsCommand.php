@@ -490,7 +490,7 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
-        if ($this->write) {
+        if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
             $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
         }
 

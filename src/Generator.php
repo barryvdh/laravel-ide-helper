@@ -164,6 +164,14 @@ class Generator
             }
         }catch (\Exception $e) {}
 
+        try{
+            if (class_exists('Storage') && is_a('Storage', '\Illuminate\Support\Facades\Storage', true)){
+                $class = get_class(\Storage::disk());
+                $this->extra['Storage'] = array($class);
+                $this->interfaces['\Illuminate\Contracts\Filesystem\Filesystem'] = $class;
+            }
+        }catch (\Exception $e) {}
+
     }
 
     /**

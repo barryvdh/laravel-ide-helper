@@ -334,7 +334,7 @@ class ModelsCommand extends Command
                         array_shift($args);
                         $this->setMethod($name, '\Illuminate\Database\Query\Builder|\\' . $reflection->class, $args);
                     }
-                } elseif (!method_exists('Eloquent', $method) && !Str::startsWith($method, 'get')) {
+                } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method) && !Str::startsWith($method, 'get')) {
 
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     $reflection = new \ReflectionMethod($model, $method);

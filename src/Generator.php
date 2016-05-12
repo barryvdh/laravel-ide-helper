@@ -237,6 +237,8 @@ class Generator
           'Storage' => 'Illuminate\Support\Facades\Storage',
           //'Validator' => 'Illuminate\Support\Facades\Validator',
         ];
+        
+        $facades = array_merge($facades, $this->config->get('app.aliases', []));
 
         // Only return the ones that actually exist
         return array_filter($facades, function($alias){

@@ -353,6 +353,7 @@ class ModelsCommand extends Command
 
                     foreach (array(
                                'hasMany',
+                               'hasManyThrough',
                                'belongsToMany',
                                'hasOne',
                                'belongsTo',
@@ -370,7 +371,7 @@ class ModelsCommand extends Command
                             if ($relationObj instanceof Relation) {
                                 $relatedModel = '\\' . get_class($relationObj->getRelated());
 
-                                if (in_array($relation, ['belongsToMany', 'hasMany', 'morphMany', 'morphToMany'])) {
+                                if (in_array($relation, ['hasManyThrough', 'belongsToMany', 'hasMany', 'morphMany', 'morphToMany'])) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
                                       $method,

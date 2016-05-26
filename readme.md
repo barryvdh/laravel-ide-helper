@@ -50,8 +50,9 @@ You can configure your composer.json to do this after each commit:
 ```js
 "scripts":{
     "post-update-cmd": [
-        "php artisan clear-compiled",
+        "Illuminate\\Foundation\\ComposerScripts::postUpdate",
         "php artisan ide-helper:generate",
+        "php artisan ide-helper:meta",
         "php artisan optimize"
     ]
 },

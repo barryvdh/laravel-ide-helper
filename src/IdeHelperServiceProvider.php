@@ -67,9 +67,9 @@ class IdeHelperServiceProvider extends ServiceProvider
         );
         
         $this->app['command.ide-helper.meta'] = $this->app->share(
-          function ($app) {
-              return new MetaCommand($app['files'], $app['view']);
-          }
+            function ($app) {
+                return new MetaCommand($app['files'], $app['view']);
+            }
         );
 
         $this->commands('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta');
@@ -84,5 +84,4 @@ class IdeHelperServiceProvider extends ServiceProvider
     {
         return array('command.ide-helper.generate', 'command.ide-helper.models');
     }
-
 }

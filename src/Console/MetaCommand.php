@@ -19,7 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
-class MetaCommand extends Command {
+class MetaCommand extends Command
+{
 
     /**
      * The console command name.
@@ -54,7 +55,8 @@ class MetaCommand extends Command {
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
      */
-    public function __construct($files, $view) {
+    public function __construct($files, $view)
+    {
         $this->files = $files;
         $this->view = $view;
         parent::__construct();
@@ -81,7 +83,7 @@ class MetaCommand extends Command {
                 if (is_object($concrete)) {
                     $bindings[$abstract] = get_class($concrete);
                 }
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
                     $this->comment("Cannot make '$abstract': ".$e->getMessage());
                 }
@@ -105,7 +107,7 @@ class MetaCommand extends Command {
 
     /**
      * Get a list of abstracts from the Laravel Application.
-     * 
+     *
      * @return array
      */
     protected function getAbstracts()

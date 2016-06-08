@@ -17,7 +17,6 @@ use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-
 /**
  * A command to generate autocomplete information for your IDE
  *
@@ -60,7 +59,8 @@ class GeneratorCommand extends Command
      */
     public function __construct(
         /*ConfigRepository */ $config,
-        Filesystem $files, /* Illuminate\View\Factory */
+        Filesystem $files,
+        /* Illuminate\View\Factory */
         $view
     ) {
         $this->config = $config;
@@ -166,5 +166,4 @@ class GeneratorCommand extends Command
             array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),
         );
     }
-
 }

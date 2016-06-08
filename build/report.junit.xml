@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name=":vendor Test Suite" tests="1" assertions="1" failures="0" errors="0" time="0.008358">
+    <testsuite name="Barryvdh\LaravelIdeHelper\ExampleTest" file="/Users/barry/Code/laravel-ide-helper/tests/MethodTest.php" tests="1" assertions="1" failures="0" errors="0" time="0.008358">
+      <testcase name="testCanInstantiate" class="Barryvdh\LaravelIdeHelper\ExampleTest" file="/Users/barry/Code/laravel-ide-helper/tests/MethodTest.php" line="10" assertions="1" time="0.008358"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

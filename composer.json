@@ -18,6 +18,9 @@
         "symfony/class-loader": "~2.3|~3.0"
     },
     "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1",
+        "squizlabs/php_codesniffer": "~2.3",
         "doctrine/dbal": "~2.3"
     },
     "suggest": {
@@ -27,6 +30,15 @@
         "psr-4": {
             "Barryvdh\\LaravelIdeHelper\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            ":vendor\\:package_name\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "cs": "phpcs --standard=psr2 src/"
     },
     "extra": {
         "branch-alias": {

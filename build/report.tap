@@ -1,0 +1,3 @@
+TAP version 13
+ok 1 - Barryvdh\LaravelIdeHelper\ExampleTest::testCanInstantiate
+1..1

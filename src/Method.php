@@ -36,7 +36,7 @@ class Method
     /**
      * @param \ReflectionMethod $method
      * @param string $alias
-     * @param string $class
+     * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
      */
@@ -55,7 +55,8 @@ class Method
             $this->normalizeParams($this->phpdoc);
             $this->normalizeReturn($this->phpdoc);
             $this->normalizeDescription($this->phpdoc);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         //Get the parameters, including formatted default values
         $this->getParameters($method);
@@ -177,7 +178,7 @@ class Method
         $paramTags = $phpdoc->getTagsByName('param');
         if ($paramTags) {
             /** @var ParamTag $tag */
-            foreach($paramTags as $tag){
+            foreach ($paramTags as $tag) {
                 // Convert the keywords
                 $content = $this->convertKeywords($tag->getContent());
                 $tag->setContent($content);
@@ -205,14 +206,14 @@ class Method
             $returnValue = $tag->getType();
 
             // Replace the interfaces
-            foreach($this->interfaces as $interface => $real){
+            foreach ($this->interfaces as $interface => $real) {
                 $returnValue = str_replace($interface, $real, $returnValue);
             }
 
             // Set the changed content
             $tag->setContent($returnValue . ' ' . $tag->getDescription());
             $this->return = $returnValue;
-        }else{
+        } else {
             $this->return = null;
         }
     }
@@ -239,7 +240,7 @@ class Method
      */
     public function shouldReturn()
     {
-        if($this->return !== "void" && $this->method->name !== "__construct"){
+        if ($this->return !== "void" && $this->method->name !== "__construct") {
             return true;
         }
 

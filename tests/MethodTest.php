@@ -9,11 +9,50 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function testCanInstantiate()
     {
-        $class = new \ReflectionClass(Method::class);
-        $method = new \ReflectionMethod(Method::class, 'getDocComment');
+        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionMethod = $reflectionClass->getMethod('setName');
 
-        $obj = new Method($method, 'Method', $class);
+        $method = new Method($reflectionMethod, 'Example', $reflectionClass);
 
-        $this->assertInstanceOf(Method::class, $obj);
+        $this->assertInstanceOf(Method::class, $method);
+    }
+
+    /**
+     * Test the output of a class
+     */
+    public function testOutput()
+    {
+        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionMethod = $reflectionClass->getMethod('setName');
+
+        $method = new Method($reflectionMethod, 'Example', $reflectionClass);
+
+        $output = '/**
+ * 
+ *
+ * @param string $last
+ * @param string $first
+ * @static 
+ */';
+        $this->assertEquals($output, $method->getDocComment(''));
+        $this->assertEquals('setName', $method->getName());
+        $this->assertEquals('\\'.ExampleClass::class, $method->getDeclaringClass());
+        $this->assertEquals('$last, $first', $method->getParams(true));
+        $this->assertEquals(['$last', '$first'], $method->getParams(false));
+        $this->assertEquals('$last, $first = \'Barry\'', $method->getParamsWithDefault(true));
+        $this->assertEquals(['$last', '$first = \'Barry\''], $method->getParamsWithDefault(false));
+        $this->assertEquals(true, $method->shouldReturn());
+    }
+}
+
+class ExampleClass
+{
+    /**
+     * @param string $last
+     * @param string $first
+     */
+    public function setName($last, $first = 'Barry')
+    {
+        return;
     }
 }

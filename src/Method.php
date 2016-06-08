@@ -250,7 +250,7 @@ class Method
     /**
      * Get the parameters and format them correctly
      *
-     * @param $method
+     * @param  \ReflectionMethod $method
      * @return array
      */
     public function getParameters($method)

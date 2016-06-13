@@ -10,16 +10,16 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Context;
-use phpDocumentor\Reflection\DocBlock\Tag;
-use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
-use phpDocumentor\Reflection\DocBlock\Tag\ParamTag;
-use phpDocumentor\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock;
+use Barryvdh\Reflection\DocBlock\Context;
+use Barryvdh\Reflection\DocBlock\Tag;
+use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
+use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
+use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 
 class Method
 {
-    /** @var \phpDocumentor\Reflection\DocBlock  */
+    /** @var \Barryvdh\Reflection\DocBlock  */
     protected $phpdoc;
 
     /** @var \ReflectionMethod  */

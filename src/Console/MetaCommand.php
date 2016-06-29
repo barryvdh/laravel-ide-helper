@@ -47,7 +47,7 @@ class MetaCommand extends Command
       'new \Illuminate\Contracts\Container\Container',
       '\Illuminate\Contracts\Container\Container::make(\'\')',
       '\App::make(\'\')',
-      'app(\'\')',
+      '\app(\'\')',
     ];
 
     /**

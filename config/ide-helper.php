@@ -116,4 +116,30 @@ return array(
 
     ),
 
+    /*
+     |--------------------------------------------------------------------------
+     | Support for camel cased models
+     |--------------------------------------------------------------------------
+     |
+     | There are some Laravel packages (such as Eloquence) that allow for accessing
+     | Eloquent model properties via camel case, instead of snake case.
+     |
+     | Enabling this option will support these packages by saving all model
+     | properties as camel case, instead of snake case.
+     |
+     | For example, normally you would see this:
+     |
+     |  * @property \Carbon\Carbon $created_at
+     |  * @property \Carbon\Carbon $updated_at
+     |
+     | With this enabled, the properties will be this:
+     |
+     |  * @property \Carbon\Carbon $createdAt
+     |  * @property \Carbon\Carbon $updatedAt
+     |
+     | Note, it is currently an all-or-nothing option.
+     |
+     */
+    'model_camel_case_properties' => false,
+
 );

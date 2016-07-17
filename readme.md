@@ -29,7 +29,7 @@ Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeInte
 Require this package with composer using the following command:
 
 ```bash
-composer require barryvdh/laravel-ide-helper
+composer require barryvdh/laravel-ide-helper --dev
 ```
 
 After updating composer, add the service provider to the `providers` array in `config/app.php`

@@ -9,7 +9,7 @@ __For Laravel 4.x, check [version 1.11](https://github.com/barryvdh/laravel-ide-
 
 ### Complete phpDocs, directly from the source
 
-_Checkout [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
+_Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
 
  * [`php artisan ide-helper:generate` - phpDoc generation for Laravel Facades ](#automatic-phpdoc-generation-for-laravel-facades)
  * [`php artisan ide-helper:models` - phpDocs for models](#automatic-phpdocs-for-models)
@@ -71,10 +71,10 @@ php artisan vendor:publish --provider="Barryvdh\LaravelIdeHelper\IdeHelperServic
 The generator tries to identify the real class, but if it cannot be found, you can define it in the config file.
 
 Some classes need a working database connection. If you do not have a default working connection, some facades will not be included.
-You can use an in-memory SQLite driver, using the -M option.
+You can use an in-memory SQLite driver by adding the -M option.
 
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
-The `Illuminate/Support/helpers.php` is already set-up, but you can add/remove your own files in the config file.
+The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
 ### Automatic phpDocs for models
 
@@ -134,7 +134,7 @@ Note: With namespaces, wrap your model name in " signs: `php artisan ide-helper:
 
 ## PhpStorm Meta for Container instances
 
-It's possible to generate a PhpStorm meta file, to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata). For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container. For example, `events` will return an `Illuminate\Events\Dispatcher` object, so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.
+It's possible to generate a PhpStorm meta file to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata). For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container. For example, `events` will return an `Illuminate\Events\Dispatcher` object, so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.
 
 ``` bash
 php artisan ide-helper:meta

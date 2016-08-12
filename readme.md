@@ -38,6 +38,24 @@ After updating composer, add the service provider to the `providers` array in `c
 Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 ```
 
+To install this package on only development systems, add the `--dev` flag to your composer command:
+
+```bash
+composer require --dev barryvdh/laravel-ide-helper
+```
+
+Instead of adding the service provider in the `config/app.php` file, add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
+
+```php
+public function register()
+{
+    if($this->app->environment() !== 'production') {
+        $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+    }
+    // ...
+}
+```
+
 ### Automatic phpDoc generation for Laravel Facades
 
 

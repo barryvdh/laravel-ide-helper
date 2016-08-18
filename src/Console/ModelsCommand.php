@@ -192,6 +192,7 @@ class ModelsCommand extends Command
 
                     if ($hasDoctrine) {
                         $this->getPropertiesFromTable($model);
+                        $this->castPropertiesType($model);
                     }
 
                     $this->getPropertiesFromMethods($model);
@@ -227,6 +228,60 @@ class ModelsCommand extends Command
             }
         }
         return $models;
+    }
+
+    /**
+     * cast the properties's type from $casts.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
+    protected function castPropertiesType($model)
+    {
+        $casts = $model->getCasts();
+        foreach ($casts as $name => $type) {
+            switch ($type) {
+                case 'boolean':
+                case 'bool':
+                    $realType = 'boolean';
+                    break;
+                case 'string':
+                    $realType = 'string';
+                    break;
+                case 'array':
+                case 'json':
+                    $realType = 'array';
+                    break;
+                case 'object':
+                    $realType = 'object';
+                    break;
+                case 'int':
+                case 'integer':
+                case 'timestamp':
+                    $realType = 'integer';
+                    break;
+                case 'real':
+                case 'double':
+                case 'float':
+                    $realType = 'float';
+                    break;
+                case 'date':
+                case 'datetime':
+                    $realType = '\Carbon\Carbon';
+                    break;
+                case 'collection':
+                    $realType = '\Illuminate\Support\Collection';
+                    break;
+                default:
+                    $realType = 'mixed';
+                    break;
+            }
+
+            if (!isset($this->properties[$name])) {
+                continue;
+            } else {
+                $this->properties[$name]['type'] = $realType;
+            }
+        }
     }
 
     /**

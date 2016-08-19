@@ -118,7 +118,7 @@ class Generator
     {
         $defaultUserModel = config('auth.providers.users.model', config('auth.model', 'App\User'));
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
-        
+
         try {
             if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
                 if (class_exists('\Illuminate\Foundation\Application')) {
@@ -182,7 +182,6 @@ class Generator
             }
         } catch (\Exception $e) {
         }
-
     }
 
     /**
@@ -200,7 +199,7 @@ class Generator
             if ($facade == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
-            
+
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
             $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
@@ -246,7 +245,7 @@ class Generator
           'Storage' => 'Illuminate\Support\Facades\Storage',
           //'Validator' => 'Illuminate\Support\Facades\Validator',
         ];
-        
+
         $facades = array_merge($facades, $this->config->get('app.aliases', []));
 
         // Only return the ones that actually exist

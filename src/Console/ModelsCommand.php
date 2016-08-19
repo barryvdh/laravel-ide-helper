@@ -212,7 +212,6 @@ class ModelsCommand extends Command
         }
 
         return $output;
-
     }
 
 

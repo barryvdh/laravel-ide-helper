@@ -212,7 +212,6 @@ class ModelsCommand extends Command
         }
 
         return $output;
-
     }
 
 
@@ -279,9 +278,22 @@ class ModelsCommand extends Command
             if (!isset($this->properties[$name])) {
                 continue;
             } else {
-                $this->properties[$name]['type'] = $realType;
+                $this->properties[$name]['type'] = $this->getTypeOverride($realType);
             }
         }
+    }
+
+    /**
+     * Returns the overide type for the give type.
+     *
+     * @param string $type
+     * @return string
+     */
+    protected function getTypeOverride($type)
+    {
+        $typeOverrides = $this->laravel['config']->get('ide-helper.type_overrides', array());
+
+        return isset($typeOverrides[$type]) ? $typeOverrides[$type] : $type;
     }
 
     /**

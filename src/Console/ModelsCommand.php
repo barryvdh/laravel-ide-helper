@@ -488,7 +488,7 @@ class ModelsCommand extends Command
             $this->properties[$name]['comment'] = (string) $comment;
         }
         if ($type !== null) {
-            $this->properties[$name]['type'] = $type;
+            $this->properties[$name]['type'] = $this->getTypeOverride($type);
         }
         if ($read !== null) {
             $this->properties[$name]['read'] = $read;

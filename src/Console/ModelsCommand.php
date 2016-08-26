@@ -192,6 +192,9 @@ class ModelsCommand extends Command
 
                     if ($hasDoctrine) {
                         $this->getPropertiesFromTable($model);
+                    }
+
+                    if (method_exists($model, 'getCasts')) {
                         $this->castPropertiesType($model);
                     }
 

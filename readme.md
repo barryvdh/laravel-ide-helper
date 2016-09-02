@@ -49,7 +49,7 @@ Instead of adding the service provider in the `config/app.php` file, add the fol
 ```php
 public function register()
 {
-    if($this->app->environment() !== 'production') {
+    if ($this->app->environment() !== 'production') {
         $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
     }
     // ...

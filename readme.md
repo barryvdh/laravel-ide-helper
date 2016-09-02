@@ -175,19 +175,19 @@ Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
 > Note: When you receive a FatalException about a class that is not found, check your config (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
 
-### Lumen Install
+## Lumen Install
 
 This pacakges is focused on Laravel development, but it can also be used in Lumen with some workarounds. Because Lumen works a little different, as it is like a barebone version of Laravel and the main configuration parameters are instead located in `bootstrap/app.php`, some arreglements must be made.
 
 #### Enabling Facades
 
-While Laravel IDE Helper can generate automatically default Facades for code hinting, Lumen doesn't comes with Facades activated. You must enable them under the `Create The Application` section, uncommenting this line:
+While Laravel IDE Helper can generate automatically default Facades for code hinting, Lumen doesn't come with Facades activated. If you plan in using them, you must enable them under the `Create The Application` section, uncommenting this line:
 
 ```php
 // $app->withFacades();
 ```
 
-From there, you should be able to use the `create_alias()` function to add additional Facades into your code.
+From there, you should be able to use the `create_alias()` function to add additional Facades into your application.
 
 #### Adding the Service Provider
 
@@ -222,7 +222,7 @@ return [
 ];
 ```
 
-Afyer you run ```php artisan ide-helper:generate```, it's recommended (but not mandatory) to rename `config/app.php` to something else until you have to re-generate the docs or after passing to a production enviroment. Lumen 5.1+ will read this file for configuration parameters if it is present, and may overlap some configurations.
+After you run ```php artisan ide-helper:generate```, it's recommended (but not mandatory) to rename `config/app.php` to something else until you have to re-generate the docs or after passing to production enviroment. Lumen 5.1+ will read this file for configuration parameters if it is present, and may overlap some configurations if it is completely populated.
 
 ### License
 

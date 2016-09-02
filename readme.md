@@ -44,7 +44,7 @@ To install this package on only development systems, add the `--dev` flag to you
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
-Instead of adding the service provider in the `config/app.php` file, add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
+In Laravel, instead of adding the service provider in the `config/app.php` file, you can add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
 
 ```php
 public function register()
@@ -56,8 +56,9 @@ public function register()
 }
 ```
 
-### Automatic phpDoc generation for Laravel Facades
+This will allow your application to load the Laravel IDE Helper on non-production enviroments.
 
+### Automatic phpDoc generation for Laravel Facades
 
 You can now re-generate the docs yourself (for future updates)
 
@@ -173,6 +174,55 @@ Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
 > Note: When you receive a FatalException about a class that is not found, check your config (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
+
+## Lumen Install
+
+This pacakges is focused on Laravel development, but it can also be used in Lumen with some workarounds. Because Lumen works a little different, as it is like a barebone version of Laravel and the main configuration parameters are instead located in `bootstrap/app.php`, some arreglements must be made.
+
+#### Enabling Facades
+
+While Laravel IDE Helper can generate automatically default Facades for code hinting, Lumen doesn't come with Facades activated. If you plan in using them, you must enable them under the `Create The Application` section, uncommenting this line:
+
+```php
+// $app->withFacades();
+```
+
+From there, you should be able to use the `create_alias()` function to add additional Facades into your application.
+
+#### Adding the Service Provider
+
+You can install Laravel IDE Helper in `app/Providers/AppServiceProvider.php`, and uncommenting this line that registers the App Service Providers so it can properly load.
+
+```php
+// $app->register(App\Providers\AppServiceProvider::class);
+```
+
+If you are not using that line, that is usually handy to manage gracefully multiple Laravel/Lumen installations, you will have to add this line of code under the `Register Service Providers` section of your `bootstrap/app.php`.
+
+```php
+if ($this->app->environment() !== 'production') {
+    $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+}
+```
+
+After that, Laravel IDE Helper should work correctly. During the generation process, the script may throw exceptions saying that some Classes doesn't exist or there are some undefined indexes. This is normal, as Lumen has some default packages stripped away, like Cookies, Storage and Session. If you plan to add these packages, you will have to add them manually and create additional 
+Facades if needed.
+
+#### Adding Additional Facades
+
+Currently Lumen IDE Helper doesn't take into account additional Facades created under `bootstrap/app.php` using `create_alias()`, so you need to create a `config/app.php` file and add your custom aliases under an `aliases` array again, like so:
+
+```php
+return [
+    'aliases' => [
+        'CustomAliasOne' => Example\Support\Facades\CustomAliasOne::class,
+        'CustomAliasTwo' => Example\Support\Facades\CustomAliasTwo::class,
+        //...
+    ]
+];
+```
+
+After you run ```php artisan ide-helper:generate```, it's recommended (but not mandatory) to rename `config/app.php` to something else until you have to re-generate the docs or after passing to production enviroment. Lumen 5.1+ will read this file for configuration parameters if it is present, and may overlap some configurations if it is completely populated.
 
 ### License
 

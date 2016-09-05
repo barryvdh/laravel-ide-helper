@@ -200,8 +200,8 @@ You can install Laravel IDE Helper in `app/Providers/AppServiceProvider.php`, an
 If you are not using that line, that is usually handy to manage gracefully multiple Laravel/Lumen installations, you will have to add this line of code under the `Register Service Providers` section of your `bootstrap/app.php`.
 
 ```php
-if ($this->app->environment() !== 'production') {
-    $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+if ($app->environment() !== 'production') {
+    $app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
 }
 ```
 

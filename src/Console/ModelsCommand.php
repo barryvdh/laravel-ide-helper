@@ -386,7 +386,9 @@ class ModelsCommand extends Command
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
-                        $this->setProperty($name, null, true, null);
+                        $reflection = new \ReflectionMethod($model, $method);
+                        $type = $this->getReturnTypeFromDocBlock($reflection);
+                        $this->setProperty($name, $type, true, null);
                     }
                 } elseif (Str::startsWith($method, 'set') && Str::endsWith(
                     $method,
@@ -668,5 +670,24 @@ class ModelsCommand extends Command
     protected function hasCamelCaseModelProperties()
     {
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
+    }
+
+    /**
+     * Get method return type based on it DocBlock comment
+     *
+     * @param \ReflectionMethod $reflection
+     *
+     * @return null|string
+     */
+    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection)
+    {
+        $type = null;
+        $phpdoc = new DocBlock($reflection);
+
+        if ($phpdoc->hasTag('return')) {
+            $type = $phpdoc->getTagsByName('return')[0]->getContent();
+        }
+
+        return $type;
     }
 }

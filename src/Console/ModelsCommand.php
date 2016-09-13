@@ -319,7 +319,16 @@ class ModelsCommand extends Command
 
         $database = null;
         if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+            if ($platformName == 'mssql') {
+                $parts = explode('.', $table);
+                if (sizeof($parts) == 3) {
+                    $database = $parts[0];
+                    $table = $parts[1].$parts[2];
+                }
+            }
+            else {
+                list($database, $table) = explode('.', $table);
+            }
         }
 
         $columns = $schema->listTableColumns($table, $database);

@@ -14,6 +14,8 @@ class Alias
 {
     protected $alias;
     protected $facade;
+    protected $facadeNamespace = '';
+    protected $facadeShort = '';
     protected $extends = null;
     protected $classType = 'class';
     protected $short;
@@ -41,6 +43,7 @@ class Alias
         // Make the class absolute
         $facade = '\\' . ltrim($facade, '\\');
         $this->facade = $facade;
+        $this->detectFacade();
 
         $this->detectRoot();
 
@@ -142,6 +145,16 @@ class Alias
         $this->addMagicMethods();
         $this->detectMethods();
         return $this->methods;
+    }
+
+    /**
+     * Detect facade info
+     */
+    protected function detectFacade()
+    {
+        $nsParts = explode('\\', $this->facade);
+        $this->facadeShort = array_pop($nsParts);
+        $this->facadeNamespace = trim(implode('\\', $nsParts), '\\');
     }
 
     /**

@@ -37,3 +37,16 @@ namespace <?= $namespace == '__root' ? '' : $namespace ?>{
 }
 
 <?php endforeach; ?>
+
+namespace Illuminate\Support\Facades {
+<?php foreach($namespaces['__root'] as $alias): ?>
+<?php if($alias->getFacadeNamespace() == 'Illuminate\\Support\\Facades'):?>
+    /**
+     * @mixin \<?= $alias->getShortName() ?>
+
+     */
+    class <?= $alias->getFacadeShort() ?> {}
+
+<?php endif; ?>
+<?php endforeach; ?>
+}

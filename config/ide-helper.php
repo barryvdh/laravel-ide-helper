@@ -16,7 +16,7 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Filename & Format
+    | Fluent helpers
     |--------------------------------------------------------------------------
     |
     | Set to true to generate commonly used Fluent methods

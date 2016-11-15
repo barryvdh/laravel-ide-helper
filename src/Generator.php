@@ -84,6 +84,7 @@ class Generator
             ->with('namespaces', $this->getNamespaces())
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
+            ->with('include_fluent', $this->config->get('ide-helper.include_fluent', false))
             ->render();
     }
 

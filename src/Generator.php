@@ -115,10 +115,56 @@ class Generator
         ), $flags);
     }
 
+    /**
+     * The auth settings are defined in config/auth.php
+     *
+     * \Illuminate\Auth\AuthManager already added by default
+     * @see \Illuminate\Auth\AuthServiceProvider::registerAuthenticator()
+     * @see \Illuminate\Auth\AuthManager
+     *
+     * \Illuminate\Auth\RequestGuard is not a supported guard driver.
+     * @see \Illuminate\Auth\AuthManager::viaRequest()
+     * @see \Illuminate\Auth\RequestGuard
+     *
+     * Supported: "session", "token"
+     * @see \Illuminate\Auth\AuthManager::resolve()
+     * @see \Illuminate\Auth\AuthManager::createSessionDriver()
+     * @see \Illuminate\Auth\AuthManager::createTokenDriver()
+     * @see \Illuminate\Auth\SessionGuard
+     * @see \Illuminate\Auth\TokenGuard
+     *
+     * @see https://laravel.com/docs/5.2/authentication
+     * @see https://laravel.com/api/5.2/Illuminate/Auth.html
+     * @see \Illuminate\Auth\AuthServiceProvider
+     * @see \Illuminate\Auth\AuthManager::__call
+     * @see \Illuminate\Contracts\Auth\Guard
+     * @see \Illuminate\Contracts\Auth\StatefulGuard
+     */
     protected function detectDrivers()
     {
-        $defaultUserModel = config('auth.providers.users.model', config('auth.model', 'App\User'));
-        $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
+        try {
+            if (config('auth.providers.users.model', null) !== null) {
+                $defaultUserModels = [];
+                $interface = 'Illuminate\Contracts\Auth\Authenticatable';
+                foreach (array_pluck(config('auth.providers', []), 'model') as $userModel) {
+                    if (class_exists($userModel) && in_array($interface, class_implements($userModel))) {
+                        $defaultUserModels[] = $userModel;
+                    }
+                }
+                if (count($defaultUserModels) > 0) {
+                    $this->interfaces['\\' . $interface] = implode('|', $defaultUserModels) . '|\\' . $interface;
+                }
+                unset($defaultUserModels, $interface);
+            } else {
+                $defaultUserModel = config('auth.model', 'App\User');
+                $interface = 'Illuminate\Contracts\Auth\Authenticatable';
+                if (class_exists($defaultUserModel) && in_array($interface, class_implements($defaultUserModel))) {
+                    $this->interfaces['\\' . $interface] = $defaultUserModel . '|\\' . $interface;
+                }
+                unset($defaultUserModel, $interface);
+            }
+        } catch (\Exception $e) {
+        }
 
         try {
             if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
@@ -131,9 +177,56 @@ class Generator
                         'driver' :
                         (strpos($versionStr, 'Lumen (5.1') === 0 ? 'driver' : 'guard');
                 }
-                $class = get_class(\Auth::$authMethod());
-                $this->extra['Auth'] = array($class);
-                $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
+
+                // For one guard and with default
+                if (count(config('auth.guards', [])) <= 1 && config('auth.guard.driver', null) !== null) {
+                    $class = get_class(\Auth::$authMethod());
+                    $this->extra['Auth'] = array($class);
+                    $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
+                } else { // For multiple guards without default
+                    $drivers = array_values(array_unique(array_pluck(config('auth.guards', []), 'driver')));
+
+                    foreach ($drivers as $driver) {
+                        $class = 'Illuminate\\Auth\\'.studly_case($driver).'Guard';
+                        if (class_exists($class)) {
+                            if (!isset($this->extra['Auth'])) {
+                                $this->extra['Auth'] = [];
+                            }
+                            $this->extra['Auth'][] = $class;
+                        }
+                    }
+
+                    switch (count($drivers)) {
+                        case 0:
+                            $interfaces = ['Illuminate\Contracts\Auth\Guard'];
+                            break;
+                        case 1:
+                            // The class is enough
+                            $interfaces = [];
+                            break;
+                        default:
+                            // It could use a reflection to get the implement, but for now there are only two possible
+                            // options.
+                            // The order is important for the following loop.
+                            $interfaces = [
+                                'Illuminate\Contracts\Auth\Guard',
+                                'Illuminate\Contracts\Auth\StatefulGuard'
+                            ];
+                    }
+
+                    if (count($interfaces) > 0 && !isset($this->magic['Auth'])) {
+                        $this->magic['Auth'] = [];
+                    }
+                    foreach ($interfaces as $interface) {
+                        foreach (get_class_methods($interface) as $method) {
+                            if (!isset($this->magic['Auth'][$method])) {
+                                $this->magic['Auth'][$method] = $interface.'::'.$method;
+                            }
+                        }
+                    }
+                }
+
+                unset($class, $drivers, $interfaces);
             }
         } catch (\Exception $e) {
         }

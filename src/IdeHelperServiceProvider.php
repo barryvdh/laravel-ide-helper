@@ -54,19 +54,19 @@ class IdeHelperServiceProvider extends ServiceProvider
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
         
-        $this->app['command.ide-helper.generate'] = $this->app->share(
+        $this->app->singleton('command.ide-helper.generate',
             function ($app) {
                 return new GeneratorCommand($app['config'], $app['files'], $app['view']);
             }
         );
 
-        $this->app['command.ide-helper.models'] = $this->app->share(
+        $this->app->singleton('command.ide-helper.models',
             function ($app) {
                 return new ModelsCommand($app['files']);
             }
         );
         
-        $this->app['command.ide-helper.meta'] = $this->app->share(
+        $this->app->singleton('command.ide-helper.meta',
             function ($app) {
                 return new MetaCommand($app['files'], $app['view']);
             }

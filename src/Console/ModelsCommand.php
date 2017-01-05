@@ -377,6 +377,7 @@ class ModelsCommand extends Command
     {
         $methods = get_class_methods($model);
         if ($methods) {
+            sort($methods);
             foreach ($methods as $method) {
                 if (Str::startsWith($method, 'get') && Str::endsWith(
                     $method,
@@ -568,6 +569,8 @@ class ModelsCommand extends Command
             $tag = Tag::createInstance($tagLine, $phpdoc);
             $phpdoc->appendTag($tag);
         }
+
+        ksort($this->methods);
 
         foreach ($this->methods as $name => $method) {
             if (in_array($name, $methods)) {

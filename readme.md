@@ -32,16 +32,16 @@ Require this package with composer using the following command:
 composer require barryvdh/laravel-ide-helper
 ```
 
+To install this package on only development systems, add the `--dev` flag to your composer command:
+
+```bash
+composer require barryvdh/laravel-ide-helper --dev
+```
+
 After updating composer, add the service provider to the `providers` array in `config/app.php`
 
 ```php
 Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-```
-
-To install this package on only development systems, add the `--dev` flag to your composer command:
-
-```bash
-composer require --dev barryvdh/laravel-ide-helper
 ```
 
 In Laravel, instead of adding the service provider in the `config/app.php` file, you can add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:

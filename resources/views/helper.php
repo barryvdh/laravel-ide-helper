@@ -35,6 +35,13 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?>{
 namespace {
     exit("This file should not be included, only analyzed by your IDE");
 <?= $helpers ?>
+
+<?php foreach($namespaces as $namespace => $aliases): ?>
+<?php foreach($aliases as $alias): ?>
+    <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?>{}
+    
+<?php endforeach; ?>
+<?php endforeach; ?>
 }
 
 <?php if($include_fluent): ?>

@@ -177,7 +177,7 @@ Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 
 ## Lumen Install
 
-This pacakges is focused on Laravel development, but it can also be used in Lumen with some workarounds. Because Lumen works a little different, as it is like a barebone version of Laravel and the main configuration parameters are instead located in `bootstrap/app.php`, some arreglements must be made.
+This package is focused on Laravel development, but it can also be used in Lumen with some workarounds. Because Lumen works a little different, as it is like a barebone version of Laravel and the main configuration parameters are instead located in `bootstrap/app.php`, some alterations must be made.
 
 #### Enabling Facades
 
@@ -205,8 +205,7 @@ if ($app->environment() !== 'production') {
 }
 ```
 
-After that, Laravel IDE Helper should work correctly. During the generation process, the script may throw exceptions saying that some Classes doesn't exist or there are some undefined indexes. This is normal, as Lumen has some default packages stripped away, like Cookies, Storage and Session. If you plan to add these packages, you will have to add them manually and create additional 
-Facades if needed.
+After that, Laravel IDE Helper should work correctly. During the generation process, the script may throw exceptions saying that some Class(s) doesn't exist or there are some undefined indexes. This is normal, as Lumen has some default packages stripped away, like Cookies, Storage and Session. If you plan to add these packages, you will have to add them manually and create additional Facades if needed.
 
 #### Adding Additional Facades
 

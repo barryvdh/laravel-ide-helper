@@ -207,21 +207,30 @@ if ($app->environment() !== 'production') {
 
 After that, Laravel IDE Helper should work correctly. During the generation process, the script may throw exceptions saying that some Class(s) doesn't exist or there are some undefined indexes. This is normal, as Lumen has some default packages stripped away, like Cookies, Storage and Session. If you plan to add these packages, you will have to add them manually and create additional Facades if needed.
 
-#### Adding Additional Facades
+#### Adding the App Config
 
-Currently Lumen IDE Helper doesn't take into account additional Facades created under `bootstrap/app.php` using `create_alias()`, so you need to create a `config/app.php` file and add your custom aliases under an `aliases` array again, like so:
+In order to get autocompletion for additional Facades and for certain magic Model methods you need to copy `/vendor/laravel/lumen-framework/config/app.php` to `config/app.php`.
+
+##### Adding Additional Facades
+
+Currently Lumen IDE Helper doesn't take into account additional Facades created under `bootstrap/app.php` using `create_alias()`, so you'll have to add your custom aliases under an `aliases` array in `config/app.php` (see example below).
+
+##### Model Autocompletion via Eloquent Mixin
+
+The command `php artisan generate:models` will add `@mixin \Eloquent` to your models so that magic model methods like `where()` and `find()` will get autocompletion and we need to add `Eloquent` to the `aliases` array as well for this to work.
 
 ```php
-return [
+    //...
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+
     'aliases' => [
+        'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
         'CustomAliasOne' => Example\Support\Facades\CustomAliasOne::class,
         'CustomAliasTwo' => Example\Support\Facades\CustomAliasTwo::class,
         //...
     ]
 ];
 ```
-
-After you run ```php artisan ide-helper:generate```, it's recommended (but not mandatory) to rename `config/app.php` to something else until you have to re-generate the docs or after passing to production enviroment. Lumen 5.1+ will read this file for configuration parameters if it is present, and may overlap some configurations if it is completely populated.
 
 ### License
 

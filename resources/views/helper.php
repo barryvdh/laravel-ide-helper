@@ -59,11 +59,11 @@ namespace Illuminate\Support {
      * @method Fluent default(mixed $value) Add the default modifier
      * @method Fluent first() Select first row
      * @method Fluent index(string $name = null) Add the in dex clause
-     * @method Fluent on(string $column) `on` of a foreign key
+     * @method Fluent on(string $table) `on` of a foreign key
      * @method Fluent onDelete(string $action) `on delete` of a foreign key
      * @method Fluent onUpdate(string $action) `on update` of a foreign key
      * @method Fluent primary() Add the primary key modifier
-     * @method Fluent references(string $table) `references` of a foreign key
+     * @method Fluent references(string $column) `references` of a foreign key
      * @method Fluent nullable() Add the nullable modifier
      * @method Fluent unique(string $name = null) Add unique index clause
      * @method Fluent unsigned() Add the unsigned modifier

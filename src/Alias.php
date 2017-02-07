@@ -15,6 +15,7 @@ class Alias
     protected $alias;
     protected $facade;
     protected $extends = null;
+    protected $extendsClass = null;
     protected $extendsNamespace = null;
     protected $classType = 'class';
     protected $short;
@@ -108,6 +109,16 @@ class Alias
     }
     
     /**
+     * Get the class short name which this alias extends
+     *
+     * @return null|string
+     */
+    public function getExtendsClass()
+    {
+        return $this->extendsClass;
+    }
+    
+    /**
      * Get the namespace of the class which this alias extends
      *
      * @return null|string
@@ -177,7 +188,7 @@ class Alias
     {
         if (strpos($this->extends, '\\') !== false) {
             $nsParts = explode('\\', $this->extends);
-            array_pop($nsParts);
+            $this->extendsClass = array_pop($nsParts);
             $this->extendsNamespace = implode('\\', $nsParts);
         }
     }

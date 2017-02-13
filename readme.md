@@ -151,6 +151,18 @@ php artisan ide-helper:models --ignore="Post,User"
 
 Note: With namespaces, wrap your model name in " signs: `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
 
+### Automatic phpDocs generation for Laravel Fluent methods
+If you need phpDocs support for Fluent methods in migration, for example
+```php
+$table->string(“somestring”)->nullable()->index();
+```
+After publishing vendor, simply change the `include_fluent` line your `config/ide-helper.php` file into:
+```php
+'include_fluent' => true,
+```
+And then run `php artisan ide-helper:generate` , you will now see all of the Fluent methods are recognized by your IDE now.
+
+
 ## PhpStorm Meta for Container instances
 
 It's possible to generate a PhpStorm meta file to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata). For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container. For example, `events` will return an `Illuminate\Events\Dispatcher` object, so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.

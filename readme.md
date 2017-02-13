@@ -151,7 +151,7 @@ php artisan ide-helper:models --ignore="Post,User"
 
 Note: With namespaces, wrap your model name in " signs: `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
 
-### Automatic phpDocs for Fluent methods
+### Automatic phpDocs generation for Laravel Fluent methods
 If you need phpDocs support for Fluent methods in migration, for example
 ```php
 $table->string(“somestring”)->nullable()->index();

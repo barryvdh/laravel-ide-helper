@@ -14,7 +14,10 @@ namespace  {
 <?php foreach($namespaces as $namespace => $aliases): ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 <?php foreach($aliases as $alias): ?>
-
+    
+    /**
+     * @mixin <?= $namespace ?>\<?= $alias->getExtendsCLass() ?> 
+     */
     <?= $alias->getClassType() ?> <?= $alias->getExtendsCLass() ?> {
         <?php foreach($alias->getMethods() as $method): ?>
 

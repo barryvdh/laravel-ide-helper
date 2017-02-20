@@ -12,6 +12,7 @@ namespace  {
 }
 
 <?php foreach($namespaces as $namespace => $aliases): ?>
+<?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 <?php foreach($aliases as $alias): ?>
 

@@ -12,7 +12,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Support\Collection;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -81,7 +81,7 @@ class Generator
     {
         $app = app();
         return $this->view->make('ide-helper::helper')
-            ->with('namespaces', $this->getNamespaces())
+            ->with('valid_aliases', $this->getValidAliases())
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', false))
@@ -91,7 +91,7 @@ class Generator
     public function generateJsonHelper()
     {
         $classes = array();
-        foreach ($this->getNamespaces() as $aliases) {
+        foreach ($this->getValidAliases() as $aliases) {
             foreach ($aliases as $alias) {
                 $functions = array();
                 foreach ($alias->getMethods() as $method) {
@@ -186,13 +186,13 @@ class Generator
     }
 
     /**
-     * Find all namespaces/aliases that are valid for us to render
+     * Find all aliases that are valid for us to render
      *
      * @return array
      */
-    protected function getNamespaces()
+    protected function getValidAliases()
     {
-        $namespaces = array();
+        $aliases = new Collection();
 
         // Get all aliases
         foreach ($this->getAliases() as $name => $facade) {
@@ -208,16 +208,12 @@ class Generator
                 if (array_key_exists($name, $this->extra)) {
                     $alias->addClass($this->extra[$name]);
                 }
-
-                $namespace = $alias->getExtendsNamespace() ?: $alias->getNamespace();
-                if (!isset($namespaces[$namespace])) {
-                    $namespaces[$namespace] = array();
-                }
-                $namespaces[$namespace][] = $alias;
+                
+                $aliases[] = $alias;
             }
         }
 
-        return $namespaces;
+        return $aliases;
     }
 
     protected function getAliases()

@@ -32,7 +32,6 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
  *
  * @param string $last
  * @param string $first
- * @static 
  */';
         $this->assertEquals($output, $method->getDocComment(''));
         $this->assertEquals('setName', $method->getName());

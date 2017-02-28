@@ -61,9 +61,6 @@ class Method
         //Get the parameters, including formatted default values
         $this->getParameters($method);
 
-        //Make the method static
-        $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
-
         //Reference the 'real' function in the declaringclass
         $declaringClass = $method->getDeclaringClass();
         $this->declaringClassName = '\\' . ltrim($declaringClass->name, '\\');

@@ -21,7 +21,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 
         <?= trim($method->getDocComment('        ')) ?>
 
-        public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
+        public function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
         {<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
 
             //Method inherited from <?= $method->getDeclaringClass() ?>
@@ -47,7 +47,7 @@ namespace {
 
         <?= trim($method->getDocComment('        ')) ?>
 
-        public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
+        public function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
         {<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
 
             //Method inherited from <?= $method->getDeclaringClass() ?>

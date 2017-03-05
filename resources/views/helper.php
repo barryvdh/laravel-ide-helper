@@ -11,12 +11,7 @@ namespace  {
     exit("This file should not be included, only analyzed by your IDE");
 }
 
-<?php
-$aliasesGroupedByNamespaceOfExtendedClasses = $valid_aliases->groupBy(function ($alias) {
-    return $alias->getExtendsNamespace();
-});
-?>
-<?php foreach($aliasesGroupedByNamespaceOfExtendedClasses as $namespace => $aliases): ?>
+<?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>
 <?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
@@ -40,12 +35,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 
 <?php endforeach; ?>
 
-<?php
-$aliasesGroupedByNamespace = $valid_aliases->groupBy(function ($alias) {
-    return $alias->getNamespace();
-});
-?>
-<?php foreach($aliasesGroupedByNamespace as $namespace => $aliases): ?>
+<?php foreach($namespaces_by_alias_ns as $namespace => $aliases): ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
 

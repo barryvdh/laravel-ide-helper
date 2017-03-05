@@ -189,7 +189,7 @@ class Generator
     /**
      * Find all aliases that are valid for us to render
      *
-     * @return array
+     * @return Collection
      */
     protected function getValidAliases()
     {

@@ -50,6 +50,7 @@ class ModelsCommand extends Command
      */
     protected $description = 'Generate autocompletion for models';
 
+    protected $write_magic_methods = true;
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
@@ -81,6 +82,7 @@ class ModelsCommand extends Command
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
+        $this->write_magic_methods = $this->laravel['config']->get('ide-helper.write_magic_methods');
 
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
@@ -573,13 +575,15 @@ class ModelsCommand extends Command
 
         ksort($this->methods);
 
-        foreach ($this->methods as $name => $method) {
-            if (in_array($name, $methods)) {
-                continue;
+        if ($this->write_magic_methods) {
+            foreach ($this->methods as $name => $method) {
+                if (in_array($name, $methods)) {
+                    continue;
+                }
+                $arguments = implode(', ', $method['arguments']);
+                $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
+                $phpdoc->appendTag($tag);
             }
-            $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
-            $phpdoc->appendTag($tag);
         }
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {

@@ -27,14 +27,14 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Write Magic methods
+    | Write Model Magic methods
     |--------------------------------------------------------------------------
     |
     | Set to false to disable write magic methods of model
     |
     */
 
-    'write_magic_methods' => true,
+    'model_write_magic_where' => true,
 
     /*
     |--------------------------------------------------------------------------

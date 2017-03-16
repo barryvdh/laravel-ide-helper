@@ -50,7 +50,7 @@ class ModelsCommand extends Command
      */
     protected $description = 'Generate autocompletion for models';
 
-    protected $write_magic_methods = true;
+    protected $model_write_magic_where = true;
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
@@ -575,7 +575,7 @@ class ModelsCommand extends Command
 
         ksort($this->methods);
 
-        if ($this->write_magic_methods) {
+        if ($this->model_write_magic_where) {
             foreach ($this->methods as $name => $method) {
                 if (in_array($name, $methods)) {
                     continue;

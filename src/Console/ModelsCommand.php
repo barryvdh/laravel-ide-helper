@@ -50,7 +50,7 @@ class ModelsCommand extends Command
      */
     protected $description = 'Generate autocompletion for models';
 
-    protected $model_write_magic_where = true;
+    protected $write_model_magic_where = true;
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
@@ -82,7 +82,7 @@ class ModelsCommand extends Command
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
-        $this->write_magic_methods = $this->laravel['config']->get('ide-helper.write_magic_methods');
+        $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where');
 
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
@@ -575,7 +575,7 @@ class ModelsCommand extends Command
 
         ksort($this->methods);
 
-        if ($this->model_write_magic_where) {
+        if ($this->write_model_magic_where) {
             foreach ($this->methods as $name => $method) {
                 if (in_array($name, $methods)) {
                     continue;

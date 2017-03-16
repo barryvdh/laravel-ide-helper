@@ -364,11 +364,13 @@ class ModelsCommand extends Command
 
                 $comment = $column->getComment();
                 $this->setProperty($name, $type, true, true, $comment);
-                $this->setMethod(
-                    Str::camel("where_" . $name),
-                    '\Illuminate\Database\Query\Builder|\\' . get_class($model),
-                    array('$value')
-                );
+                if ($this->write_model_magic_where) {
+                    $this->setMethod(
+                        Str::camel("where_" . $name),
+                        '\Illuminate\Database\Query\Builder|\\' . get_class($model),
+                        array('$value')
+                    );
+                }
             }
         }
     }
@@ -575,15 +577,13 @@ class ModelsCommand extends Command
 
         ksort($this->methods);
 
-        if ($this->write_model_magic_where) {
-            foreach ($this->methods as $name => $method) {
-                if (in_array($name, $methods)) {
-                    continue;
-                }
-                $arguments = implode(', ', $method['arguments']);
-                $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
-                $phpdoc->appendTag($tag);
+        foreach ($this->methods as $name => $method) {
+            if (in_array($name, $methods)) {
+                continue;
             }
+            $arguments = implode(', ', $method['arguments']);
+            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
+            $phpdoc->appendTag($tag);
         }
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {

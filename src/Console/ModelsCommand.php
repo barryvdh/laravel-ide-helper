@@ -50,6 +50,7 @@ class ModelsCommand extends Command
      */
     protected $description = 'Generate autocompletion for models';
 
+    protected $write_model_magic_where;
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
@@ -81,6 +82,7 @@ class ModelsCommand extends Command
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
+        $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
 
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
@@ -362,11 +364,13 @@ class ModelsCommand extends Command
 
                 $comment = $column->getComment();
                 $this->setProperty($name, $type, true, true, $comment);
-                $this->setMethod(
-                    Str::camel("where_" . $name),
-                    '\Illuminate\Database\Query\Builder|\\' . get_class($model),
-                    array('$value')
-                );
+                if ($this->write_model_magic_where) {
+                    $this->setMethod(
+                        Str::camel("where_" . $name),
+                        '\Illuminate\Database\Query\Builder|\\' . get_class($model),
+                        array('$value')
+                    );
+                }
             }
         }
     }

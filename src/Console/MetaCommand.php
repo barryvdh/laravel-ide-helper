@@ -133,6 +133,10 @@ class MetaCommand extends Command
      */
     protected function getServicesAliases()
     {
+        if (method_exists($this->laravel, 'getAliases')) {
+            return $this->laravel->getAliases();
+        }
+
         $reflected_container = new \ReflectionObject($this->laravel);
 
         $aliases = $reflected_container->getProperty('aliases');

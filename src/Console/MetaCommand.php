@@ -72,6 +72,8 @@ class MetaCommand extends Command
         $this->registerClassAutoloadExceptions();
 
         $bindings = array();
+        $aliases = $this->getServicesAliases();
+
         foreach ($this->getAbstracts() as $abstract) {
             // Validator and seeder cause problems
             if (in_array($abstract, ['validator', 'seeder'])) {
@@ -80,8 +82,14 @@ class MetaCommand extends Command
             
             try {
                 $concrete = $this->laravel->make($abstract);
-                if (is_object($concrete)) {
-                    $bindings[$abstract] = get_class($concrete);
+                if (!is_object($concrete)) {
+                    continue;
+                }
+                $bindings[$abstract] = get_class($concrete);
+                if ($aliases_for_abstract = array_keys($aliases, $abstract, true)) {
+                    foreach ($aliases_for_abstract as $aliase) {
+                        $bindings[$aliase] = $bindings[$abstract];
+                    }
                 }
             } catch (\Exception $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
@@ -116,6 +124,21 @@ class MetaCommand extends Command
         
         // Return the abstract names only
         return array_keys($abstracts);
+    }
+
+    /**
+     * Get a list of aliases for abstracts from the Laravel Application.
+     *
+     * @return array
+     */
+    protected function getServicesAliases()
+    {
+        $reflected_container = new \ReflectionObject($this->laravel);
+
+        $aliases = $reflected_container->getProperty('aliases');
+        $aliases->setAccessible(true);
+
+        return $aliases->getValue($this->laravel);
     }
 
     /**

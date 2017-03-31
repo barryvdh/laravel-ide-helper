@@ -18,6 +18,8 @@
         "symfony/class-loader": "^2.3|^3.0"
     },
     "require-dev": {
+        "illuminate/config": "^5.0,<5.5",
+        "illuminate/view": "^5.0,<5.5",
         "phpunit/phpunit" : "4.*",
         "scrutinizer/ocular": "~1.1",
         "squizlabs/php_codesniffer": "~2.3",

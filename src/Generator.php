@@ -80,7 +80,7 @@ class Generator
     public function generatePhpHelper()
     {
         $app = app();
-        return $this->view->make('ide-helper::helper')
+        return $this->view->make('helper')
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
             ->with('helpers', $this->helpers)

@@ -90,7 +90,7 @@ class MetaCommand extends Command
             }
         }
 
-        $content = $this->view->make('ide-helper::meta', [
+        $content = $this->view->make('meta', [
           'bindings' => $bindings,
           'methods' => $this->methods,
         ])->render();

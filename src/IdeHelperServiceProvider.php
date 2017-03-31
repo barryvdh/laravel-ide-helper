@@ -14,6 +14,10 @@ use Illuminate\Support\ServiceProvider;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
+use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Engines\PhpEngine;
+use Illuminate\View\Factory;
+use Illuminate\View\FileViewFinder;
 
 class IdeHelperServiceProvider extends ServiceProvider
 {
@@ -53,11 +57,12 @@ class IdeHelperServiceProvider extends ServiceProvider
     {
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
+        $localViewFactory = $this->createLocalViewFactory();
         
         $this->app->singleton(
             'command.ide-helper.generate',
-            function ($app) {
-                return new GeneratorCommand($app['config'], $app['files'], $app['view']);
+            function ($app) use ($localViewFactory) {
+                return new GeneratorCommand($app['config'], $app['files'], $localViewFactory);
             }
         );
 
@@ -70,8 +75,8 @@ class IdeHelperServiceProvider extends ServiceProvider
         
         $this->app->singleton(
             'command.ide-helper.meta',
-            function ($app) {
-                return new MetaCommand($app['files'], $app['view']);
+            function ($app) use ($localViewFactory) {
+                return new MetaCommand($app['files'], $localViewFactory);
             }
         );
 
@@ -86,5 +91,21 @@ class IdeHelperServiceProvider extends ServiceProvider
     public function provides()
     {
         return array('command.ide-helper.generate', 'command.ide-helper.models');
+    }
+
+    /**
+     * @return Factory
+     */
+    private function createLocalViewFactory()
+    {
+        $resolver = new EngineResolver();
+        $resolver->register('php', function () {
+            return new PhpEngine();
+        });
+        $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
+        $factory = new Factory($resolver, $finder, $this->app['events']);
+        $factory->addExtension('php', 'php');
+
+        return $factory;
     }
 }

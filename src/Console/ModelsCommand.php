@@ -347,10 +347,7 @@ class ModelsCommand extends Command
                         case 'integer':
                         case 'bigint':
                         case 'smallint':
-                        /**
-                         * @see https://github.com/barryvdh/laravel-ide-helper/issues/480
-                         */
-                        case 'boolean':
+                        case 'boolean': // See issue #480
                             $type = 'integer';
                             break;
                         case 'decimal':

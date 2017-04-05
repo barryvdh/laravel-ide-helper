@@ -347,14 +347,12 @@ class ModelsCommand extends Command
                         case 'integer':
                         case 'bigint':
                         case 'smallint':
+                        case 'boolean':
                             $type = 'integer';
                             break;
                         case 'decimal':
                         case 'float':
                             $type = 'float';
-                            break;
-                        case 'boolean':
-                            $type = 'boolean';
                             break;
                         default:
                             $type = 'mixed';

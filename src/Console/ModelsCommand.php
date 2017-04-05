@@ -347,7 +347,7 @@ class ModelsCommand extends Command
                         case 'integer':
                         case 'bigint':
                         case 'smallint':
-                        case 'boolean': // See issue #480
+                        case 'boolean':
                             $type = 'integer';
                             break;
                         case 'decimal':

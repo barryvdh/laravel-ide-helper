@@ -366,7 +366,7 @@ class ModelsCommand extends Command
                 }
 
                 $comment = $column->getComment();
-                if(!$column->getNotnull()) {
+                if (!$column->getNotnull()) {
                     $this->nullableColumns[$name] = true;
                 }
                 $this->setProperty($name, $type, true, true, $comment, !$column->getNotnull());
@@ -463,17 +463,29 @@ class ModelsCommand extends Command
                                 if (in_array($relation, $relations)) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
-                                        $method, $this->getCollectionClass($relatedModel) . '|' . $relatedModel
-                                                 . '[]', true, null
+                                        $method,
+                                        $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
+                                        true,
+                                        null
                                     );
                                 } elseif ($relation === "morphTo") {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
-                                        $method, '\Illuminate\Database\Eloquent\Model|\Eloquent', true, null
+                                        $method,
+                                        '\Illuminate\Database\Eloquent\Model|\Eloquent',
+                                        true,
+                                        null
                                     );
                                 } else {
                                     //Single model is returned
-                                    $this->setProperty($method, $relatedModel, true, null, '', $this->isRelationForeignKeyNullable($relationObj));
+                                    $this->setProperty(
+                                        $method,
+                                        $relatedModel,
+                                        true,
+                                        null,
+                                        '',
+                                        $this->isRelationForeignKeyNullable($relationObj)
+                                    );
                                 }
                             }
                         }
@@ -521,7 +533,7 @@ class ModelsCommand extends Command
         }
         if ($type !== null) {
             $newType = $this->getTypeOverride($type);
-            if($nullable) {
+            if ($nullable) {
                 $newType .='|null';
             }
             $this->properties[$name]['type'] = $newType;

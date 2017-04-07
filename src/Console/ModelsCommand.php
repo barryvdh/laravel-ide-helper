@@ -56,6 +56,10 @@ class ModelsCommand extends Command
     protected $write = false;
     protected $dirs = array();
     protected $reset;
+    /**
+     * @var bool[string]
+     */
+    protected $nullableColumn = [];
 
     /**
      * @param Filesystem $files
@@ -361,6 +365,10 @@ class ModelsCommand extends Command
                 }
 
                 $comment = $column->getComment();
+                if(!$column->getNotnull()) {
+                    $this->nullableColumn[$name] = true;
+                    $type .= '|null';
+                }
                 $this->setProperty($name, $type, true, true, $comment);
                 if ($this->write_model_magic_where) {
                     $this->setMethod(
@@ -470,6 +478,9 @@ class ModelsCommand extends Command
                                     );
                                 } else {
                                     //Single model is returned
+                                    if ($this->isRelationForeignKeyNullable($relationObj)) {
+                                        $relatedModel .= '|null';
+                                    }
                                     $this->setProperty($method, $relatedModel, true, null);
                                 }
                             }
@@ -478,6 +489,25 @@ class ModelsCommand extends Command
                 }
             }
         }
+    }
+
+    /**
+     * Check if the foreign key of the relation is nullable
+     *
+     * @param Relation $relation
+     *
+     * @return bool
+     */
+    private function isRelationForeignKeyNullable(Relation $relation)
+    {
+        $reflectionObj = new \ReflectionObject($relation);
+        if (!$reflectionObj->hasProperty('foreignKey')) {
+            return false;
+        }
+        $fkProp = $reflectionObj->getProperty('foreignKey');
+        $fkProp->setAccessible(true);
+
+        return isset($this->nullableColumn[$fkProp->getValue($relation)]);
     }
 
     /**

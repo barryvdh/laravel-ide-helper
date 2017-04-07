@@ -367,9 +367,8 @@ class ModelsCommand extends Command
                 $comment = $column->getComment();
                 if(!$column->getNotnull()) {
                     $this->nullableColumn[$name] = true;
-                    $type .= '|null';
                 }
-                $this->setProperty($name, $type, true, true, $comment);
+                $this->setProperty($name, $type, true, true, $comment, !$column->getNotnull());
                 if ($this->write_model_magic_where) {
                     $this->setMethod(
                         Str::camel("where_" . $name),
@@ -463,25 +462,17 @@ class ModelsCommand extends Command
                                 if (in_array($relation, $relations)) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
-                                        $method,
-                                        $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
-                                        true,
-                                        null
+                                        $method, $this->getCollectionClass($relatedModel) . '|' . $relatedModel
+                                                 . '[]', true, null
                                     );
                                 } elseif ($relation === "morphTo") {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
-                                        $method,
-                                        '\Illuminate\Database\Eloquent\Model|\Eloquent',
-                                        true,
-                                        null
+                                        $method, '\Illuminate\Database\Eloquent\Model|\Eloquent', true, null
                                     );
                                 } else {
                                     //Single model is returned
-                                    if ($this->isRelationForeignKeyNullable($relationObj)) {
-                                        $relatedModel .= '|null';
-                                    }
-                                    $this->setProperty($method, $relatedModel, true, null);
+                                    $this->setProperty($method, $relatedModel, true, null, '', $this->isRelationForeignKeyNullable($relationObj));
                                 }
                             }
                         }
@@ -511,13 +502,14 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param string $name
+     * @param string      $name
      * @param string|null $type
-     * @param bool|null $read
-     * @param bool|null $write
+     * @param bool|null   $read
+     * @param bool|null   $write
      * @param string|null $comment
+     * @param bool        $nullable
      */
-    protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '')
+    protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
     {
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = array();
@@ -527,7 +519,11 @@ class ModelsCommand extends Command
             $this->properties[$name]['comment'] = (string) $comment;
         }
         if ($type !== null) {
-            $this->properties[$name]['type'] = $this->getTypeOverride($type);
+            $newType = $this->getTypeOverride($type);
+            if($nullable) {
+                $newType .='|null';
+            }
+            $this->properties[$name]['type'] = $newType;
         }
         if ($read !== null) {
             $this->properties[$name]['read'] = $read;

@@ -59,7 +59,7 @@ class ModelsCommand extends Command
     /**
      * @var bool[string]
      */
-    protected $nullableColumn = [];
+    protected $nullableColumns = [];
 
     /**
      * @param Filesystem $files
@@ -206,8 +206,9 @@ class ModelsCommand extends Command
                     }
 
                     $this->getPropertiesFromMethods($model);
-                    $output .= $this->createPhpDocs($name);
-                    $ignore[] = $name;
+                    $output                .= $this->createPhpDocs($name);
+                    $ignore[]              = $name;
+                    $this->nullableColumns = [];
                 } catch (\Exception $e) {
                     $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.");
                 }
@@ -366,7 +367,7 @@ class ModelsCommand extends Command
 
                 $comment = $column->getComment();
                 if(!$column->getNotnull()) {
-                    $this->nullableColumn[$name] = true;
+                    $this->nullableColumns[$name] = true;
                 }
                 $this->setProperty($name, $type, true, true, $comment, !$column->getNotnull());
                 if ($this->write_model_magic_where) {
@@ -498,7 +499,7 @@ class ModelsCommand extends Command
         $fkProp = $reflectionObj->getProperty('foreignKey');
         $fkProp->setAccessible(true);
 
-        return isset($this->nullableColumn[$fkProp->getValue($relation)]);
+        return isset($this->nullableColumns[$fkProp->getValue($relation)]);
     }
 
     /**

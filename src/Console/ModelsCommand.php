@@ -741,7 +741,7 @@ class ModelsCommand extends Command
         $phpdoc = new DocBlock($reflection);
 
         if ($phpdoc->hasTag('return')) {
-            $type = $phpdoc->getTagsByName('return')[0]->getContent();
+            $type = $phpdoc->getTagsByName('return')[0]->getType();
         }
 
         return $type;

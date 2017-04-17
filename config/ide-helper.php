@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     /*
     |--------------------------------------------------------------------------
@@ -129,9 +129,9 @@ return array(
     |
     | So to support jsonb in your models when working with Postgres, just add the following entry to the array below:
     |
-    | "postgresql" => array(
+    | "postgresql" => [
     |       "jsonb" => "json_array",
-    |  ),
+    |  ],
     |
     */
     'custom_db_types' => [
@@ -176,4 +176,4 @@ return array(
         'integer' => 'int',
         'boolean' => 'bool',
    ],
-);
+];

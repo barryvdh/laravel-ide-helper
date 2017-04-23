@@ -248,32 +248,47 @@ class Generator
             return AliasLoader::getInstance()->getAliases();
         }
 
+        // Lumen
         $facades = [
-          'App' => 'Illuminate\Support\Facades\App',
-          'Auth' => 'Illuminate\Support\Facades\Auth',
-          'Bus' => 'Illuminate\Support\Facades\Bus',
-          'DB' => 'Illuminate\Support\Facades\DB',
-          'Cache' => 'Illuminate\Support\Facades\Cache',
-          'Cookie' => 'Illuminate\Support\Facades\Cookie',
-          'Crypt' => 'Illuminate\Support\Facades\Crypt',
-          'Event' => 'Illuminate\Support\Facades\Event',
-          'Hash' => 'Illuminate\Support\Facades\Hash',
-          'Log' => 'Illuminate\Support\Facades\Log',
-          'Mail' => 'Illuminate\Support\Facades\Mail',
-          'Queue' => 'Illuminate\Support\Facades\Queue',
-          'Request' => 'Illuminate\Support\Facades\Request',
-          'Schema' => 'Illuminate\Support\Facades\Schema',
-          'Session' => 'Illuminate\Support\Facades\Session',
-          'Storage' => 'Illuminate\Support\Facades\Storage',
-          //'Validator' => 'Illuminate\Support\Facades\Validator',
+            'Illuminate\\Support\\Facades\\App' => 'App',
+            'Illuminate\\Support\\Facades\\Auth' => 'Auth',
+            'Illuminate\\Support\\Facades\\Bus' => 'Bus',
+            'Illuminate\\Support\\Facades\\DB' => 'DB',
+            'Illuminate\\Support\\Facades\\Cache' => 'Cache',
+            'Illuminate\\Support\\Facades\\Cookie' => 'Cookie',
+            'Illuminate\\Support\\Facades\\Crypt' => 'Crypt',
+            'Illuminate\\Support\\Facades\\Event' => 'Event',
+            'Illuminate\\Support\\Facades\\Hash' => 'Hash',
+            'Illuminate\\Support\\Facades\\Log' => 'Log',
+            'Illuminate\\Support\\Facades\\Mail' => 'Mail',
+            'Illuminate\\Support\\Facades\\Queue' => 'Queue',
+            'Illuminate\\Support\\Facades\\Request' => 'Request',
+            'Illuminate\\Support\\Facades\\Schema' => 'Schema',
+            'Illuminate\\Support\\Facades\\Session' => 'Session',
+            'Illuminate\\Support\\Facades\\Storage' => 'Storage',
+//            'Illuminate\Support\Facades\Validator' => 'Validator',
         ];
 
-        $facades = array_merge($facades, $this->config->get('app.aliases', []));
+        // locate user-defined aliases
+        $configured = $this->config->get('app.aliases', []);
+
+        /*
+         * Old:
+         * [ 'alias' => 'class\\name' ]
+         *
+         * New:
+         * [ 'class\\name' => 'alias' ]
+         */
+        if (0 < count($configured) && false !== strpos('\\', reset($configured))) {
+            $configured = array_flip($configured);
+        }
+
+        $facades = array_merge($facades, $configured);
 
         // Only return the ones that actually exist
-        return array_filter($facades, function ($alias) {
+        return array_flip(array_filter($facades, function ($alias) {
             return class_exists($alias);
-        });
+        }, ARRAY_FILTER_USE_KEY));
     }
 
     /**

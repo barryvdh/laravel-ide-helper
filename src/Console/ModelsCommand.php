@@ -512,8 +512,9 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param string $className
+     * @param string                              $className
      * @param \Illuminate\Database\Eloquent\Model $model
+     *
      * @return string
      */
     private function getClassName($className, $model)
@@ -526,9 +527,17 @@ class ModelsCommand extends Command
         // If the class name was resolved via ::class (PHP 5.5+)
         if (strpos($className, '::class') !== false) {
             $end = -1 * strlen('::class');
-            return substr($className, 0, $end);
+            $normalizedClassName = substr($className, 0, $end);
+
+            // If we need to resolve class namespace name
+            if ($normalizedClassName[0] !== "\\") {
+                $namespaceName = (new \ReflectionClass($model))->getNamespaceName();
+                return empty($namespaceName) ? "\\$normalizedClassName" : "\\$namespaceName\\$normalizedClassName";
+            } else {
+                return $normalizedClassName;
+            }
         }
 
-        return "\\" . ltrim(trim($className, " \"'"), "\\") ;
+        return "\\" . ltrim(trim($className, " \"'"), "\\");
     }
 }

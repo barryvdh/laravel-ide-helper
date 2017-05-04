@@ -44,5 +44,4 @@ class Macro extends Method
         $this->declaringClassName = '\\' . ltrim($class->name, '\\');
         $this->root = '\\' . ltrim($class->getName(), '\\');
     }
-
 }

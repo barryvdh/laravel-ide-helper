@@ -315,11 +315,10 @@ class Alias
 
             // Check if the class is macroable
             $traits = collect($reflection->getTraitNames());
-            if($traits->contains('Illuminate\Support\Traits\Macroable')) {
+            if ($traits->contains('Illuminate\Support\Traits\Macroable')) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
-                foreach($macros as $macro_name => $macro_func)
-                {
+                foreach ($macros as $macro_name => $macro_func) {
                     $function = new \ReflectionFunction($macro_func);
                     // Add macros
                     $this->methods[] = new Macro(

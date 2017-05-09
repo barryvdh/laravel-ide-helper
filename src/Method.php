@@ -261,7 +261,10 @@ class Method
         foreach ($method->getParameters() as $param) {
             $paramStr = '$' . $param->getName();
             $params[] = $paramStr;
-            if ($param->isOptional()) {
+            //Check if the parameter is variadic, then, is useless to check if optional
+            if ($param->isVariadic()) {
+                $paramStr = '...'.$paramStr;
+            } else if ($param->isOptional()) {
                 $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';

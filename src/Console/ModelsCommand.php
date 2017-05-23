@@ -634,7 +634,7 @@ class ModelsCommand extends Command
         }
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
-            $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
+            $phpdoc->appendTag(Tag::createInstance("@mixin \\Illuminate\\Database\\Eloquent\\Model", $phpdoc));
         }
 
         $serializer = new DocBlockSerializer();

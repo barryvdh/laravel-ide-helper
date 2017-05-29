@@ -90,7 +90,7 @@ php artisan vendor:publish --provider="Barryvdh\LaravelIdeHelper\IdeHelperServic
 The generator tries to identify the real class, but if it cannot be found, you can define it in the config file.
 
 Some classes need a working database connection. If you do not have a default working connection, some facades will not be included.
-You can use an in-memory SQLite driver by adding the -M option.
+You can use an in-memory SQLite driver by adding the `-M` option.
 
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
@@ -149,12 +149,12 @@ Models can be ignored using the `--ignore (-I)` option
 php artisan ide-helper:models --ignore="Post,User"
 ```
 
-Note: With namespaces, wrap your model name in " signs: `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
+Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
 
 ### Automatic phpDocs generation for Laravel Fluent methods
 If you need phpDocs support for Fluent methods in migration, for example
 ```php
-$table->string(“somestring”)->nullable()->index();
+$table->string("somestring")->nullable()->index();
 ```
 After publishing vendor, simply change the `include_fluent` line your `config/ide-helper.php` file into:
 ```php

@@ -85,7 +85,7 @@ class Generator
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
-            ->with('include_fluent', $this->config->get('ide-helper.include_fluent', false))
+            ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
             ->render();
     }
 

@@ -591,12 +591,15 @@ class ModelsCommand extends Command
 
         $properties = array();
         $methods = array();
+        $mixins = array();
         foreach ($phpdoc->getTags() as $tag) {
             $name = $tag->getName();
             if ($name == "property" || $name == "property-read" || $name == "property-write") {
                 $properties[] = $tag->getVariableName();
             } elseif ($name == "method") {
                 $methods[] = $tag->getMethodName();
+            } elseif($name == "mixin"){
+                $mixins[] = $tag->getContent();
             }
         }
 
@@ -631,6 +634,13 @@ class ModelsCommand extends Command
             $arguments = implode(', ', $method['arguments']);
             $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
             $phpdoc->appendTag($tag);
+        }
+        
+        if( $this->laravel['config']->get('ide-helper.model_options.include_eloquent_mixin') ){
+            if( $reflection->isSubclassOf('\Illuminate\Database\Eloquent\Model') && !in_array('\Eloquent',$mixins) ) {
+                $tag = Tag::createInstance('@mixin \Eloquent', $phpdoc);
+                $phpdoc->appendTag($tag);
+            }
         }
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {

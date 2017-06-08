@@ -206,6 +206,7 @@ class ModelsCommand extends Command
                     }
 
                     $this->getPropertiesFromMethods($model);
+                    $this->getSoftDeleteMethods($model);
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
@@ -745,5 +746,22 @@ class ModelsCommand extends Command
         }
 
         return $type;
+    }
+
+    /**
+     * Generates methods provided by the SoftDeletes trait
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
+    protected function getSoftDeleteMethods($model)
+    {
+        $traits = class_uses(get_class($model), true);
+        if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
+            $this->setMethod('forceDelete', 'bool|null', []);
+            $this->setMethod('restore', 'bool|null', []);
+
+            $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+            $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+        }
     }
 }

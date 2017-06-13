@@ -42,12 +42,15 @@ class MetaCommand extends Command
 
     /** @var \Illuminate\Contracts\View\Factory */
     protected $view;
-    
+
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
-      '\Illuminate\Contracts\Container\Container::make(\'\')',
-      '\App::make(\'\')',
-      '\app(\'\')',
+      '\Illuminate\Contracts\Container\Container::make(0)',
+      '\Illuminate\Contracts\Container\Container::makeWith(0)',
+      '\App::make(0)',
+      '\App::makeWith(0)',
+      '\app(0)',
+      '\resolve(0)',
     ];
 
     /**
@@ -77,7 +80,7 @@ class MetaCommand extends Command
             if (in_array($abstract, ['validator', 'seeder'])) {
                 continue;
             }
-            
+
             try {
                 $concrete = $this->laravel->make($abstract);
                 if (is_object($concrete)) {
@@ -113,7 +116,7 @@ class MetaCommand extends Command
     protected function getAbstracts()
     {
         $abstracts = $this->laravel->getBindings();
-        
+
         // Return the abstract names only
         return array_keys($abstracts);
     }

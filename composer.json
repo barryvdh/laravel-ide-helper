@@ -45,6 +45,11 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.3-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider"
+            ]
         }
     }
 }

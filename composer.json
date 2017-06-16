@@ -11,15 +11,15 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "^5.0,<5.5",
-        "illuminate/console": "^5.0,<5.5",
-        "illuminate/filesystem": "^5.0,<5.5",
+        "illuminate/support": "^5.0,<5.6",
+        "illuminate/console": "^5.0,<5.6",
+        "illuminate/filesystem": "^5.0,<5.6",
         "barryvdh/reflection-docblock": "^2.0.4",
         "symfony/class-loader": "^2.3|^3.0"
     },
     "require-dev": {
-        "illuminate/config": "^5.0,<5.5",
-        "illuminate/view": "^5.0,<5.5",
+        "illuminate/config": "^5.0,<5.6",
+        "illuminate/view": "^5.0,<5.6",
         "phpunit/phpunit" : "4.*",
         "scrutinizer/ocular": "~1.1",
         "squizlabs/php_codesniffer": "~2.3",

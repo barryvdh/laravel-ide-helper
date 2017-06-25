@@ -105,10 +105,11 @@ composer require doctrine/dbal
 ```
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
-phpDocs, based on table columns, relations and getters/setters. You can write the comments directly to your Model file, using the `--write (-W)` option. By default, you are asked to overwrite or write to a separate file (`_ide_helper_models.php`). You can force No with `--nowrite (-N)`.
-Please make sure to backup your models, before writing the info.
-It should keep the existing comments and only append new properties/methods. The existing phpdoc is replaced, or added if not found.
-With the `--reset (-R)` option, the existing phpdocs are ignored, and only the newly found columns/relations are saved as phpdocs.
+phpDocs, based on table columns, relations and getters/setters.
+
+You can write the comments directly to your Model file, using the `--write (-W)` option. By default, you are asked to overwrite or write to a separate file (`_ide_helper_models.php`). You can force No with `--nowrite (-N)`. Please make sure to backup your models, before writing the info. It should keep the existing comments and only append new properties/methods. The existing phpdoc is replaced, or added if not found. With the `--reset (-R)` option, the existing phpdocs are ignored, and only the newly found columns/relations are saved as phpdocs.
+
+If you use the `--write --reset` flags regularly, and also use the code style auto-reformatting ability provided by IDEs like PhpStorm, you may find your version control history unnecessarily filled up with docblock re-formats (e.g. alignment of parameters). Laravel IDE Helper can be configured to write [formatter control tags](https://www.jetbrains.com/help/phpstorm/code-style.html#d366576e184) around the docblocks, which will prevent automatic code style reformatting from interfering with IDE Helper's docs. Formatter control tags can be enabled and configured in the `ide-helper.php` config file.
 
 ```bash
 php artisan ide-helper:models Post

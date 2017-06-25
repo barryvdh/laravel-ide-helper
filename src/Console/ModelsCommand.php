@@ -663,10 +663,6 @@ class ModelsCommand extends Command
             $filename = $reflection->getFileName();
             $contents = $this->files->get($filename);
 
-            if ($this->write_formatter_controls) {
-                $docComment = $this->formatter_control_off.$docComment.$this->formatter_control_on;
-            }
-            
             if ($originalDoc) {
                 $contents = str_replace($originalDoc, $docComment, $contents);
             } else {
@@ -677,6 +673,15 @@ class ModelsCommand extends Command
                     $contents = substr_replace($contents, $replace, $pos, strlen($needle));
                 }
             }
+
+            // Write formatter controls, if they've not already been placed on the model
+            if ($this->write_formatter_controls) {
+                $docCommentWithFormatters = $this->formatter_control_off.$docComment.$this->formatter_control_on;
+                if (strpos($contents, $docCommentWithFormatters) === false) {
+                    $contents = str_replace($docComment, $docCommentWithFormatters, $contents);
+                }
+            }
+
             if ($this->files->put($filename, $contents)) {
                 $this->info('Written new phpDocBlock to ' . $filename);
             }

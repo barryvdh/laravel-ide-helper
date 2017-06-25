@@ -182,15 +182,15 @@ return array(
     | Formatter Control
     |--------------------------------------------------------------------------
     |
-    | Writes Formatter Control tags around model docblocks, to prevent automatic
+    | Writes formatter control tags around model docblocks, to prevent automatic
     | IDE reformatting changing any of the docblocks written by the IDE helper.
-    | This is useful when using the --write flag, to help keep version control
-    | histories clean between re-formats and IDE Helper re-writes.
+    | This is useful when using the --write and --reset flags, to help keep
+    | version control histories clean between re-formats and IDE Helper re-writes.
     |
     */
 
     'write_formatter_controls' => false,
-    
+
     'formatter_control_tags'   => array(
         'formatter_off' => "// @formatter:off\n",
         'formatter_on'  => "\n// @formatter:on\n",

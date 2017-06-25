@@ -51,11 +51,15 @@ class ModelsCommand extends Command
     protected $description = 'Generate autocompletion for models';
 
     protected $write_model_magic_where;
+    protected $write_formatter_controls;
+    protected $formatter_control_on;
+    protected $formatter_control_off;
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
     protected $dirs = array();
     protected $reset;
+
     /**
      * @var bool[string]
      */
@@ -87,6 +91,7 @@ class ModelsCommand extends Command
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
+        $this->write_formatter_controls = $this->laravel['config']->get('ide-helper.write_formatter_controls', false);
 
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
@@ -96,6 +101,18 @@ class ModelsCommand extends Command
             ) {
                 $this->write = true;
             }
+        }
+
+        // If writing formatter controls, set the formatter control tags.
+        if ($this->write && $this->write_formatter_controls) {
+            $this->formatter_control_off = $this->laravel['config']->get(
+                'ide-helper.formatter_control_tags.formatter_off',
+                "// @formatter:off\n"
+            );
+            $this->formatter_control_on = $this->laravel['config']->get(
+                'ide-helper.formatter_control_tags.formatter_on',
+                "\n// @formatter:on\n"
+            );
         }
 
         $content = $this->generateDocs($model, $ignore);
@@ -574,7 +591,6 @@ class ModelsCommand extends Command
      */
     protected function createPhpDocs($class)
     {
-
         $reflection = new \ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
         $classname = $reflection->getShortName();
@@ -646,6 +662,11 @@ class ModelsCommand extends Command
         if ($this->write) {
             $filename = $reflection->getFileName();
             $contents = $this->files->get($filename);
+
+            if ($this->write_formatter_controls) {
+                $docComment = $this->formatter_control_off.$docComment.$this->formatter_control_on;
+            }
+            
             if ($originalDoc) {
                 $contents = str_replace($originalDoc, $docComment, $contents);
             } else {

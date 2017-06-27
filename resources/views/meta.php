@@ -13,7 +13,7 @@ namespace PHPSTORM_META {
     override(<?= $method ?>, map([
         '' => '@',
 <?php foreach($bindings as $abstract => $class): ?>
-        '<?= $abstract ?>' => <?= $class ?>::class,
+        '<?= $abstract ?>' => \<?= $class ?>::class,
 <?php endforeach; ?>
     ]));
 <?php endforeach; ?>

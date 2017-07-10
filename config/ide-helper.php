@@ -165,6 +165,18 @@ return array(
     'model_camel_case_properties' => false,
 
     /*
+     |--------------------------------------------------------------------------
+     | Snake cased mutators
+     |--------------------------------------------------------------------------
+     |
+     | When this option is true (default), properties such as from a
+     | getFooBarAttribute mutator get turned into foo_bar. Change this to false
+     | to use camel case instead, resulting in fooBar.
+     |
+     */
+    'model_snake_case_mutators' => true,
+
+    /*
     |--------------------------------------------------------------------------
     | Property Casts
     |--------------------------------------------------------------------------

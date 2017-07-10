@@ -408,8 +408,10 @@ class ModelsCommand extends Command
                 ) {
                     //Magic get<name>Attribute
                     $name = substr($method, 3, -9);
-                    if ($this->hasCamelCaseModelProperties()) {
+                    if ($this->useSnakeCasedMutators()) {
                         $name = Str::snake($name);
+                    } else {
+                        $name = lcfirst($name);
                     }
                     if (!empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
@@ -423,17 +425,21 @@ class ModelsCommand extends Command
                 ) {
                     //Magic set<name>Attribute
                     $name = substr($method, 3, -9);
-                    if ($this->hasCamelCaseModelProperties()) {
+                    if ($this->useSnakeCasedMutators()) {
                         $name = Str::snake($name);
+                    } else {
+                        $name = lcfirst($name);
                     }
                     if (!empty($name)) {
                         $this->setProperty($name, null, null, true);
                     }
                 } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
-                    //Magic set<name>Attribute
+                    //Magic scope<name>
                     $name = substr($method, 5);
-                    if ($this->hasCamelCaseModelProperties()) {
+                    if ($this->useSnakeCasedMutators()) {
                         $name = Str::snake($name);
+                    } else {
+                        $name = lcfirst($name);
                     }
                     if (!empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
@@ -736,6 +742,14 @@ class ModelsCommand extends Command
     protected function hasCamelCaseModelProperties()
     {
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function useSnakeCasedMutators()
+    {
+        return $this->laravel['config']->get('ide-helper.model_snake_case_mutators', true);
     }
 
     /**

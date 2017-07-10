@@ -407,7 +407,10 @@ class ModelsCommand extends Command
                 ) && $method !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
+                    $name = substr($method, 3, -9);
+                    if ($this->hasCamelCaseModelProperties()) {
+                        $name = Str::snake($name);
+                    }
                     if (!empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
                         $type = $this->getReturnTypeFromDocBlock($reflection);
@@ -419,13 +422,19 @@ class ModelsCommand extends Command
                 ) && $method !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
+                    $name = substr($method, 3, -9);
+                    if ($this->hasCamelCaseModelProperties()) {
+                        $name = Str::snake($name);
+                    }
                     if (!empty($name)) {
                         $this->setProperty($name, null, null, true);
                     }
                 } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
                     //Magic set<name>Attribute
-                    $name = Str::camel(substr($method, 5));
+                    $name = substr($method, 5);
+                    if ($this->hasCamelCaseModelProperties()) {
+                        $name = Str::snake($name);
+                    }
                     if (!empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
                         $args = $this->getParameters($reflection);

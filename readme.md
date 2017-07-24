@@ -72,7 +72,7 @@ php artisan ide-helper:generate
 ```
 And then finally run 
 ```bash
-`php artisan optimize.
+`php artisan optimize`
 ```
 
 You can configure your composer.json to do this after each commit:

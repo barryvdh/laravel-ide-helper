@@ -62,11 +62,18 @@ This will allow your application to load the Laravel IDE Helper on non-productio
 
 You can now re-generate the docs yourself (for future updates)
 
+`bootstrap/compiled.php` has to be cleared first, so run the command below before generating the ide-helper
+```bash
+`php artisan clear-compiled`
+```
+Now generate the ide-helper file
 ```bash
 php artisan ide-helper:generate
 ```
-
-Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating (and `php artisan optimize` after).
+And then finally run 
+```bash
+`php artisan optimize.
+```
 
 You can configure your composer.json to do this after each commit:
 

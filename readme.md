@@ -64,7 +64,7 @@ You can now re-generate the docs yourself (for future updates)
 
 `bootstrap/compiled.php` has to be cleared first, so run the command below before generating the ide-helper
 ```bash
-`php artisan clear-compiled`
+php artisan clear-compiled
 ```
 Now generate the ide-helper file
 ```bash
@@ -72,7 +72,7 @@ php artisan ide-helper:generate
 ```
 And then finally run 
 ```bash
-`php artisan optimize`
+php artisan optimize
 ```
 
 You can configure your composer.json to do this after each commit:

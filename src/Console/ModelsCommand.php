@@ -12,16 +12,18 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\ComposerScripts;
+use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\ClassLoader\ClassMapGenerator;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Composer\Autoload\ClassMapGenerator;
 
 /**
  * A command to generate autocomplete information for your IDE
@@ -634,6 +636,8 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
+        // this only needs to be on the Eloquent/Model since laravel/framework v5.4.29
+	    // but it does not hurt anything having it here...
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
             $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
         }

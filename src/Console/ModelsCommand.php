@@ -634,8 +634,6 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
-        // this only needs to be on the Eloquent/Model since laravel/framework v5.4.29
-        // but it does not hurt anything having it here...
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
             $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
         }

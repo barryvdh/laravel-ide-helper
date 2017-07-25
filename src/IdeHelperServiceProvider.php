@@ -10,11 +10,11 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Support\ServiceProvider;
-use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
-use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
+use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
@@ -81,14 +81,15 @@ class IdeHelperServiceProvider extends ServiceProvider
             }
         );
 
-	    $this->app->singleton(
-		    'command.ide-helper.eloquent',
-		    function ($app) use ($localViewFactory) {
-			    return new EloquentCommand($app['files']);
-		    }
-	    );
+        $this->app->singleton(
+            'command.ide-helper.eloquent',
+            function ($app) use ($localViewFactory) {
+                return new EloquentCommand($app['files']);
+            }
+        );
 
-        $this->commands('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta', 'command.ide-helper.eloquent');
+        $this->commands('command.ide-helper.generate', 'command.ide-helper.models',
+            'command.ide-helper.meta', 'command.ide-helper.eloquent');
     }
 
     /**

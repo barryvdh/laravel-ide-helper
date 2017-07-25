@@ -88,8 +88,12 @@ class IdeHelperServiceProvider extends ServiceProvider
             }
         );
 
-        $this->commands('command.ide-helper.generate', 'command.ide-helper.models',
-            'command.ide-helper.meta', 'command.ide-helper.eloquent');
+        $this->commands(
+            'command.ide-helper.generate',
+            'command.ide-helper.models',
+            'command.ide-helper.meta',
+            'command.ide-helper.eloquent'
+        );
     }
 
     /**

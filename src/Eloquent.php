@@ -19,13 +19,13 @@ class Eloquent
     /**
      * Write mixin helper to the Eloquent\Model
      * This is needed since laravel/framework v5.4.29
-     * 
+     *
      * @param Command    $command
      * @param Filesystem $files
-     * 
+     *
      * @return void
      */
-    static function writeEloquentModelHelper(Command $command, Filesystem $files)
+    public static function writeEloquentModelHelper(Command $command, Filesystem $files)
     {
         $class = 'Illuminate\Database\Eloquent\Model';
 
@@ -75,5 +75,4 @@ class Eloquent
             $command->error('Filename not found ' . $class);
         }
     }
-
 }

@@ -56,6 +56,6 @@ class EloquentCommand extends Command
      */
     public function handle()
     {
-        Eloquent::writeEloquentModelHelper($this,$this->files);
+        Eloquent::writeEloquentModelHelper($this, $this->files);
     }
 }

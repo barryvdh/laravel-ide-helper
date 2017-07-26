@@ -10,10 +10,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
-use Barryvdh\Reflection\DocBlock\Tag;
+use Barryvdh\LaravelIdeHelper\Eloquent;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
@@ -59,52 +56,6 @@ class EloquentCommand extends Command
      */
     public function handle()
     {
-        $class = 'Illuminate\Database\Eloquent\Model';
-
-        $reflection  = new \ReflectionClass($class);
-        $namespace   = $reflection->getNamespaceName();
-        $originalDoc = $reflection->getDocComment();
-        if (!$originalDoc) {
-            $this->info('Unexpected no document on ' . $class);
-        }
-        $phpdoc = new DocBlock($reflection, new Context($namespace));
-
-        $mixins = $phpdoc->getTagsByName('mixin');
-        foreach ($mixins as $m) {
-            if ($m->getContent() === '\Eloquent') {
-                $this->info('Tag Exists: @mixin \Eloquent in ' . $class);
-
-                return;
-            }
-        }
-
-        // add the Eloquent mixin
-        $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
-
-        $serializer = new DocBlockSerializer();
-        $serializer->getDocComment($phpdoc);
-        $docComment = $serializer->getDocComment($phpdoc);
-
-        $filename = $reflection->getFileName();
-        if ($filename) {
-            $contents = $this->files->get($filename);
-            if ($contents) {
-                $count    = 0;
-                $contents = str_replace($originalDoc, $docComment, $contents, $count);
-                if ($count > 0) {
-                    if ($this->files->put($filename, $contents)) {
-                        $this->info('Wrote @mixin \Eloquent to ' . $filename);
-                    } else {
-                        $this->error('File write failed to ' . $filename);
-                    }
-                } else {
-                    $this->error('Content did not change ' . $contents);
-                }
-            } else {
-                $this->error('No file contents found ' . $filename);
-            }
-        } else {
-            $this->error('Filename not found ' . $class);
-        }
+        Eloquent::writeEloquentModelHelper($this,$this->files);
     }
 }

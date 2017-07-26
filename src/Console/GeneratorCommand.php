@@ -11,7 +11,10 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Generator;
-use Illuminate\Config\Repository as ConfigRepository;
+use Barryvdh\Reflection\DocBlock;
+use Barryvdh\Reflection\DocBlock\Context;
+use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
@@ -115,9 +118,67 @@ class GeneratorCommand extends Command
 
             if ($written !== false) {
                 $this->info("A new helper file was written to $filename");
+                $this->writeEloquentModelHelper();
             } else {
                 $this->error("The helper file could not be created at $filename");
             }
+        }
+    }
+
+    /**
+     * Write mixin helper to the Eloquent\Model
+     * This is needed since laravel/framework v5.4.29
+     *
+     * @return void
+     */
+    protected function writeEloquentModelHelper()
+    {
+        $class = 'Illuminate\Database\Eloquent\Model';
+
+        $reflection  = new \ReflectionClass($class);
+        $namespace   = $reflection->getNamespaceName();
+        $originalDoc = $reflection->getDocComment();
+        if (!$originalDoc) {
+            $this->info('Unexpected no document on ' . $class);
+        }
+        $phpdoc = new DocBlock($reflection, new Context($namespace));
+
+        $mixins = $phpdoc->getTagsByName('mixin');
+        foreach ($mixins as $m) {
+            if ($m->getContent() === '\Eloquent') {
+                $this->info('Tag Exists: @mixin \Eloquent in ' . $class);
+
+                return;
+            }
+        }
+
+        // add the Eloquent mixin
+        $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
+
+        $serializer = new DocBlockSerializer();
+        $serializer->getDocComment($phpdoc);
+        $docComment = $serializer->getDocComment($phpdoc);
+
+        $filename = $reflection->getFileName();
+        if ($filename) {
+            $contents = $this->files->get($filename);
+            if ($contents) {
+                $count    = 0;
+                $contents = str_replace($originalDoc, $docComment, $contents, $count);
+                if ($count > 0) {
+                    if ($this->files->put($filename, $contents)) {
+                        $this->info('Wrote @mixin \Eloquent to ' . $filename);
+                    } else {
+                        $this->error('File write failed to ' . $filename);
+                    }
+                } else {
+                    $this->error('Content did not change ' . $contents);
+                }
+            } else {
+                $this->error('No file contents found ' . $filename);
+            }
+        } else {
+            $this->error('Filename not found ' . $class);
         }
     }
 

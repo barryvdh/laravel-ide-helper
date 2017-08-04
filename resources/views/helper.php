@@ -8,7 +8,9 @@
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
 namespace  {
-    exit("This file should not be included, only analyzed by your IDE");
+    if (!class_exists(\PHPStan\Command\AnalyseCommand::class, false)) {
+        exit("This file should not be included, only analyzed by your IDE");
+    }
 }
 
 <?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>

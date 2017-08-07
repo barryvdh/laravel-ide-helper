@@ -385,7 +385,8 @@ class ModelsCommand extends Command
                     $this->setMethod(
                         Str::camel("where_" . $name),
                         '\Illuminate\Database\Eloquent\Builder|\\' . get_class($model),
-                        array('$value')
+                        array('$value'),
+                        'static'
                     );
                 }
             }
@@ -431,7 +432,7 @@ class ModelsCommand extends Command
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
-                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
+                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args, 'static');
                     }
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
@@ -557,7 +558,7 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = array())
+    protected function setMethod($name, $type = '', $arguments = array(), $modifier = '')
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
@@ -565,6 +566,7 @@ class ModelsCommand extends Command
             $this->methods[$name] = array();
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;
+            $this->methods[$name]['modifier'] = $modifier;
         }
     }
 
@@ -630,7 +632,7 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
+            $tag = Tag::createInstance("@method {$method['modifier']} {$method['type']} {$name}({$arguments})", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 
@@ -756,12 +758,12 @@ class ModelsCommand extends Command
     {
         $traits = class_uses(get_class($model), true);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
-            $this->setMethod('forceDelete', 'bool|null', []);
-            $this->setMethod('restore', 'bool|null', []);
+            $this->setMethod('forceDelete', 'bool|null', [], '');
+            $this->setMethod('restore', 'bool|null', [], '');
 
-            $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+            $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), [], 'static');
+            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), [], 'static');
+            $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), [], 'static');
         }
     }
 }

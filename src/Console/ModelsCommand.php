@@ -432,7 +432,12 @@ class ModelsCommand extends Command
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
-                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args, 'static');
+                        $this->setMethod(
+                            $name,
+                            '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class,
+                            $args,
+                            'static'
+                        );
                     }
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
@@ -632,7 +637,10 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method {$method['modifier']} {$method['type']} {$name}({$arguments})", $phpdoc);
+            $tag = Tag::createInstance(
+                "@method {$method['modifier']} {$method['type']} {$name}({$arguments})",
+                $phpdoc
+            );
             $phpdoc->appendTag($tag);
         }
 
@@ -762,7 +770,12 @@ class ModelsCommand extends Command
             $this->setMethod('restore', 'bool|null', [], '');
 
             $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), [], 'static');
-            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), [], 'static');
+            $this->setMethod(
+                'withoutTrashed',
+                '\Illuminate\Database\Query\Builder|\\' . get_class($model),
+                [],
+                'static'
+            );
             $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), [], 'static');
         }
     }

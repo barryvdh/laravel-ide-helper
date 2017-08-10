@@ -46,5 +46,6 @@ namespace PHPSTORM_META {
     override(\head(0), elementType(0));
     override(\last(0), elementType(0));
     override(\with(0), type(0));
+    override(\tap(0), type(0));
 
 }

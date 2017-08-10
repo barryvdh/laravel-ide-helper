@@ -28,7 +28,6 @@ class MetaCommand extends Command
      * @var string
      */
     protected $name = 'ide-helper:meta';
-    protected $filename = '.phpstorm.meta.php';
 
     /**
      * The console command description.
@@ -138,8 +137,10 @@ class MetaCommand extends Command
      */
     protected function getOptions()
     {
+        $filename = $this->config->get('ide-helper.meta_filename');
+
         return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $this->filename),
+            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
         );
     }
 }

@@ -42,6 +42,9 @@ class MetaCommand extends Command
     /** @var \Illuminate\Contracts\View\Factory */
     protected $view;
 
+    /** @var \Illuminate\Contracts\Config */
+    protected $config;
+
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
       '\Illuminate\Contracts\Container\Container::make(0)',
@@ -56,11 +59,13 @@ class MetaCommand extends Command
      *
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
+     * @param \Illuminate\Contracts\Config $config
      */
-    public function __construct($files, $view)
+    public function __construct($files, $view, $config)
     {
         $this->files = $files;
         $this->view = $view;
+        $this->config = $config;
         parent::__construct();
     }
 

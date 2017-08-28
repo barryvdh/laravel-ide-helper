@@ -39,7 +39,7 @@ class IdeHelperServiceProvider extends ServiceProvider
     {
         $viewPath = __DIR__.'/../resources/views';
         $this->loadViewsFrom($viewPath, 'ide-helper');
-        
+
         $configPath = __DIR__ . '/../config/ide-helper.php';
         if (function_exists('config_path')) {
             $publishPath = config_path('ide-helper.php');
@@ -59,7 +59,7 @@ class IdeHelperServiceProvider extends ServiceProvider
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
         $localViewFactory = $this->createLocalViewFactory();
-        
+
         $this->app->singleton(
             'command.ide-helper.generate',
             function ($app) use ($localViewFactory) {
@@ -73,11 +73,11 @@ class IdeHelperServiceProvider extends ServiceProvider
                 return new ModelsCommand($app['files']);
             }
         );
-        
+
         $this->app->singleton(
             'command.ide-helper.meta',
             function ($app) use ($localViewFactory) {
-                return new MetaCommand($app['files'], $localViewFactory);
+                return new MetaCommand($app['files'], $localViewFactory, $app['config']);
             }
         );
 

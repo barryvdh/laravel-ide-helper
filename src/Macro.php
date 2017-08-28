@@ -45,6 +45,7 @@ class Macro extends Method
 
         //Reference the 'real' function in the declaringclass
         $this->declaringClassName = '\\' . ltrim($class->name, '\\');
-        $this->root = '\\' . ltrim($class->getName(), '\\');
+        $this->rootClassName = '\\' . ltrim($class->getName(), '\\');
+        $this->rootMethodName = $method->name;
     }
 }

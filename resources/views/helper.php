@@ -21,12 +21,12 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 
         <?= trim($method->getDocComment('        ')) ?> 
         public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
-        {<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
+        {<?php if($method->getDeclaringClass() !== $method->getRootClass()): ?>
 
             //Method inherited from <?= $method->getDeclaringClass() ?>
             <?php endif; ?>
 
-            <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRoot() ?>::<?= $method->getName() ?>(<?= $method->getParams() ?>);
+            <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRootClass() ?>::<?= $method->getRootMethod() ?>(<?= $method->getParams() ?>);
         }
         <?php endforeach; ?> 
     }
@@ -43,12 +43,12 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
         <?php foreach($alias->getMethods() as $method): ?> 
             <?= trim($method->getDocComment('            ')) ?> 
             public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
-            {<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
+            {<?php if($method->getDeclaringClass() !== $method->getRootClass()): ?>
     
                 //Method inherited from <?= $method->getDeclaringClass() ?>
                 <?php endif; ?>
     
-                <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRoot() ?>::<?= $method->getName() ?>(<?= $method->getParams() ?>);
+                <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRootClass() ?>::<?= $method->getRootMethod() ?>(<?= $method->getParams() ?>);
             }
         <?php endforeach; ?>
 <?php endif; ?>}

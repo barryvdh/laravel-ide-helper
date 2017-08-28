@@ -166,7 +166,7 @@ After publishing vendor, simply change the `include_fluent` line your `config/id
 ```php
 'include_fluent' => true,
 ```
-And then run `php artisan ide-helper:generate` , you will now see all of the Fluent methods are recognized by your IDE now.
+And then run `php artisan ide-helper:generate` , you will now see all of the Fluent methods are recognized by your IDE.
 
 
 ## PhpStorm Meta for Container instances

@@ -97,7 +97,9 @@ class MetaCommand extends Command
           'methods' => $this->methods,
         ])->render();
 
-        $filename = $this->option('filename');
+        $metaFolderName = $this->metaFolderName();
+
+        $filename = $metaFolderName.$this->option('filename');
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {
@@ -142,5 +144,24 @@ class MetaCommand extends Command
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
         );
+    }
+
+    /**
+     * Determines if the user wants to use the new meta folder in phpstorm
+     * that allows multiple files to be parse, or to default to the
+     * normal single meta file option.
+     *
+     * @return string
+     */
+    protected function metaFolderName()
+    {
+        if (config('ide-helper.use_meta_folder', false)) {
+            $this->files->delete($this->filename);
+            $this->files->makeDirectory($this->filename);
+
+            return $this->filename . '/';
+        }
+
+        return '';
     }
 }

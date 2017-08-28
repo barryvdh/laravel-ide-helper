@@ -56,6 +56,18 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
+    | Use special meta folder
+    |--------------------------------------------------------------------------
+    |
+    | Set to true to save the generated phpstorm.meta.php file to a folder that
+    | allows new versions of phpstorm ( >2016.2) to read multiple files from.
+    |
+    */
+
+    'use_meta_folder' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Model locations to include
     |--------------------------------------------------------------------------
     |

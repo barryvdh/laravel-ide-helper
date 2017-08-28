@@ -12,8 +12,8 @@ namespace  {
 }
 
 <?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>
-<?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
-namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
+<?php if($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
+namespace <?= ltrim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
 
     <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
@@ -36,7 +36,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 <?php endforeach; ?>
 
 <?php foreach($namespaces_by_alias_ns as $namespace => $aliases): ?>
-namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
+namespace <?= ltrim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
 
     <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent'): ?>

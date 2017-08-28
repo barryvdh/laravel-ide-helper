@@ -197,14 +197,14 @@ class Generator
         $aliases = new Collection();
 
         // Get all aliases
-        foreach ($this->getAliases() as $name => $facade) {
+        foreach ($this->getAliases() as $name => $aliased) {
             // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
-            if ($facade == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
+            if ($aliased == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
 
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
-            $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
+            $alias = new Alias($name, $aliased, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
                 //Add extra methods, from other classes (magic static calls)
                 if (array_key_exists($name, $this->extra)) {
@@ -249,7 +249,7 @@ class Generator
             return AliasLoader::getInstance()->getAliases();
         }
 
-        $facades = [
+        $standardAliases = [
           'App' => 'Illuminate\Support\Facades\App',
           'Auth' => 'Illuminate\Support\Facades\Auth',
           'Bus' => 'Illuminate\Support\Facades\Bus',
@@ -269,11 +269,11 @@ class Generator
           //'Validator' => 'Illuminate\Support\Facades\Validator',
         ];
 
-        $facades = array_merge($facades, $this->config->get('app.aliases', []));
+        $aliases = array_merge($standardAliases, $this->config->get('app.aliases', []));
 
         // Only return the ones that actually exist
-        return array_filter($facades, function ($alias) {
-            return class_exists($alias);
+        return array_filter($aliases, function ($aliased) {
+            return class_exists($aliased);
         });
     }
 

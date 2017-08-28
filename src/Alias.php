@@ -12,14 +12,13 @@ namespace Barryvdh\LaravelIdeHelper;
 
 class Alias
 {
+    protected $classType;
     protected $alias;
-    protected $facade;
-    protected $extends = null;
-    protected $extendsClass = null;
-    protected $extendsNamespace = null;
-    protected $classType = 'class';
     protected $short;
-    protected $namespace = '__root';
+    protected $namespace;
+    protected $extends;
+    protected $extendsClass;
+    protected $extendsNamespace;
     protected $root = null;
     protected $classes = array();
     protected $methods = array();
@@ -30,21 +29,20 @@ class Alias
 
     /**
      * @param string $alias
-     * @param string $facade
+     * @param string $aliased
      * @param array $magicMethods
      * @param array $interfaces
      */
-    public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array())
+    public function __construct($alias, $aliased, $magicMethods = array(), $interfaces = array())
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
         $this->interfaces = $interfaces;
 
         // Make the class absolute
-        $facade = '\\' . ltrim($facade, '\\');
-        $this->facade = $facade;
+        $aliased = '\\' . ltrim($aliased, '\\');
 
-        $this->detectRoot();
+        $this->detectRoot($aliased);
 
         if ((!$this->isTrait() && $this->root)) {
             $this->valid = true;
@@ -53,11 +51,11 @@ class Alias
         }
 
         $this->addClass($this->root);
-        $this->detectNamespace();
         $this->detectClassType();
+        $this->detectNamespace();
         $this->detectExtendsNamespace();
         
-        if ($facade === '\Illuminate\Database\Eloquent\Model') {
+        if ($aliased === '\Illuminate\Database\Eloquent\Model') {
             $this->usedMethods = array('decrement', 'increment');
         }
     }
@@ -101,7 +99,7 @@ class Alias
     /**
      * Get the class which this alias extends
      *
-     * @return null|string
+     * @return string
      */
     public function getExtends()
     {
@@ -111,7 +109,7 @@ class Alias
     /**
      * Get the class short name which this alias extends
      *
-     * @return null|string
+     * @return string
      */
     public function getExtendsClass()
     {
@@ -121,7 +119,7 @@ class Alias
     /**
      * Get the namespace of the class which this alias extends
      *
-     * @return null|string
+     * @return string
      */
     public function getExtendsNamespace()
     {
@@ -172,13 +170,10 @@ class Alias
      */
     protected function detectNamespace()
     {
-        if (strpos($this->alias, '\\')) {
-            $nsParts = explode('\\', $this->alias);
-            $this->short = array_pop($nsParts);
-            $this->namespace = implode('\\', $nsParts);
-        } else {
-            $this->short = $this->alias;
-        }
+        $absolute = '\\' . ltrim($this->alias, '\\');
+        $nsParts = explode('\\', $absolute);
+        $this->short = array_pop($nsParts);
+        $this->namespace = implode('\\', $nsParts);
     }
     
     /**
@@ -186,11 +181,10 @@ class Alias
      */
     protected function detectExtendsNamespace()
     {
-        if (strpos($this->extends, '\\') !== false) {
-            $nsParts = explode('\\', $this->extends);
-            $this->extendsClass = array_pop($nsParts);
-            $this->extendsNamespace = implode('\\', $nsParts);
-        }
+        $absolute = '\\' . ltrim($this->extends, '\\');
+        $nsParts = explode('\\', $absolute);
+        $this->extendsClass = array_pop($nsParts);
+        $this->extendsNamespace = implode('\\', $nsParts);
     }
 
     /**
@@ -198,33 +192,27 @@ class Alias
      */
     protected function detectClassType()
     {
-        //Some classes extend the facade
-        if (interface_exists($this->facade)) {
+        if (interface_exists($this->extends)) {
             $this->classType = 'interface';
-            $this->extends = $this->facade;
         } else {
             $this->classType = 'class';
-            if (class_exists($this->facade)) {
-                $this->extends = $this->facade;
-            }
         }
     }
 
     /**
-     * Get the real root of a facade
+     * Get the real root class ($aliased might be a facade)
      *
+     * @param $aliased string
      * @return bool|string
      */
-    protected function detectRoot()
+    protected function detectRoot($aliased)
     {
-        $facade = $this->facade;
-
         try {
             //If possible, get the facade root
-            if (method_exists($facade, 'getFacadeRoot')) {
-                $root = get_class($facade::getFacadeRoot());
+            if (method_exists($aliased, 'getFacadeRoot')) {
+                $root = get_class($aliased::getFacadeRoot());
             } else {
-                $root = $facade;
+                $root = $aliased;
             }
 
             //If it doesn't exist, skip it
@@ -232,6 +220,7 @@ class Alias
                 return;
             }
 
+            $this->extends = $aliased;
             $this->root = $root;
 
             //When the database connection is not set, some classes will be skipped
@@ -239,10 +228,10 @@ class Alias
             $this->error(
                 "PDOException: " . $e->getMessage() .
                 "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)." .
-                " Skipping $facade."
+                " Skipping $aliased."
             );
         } catch (\Exception $e) {
-            $this->error("Exception: " . $e->getMessage() . "\nSkipping $facade.");
+            $this->error("Exception: " . $e->getMessage() . "\nSkipping $aliased.");
         }
     }
 
@@ -253,8 +242,8 @@ class Alias
      */
     protected function isTrait()
     {
-        // Check if the facade is not a Trait
-        if (function_exists('trait_exists') && trait_exists($this->facade)) {
+        // Check if the aliased type is a Trait
+        if (function_exists('trait_exists') && trait_exists($this->extends)) {
             return true;
         }
         return false;

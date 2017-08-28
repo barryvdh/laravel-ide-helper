@@ -11,10 +11,10 @@ namespace  {
     exit("This file should not be included, only analyzed by your IDE");
 }
 
-<?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>
-<?php if($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
-namespace <?= ltrim($namespace, '\\') ?> { 
-<?php foreach($aliases as $alias): ?>
+<?php foreach($facade_aliases_by_extends_ns as $extends_ns => $facade_aliases): ?>
+<?php if($extends_ns == '\Illuminate\Database\Eloquent'): continue; endif; ?>
+namespace <?= ltrim($extends_ns, '\\') ?> {
+<?php foreach($facade_aliases as $alias): ?>
 
     <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach($alias->getMethods() as $method): ?>
@@ -35,9 +35,9 @@ namespace <?= ltrim($namespace, '\\') ?> {
 
 <?php endforeach; ?>
 
-<?php foreach($namespaces_by_alias_ns as $namespace => $aliases): ?>
-namespace <?= ltrim($namespace, '\\') ?> { 
-<?php foreach($aliases as $alias): ?>
+<?php foreach($all_aliases_by_alias_ns as $alias_ns => $all_aliases): ?>
+namespace <?= ltrim($alias_ns, '\\') ?> {
+<?php foreach($all_aliases as $alias): ?>
 
     <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent'): ?>
         <?php foreach($alias->getMethods() as $method): ?> 

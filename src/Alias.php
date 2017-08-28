@@ -87,6 +87,15 @@ class Alias
     }
 
     /**
+     * Check if this alias is for a facade.
+     * @return bool
+     */
+    public function isForFacade()
+    {
+        return $this->root != $this->extends;
+    }
+
+    /**
      * Get the classtype, 'interface' or 'class'
      *
      * @return string

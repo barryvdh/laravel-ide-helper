@@ -82,8 +82,8 @@ class Generator
     {
         $app = app();
         return $this->view->make('helper')
-            ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
-            ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
+            ->with('facade_aliases_by_extends_ns', $this->getFacadeAliasesByExtendsNamespace())
+            ->with('all_aliases_by_alias_ns', $this->getAllAliasesByAliasNamespace())
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
@@ -219,23 +219,25 @@ class Generator
     }
     
     /**
-     * Regroup aliases by namespace of extended classes
+     * Group facade aliases by namespace of extended classes
      *
      * @return Collection
      */
-    protected function getAliasesByExtendsNamespace()
+    protected function getFacadeAliasesByExtendsNamespace()
     {
-        return $this->getValidAliases()->groupBy(function (Alias $alias) {
+        return $this->getValidAliases()->filter(function (Alias $alias) {
+            return $alias->isForFacade();
+        })->groupBy(function (Alias $alias) {
             return $alias->getExtendsNamespace();
         });
     }
     
     /**
-     * Regroup aliases by namespace of alias
+     * Group all aliases by namespace of alias
      *
      * @return Collection
      */
-    protected function getAliasesByAliasNamespace()
+    protected function getAllAliasesByAliasNamespace()
     {
         return $this->getValidAliases()->groupBy(function (Alias $alias) {
             return $alias->getNamespace();

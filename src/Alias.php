@@ -275,7 +275,7 @@ class Alias
 
             if (!in_array($method->name, $this->usedMethods)) {
                 if ($class !== $this->root) {
-                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
+                    $this->methods[] = new Method($method, $class, $magic, $this->interfaces);
                 }
                 $this->usedMethods[] = $magic;
             }
@@ -302,7 +302,6 @@ class Alias
                         if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
                             $this->methods[] = new Method(
                                 $method,
-                                $this->alias,
                                 $reflection,
                                 $method->name,
                                 $this->interfaces
@@ -323,7 +322,6 @@ class Alias
                     // Add macros
                     $this->methods[] = new Macro(
                         $function,
-                        $this->alias,
                         $reflection,
                         $macro_name,
                         $this->interfaces

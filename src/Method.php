@@ -25,7 +25,6 @@ class Method
     /** @var \ReflectionMethod  */
     protected $method;
 
-    protected $output = '';
     protected $name;
     protected $namespace;
     protected $params = array();
@@ -34,14 +33,19 @@ class Method
     protected $return = null;
 
     /**
+     * Method constructor.
+     *
      * @param \ReflectionMethod $method
-     * @param string $alias
-     * @param \ReflectionClass $class
-     * @param string|null $methodName
-     * @param array $interfaces
+     * @param \ReflectionClass  $class
+     * @param string|null       $methodName
+     * @param array             $interfaces
      */
-    public function __construct(\ReflectionMethod $method, $alias, $class, $methodName = null, $interfaces = array())
-    {
+    public function __construct(
+        \ReflectionMethod $method,
+        \ReflectionClass $class,
+        $methodName = null,
+        $interfaces = array()
+    ) {
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;

@@ -12,7 +12,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $reflectionClass = new \ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
-        $method = new Method($reflectionMethod, 'Example', $reflectionClass);
+        $method = new Method($reflectionMethod, $reflectionClass);
 
         $this->assertInstanceOf(Method::class, $method);
     }
@@ -25,7 +25,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $reflectionClass = new \ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
-        $method = new Method($reflectionMethod, 'Example', $reflectionClass);
+        $method = new Method($reflectionMethod, $reflectionClass);
 
         $output = '/**
  * 

@@ -9,12 +9,12 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function testCanInstantiate()
     {
-        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionClass = new \ReflectionClass('\\Barryvdh\\LaravelIdeHelper\\ExampleClass');
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
 
-        $this->assertInstanceOf(Method::class, $method);
+        $this->assertInstanceOf('\Barryvdh\LaravelIdeHelper\Method', $method);
     }
 
     /**
@@ -22,7 +22,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function testOutput()
     {
-        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionClass = new \ReflectionClass('\\Barryvdh\\LaravelIdeHelper\\ExampleClass');
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
@@ -36,23 +36,11 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
  */';
         $this->assertEquals($output, $method->getDocComment(''));
         $this->assertEquals('setName', $method->getName());
-        $this->assertEquals('\\'.ExampleClass::class, $method->getDeclaringClass());
+        $this->assertEquals('\\'.'Barryvdh\LaravelIdeHelper\ExampleClass', $method->getDeclaringClass());
         $this->assertEquals('$last, $first', $method->getParams(true));
         $this->assertEquals(['$last', '$first'], $method->getParams(false));
         $this->assertEquals('$last, $first = \'Barry\'', $method->getParamsWithDefault(true));
         $this->assertEquals(['$last', '$first = \'Barry\''], $method->getParamsWithDefault(false));
         $this->assertEquals(true, $method->shouldReturn());
-    }
-}
-
-class ExampleClass
-{
-    /**
-     * @param string $last
-     * @param string $first
-     */
-    public function setName($last, $first = 'Barry')
-    {
-        return;
     }
 }

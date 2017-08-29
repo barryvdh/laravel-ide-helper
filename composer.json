@@ -36,7 +36,10 @@
     "autoload-dev": {
         "psr-4": {
             ":vendor\\:package_name\\": "tests"
-        }
+        },
+        "classmap": [
+            "tests/ExampleClasses"
+        ]
     },
     "scripts": {
         "test": "phpunit",

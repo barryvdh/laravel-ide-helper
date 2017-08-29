@@ -412,7 +412,7 @@ class ModelsCommand extends Command
                     if (!empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
                         $type = $this->getReturnTypeFromDocBlock($reflection);
-                        $this->setProperty($name, $type, true, null);
+                        $this->setProperty($name, $type, true);
                     }
                 } elseif (Str::startsWith($method, 'set') && Str::endsWith(
                     $method,
@@ -477,16 +477,14 @@ class ModelsCommand extends Command
                                     $this->setProperty(
                                         $method,
                                         $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
-                                        true,
-                                        null
+                                        true
                                     );
                                 } elseif ($relation === "morphTo") {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
                                         $method,
                                         '\Illuminate\Database\Eloquent\Model|\Eloquent',
-                                        true,
-                                        null
+                                        true
                                     );
                                 } else {
                                     //Single model is returned
@@ -674,13 +672,11 @@ class ModelsCommand extends Command
     public function getParameters($method)
     {
         //Loop through the default values for paremeters, and make the correct output string
-        $params = [];
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
             $paramClass = $param->getClass();
             $paramStr = (!is_null($paramClass) ? '\\' . $paramClass->getName() . ' ' : '') . '$' . $param->getName();
-            $params[] = $paramStr;
             if ($param->isOptional() && $param->isDefaultValueAvailable()) {
                 $default = $param->getDefaultValue();
                 if (is_bool($default)) {
@@ -754,14 +750,14 @@ class ModelsCommand extends Command
      */
     protected function getSoftDeleteMethods($model)
     {
-        $traits = class_uses(get_class($model), true);
+        $traits = class_uses(get_class($model));
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
-            $this->setMethod('forceDelete', 'bool|null', []);
-            $this->setMethod('restore', 'bool|null', []);
+            $this->setMethod('forceDelete', 'bool|null');
+            $this->setMethod('restore', 'bool|null');
 
-            $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+            $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model));
+            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model));
+            $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model));
         }
     }
 }

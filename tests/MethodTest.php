@@ -37,9 +37,9 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($output, $method->getDocComment(''));
         $this->assertEquals('setName', $method->getName());
         $this->assertEquals('\\'.'Barryvdh\LaravelIdeHelper\ExampleClass', $method->getDeclaringClass());
-        $this->assertEquals('$last, $first', $method->getParams(true));
+        $this->assertEquals('$last, $first', $method->getParams());
         $this->assertEquals(['$last', '$first'], $method->getParams(false));
-        $this->assertEquals('$last, $first = \'Barry\'', $method->getParamsWithDefault(true));
+        $this->assertEquals('$last, $first = \'Barry\'', $method->getParamsWithDefault());
         $this->assertEquals(['$last', '$first = \'Barry\''], $method->getParamsWithDefault(false));
         $this->assertEquals(true, $method->shouldReturn());
     }

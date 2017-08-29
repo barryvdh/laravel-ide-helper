@@ -191,7 +191,7 @@ class ModelsCommand extends Command
                         $this->comment("Loading model '$name'");
                     }
 
-                    if (!$reflectionClass->IsInstantiable()) {
+                    if (!$reflectionClass->isInstantiable()) {
                         // ignore abstract class or interface
                         continue;
                     }

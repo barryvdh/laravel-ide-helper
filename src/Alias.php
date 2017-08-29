@@ -10,7 +10,6 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-
 class Alias
 {
     /**

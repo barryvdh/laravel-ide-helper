@@ -12,8 +12,8 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 

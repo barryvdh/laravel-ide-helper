@@ -10,18 +10,18 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Str;
-use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\ClassLoader\ClassMapGenerator;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
+use Symfony\Component\ClassLoader\ClassMapGenerator;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * todo split class as it seems to be too long

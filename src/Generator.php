@@ -11,8 +11,8 @@
 namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Config\Repository;
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
 use Illuminate\View\Factory;
 use ReflectionClass;

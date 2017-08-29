@@ -294,13 +294,22 @@ class Alias
             $method = new \ReflectionMethod($className, $name);
             $class = new \ReflectionClass($className);
 
-            if (!in_array($method->name, $this->usedMethods)) {
+            if (!$this->isUsedMethod($method)) {
                 if ($class !== $this->root) {
                     $this->methods[] = new Method($method, $class, $magic, $this->interfaces);
                 }
                 $this->usedMethods[] = $magic;
             }
         }
+    }
+
+    /**
+     * @param \ReflectionMethod $method
+     * @return bool
+     */
+    protected function isUsedMethod(\ReflectionMethod $method)
+    {
+        return in_array($method->name, $this->usedMethods);
     }
 
     /**
@@ -317,7 +326,7 @@ class Alias
             $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
             if ($methods) {
                 foreach ($methods as $method) {
-                    if (!in_array($method->name, $this->usedMethods)) {
+                    if (!$this->isUsedMethod($method)) {
                         // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
                         if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {

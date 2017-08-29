@@ -14,7 +14,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
 use ReflectionClass;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class Generator
 {
@@ -35,15 +34,9 @@ class Generator
     /**
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string $helpers
      */
-    public function __construct(
-        /*ConfigRepository */ $config,
-        /* Illuminate\View\Factory */ $view,
-        OutputInterface $output = null,
-        $helpers = ''
-    ) {
+    public function __construct(\Illuminate\Config\Repository $config, \Illuminate\View\Factory $view, $helpers = '') {
         $this->config = $config;
         $this->view = $view;
 

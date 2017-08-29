@@ -31,16 +31,22 @@ class Method
     protected $params = [];
     protected $params_with_default = [];
     protected $interfaces = [];
-    protected $return = null;
+
+    /**
+     * @var string|null
+     */
+    protected $return;
+
+    protected $declaringClassName;
+    protected $root;
 
     /**
      * @param \ReflectionMethod $method
-     * @param string $alias
      * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
      */
-    public function __construct(\ReflectionMethod $method, $alias, $class, $methodName = null, $interfaces = [])
+    public function __construct(\ReflectionMethod $method, \ReflectionClass $class, $methodName = null, $interfaces = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;

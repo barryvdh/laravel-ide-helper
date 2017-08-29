@@ -9,14 +9,13 @@ class Macro extends Method
 {
     /**
      * Macro constructor.
-     * todo drop $alias in next version. it's never used in __construct
      * @param \ReflectionFunction $method
-     * @param string              $alias
-     * @param \ReflectionClass    $class
-     * @param null                $methodName
-     * @param array               $interfaces
+     * @param \ReflectionClass $class
+     * @param null $methodName
+     * @param array $interfaces
+     * @internal param string $alias
      */
-    public function __construct(\ReflectionFunction $method, $alias, $class, $methodName = null, $interfaces = [])
+    public function __construct(\ReflectionFunction $method, \ReflectionClass $class, $methodName = null, $interfaces = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;

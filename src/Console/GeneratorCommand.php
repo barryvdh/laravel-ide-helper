@@ -109,7 +109,7 @@ class GeneratorCommand extends Command
                 $helpers = '';
             }
 
-            $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
+            $generator = new Generator($this->config, $this->view, $helpers);
             $content = $generator->generate($format);
             $written = $this->files->put($filename, $content);
 

@@ -329,7 +329,7 @@ class Alias
                     if (!$this->isUsedMethod($method)) {
                         // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
-                        if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
+                        if ($this->extends !== $class && 0 !== strpos($method->name, '__')) {
                             $this->methods[] = new Method(
                                 $method,
                                 $reflection,

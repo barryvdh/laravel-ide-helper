@@ -74,9 +74,9 @@ class GeneratorCommand extends Command
      */
     public function handle()
     {
-        if (file_exists(base_path() . '/vendor/compiled.php') ||
-            file_exists(base_path() . '/bootstrap/cache/compiled.php') ||
-            file_exists(base_path() . '/storage/framework/compiled.php')) {
+        if (file_exists(base_path('/vendor/compiled.php')) ||
+            file_exists(base_path('/bootstrap/cache/compiled.php')) ||
+            file_exists(base_path('/storage/framework/compiled.php'))) {
             $this->error(
                 'Error generating IDE Helper: first delete your compiled file (php artisan clear-compiled)'
             );

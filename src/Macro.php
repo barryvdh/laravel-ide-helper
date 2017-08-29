@@ -9,7 +9,7 @@ class Macro extends Method
 {
     /**
      * Macro constructor.
-     *
+     * todo drop $alias in next version. it's never used in __construct
      * @param \ReflectionFunction $method
      * @param string              $alias
      * @param \ReflectionClass    $class

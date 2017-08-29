@@ -317,6 +317,7 @@ class Alias
             $traits = collect($reflection->getTraitNames());
             if ($traits->contains('Illuminate\Support\Traits\Macroable')) {
                 $properties = $reflection->getStaticProperties();
+                //todo simplify when PHP min >= 7.0
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
                     $function = new \ReflectionFunction($macro_func);

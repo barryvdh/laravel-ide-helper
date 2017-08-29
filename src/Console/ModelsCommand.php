@@ -24,6 +24,7 @@ use Barryvdh\Reflection\DocBlock\Tag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 
 /**
+ * todo split class as it seems to be too long
  * A command to generate autocomplete information for your IDE
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>

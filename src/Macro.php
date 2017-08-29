@@ -16,7 +16,7 @@ class Macro extends Method
      * @param null                $methodName
      * @param array               $interfaces
      */
-    public function __construct(\ReflectionFunction $method, $alias, $class, $methodName = null, $interfaces = array())
+    public function __construct(\ReflectionFunction $method, $alias, $class, $methodName = null, $interfaces = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;

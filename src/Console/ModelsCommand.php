@@ -51,10 +51,10 @@ class ModelsCommand extends Command
     protected $description = 'Generate autocompletion for models';
 
     protected $write_model_magic_where;
-    protected $properties = array();
-    protected $methods = array();
+    protected $properties = [];
+    protected $methods = [];
     protected $write = false;
-    protected $dirs = array();
+    protected $dirs = [];
     protected $reset;
     /**
      * @var bool[string]
@@ -118,9 +118,9 @@ class ModelsCommand extends Command
      */
     protected function getArguments()
     {
-        return array(
-          array('model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', array()),
-        );
+        return [
+          ['model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', []],
+        ];
     }
 
     /**
@@ -130,14 +130,14 @@ class ModelsCommand extends Command
      */
     protected function getOptions()
     {
-        return array(
-          array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
-          array('dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The model dir', array()),
-          array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
-          array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
-          array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
-          array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
-        );
+        return [
+          ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename],
+          ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The model dir', []],
+          ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
+          ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
+          ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
+          ['ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''],
+        ];
     }
 
     protected function generateDocs($loadModels, $ignore = '')
@@ -159,7 +159,7 @@ class ModelsCommand extends Command
         if (empty($loadModels)) {
             $models = $this->loadModels();
         } else {
-            $models = array();
+            $models = [];
             foreach ($loadModels as $model) {
                 $models = array_merge($models, explode(',', $model));
             }
@@ -174,8 +174,8 @@ class ModelsCommand extends Command
                 }
                 continue;
             }
-            $this->properties = array();
-            $this->methods = array();
+            $this->properties = [];
+            $this->methods = [];
             if (class_exists($name)) {
                 try {
                     // handle abstract classes, interfaces, ...
@@ -229,7 +229,7 @@ class ModelsCommand extends Command
 
     protected function loadModels()
     {
-        $models = array();
+        $models = [];
         foreach ($this->dirs as $dir) {
             $dir = base_path() . '/' . $dir;
             if (file_exists($dir)) {
@@ -303,7 +303,7 @@ class ModelsCommand extends Command
      */
     protected function getTypeOverride($type)
     {
-        $typeOverrides = $this->laravel['config']->get('ide-helper.type_overrides', array());
+        $typeOverrides = $this->laravel['config']->get('ide-helper.type_overrides', []);
 
         return isset($typeOverrides[$type]) ? $typeOverrides[$type] : $type;
     }
@@ -321,7 +321,7 @@ class ModelsCommand extends Command
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
         $platformName = $databasePlatform->getName();
-        $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", array());
+        $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
@@ -385,7 +385,7 @@ class ModelsCommand extends Command
                     $this->setMethod(
                         Str::camel("where_" . $name),
                         '\Illuminate\Database\Eloquent\Builder|\\' . get_class($model),
-                        array('$value')
+                        ['$value']
                     );
                 }
             }
@@ -451,7 +451,7 @@ class ModelsCommand extends Command
                     $begin = strpos($code, 'function(');
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
-                    foreach (array(
+                    foreach ([
                                'hasMany',
                                'hasManyThrough',
                                'belongsToMany',
@@ -461,7 +461,7 @@ class ModelsCommand extends Command
                                'morphTo',
                                'morphMany',
                                'morphToMany'
-                             ) as $relation) {
+                             ] as $relation) {
                         $search = '$this->' . $relation . '(';
                         if ($pos = stripos($code, $search)) {
                             //Resolve the relation's model to a Relation object.
@@ -536,7 +536,7 @@ class ModelsCommand extends Command
     protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
     {
         if (!isset($this->properties[$name])) {
-            $this->properties[$name] = array();
+            $this->properties[$name] = [];
             $this->properties[$name]['type'] = 'mixed';
             $this->properties[$name]['read'] = false;
             $this->properties[$name]['write'] = false;
@@ -557,12 +557,12 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = array())
+    protected function setMethod($name, $type = '', $arguments = [])
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
         if (!isset($methods[strtolower($name)])) {
-            $this->methods[$name] = array();
+            $this->methods[$name] = [];
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;
         }
@@ -590,8 +590,8 @@ class ModelsCommand extends Command
             $phpdoc->setText($class);
         }
 
-        $properties = array();
-        $methods = array();
+        $properties = [];
+        $methods = [];
         foreach ($phpdoc->getTags() as $tag) {
             $name = $tag->getName();
             if ($name == "property" || $name == "property-read" || $name == "property-write") {
@@ -674,8 +674,8 @@ class ModelsCommand extends Command
     public function getParameters($method)
     {
         //Loop through the default values for paremeters, and make the correct output string
-        $params = array();
-        $paramsWithDefault = array();
+        $params = [];
+        $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
             $paramClass = $param->getClass();

@@ -68,6 +68,28 @@ class ModelsCommand extends Command
      */
     protected $nullableColumns = [];
 
+    //todo move to CONST array when PHP min >= 5.6
+    protected $relations = [
+        'hasMany',
+        'hasManyThrough',
+        'belongsToMany',
+        'hasOne',
+        'belongsTo',
+        'morphOne',
+        'morphTo',
+        'morphMany',
+        'morphToMany'
+    ];
+
+    //todo move to CONST array when PHP min >= 5.6
+    protected $manyRelations = [
+        'hasManyThrough',
+        'belongsToMany',
+        'hasMany',
+        'morphMany',
+        'morphToMany'
+    ];
+
     /**
      * @param Filesystem $files
      */
@@ -535,27 +557,7 @@ class ModelsCommand extends Command
                     $begin = strpos($code, 'function(');
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
-                    //todo move to CONST array when PHP min >= 5.6
-                    $relations = [
-                        'hasMany',
-                        'hasManyThrough',
-                        'belongsToMany',
-                        'hasOne',
-                        'belongsTo',
-                        'morphOne',
-                        'morphTo',
-                        'morphMany',
-                        'morphToMany'
-                    ];
-                    //todo move to CONST array when PHP min >= 5.6
-                    $manyRelations = [
-                        'hasManyThrough',
-                        'belongsToMany',
-                        'hasMany',
-                        'morphMany',
-                        'morphToMany'
-                    ];
-                    foreach ($relations as $relation) {
+                    foreach ($this->relations as $relation) {
                         $search = '$this->' . $relation . '(';
                         $foundInCode = stripos($code, $search);
                         if ($foundInCode) {
@@ -565,7 +567,7 @@ class ModelsCommand extends Command
                             if ($relationObj instanceof Relation) {
                                 $relatedModel = '\\' . get_class($relationObj->getRelated());
 
-                                if ($this->isManyRelation($relation, $manyRelations)) {
+                                if ($this->isManyRelation($relation)) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
                                         $method,
@@ -603,12 +605,12 @@ class ModelsCommand extends Command
      * todo doesn't make much sence right now but will when PHP min >= 5.6,
      * then we can move $manyRelations to const array
      * @param string $relation
-     * @param array $manyRelations
      * @return bool
+     * @internal param array $manyRelations
      */
-    private function isManyRelation($relation, array $manyRelations)
+    private function isManyRelation($relation)
     {
-        return in_array($relation, $manyRelations);
+        return in_array($relation, $this->manyRelations);
     }
 
     /**

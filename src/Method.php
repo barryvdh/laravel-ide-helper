@@ -240,11 +240,7 @@ class Method
      */
     public function shouldReturn()
     {
-        if ($this->return !== "void" && $this->method->name !== "__construct") {
-            return true;
-        }
-
-        return false;
+        return $this->return !== "void" && $this->method->name !== "__construct";
     }
 
     /**
@@ -306,9 +302,9 @@ class Method
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);
-            } else {
-                return $phpdoc;
             }
+
+            return $phpdoc;
         }
     }
 }

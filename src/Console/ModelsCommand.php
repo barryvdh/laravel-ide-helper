@@ -290,9 +290,9 @@ class ModelsCommand extends Command
 
             if (!isset($this->properties[$name])) {
                 continue;
-            } else {
-                $this->properties[$name]['type'] = $this->getTypeOverride($realType);
             }
+
+            $this->properties[$name]['type'] = $this->getTypeOverride($realType);
         }
     }
 
@@ -607,12 +607,11 @@ class ModelsCommand extends Command
             if (in_array($name, $properties)) {
                 continue;
             }
+            $attr = 'property-read';
             if ($property['read'] && $property['write']) {
                 $attr = 'property';
             } elseif ($property['write']) {
                 $attr = 'property-write';
-            } else {
-                $attr = 'property-read';
             }
 
             if ($this->hasCamelCaseModelProperties()) {

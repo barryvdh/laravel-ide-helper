@@ -221,11 +221,7 @@ class Alias
 
         try {
             //If possible, get the facade root
-            if (method_exists($facade, 'getFacadeRoot')) {
-                $root = get_class($facade::getFacadeRoot());
-            } else {
-                $root = $facade;
-            }
+            $root = method_exists($facade, 'getFacadeRoot') ? get_class($facade::getFacadeRoot()) : $facade;
 
             //If it doesn't exist, skip it
             if (!class_exists($root) && !interface_exists($root)) {
@@ -254,10 +250,7 @@ class Alias
     protected function isTrait()
     {
         // Check if the facade is not a Trait
-        if (function_exists('trait_exists') && trait_exists($this->facade)) {
-            return true;
-        }
-        return false;
+        return function_exists('trait_exists') && trait_exists($this->facade);
     }
 
     /**

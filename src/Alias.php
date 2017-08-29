@@ -74,7 +74,7 @@ class Alias
 
         $this->detectRoot();
 
-        if ((!$this->isTrait() && $this->root)) {
+        if ($this->root && !$this->isTrait()) {
             $this->valid = true;
         } else {
             return;

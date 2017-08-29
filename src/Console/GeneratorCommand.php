@@ -97,7 +97,7 @@ class GeneratorCommand extends Command
 
 
             $helpers = '';
-            if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {
+            if ($this->option('helpers') || $this->config->get('ide-helper.include_helpers')) {
                 foreach ($this->config->get('ide-helper.helper_files', []) as $helper) {
                     if (file_exists($helper)) {
                         $helpers .= str_replace(['<?php', '?>'], '', $this->files->get($helper));

@@ -41,6 +41,7 @@ class Method
     protected $root;
 
     /**
+     * todo drop $alias in next version. it's never used in __construct
      * @param \ReflectionMethod $method
      * @param \ReflectionClass $class
      * @param string|null $methodName
@@ -122,7 +123,7 @@ class Method
      * Get the parameters for this method
      *
      * @param bool $implode Wether to implode the array or not
-     * @return string
+     * @return string|array
      */
     public function getParams($implode = true)
     {
@@ -133,7 +134,7 @@ class Method
      * Get the parameters for this method including default values
      *
      * @param bool $implode Wether to implode the array or not
-     * @return string
+     * @return string|array
      */
     public function getParamsWithDefault($implode = true)
     {
@@ -252,10 +253,10 @@ class Method
     /**
      * Get the parameters and format them correctly
      *
-     * @param  \ReflectionMethod $method
+     * @param  \ReflectionFunctionAbstract $method
      * @return array
      */
-    public function getParameters($method)
+    public function getParameters(\ReflectionFunctionAbstract $method)
     {
         //Loop through the default values for paremeters, and make the correct output string
         $params = [];
@@ -272,7 +273,6 @@ class Method
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {
-                    //$default = $default;
                 } elseif (is_resource($default)) {
                     //skip to not fail
                 } else {
@@ -291,7 +291,7 @@ class Method
      * @param \ReflectionMethod $reflectionMethod
      * @return DocBlock
      */
-    protected function getInheritDoc($reflectionMethod)
+    protected function getInheritDoc(\ReflectionMethod $reflectionMethod)
     {
         $parentClass = $reflectionMethod->getDeclaringClass()->getParentClass();
 

@@ -51,11 +51,17 @@ class ModelsCommand extends Command
      */
     protected $description = 'Generate autocompletion for models';
 
+    /**
+     * @var bool $write_model_magic_where
+     */
     protected $write_model_magic_where;
     protected $properties = [];
     protected $methods = [];
     protected $write = false;
     protected $dirs = [];
+    /**
+     * @var bool $reset
+     */
     protected $reset;
     /**
      * @var bool[string]

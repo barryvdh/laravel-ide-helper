@@ -12,8 +12,10 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Barryvdh\LaravelIdeHelper\Generator;
+use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\View\Factory;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -39,13 +41,13 @@ class GeneratorCommand extends Command
      */
     protected $description = 'Generate a new IDE Helper file.';
 
-    /** @var \Illuminate\Config\Repository */
+    /** @var Repository */
     protected $config;
 
-    /** @var \Illuminate\Filesystem\Filesystem */
+    /** @var Filesystem */
     protected $files;
 
-    /** @var \Illuminate\View\Factory */
+    /** @var Factory */
     protected $view;
 
     protected $onlyExtend;
@@ -53,16 +55,12 @@ class GeneratorCommand extends Command
 
     /**
      *
-     * @param \Illuminate\Config\Repository $config
-     * @param \Illuminate\Filesystem\Filesystem $files
-     * @param \Illuminate\View\Factory $view
+     * @param Repository $config
+     * @param Filesystem $files
+     * @param Factory $view
      */
-    public function __construct(
-        /*ConfigRepository */ $config,
-        Filesystem $files,
-        /* Illuminate\View\Factory */
-        $view
-    ) {
+    public function __construct(Repository $config, Filesystem $files, Factory $view)
+    {
         $this->config = $config;
         $this->files = $files;
         $this->view = $view;

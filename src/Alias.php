@@ -10,17 +10,45 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+
 class Alias
 {
+    /**
+     * @var string
+     */
     protected $alias;
+
+    /**
+     * @var string
+     */
     protected $facade;
-    protected $extends = null;
-    protected $extendsClass = null;
-    protected $extendsNamespace = null;
+
+    /**
+     * @var string|null $extends
+     */
+    protected $extends;
+
+    /**
+     * @var null|string $extendsClass
+     */
+    protected $extendsClass;
+
+    /**
+     * @var null|string $extendsNamespace
+     */
+    protected $extendsNamespace;
     protected $classType = 'class';
+
+    /**
+     * @var string $short
+     */
     protected $short;
     protected $namespace = '__root';
-    protected $root = null;
+
+    /**
+     * @var string $root
+     */
+    protected $root;
     protected $classes = [];
     protected $methods = [];
     protected $usedMethods = [];
@@ -34,7 +62,7 @@ class Alias
      * @param array $magicMethods
      * @param array $interfaces
      */
-    public function __construct($alias, $facade, $magicMethods = [], $interfaces = [])
+    public function __construct($alias, $facade, array $magicMethods = [], array $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;

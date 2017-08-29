@@ -11,6 +11,9 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\View\Factory;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,13 +39,13 @@ class MetaCommand extends Command
      */
     protected $description = 'Generate metadata for PhpStorm';
 
-    /** @var \Illuminate\Contracts\Filesystem\Filesystem */
+    /** @var Filesystem */
     protected $files;
 
-    /** @var \Illuminate\Contracts\View\Factory */
+    /** @var Factory */
     protected $view;
 
-    /** @var \Illuminate\Contracts\Config */
+    /** @var Repository */
     protected $config;
 
     protected $methods = [
@@ -57,11 +60,11 @@ class MetaCommand extends Command
 
     /**
      *
-     * @param \Illuminate\Contracts\Filesystem\Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Illuminate\Contracts\Config $config
+     * @param Filesystem $files
+     * @param Factory $view
+     * @param Repository $config
      */
-    public function __construct($files, $view, $config)
+    public function __construct(Filesystem $files, Factory $view, Repository $config)
     {
         $this->files = $files;
         $this->view = $view;
@@ -131,7 +134,7 @@ class MetaCommand extends Command
     protected function registerClassAutoloadExceptions()
     {
         spl_autoload_register(function ($class) {
-            throw new \Exception("Class '$class' not found.");
+            throw new \Barryvdh\LaravelIdeHelper\ClassNotFoundException("Class '$class' not found.");
         });
     }
 

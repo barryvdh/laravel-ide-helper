@@ -10,33 +10,39 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Illuminate\Config\Repository;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
+use Illuminate\View\Factory;
 use ReflectionClass;
 
 class Generator
 {
-    /** @var \Illuminate\Config\Repository */
+    /** @var Repository */
     protected $config;
 
-    /** @var \Illuminate\View\Factory */
+    /** @var Factory */
     protected $view;
 
-    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    /** @var OutputInterface */
     protected $output;
 
     protected $extra = [];
     protected $magic = [];
     protected $interfaces = [];
+
+    /**
+     * @var string $helpers
+     */
     protected $helpers;
 
     /**
-     * @param \Illuminate\Config\Repository $config
-     * @param \Illuminate\View\Factory $view
+     * @param Repository $config
+     * @param Factory $view
      * @param string $helpers
      */
-    public function __construct(\Illuminate\Config\Repository $config, \Illuminate\View\Factory $view, $helpers = '') {
+    public function __construct(Repository $config, Factory $view, $helpers = '') {
         $this->config = $config;
         $this->view = $view;
 

@@ -22,7 +22,7 @@ If you don't want to generate it, you can add a pre-generated file to the root f
 * Generated version for Lumen: https://gist.github.com/barryvdh/be17164b0ad51f832f20
 * Generated Phpstorm Meta file: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 
-Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeIntel/SublimeCodeIntel
+Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice
 
 ### Install
 
@@ -151,9 +151,9 @@ php artisan ide-helper:models --ignore="Post,User"
 
 Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
 
-For properly recognition of `Model` methods (i.e. `paginate`, `findOrFail`) you should extend `\Eloquent` or add 
+For properly recognition of `Model` methods (i.e. `paginate`, `findOrFail`) you should extend `\Eloquent` or add
 ```php
-/** @mixin \Eloquent */ 
+/** @mixin \Eloquent */
 ```
 for your model class.
 

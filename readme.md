@@ -66,7 +66,7 @@ You can now re-generate the docs yourself (for future updates)
 php artisan ide-helper:generate
 ```
 
-Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating (and `php artisan optimize` after).
+Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating.
 
 You can configure your composer.json to do this after each commit:
 
@@ -75,8 +75,7 @@ You can configure your composer.json to do this after each commit:
     "post-update-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postUpdate",
         "php artisan ide-helper:generate",
-        "php artisan ide-helper:meta",
-        "php artisan optimize"
+        "php artisan ide-helper:meta"
     ]
 },
 ```

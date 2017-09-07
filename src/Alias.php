@@ -300,9 +300,15 @@ class Alias
         $mixins = [];
         foreach ($match[1] as $mixin) {
             $quoted = preg_quote($mixin);
-            if (preg_match('@^\s*use (([^;]*\\\\)?' . $quoted . '|[^;]*\s+as\s+' . $quoted . ')@m', $source, $m)) {
-                if ($m[1]) {
-                    $mixins[] = $m[1];
+            if (preg_match('@^\s*use ((?P<name>([^;\s]*\\\\)?' . $quoted . ')|(?P<name_alias>[^;\s]*)\s+as\s+' . $quoted . ')@m', $source, $m)) {
+                if (!empty($m['name']) || !empty($m['name_alias'])) {
+                    if (!empty($m['name'])) {
+                        $mixins[] = $m['name'];
+                    } else {
+                        $mixins[] = $m['name_alias'];
+                    }
+                } else {
+                    $mixins[] = $reflection->getNamespaceName() . '\\' . $mixin;
                 }
             }
         }

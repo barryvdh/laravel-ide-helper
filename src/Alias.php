@@ -10,6 +10,9 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Barryvdh\Reflection\DocBlock;
+use Barryvdh\Reflection\DocBlock\Context;
+
 class Alias
 {
     protected $alias;
@@ -21,20 +24,20 @@ class Alias
     protected $short;
     protected $namespace = '__root';
     protected $root = null;
-    protected $classes = array();
-    protected $methods = array();
-    protected $usedMethods = array();
+    protected $classes = [];
+    protected $methods = [];
+    protected $usedMethods = [];
     protected $valid = false;
-    protected $magicMethods = array();
-    protected $interfaces = array();
+    protected $magicMethods = [];
+    protected $interfaces = [];
 
     /**
      * @param string $alias
      * @param string $facade
-     * @param array $magicMethods
-     * @param array $interfaces
+     * @param array  $magicMethods
+     * @param array  $interfaces
      */
-    public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array())
+    public function __construct($alias, $facade, $magicMethods = [], $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
@@ -56,9 +59,9 @@ class Alias
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
-        
+
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
-            $this->usedMethods = array('decrement', 'increment');
+            $this->usedMethods = ['decrement', 'increment'];
         }
     }
 
@@ -107,7 +110,7 @@ class Alias
     {
         return $this->extends;
     }
-    
+
     /**
      * Get the class short name which this alias extends
      *
@@ -117,7 +120,7 @@ class Alias
     {
         return $this->extendsClass;
     }
-    
+
     /**
      * Get the namespace of the class which this alias extends
      *
@@ -145,6 +148,7 @@ class Alias
     {
         return $this->short;
     }
+
     /**
      * Get the namespace from the alias
      *
@@ -180,7 +184,7 @@ class Alias
             $this->short = $this->alias;
         }
     }
-    
+
     /**
      * Detect the extends namespace
      */
@@ -283,6 +287,34 @@ class Alias
     }
 
     /**
+     * Get mixin classes
+     *
+     * @param \ReflectionClass $reflection
+     *
+     * @return array
+     */
+    protected function getMixinClasses(\ReflectionClass $reflection)
+    {
+        $comment = $reflection->getDocComment();
+        $file = $reflection->getFileName();
+        $source = file_get_contents($file);
+
+        preg_match_all('#@mixin\s+([^\s]+)#ism', $comment, $match);
+
+        $mixins = [];
+        foreach ($match[1] as $mixin) {
+            $quoted = preg_quote($mixin);
+            if (preg_match('@^\s*use (([^;]*\\\\)?' . $quoted . '|[^;]*\s+as\s+' . $quoted . ')@m', $source, $m)) {
+                if ($m[1]) {
+                    $mixins[] = $m[1];
+                }
+            }
+        }
+
+        return $mixins;
+    }
+
+    /**
      * Get the methods for one or multiple classes.
      *
      * @return string
@@ -313,6 +345,29 @@ class Alias
                 }
             }
 
+            $mixins = $this->getMixinClasses($reflection);
+
+            foreach ($mixins as $mixin) {
+                $mixin_reflection = new \ReflectionClass($mixin);
+                $mixin_methods = $mixin_reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                if ($mixin_methods) {
+                    foreach ($mixin_methods as $method) {
+                        if (!in_array($method->name, $this->usedMethods)) {
+                            if ($this->extends !== $mixin && substr($method->name, 0, 2) !== '__') {
+                                $this->methods[] = new Method(
+                                    $method,
+                                    $this->alias,
+                                    $reflection,
+                                    $method->name,
+                                    $this->interfaces
+                                );
+                            }
+                            $this->usedMethods[] = $method->name;
+                        }
+                    }
+                }
+            }
+
             // Check if the class is macroable
             $traits = collect($reflection->getTraitNames());
             if ($traits->contains('Illuminate\Support\Traits\Macroable')) {
@@ -336,7 +391,8 @@ class Alias
     /**
      * Output an error.
      *
-     * @param  string  $string
+     * @param  string $string
+     *
      * @return void
      */
     protected function error($string)

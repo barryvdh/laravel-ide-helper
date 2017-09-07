@@ -10,9 +10,6 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-
 class Alias
 {
     protected $alias;
@@ -24,20 +21,20 @@ class Alias
     protected $short;
     protected $namespace = '__root';
     protected $root = null;
-    protected $classes = [];
-    protected $methods = [];
-    protected $usedMethods = [];
+    protected $classes = array();
+    protected $methods = array();
+    protected $usedMethods = array();
     protected $valid = false;
-    protected $magicMethods = [];
-    protected $interfaces = [];
+    protected $magicMethods = array();
+    protected $interfaces = array();
 
     /**
      * @param string $alias
      * @param string $facade
-     * @param array  $magicMethods
-     * @param array  $interfaces
+     * @param array $magicMethods
+     * @param array $interfaces
      */
-    public function __construct($alias, $facade, $magicMethods = [], $interfaces = [])
+    public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array())
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
@@ -59,9 +56,9 @@ class Alias
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
-
+        
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
-            $this->usedMethods = ['decrement', 'increment'];
+            $this->usedMethods = array('decrement', 'increment');
         }
     }
 
@@ -110,7 +107,7 @@ class Alias
     {
         return $this->extends;
     }
-
+    
     /**
      * Get the class short name which this alias extends
      *
@@ -120,7 +117,7 @@ class Alias
     {
         return $this->extendsClass;
     }
-
+    
     /**
      * Get the namespace of the class which this alias extends
      *
@@ -148,7 +145,6 @@ class Alias
     {
         return $this->short;
     }
-
     /**
      * Get the namespace from the alias
      *
@@ -184,7 +180,7 @@ class Alias
             $this->short = $this->alias;
         }
     }
-
+    
     /**
      * Detect the extends namespace
      */
@@ -391,8 +387,7 @@ class Alias
     /**
      * Output an error.
      *
-     * @param  string $string
-     *
+     * @param  string  $string
      * @return void
      */
     protected function error($string)

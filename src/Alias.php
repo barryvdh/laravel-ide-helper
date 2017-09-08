@@ -299,17 +299,27 @@ class Alias
 
         $mixins = [];
         foreach ($match[1] as $mixin) {
-            $quoted = preg_quote($mixin);
-            $pattern = '@^\s*use ((?P<name>([^;\s]*\\\\)?'.$quoted.')|(?P<name_alias>[^;\s]*)\s+as\s+'.$quoted.')@m';
-            if (preg_match( $pattern, $source, $m)) {
-                if (!empty($m['name']) || !empty($m['name_alias'])) {
-                    if (!empty($m['name'])) {
-                        $mixins[] = $m['name'];
+            if (strpos($mixin, '\\') === false) {
+                $mixins[] = $reflection->getNamespaceName() . '\\' . $mixin;
+            } else {
+                $quoted = preg_quote($mixin);
+                $pattern = (
+                    '@^\s*use ((?P<name>([^;\s]*\\\\)?'
+                    .$quoted
+                    .')|(?P<name_alias>[^;\s]*)\s+as\s+'
+                    .$quoted
+                    .')@m'
+                );
+                if (preg_match( $pattern, $source, $m)) {
+                    if (!empty($m['name']) || !empty($m['name_alias'])) {
+                        if (!empty($m['name'])) {
+                            $mixins[] = $m['name'];
+                        } else {
+                            $mixins[] = $m['name_alias'];
+                        }
                     } else {
-                        $mixins[] = $m['name_alias'];
+                        $mixins[] = $reflection->getNamespaceName() . '\\' . $mixin;
                     }
-                } else {
-                    $mixins[] = $reflection->getNamespaceName() . '\\' . $mixin;
                 }
             }
         }

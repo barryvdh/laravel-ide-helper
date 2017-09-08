@@ -56,7 +56,7 @@ class Alias
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
-        
+
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
             $this->usedMethods = array('decrement', 'increment');
         }
@@ -107,7 +107,7 @@ class Alias
     {
         return $this->extends;
     }
-    
+
     /**
      * Get the class short name which this alias extends
      *
@@ -117,7 +117,7 @@ class Alias
     {
         return $this->extendsClass;
     }
-    
+
     /**
      * Get the namespace of the class which this alias extends
      *
@@ -180,7 +180,7 @@ class Alias
             $this->short = $this->alias;
         }
     }
-    
+
     /**
      * Detect the extends namespace
      */
@@ -283,6 +283,51 @@ class Alias
     }
 
     /**
+     * Get mixin classes
+     *
+     * @param \ReflectionClass $reflection
+     *
+     * @return array
+     */
+    protected function getMixinClasses(\ReflectionClass $reflection)
+    {
+        $comment = $reflection->getDocComment();
+        $file = $reflection->getFileName();
+        $source = file_get_contents($file);
+
+        preg_match_all('#@mixin\s+([^\s]+)#ism', $comment, $match);
+
+        $mixins = [];
+        foreach ($match[1] as $mixin) {
+            if (strpos($mixin, '\\') === false) {
+                $mixins[] = $reflection->getNamespaceName() . '\\' . $mixin;
+            } else {
+                $quoted = preg_quote($mixin);
+                $pattern = (
+                    '@^\s*use ((?P<name>([^;\s]*\\\\)?'
+                    .$quoted
+                    .')|(?P<name_alias>[^;\s]*)\s+as\s+'
+                    .$quoted
+                    .')@m'
+                );
+                if (preg_match( $pattern, $source, $m)) {
+                    if (!empty($m['name']) || !empty($m['name_alias'])) {
+                        if (!empty($m['name'])) {
+                            $mixins[] = $m['name'];
+                        } else {
+                            $mixins[] = $m['name_alias'];
+                        }
+                    } else {
+                        $mixins[] = $reflection->getNamespaceName() . '\\' . $mixin;
+                    }
+                }
+            }
+        }
+
+        return $mixins;
+    }
+
+    /**
      * Get the methods for one or multiple classes.
      *
      * @return string
@@ -309,6 +354,29 @@ class Alias
                             );
                         }
                         $this->usedMethods[] = $method->name;
+                    }
+                }
+            }
+
+            $mixins = $this->getMixinClasses($reflection);
+
+            foreach ($mixins as $mixin) {
+                $mixin_reflection = new \ReflectionClass($mixin);
+                $mixin_methods = $mixin_reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                if ($mixin_methods) {
+                    foreach ($mixin_methods as $method) {
+                        if (!in_array($method->name, $this->usedMethods)) {
+                            if ($this->extends !== $mixin && substr($method->name, 0, 2) !== '__') {
+                                $this->methods[] = new Method(
+                                    $method,
+                                    $this->alias,
+                                    $reflection,
+                                    $method->name,
+                                    $this->interfaces
+                                );
+                            }
+                            $this->usedMethods[] = $method->name;
+                        }
                     }
                 }
             }

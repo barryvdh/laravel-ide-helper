@@ -56,7 +56,7 @@ class Alias
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
-        
+
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
             $this->usedMethods = array('decrement', 'increment');
         }
@@ -107,7 +107,7 @@ class Alias
     {
         return $this->extends;
     }
-    
+
     /**
      * Get the class short name which this alias extends
      *
@@ -117,7 +117,7 @@ class Alias
     {
         return $this->extendsClass;
     }
-    
+
     /**
      * Get the namespace of the class which this alias extends
      *
@@ -180,7 +180,7 @@ class Alias
             $this->short = $this->alias;
         }
     }
-    
+
     /**
      * Detect the extends namespace
      */
@@ -300,7 +300,8 @@ class Alias
         $mixins = [];
         foreach ($match[1] as $mixin) {
             $quoted = preg_quote($mixin);
-            if (preg_match('@^\s*use ((?P<name>([^;\s]*\\\\)?' . $quoted . ')|(?P<name_alias>[^;\s]*)\s+as\s+' . $quoted . ')@m', $source, $m)) {
+            $pattern = '@^\s*use ((?P<name>([^;\s]*\\\\)?'.$quoted.')|(?P<name_alias>[^;\s]*)\s+as\s+'.$quoted.')@m';
+            if (preg_match( $pattern, $source, $m)) {
                 if (!empty($m['name']) || !empty($m['name_alias'])) {
                     if (!empty($m['name'])) {
                         $mixins[] = $m['name'];

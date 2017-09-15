@@ -2,14 +2,13 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel <?= $version ?> on <?= date("Y-m-d") ?>.
+ * Generated for Laravel <?= $version ?> on <?= date("Y-m-d H:i:s") ?>.
+ *
+ * This file should not be included in your code, only analyzed by your IDE!
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
-namespace  {
-    exit("This file should not be included, only analyzed by your IDE");
-}
 
 <?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>
 <?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>

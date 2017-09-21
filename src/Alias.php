@@ -53,6 +53,7 @@ class Alias
         }
 
         $this->addClass($this->root);
+        $this->detectMixins();
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
@@ -165,6 +166,20 @@ class Alias
         $this->addMagicMethods();
         $this->detectMethods();
         return $this->methods;
+    }
+
+    /**
+     * Detect any @mixin tags
+     */
+    protected function detectMixins()
+    {
+        $tags = (new DocBlock(new \ReflectionClass($this->root)))->getTagsByName('mixin');
+        foreach ($tags as $tag) {
+            $mixin = $tag->getContent();
+            if (class_exists($mixin) || interface_exists($mixin)) {
+                $this->addClass($mixin);
+            }
+        }
     }
 
     /**

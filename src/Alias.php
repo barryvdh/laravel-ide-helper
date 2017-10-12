@@ -10,6 +10,8 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Barryvdh\Reflection\DocBlock;
+
 class Alias
 {
     protected $alias;

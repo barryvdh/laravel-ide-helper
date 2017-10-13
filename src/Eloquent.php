@@ -57,8 +57,16 @@ class Eloquent
         if ($filename) {
             $contents = $files->get($filename);
             if ($contents) {
-                $count    = 0;
-                $contents = str_replace($originalDoc, $docComment, $contents, $count);
+                $count = 0;
+                if ($originalDoc) {
+                    $contents = str_replace($originalDoc, $docComment, $contents, $count);
+                } else {
+                    $classname = $reflection->getShortName();
+                    $needle = "abstract class {$classname}";
+                    $replace = "{$docComment}\n{$needle}";
+                    $contents = str_replace($needle, $replace, $contents, $count);
+                }
+
                 if ($count > 0) {
                     if ($files->put($filename, $contents)) {
                         $command->info('Wrote @mixin \Eloquent to ' . $filename);

@@ -291,6 +291,10 @@ class ModelsCommand extends Command
                 continue;
             } else {
                 $this->properties[$name]['type'] = $this->getTypeOverride($realType);
+
+                if (isset($this->nullableColumns[$name])) {
+                    $this->properties[$name]['type'] .= '|null';
+                }                
             }
         }
     }

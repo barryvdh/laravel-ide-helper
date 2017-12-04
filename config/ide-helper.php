@@ -73,9 +73,10 @@ return array(
     |--------------------------------------------------------------------------
     |
     | Define which of your model ide-helper:models command should ignore
-    | by default.
+    | by default. 
     |
     */
+
     'ignored_models' => array(
 
     ),

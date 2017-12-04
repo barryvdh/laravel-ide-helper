@@ -165,7 +165,7 @@ class ModelsCommand extends Command
             }
         }
 
-        $ignore = explode(',', $ignore);
+        $ignore = array_merge(explode(',', $ignore), $this->laravel['config']->get('ignored_models', []));
 
         foreach ($models as $name) {
             if (in_array($name, $ignore)) {

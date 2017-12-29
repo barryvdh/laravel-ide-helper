@@ -10,8 +10,8 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Eloquent;
 use Barryvdh\LaravelIdeHelper\Generator;
-use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
@@ -74,7 +74,7 @@ class GeneratorCommand extends Command
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         if (file_exists(base_path() . '/vendor/compiled.php') ||
             file_exists(base_path() . '/bootstrap/cache/compiled.php') ||
@@ -115,6 +115,7 @@ class GeneratorCommand extends Command
 
             if ($written !== false) {
                 $this->info("A new helper file was written to $filename");
+                Eloquent::writeEloquentModelHelper($this, $this->files);
             } else {
                 $this->error("The helper file could not be created at $filename");
             }

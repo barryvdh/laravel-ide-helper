@@ -13,6 +13,8 @@ return array(
 
     'filename'  => '_ide_helper',
     'format'    => 'php',
+    
+    'meta_filename' => '.phpstorm.meta.php',
 
     /*
     |--------------------------------------------------------------------------
@@ -24,6 +26,17 @@ return array(
     */
 
     'include_fluent' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write Model Magic methods
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable write magic methods of model
+    |
+    */
+
+    'write_model_magic_where' => true,
 
     /*
     |--------------------------------------------------------------------------

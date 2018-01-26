@@ -11,11 +11,15 @@
     ],
     "require": {
         "php": ">=5.3.0",
+        "illuminate/config": "4.x",
         "illuminate/support": "4.x",
         "illuminate/console": "4.x",
         "illuminate/filesystem": "4.x",
+        "illuminate/database": "4.x",
+        "illuminate/view": "4.x",
         "barryvdh/reflection-docblock": "^2.0.4",
-        "symfony/class-loader": "~2.3"
+        "symfony/class-loader": "~2.3",
+        "kdyby/parse-use-statements": "~0.2"
     },
     "require-dev": {
         "doctrine/dbal": "~2.3"

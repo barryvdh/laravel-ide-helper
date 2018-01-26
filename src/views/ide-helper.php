@@ -29,7 +29,7 @@ namespace <?= $namespace == '__root' ? '' : $namespace ?>{
 		<?= $docComment ?>
 
 <?php endif; ?>
-		public static function <?= $method->getName() ?>(<?= $nParams < count($mParams) ? '/** @noinspection PhpDocSignatureInspection */' . implode(', /** @noinspection PhpDocSignatureInspection */', $mParams) : $method->getParamsWithDefault() ?>){
+		public static function <?= $method->getName() ?>(<?= ($docComment && $nParams < count($mParams)) ? '/** @noinspection PhpDocSignatureInspection */' . implode(', /** @noinspection PhpDocSignatureInspection */', $mParams) : $method->getParamsWithDefault() ?>){
 <?php if ($method->getDeclaringClass() !== $method->getRoot()): ?>
 			//Method inherited from <?= $method->getDeclaringClass() ?>
 

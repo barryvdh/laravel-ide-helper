@@ -53,8 +53,8 @@ class Alias
         $this->addClass($this->root);
         $this->detectNamespace();
         $this->detectClassType();
-        
-        if($facade === '\Illuminate\Database\Eloquent\Model'){
+
+        if ($facade === '\Illuminate\Database\Eloquent\Model') {
             $this->usedMethods = array('decrement', 'increment');
         }
     }
@@ -70,8 +70,8 @@ class Alias
         foreach ($classes as $class) {
             if (class_exists($class) || interface_exists($class)) {
                 $this->classes[] = $class;
-            }else{
-                echo "Class not exists: $class\r\n";
+            } else {
+                $this->error('Class not exists: ' . $class);
             }
         }
     }
@@ -86,11 +86,11 @@ class Alias
     }
 
     /**
-     * Get the classtype, 'interface' or 'class'
+     * Get the classType, 'interface' or 'class'
      *
      * @return string
      */
-    public function getClasstype()
+    public function getClassType()
     {
         return $this->classType;
     }
@@ -117,10 +117,14 @@ class Alias
 
     /**
      * Return the short name (without namespace)
+     *
+     * @return string
      */
-    public function getShortName(){
+    public function getShortName()
+    {
         return $this->short;
     }
+
     /**
      * Get the namespace from the alias
      *
@@ -134,7 +138,7 @@ class Alias
     /**
      * Get the methods found by this Alias
      *
-     * @return array
+     * @return array|Method[]
      */
     public function getMethods()
     {
@@ -152,7 +156,7 @@ class Alias
             $nsParts = explode('\\', $this->alias);
             $this->short = array_pop($nsParts);
             $this->namespace = implode('\\', $nsParts);
-        }else{
+        } else {
             $this->short = $this->alias;
         }
     }
@@ -201,10 +205,10 @@ class Alias
             //When the database connection is not set, some classes will be skipped
         } catch (\PDOException $e) {
             $this->error(
-                "PDOException: " . $e->getMessage() . "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade."
+                'PDOException: ' . $e->getMessage() . "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping $facade."
             );
         } catch (\Exception $e) {
-            $this->error("Exception: " . $e->getMessage() . "\nSkipping $facade.");
+            $this->error('Exception: ' . $e->getMessage() . "\nSkipping $facade.");
         }
     }
 
@@ -227,16 +231,16 @@ class Alias
      */
     protected function addMagicMethods()
     {
-        foreach($this->magicMethods as $magic => $real){
+        foreach ($this->magicMethods as $magic => $real) {
             list($className, $name) = explode('::', $real);
-            if(!class_exists($className) && !interface_exists($className)){
+            if (!class_exists($className) && !interface_exists($className)) {
                 continue;
             }
             $method = new \ReflectionMethod($className, $name);
             $class = new \ReflectionClass($className);
 
-            if(!in_array($method->name, $this->usedMethods)){
-                if($class !== $this->root){
+            if (!in_array($method->name, $this->usedMethods)) {
+                if ($class !== $this->root) {
                     $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
                 }
                 $this->usedMethods[] = $magic;
@@ -251,7 +255,6 @@ class Alias
      */
     protected function detectMethods()
     {
-
         foreach ($this->classes as $class) {
             $reflection = new \ReflectionClass($class);
 
@@ -274,7 +277,7 @@ class Alias
     /**
      * Output an error.
      *
-     * @param  string  $string
+     * @param  string $string
      * @return void
      */
     protected function error($string)

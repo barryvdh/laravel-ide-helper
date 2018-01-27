@@ -182,7 +182,7 @@ class ModelsCommand extends Command
                     $reflectionClass = new \ReflectionClass($name);
 
                     if (!$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Model')
-                            || $reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Relations\Pivot')) {
+                            || !$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Relations\Pivot')) {
                         continue;
                     }
 

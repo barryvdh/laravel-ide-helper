@@ -15,10 +15,9 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\ClassLoader\ClassMapGenerator;
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Context;
+use phpDocumentor\Reflection\DocBlock\Tag;
 
 /**
  * A command to generate autocomplete information for your IDE
@@ -399,7 +398,7 @@ class ModelsCommand extends Command
         $properties = array();
         $methods = array();
         foreach ($phpdoc->getTags() as $tag) {
-            /* @var Tag|\Barryvdh\Reflection\DocBlock\Tag\PropertyTag|\Barryvdh\Reflection\DocBlock\Tag\MethodTag $tag */
+            /* @var Tag|Tag\PropertyTag|Tag\MethodTag $tag */
             $name = $tag->getName();
             if ($name == 'property' || $name == 'property-read' || $name == 'property-write') {
                 $properties[] = $tag->getVariableName();
@@ -433,7 +432,7 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
-        $serializer = new DocBlockSerializer();
+        $serializer = new DocBlock\Serializer();
         $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
 

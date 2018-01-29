@@ -10,17 +10,15 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
-use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Context;
+use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 use Kdyby\ParseUseStatements\UseStatements;
 
 class Method
 {
-    /** @var \Barryvdh\Reflection\DocBlock */
+    /** @var \phpDocumentor\Reflection\DocBlock */
     protected $phpdoc;
 
     /** @var \ReflectionMethod */
@@ -98,7 +96,7 @@ class Method
      */
     public function getDocComment($prefix = "\t\t", $trim = false)
     {
-        $serializer = new DocBlockSerializer(1, $prefix);
+        $serializer = new DocBlock\Serializer(1, $prefix);
         $str = $serializer->getDocComment($this->phpdoc);
         if ($trim) {
             $str = preg_replace(array('/\s+$/m', '#^(\s*/\*\*[\r\n])(?:\s*\*[\r\n])+#u', '#(?:[\r\n]\s*\*)+([\r\n]\s*\*/)$#u'), array('', '$1', '$1'), $str);
@@ -192,20 +190,25 @@ class Method
      */
     protected function normalizeReturnTags(DocBlock $phpdoc)
     {
-        $this->return = null;
+        static $typeProp;
+        if (!isset($typeProp)) {
+            $typeProp = new \ReflectionProperty('phpDocumentor\Reflection\DocBlock\Tag\ReturnTag', 'type');
+            $typeProp->setAccessible(true);
+        }
 
+        $this->return = null;
         //Get the return type and adjust them for better autocomplete
         foreach ($phpdoc->getTags() as $tag) {
             if ($tag instanceof ReturnTag) {
                 // Convert the keywords
-                $typeValue = static::convertKeywords($tag->getType(false));
-                $tag->setType($typeValue);
+                $typeValue = static::convertKeywords($typeProp->getValue($tag));
+                $typeProp->setValue($tag, $typeValue);
 
                 // Get the expanded type
                 $typeValue = $tag->getType();
 
                 // Replace the interfaces
-                if (get_class($tag) === ReturnTag::class) {
+                if (preg_match('/\bReturnTag$/', get_class($tag))) {
                     foreach ($this->interfaces as $interface => $real) {
                         $typeValue = preg_replace('/(^|\|)' . preg_quote($interface, '/') . '\b/', $real, $typeValue);
                     }
@@ -213,7 +216,8 @@ class Method
                 }
 
                 // Re-set the type
-                $tag->setType($typeValue);
+                $typeProp->setValue($tag, $typeValue);
+                $tag->setDescription($tag->getDescription());
             }
         }
     }

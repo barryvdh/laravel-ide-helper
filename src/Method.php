@@ -10,22 +10,19 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
-use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Context;
+use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 
 class Method
 {
-    /** @var \Barryvdh\Reflection\DocBlock  */
+    /** @var \phpDocumentor\Reflection\DocBlock */
     protected $phpdoc;
 
-    /** @var \ReflectionMethod  */
+    /** @var \ReflectionMethod */
     protected $method;
 
-    protected $output = '';
     protected $name;
     protected $namespace;
     protected $params = array();
@@ -36,7 +33,7 @@ class Method
     /**
      * @param \ReflectionMethod $method
      * @param string $alias
-     * @param string $class
+     * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
      */
@@ -45,15 +42,15 @@ class Method
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
-        $this->namespace = $method->getDeclaringClass()->getNamespaceName();
+        $declaringClass = $method->getDeclaringClass();
+        $this->namespace = $declaringClass->getNamespaceName();
 
         //Create a DocBlock and serializer instance
-        $this->phpdoc = new DocBlock($method, new Context($this->namespace));
+        $this->phpdoc = new DocBlock($method, new Context($this->namespace, static::getUseStatements($declaringClass)));
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
-            $this->normalizeParams($this->phpdoc);
-            $this->normalizeReturn($this->phpdoc);
+            $this->normalizeReturnTags($this->phpdoc);
             $this->normalizeDescription($this->phpdoc);
         } catch (\Exception $e) {}
 
@@ -61,10 +58,9 @@ class Method
         $this->getParameters($method);
 
         //Make the method static
-        $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
+        //$this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
 
-        //Reference the 'real' function in the declaringclass
-        $declaringClass = $method->getDeclaringClass();
+        //Reference the 'real' function in the declaringClass
         $this->declaringClassName = '\\' . ltrim($declaringClass->name, '\\');
         $this->root = '\\' . ltrim($class->getName(), '\\');
     }
@@ -93,12 +89,17 @@ class Method
      * Get the docblock for this method
      *
      * @param string $prefix
-     * @return mixed
+     * @param bool $trim
+     * @return string
      */
-    public function getDocComment($prefix = "\t\t")
+    public function getDocComment($prefix = "\t\t", $trim = false)
     {
-        $serializer = new DocBlockSerializer(1, $prefix);
-        return $serializer->getDocComment($this->phpdoc);
+        $serializer = new DocBlock\Serializer(1, $prefix);
+        $str = $serializer->getDocComment($this->phpdoc);
+        if ($trim) {
+            $str = preg_replace(array('/\s+$/m', '#^(\s*/\*\*[\r\n])(?:\s*\*[\r\n])+#u', '#(?:[\r\n]\s*\*)+([\r\n]\s*\*/)$#u'), array('', '$1', '$1'), $str);
+        }
+        return $str;
     }
 
     /**
@@ -112,10 +113,30 @@ class Method
     }
 
     /**
+     * Checks whether the method is deprecated
+     *
+     * @return bool
+     */
+    public function isDeprecated()
+    {
+        return $this->phpdoc->hasTag('deprecated');
+    }
+
+    /**
+     * Get the declared parameters for this method
+     *
+     * @return array
+     */
+    public function getDocParams()
+    {
+        return $this->phpdoc->getTagsByName('param');
+    }
+
+    /**
      * Get the parameters for this method
      *
-     * @param bool $implode Wether to implode the array or not
-     * @return string
+     * @param bool $implode Whether to implode the array or not
+     * @return string|array
      */
     public function getParams($implode = true)
     {
@@ -125,8 +146,8 @@ class Method
     /**
      * Get the parameters for this method including default values
      *
-     * @param bool $implode Wether to implode the array or not
-     * @return string
+     * @param bool $implode Whether to implode the array or not
+     * @return string|array
      */
     public function getParamsWithDefault($implode = true)
     {
@@ -144,47 +165,18 @@ class Method
         $description = $phpdoc->getText();
 
         //Loop through parents/interfaces, to fill in {@inheritdoc}
-        if (strpos($description, '{@inheritdoc}') !== false) {
-            $inheritdoc = $this->getInheritDoc($this->method);
+        if (stripos($description, '{@inheritdoc}') !== false && ($inheritdoc = $this->getInheritDoc($this->method))) {
             $inheritDescription = $inheritdoc->getText();
 
-            $description = str_replace('{@inheritdoc}', $inheritDescription, $description);
+            $description = str_ireplace('{@inheritdoc}', $inheritDescription, $description);
             $phpdoc->setText($description);
 
-            $this->normalizeParams($inheritdoc);
-            $this->normalizeReturn($inheritdoc);
+            $this->normalizeReturnTags($inheritdoc);
 
             //Add the tags that are inherited
-            $inheritTags = $inheritdoc->getTags();
-            if ($inheritTags) {
-                /** @var Tag $tag */
-                foreach ($inheritTags as $tag) {
-                    $tag->setDocBlock();
-                    $phpdoc->appendTag($tag);
-                }
-            }
-        }
-    }
-
-    /**
-     * Normalize the parameters
-     *
-     * @param DocBlock $phpdoc
-     */
-    protected function normalizeParams(DocBlock $phpdoc)
-    {
-        //Get the return type and adjust them for beter autocomplete
-        $paramTags = $phpdoc->getTagsByName('param');
-        if ($paramTags) {
-            /** @var ParamTag $tag */
-            foreach($paramTags as $tag){
-                // Convert the keywords
-                $content = $this->convertKeywords($tag->getContent());
-                $tag->setContent($content);
-
-                // Get the expanded type and re-set the content
-                $content = $tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
-                $tag->setContent(trim($content));
+            foreach ($inheritdoc->getTags() as $tag) {
+                $tag->setDocBlock();
+                $phpdoc->appendTag($tag);
             }
         }
     }
@@ -194,53 +186,69 @@ class Method
      *
      * @param DocBlock $phpdoc
      */
-    protected function normalizeReturn(DocBlock $phpdoc)
+    protected function normalizeReturnTags(DocBlock $phpdoc)
     {
-        //Get the return type and adjust them for beter autocomplete
-        $returnTags = $phpdoc->getTagsByName('return');
-        if ($returnTags) {
-            /** @var ReturnTag $tag */
-            $tag = reset($returnTags);
-            // Get the expanded type
-            $returnValue = $tag->getType();
+        static $typeProp;
+        if (!isset($typeProp)) {
+            $typeProp = new \ReflectionProperty('phpDocumentor\Reflection\DocBlock\Tag\ReturnTag', 'type');
+            $typeProp->setAccessible(true);
+        }
 
-            // Replace the interfaces
-            foreach($this->interfaces as $interface => $real){
-                $returnValue = str_replace($interface, $real, $returnValue);
+        $this->return = null;
+        //Get the return type and adjust them for better autocomplete
+        foreach ($phpdoc->getTags() as $tag) {
+            if ($tag instanceof ReturnTag) {
+                // Convert the keywords
+                $typeValue = static::convertKeywords($typeProp->getValue($tag));
+                $typeProp->setValue($tag, $typeValue);
+
+                // Get the expanded type
+                $typeValue = $tag->getType();
+
+                // Replace the interfaces
+                if (preg_match('/\bReturnTag$/', get_class($tag))) {
+                    foreach ($this->interfaces as $interface => $real) {
+                        $typeValue = preg_replace('/(^|\|)' . preg_quote($interface, '/') . '\b/', $real, $typeValue);
+                    }
+                    $this->return = $typeValue;
+                }
+
+                // Re-set the type
+                $typeProp->setValue($tag, $typeValue);
+                $tag->setDescription($tag->getDescription());
             }
-
-            // Set the changed content
-            $tag->setContent($returnValue . ' ' . $tag->getDescription());
-            $this->return = $returnValue;
-        }else{
-            $this->return = null;
         }
     }
 
     /**
-     * Convert keywwords that are incorrect.
+     * Convert keywords that are incorrect.
      *
      * @param  string $string
      * @return string
      */
-    protected function convertKeywords($string)
+    protected static function convertKeywords($string)
     {
-        $string = str_replace('\Closure', 'Closure', $string);
-        $string = str_replace('Closure', '\Closure', $string);
-        $string = str_replace('dynamic', 'mixed', $string);
-
-        return $string;
+        $types = explode('|', $string);
+        foreach ($types as &$type) {
+            if ($type === 'Closure')
+                $type = '\Closure';
+            elseif ($type === 'dynamic')
+                $type = 'mixed';
+            elseif (strrpos($type, '\\') && $type[0] !== '\\' && (class_exists($type) || interface_exists($type)))
+                $type = '\\' . $type;
+        }
+        return implode('|', $types);
     }
 
     /**
      * Should the function return a value?
      *
-     * @return bool
+     * @return bool|int
      */
     public function shouldReturn()
     {
-        if($this->return !== "void" && $this->method->name !== "__construct"){
-            return true;
+        if ($this->return !== 'void' && $this->method->name !== '__construct') {
+            return isset($this->return) ? true : 1;
         }
 
         return false;
@@ -249,17 +257,19 @@ class Method
     /**
      * Get the parameters and format them correctly
      *
-     * @param $method
-     * @return array
+     * @param \ReflectionMethod $method
+     * @return void
      */
     public function getParameters($method)
     {
-        //Loop through the default values for paremeters, and make the correct output string
+        //Loop through the default values for parameters, and make the correct output string
         $params = array();
         $paramsWithDefault = array();
+
         foreach ($method->getParameters() as $param) {
             $paramStr = '$' . $param->getName();
             $params[] = $paramStr;
+
             if ($param->isOptional()) {
                 $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
                 if (is_bool($default)) {
@@ -275,6 +285,7 @@ class Method
                 }
                 $paramStr .= " = $default";
             }
+
             $paramsWithDefault[] = $paramStr;
         }
 
@@ -284,7 +295,7 @@ class Method
 
     /**
      * @param \ReflectionMethod $reflectionMethod
-     * @return DocBlock
+     * @return DocBlock|null
      */
     protected function getInheritDoc($reflectionMethod)
     {
@@ -298,14 +309,24 @@ class Method
         }
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
-            $phpdoc = new DocBlock($method, new Context($namespace));
-            
-            if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
+            $phpdoc = new DocBlock($method, new Context($namespace, static::getUseStatements($method->getDeclaringClass())));
+
+            if (stripos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);
             } else {
                 return $phpdoc;
             }
+        }
+        return null;
+    }
+
+    protected static function getUseStatements(\ReflectionClass $class)
+    {
+        try {
+            return PhpReflection::getUseStatements($class);
+        } catch (\Exception $e) {
+            return array();
         }
     }
 }

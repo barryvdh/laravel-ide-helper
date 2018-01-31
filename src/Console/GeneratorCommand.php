@@ -17,7 +17,6 @@ use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-
 /**
  * A command to generate autocomplete information for your IDE
  *
@@ -27,16 +26,12 @@ class GeneratorCommand extends Command
 {
 
     /**
-     * The console command name.
-     *
-     * @var string
+     * {@inheritdoc}
      */
     protected $name = 'ide-helper:generate';
 
     /**
-     * The console command description.
-     *
-     * @var string
+     * {@inheritdoc}
      */
     protected $description = 'Generate a new IDE Helper file.';
 
@@ -51,18 +46,14 @@ class GeneratorCommand extends Command
 
     protected $onlyExtend;
 
-
     /**
+     * {@inheritdoc}
      *
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\Filesystem\Filesystem $files
      * @param \Illuminate\View\Factory $view
      */
-    public function __construct(
-        ConfigRepository $config,
-        Filesystem $files, /* Illuminate\View\Factory */
-        $view
-    ) {
+    public function __construct(ConfigRepository $config, Filesystem $files, $view) {
         $this->config = $config;
         $this->files = $files;
         $this->view = $view;
@@ -94,7 +85,6 @@ class GeneratorCommand extends Command
             if ($this->option('memory')) {
                 $this->useMemoryDriver();
             }
-
 
             $helpers = '';
             if ($this->option('helpers') || ($this->config->get('laravel-ide-helper::include_helpers'))) {
@@ -133,9 +123,7 @@ class GeneratorCommand extends Command
     }
 
     /**
-     * Get the console command arguments.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function getArguments()
     {
@@ -149,19 +137,17 @@ class GeneratorCommand extends Command
     }
 
     /**
-     * Get the console command options.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function getOptions()
     {
         $format = $this->config->get('laravel-ide-helper::format');
 
         return array(
-            array('format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),
-            array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
-            array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
-            array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),
+            array('format', 'F', InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),
+            array('helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'),
+            array('memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'),
+            array('sublime', 'S', InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),
         );
     }
 

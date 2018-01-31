@@ -17,21 +17,18 @@ use Symfony\Component\Console\Input\InputOption;
  * A command to generate phpstorm meta data
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ * @property \Illuminate\Container\Container $laravel
  */
 class MetaCommand extends Command {
 
     /**
-     * The console command name.
-     *
-     * @var string
+     * {@inheritdoc}
      */
     protected $name = 'ide-helper:meta';
     protected $filename = '.phpstorm.meta.php';
 
     /**
-     * The console command description.
-     *
-     * @var string
+     * {@inheritdoc}
      */
     protected $description = 'Generate metadata for PhpStorm';
 
@@ -40,22 +37,25 @@ class MetaCommand extends Command {
 
     /** @var \Illuminate\View\Factory */
     protected $view;
-    
+
     protected $methods = array(
-      '\Illuminate\Foundation\Application::make',
-      '\Illuminate\Container\Container::make',
-      '\App::make',
-      'app',
+        //'\Illuminate\Foundation\Application::make',
+        'new \Illuminate\Container\Container',
+        '\Illuminate\Container\Container::make',
+        '\App::make',
+        'app',
     );
 
     /**
+     * {@inheritdoc}
      *
-     * @param \Illuminate\Filesystem\Filesystem $files
-     * @param \Illuminate\View\Factory $view
+     * @param \Illuminate\Container\Container $app
      */
-    public function __construct($files, $view) {
-        $this->files = $files;
-        $this->view = $view;
+    public function __construct($app)
+    {
+        $this->laravel = $app;
+        $this->files = $app['files'];
+        $this->view = $app['view'];
         parent::__construct();
     }
 
@@ -66,23 +66,32 @@ class MetaCommand extends Command {
      */
     public function fire()
     {
-        $bindings = array();
+        $bindings = array_flip($this->getAppAliases());
+        $exclude = $this->option('exclude');
+        if (!empty($exclude)) {
+            $exclude = '/' . str_replace('\|', '|', preg_quote($exclude, '/')) . '/';
+        }
+
         foreach ($this->getAbstracts() as $abstract) {
+            if (!empty($exclude) && preg_match($exclude, $abstract))
+                continue;
+
             try {
                 $concrete = $this->laravel->make($abstract);
                 if (is_object($concrete)) {
                     $bindings[$abstract] = get_class($concrete);
                 }
-            }catch (\Exception $e) {
-                $this->error("Cannot make $abstract: ".$e->getMessage());
+            } catch (\Exception $e) {
+                $this->error("Cannot make $abstract: " . $e->getMessage());
             }
         }
-        
+        asort($bindings);
+
         $content = $this->view->make('laravel-ide-helper::meta', array(
-          'bindings' => $bindings,
-          'methods' => $this->methods,
+            'bindings' => $bindings,
+            'methods' => $this->methods,
         ))->render();
-        
+
         $filename = $this->option('filename');
         $written = $this->files->put($filename, $content);
 
@@ -92,10 +101,10 @@ class MetaCommand extends Command {
             $this->error("The meta file could not be created at $filename");
         }
     }
-    
+
     /**
      * Get a list of abstracts from the Laravel Application.
-     * 
+     *
      * @return array
      */
     protected function getAbstracts()
@@ -104,14 +113,28 @@ class MetaCommand extends Command {
     }
 
     /**
-     * Get the console command options.
+     * Get a list of aliases from the Laravel Application.
      *
      * @return array
+     */
+    protected function getAppAliases()
+    {
+        static $aliasProp;
+        if (!isset($aliasProp)) {
+            $aliasProp = new \ReflectionProperty('Illuminate\Container\Container', 'aliases');
+            $aliasProp->setAccessible(true);
+        }
+        return $aliasProp->getValue($this->laravel);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function getOptions()
     {
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $this->filename),
+            array('exclude', 'E', InputOption::VALUE_OPTIONAL, 'Laravel bindings to exclude (e.g. "bar.|.foo")'),
         );
     }
 }

@@ -18,8 +18,7 @@
         "illuminate/database": "4.x",
         "illuminate/view": "4.x",
         "phpdocumentor/reflection-docblock": "^2.0.4",
-        "symfony/class-loader": "~2.3",
-        "kdyby/parse-use-statements": "~0.2"
+        "symfony/class-loader": "~2.3"
     },
     "require-dev": {
         "doctrine/dbal": "~2.3",

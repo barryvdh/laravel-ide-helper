@@ -14,7 +14,6 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Context;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
-use Kdyby\ParseUseStatements\UseStatements;
 
 class Method
 {
@@ -325,7 +324,7 @@ class Method
     protected static function getUseStatements(\ReflectionClass $class)
     {
         try {
-            return UseStatements::getUseStatements($class);
+            return PhpReflection::getUseStatements($class);
         } catch (\Exception $e) {
             return array();
         }

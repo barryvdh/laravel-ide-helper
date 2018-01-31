@@ -86,6 +86,7 @@ class Generator
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
+            ->with('eloquent_namespace', $this->config->get('ide-helper.eloquent_namespace', '\Illuminate\Database\Eloquent'))
             ->render();
     }
 

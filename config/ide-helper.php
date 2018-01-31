@@ -54,6 +54,8 @@ return array(
         base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
     ),
 
+    'eloquent_namespace' => '\Illuminate\Database\Eloquent',
+
     /*
     |--------------------------------------------------------------------------
     | Model locations to include

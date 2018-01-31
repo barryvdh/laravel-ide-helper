@@ -38,7 +38,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
 
-    <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent'): ?>
+    <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == $eloquent_namespace): ?>
         <?php foreach($alias->getMethods() as $method): ?> 
             <?= trim($method->getDocComment('            ')) ?> 
             public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)

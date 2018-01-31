@@ -24,7 +24,6 @@ class Method
     /** @var \ReflectionMethod */
     protected $method;
 
-    protected $output = '';
     protected $name;
     protected $namespace;
     protected $params = array();
@@ -230,7 +229,16 @@ class Method
      */
     protected static function convertKeywords($string)
     {
-        return preg_replace(array('/(^|\|)Closure(\||$)/', '/(^|\|)dynamic(\||$)/'), array('$1\Closure$2', '$1mixed$2'), $string);
+        $types = explode('|', $string);
+        foreach ($types as &$type) {
+            if ($type === 'Closure')
+                $type = '\Closure';
+            elseif ($type === 'dynamic')
+                $type = 'mixed';
+            elseif (strrpos($type, '\\') && $type[0] !== '\\' && (class_exists($type) || interface_exists($type)))
+                $type = '\\' . $type;
+        }
+        return implode('|', $types);
     }
 
     /**

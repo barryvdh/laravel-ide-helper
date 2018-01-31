@@ -22,7 +22,8 @@
         "kdyby/parse-use-statements": "~0.2"
     },
     "require-dev": {
-        "doctrine/dbal": "~2.3"
+        "doctrine/dbal": "~2.3",
+        "phpunit/phpunit": "~4.0"
     },
     "suggest": {
         "doctrine/dbal": "Load information from the database about models for phpdocs (~2.3)"

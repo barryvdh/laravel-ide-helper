@@ -13,7 +13,7 @@
 <?php foreach ($methods as $method): ?>
 		<?= strpos($method, 'new ') === 0 ? $method : $method . '(\'\')' ?> => array(
 <?php foreach ($bindings as $abstract => $class): ?>
-			'<?= $abstract ?>' instanceof \<?= $class ?>,
+			<?= var_export($abstract, true) ?> instanceof \<?= $class ?>,
 <?php endforeach ?>
 		),
 <?php endforeach ?>

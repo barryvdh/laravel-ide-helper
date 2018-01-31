@@ -39,10 +39,9 @@ class MetaCommand extends Command {
     protected $view;
 
     protected $methods = array(
-        '\Illuminate\Foundation\Application::make',
-        'new \Illuminate\Foundation\Application',
-        '\Illuminate\Container\Container::make',
+        //'\Illuminate\Foundation\Application::make',
         'new \Illuminate\Container\Container',
+        '\Illuminate\Container\Container::make',
         '\App::make',
         'app',
     );
@@ -67,8 +66,16 @@ class MetaCommand extends Command {
      */
     public function fire()
     {
-        $bindings = array();
+        $bindings = array_flip($this->getAppAliases());
+        $exclude = $this->option('exclude');
+        if (!empty($exclude)) {
+            $exclude = '/' . str_replace('\|', '|', preg_quote($exclude, '/')) . '/';
+        }
+
         foreach ($this->getAbstracts() as $abstract) {
+            if (!empty($exclude) && preg_match($exclude, $abstract))
+                continue;
+
             try {
                 $concrete = $this->laravel->make($abstract);
                 if (is_object($concrete)) {
@@ -78,6 +85,7 @@ class MetaCommand extends Command {
                 $this->error("Cannot make $abstract: " . $e->getMessage());
             }
         }
+        asort($bindings);
 
         $content = $this->view->make('laravel-ide-helper::meta', array(
             'bindings' => $bindings,
@@ -105,12 +113,28 @@ class MetaCommand extends Command {
     }
 
     /**
+     * Get a list of aliases from the Laravel Application.
+     *
+     * @return array
+     */
+    protected function getAppAliases()
+    {
+        static $aliasProp;
+        if (!isset($aliasProp)) {
+            $aliasProp = new \ReflectionProperty('Illuminate\Container\Container', 'aliases');
+            $aliasProp->setAccessible(true);
+        }
+        return $aliasProp->getValue($this->laravel);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getOptions()
     {
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $this->filename),
+            array('exclude', 'E', InputOption::VALUE_OPTIONAL, 'Laravel bindings to exclude (e.g. "bar.|.foo")'),
         );
     }
 }

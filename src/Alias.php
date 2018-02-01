@@ -10,6 +10,11 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Barryvdh\Reflection\DocBlock;
+use Barryvdh\Reflection\DocBlock\Context;
+use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use ReflectionClass;
+
 class Alias
 {
     protected $alias;
@@ -27,6 +32,7 @@ class Alias
     protected $valid = false;
     protected $magicMethods = array();
     protected $interfaces = array();
+    protected $phpdoc = null;
 
     /**
      * @param string $alias
@@ -56,7 +62,13 @@ class Alias
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
-        
+
+        if(!empty($this->namespace)) {
+            //Create a DocBlock and serializer instance
+            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace));
+        }
+
+
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
             $this->usedMethods = array('decrement', 'increment');
         }
@@ -331,6 +343,18 @@ class Alias
                 }
             }
         }
+    }
+
+    /**
+     * Get the docblock for this alias
+     *
+     * @param string $prefix
+     * @return mixed
+     */
+    public function getDocComment($prefix = "\t\t")
+    {
+        $serializer = new DocBlockSerializer(1, $prefix);
+        return ($this->phpdoc) ? $serializer->getDocComment($this->phpdoc) : '';
     }
 
     /**

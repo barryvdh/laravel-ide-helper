@@ -2,37 +2,129 @@
 
 class MethodTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * @expectedException \PHPUnit_Framework_Error
-	 * @expectedExceptionMessage Argument 1 passed to
-	 */
-	public function testConstructorWithoutMethod()
-	{
-		new Method(null, null, null);
-	}
+    /**
+     * @expectedException \PHPUnit_Framework_Error
+     * @expectedExceptionMessage Argument 1 passed to
+     */
+    public function testConstructorWithoutMethod()
+    {
+        new Method(null, null, null);
+    }
 
-	public function testConstructor()
-	{
-		$method = new \ReflectionMethod('PHPUnit_Framework_TestCase', 'getMock');
-		$object = new Method($method, null, new \ReflectionClass(get_class($this)));
+    public function testConstructor()
+    {
+        $method = new \ReflectionMethod('PHPUnit_Framework_TestCase', 'getMock');
+        $object = new Method($method, null, new \ReflectionClass(get_class($this)));
 
-		$this->assertSame('\PHPUnit_Framework_TestCase', $object->getDeclaringClass());
-		$this->assertSame('\\' . get_class($this), $object->getRoot());
-		$this->assertSame('getMock', $object->getName());
+        $this->assertSame('\PHPUnit_Framework_TestCase', $object->getDeclaringClass());
+        $this->assertSame('\\' . get_class($this), $object->getRoot());
+        $this->assertSame('getMock', $object->getName());
 
-		$prop = new \ReflectionProperty(get_class($object), 'namespace');
-		$prop->setAccessible(true);
-		$this->assertSame('', $prop->getValue($object));
+        $prop = new \ReflectionProperty(get_class($object), 'namespace');
+        $prop->setAccessible(true);
+        $this->assertSame('', $prop->getValue($object));
 
-		$this->assertFalse($object->isDeprecated());
-		$this->assertCount($method->getNumberOfParameters(), $object->getDocParams());
+        $this->assertFalse($object->isDeprecated());
+        $this->assertCount($method->getNumberOfParameters(), $object->getDocParams());
 
-		$doc = $object->getDocComment('', true);
-		$this->assertContains("\n * " . '@param array|null $methods', $doc);
-		$this->assertContains("\n * " . '@return \PHPUnit_Framework_MockObject_MockObject', $doc);
-		$this->assertContains("\n * " . '@throws \PHPUnit_Framework_Exception', $doc);
+        $doc = $object->getDocComment('', true);
+        $this->assertContains("\n * " . '@param array|null $methods', $doc);
+        $this->assertContains("\n * " . '@return \PHPUnit_Framework_MockObject_MockObject', $doc);
+        $this->assertContains("\n * " . '@throws \PHPUnit_Framework_Exception', $doc);
 
-		$this->assertTrue($object->shouldReturn());
-	}
+        $this->assertTrue($object->shouldReturn());
+    }
+
+    public function testGetDocComment()
+    {
+        $method = new \ReflectionMethod('PHPUnit_Framework_TestCase', 'run');
+        $object = new Method($method, null, new \ReflectionClass(get_class($this)), null, array('\PHPUnit_Framework_TestResult' => '\TestResult'));
+
+        $this->assertSame('\PHPUnit_Framework_TestCase', $object->getDeclaringClass());
+        $this->assertSame('\\' . get_class($this), $object->getRoot());
+        $this->assertSame('run', $object->getName());
+
+        $this->assertTrue($object->shouldReturn());
+        $this->assertCount($method->getNumberOfParameters(), $object->getDocParams());
+
+        $this->assertEquals('$result', $object->getParams());
+        $this->assertEquals(array('$result = null'), $object->getParamsWithDefault(false));
+
+        $doc = $object->getDocComment('', true);
+        $this->assertContains("\n * " . '@param \PHPUnit_Framework_TestResult ', $doc);
+        $this->assertContains("\n * " . '@return \TestResult', $doc);
+        $this->assertContains("\n * " . '@throws \PHPUnit_Framework_Exception', $doc);
+    }
+
+    public function testIsDeprecated()
+    {
+        $method = new \ReflectionMethod('PHPUnit_Framework_TestCase', 'hasPerformedExpectationsOnOutput');
+        $object = new Method($method, null, new \ReflectionClass(get_class($this)));
+
+        $this->assertTrue($object->shouldReturn());
+        $this->assertEmpty($object->getDocParams());
+        $this->assertEmpty($object->getParams(false));
+        $this->assertEmpty($object->getParamsWithDefault());
+
+        $this->assertTrue($object->isDeprecated());
+
+        $doc = $object->getDocComment('', true);
+        $this->assertContains("\n * " . '@return bool', $doc);
+        $this->assertContains("\n * " . '@deprecated', $doc);
+    }
+
+    public function testGetInheritDoc()
+    {
+        $class = new \ReflectionClass(__NAMESPACE__ . '\Console\GeneratorCommand');
+        $method = $class->getConstructor();
+
+        $object = new Method($method, null, $class, null, array('void' => '\Command'));
+        $this->assertSame('\\' . $class->name, $object->getDeclaringClass());
+        $this->assertSame('\\' . $class->name, $object->getRoot());
+        $this->assertSame('__construct', $object->getName());
+
+        $this->assertFalse($object->shouldReturn());
+        $this->assertCount($method->getNumberOfParameters(), $object->getDocParams());
+
+        $this->assertEquals(array('$config', '$files', '$view'), $object->getParams(false));
+        $this->assertEquals('$config, $files, $view', $object->getParamsWithDefault());
+
+        $doc = $object->getDocComment('', true);
+        $this->assertContains("\n * " . 'Create a new console command instance.', $doc);
+        $this->assertContains("\n * " . '@param \Illuminate\Config\Repository ', $doc);
+        $this->assertContains("\n * " . '@param \Illuminate\Filesystem\Filesystem ', $doc);
+        $this->assertContains("\n * " . '@param \Illuminate\View\Factory ', $doc);
+        $this->assertContains("\n * " . '@return \Command', $doc);
+    }
+
+    public function testConvertKeywords()
+    {
+        $method = new \ReflectionMethod('PHPUnit_Framework_TestCase', 'getProphet');
+        $object = new Method($method, null, new \ReflectionClass(get_class($this)));
+
+        $doc = $object->getDocComment('', true);
+        $this->assertContains("\n * " . '@return \Prophecy\Prophet', $doc);
+        $this->assertContains("\n * " . '@since ', $doc);
+
+        $method = new \ReflectionMethod('Doctrine\Common\Collections\Collection', 'exists');
+        $object = new Method($method, null, $method->getDeclaringClass());
+        //
+        $doc = $object->getDocComment('', true);
+        $this->assertContains("\n * " . '@param \Closure ', $doc);
+        $this->assertContains("\n * " . '@return boolean ', $doc);
+    }
+
+    public function testGetParameters()
+    {
+        $method = new \ReflectionMethod(__NAMESPACE__ . '\Method', 'getDocComment');
+        $object = new Method($method, null, $method->getDeclaringClass());
+
+        $this->assertEquals('$prefix = ' . "'\t\t'" . ', $trim = false', $object->getParamsWithDefault());
+        $this->assertEquals('$prefix, $trim', $object->getParams());
+
+        $method = new \ReflectionMethod('Illuminate\Database\Query\Builder', 'select');
+        $expected = array(array('$columns'), array('$columns = array(\'*\')'));
+        $this->assertEquals($expected, $object->getParameters($method));
+    }
 
 }

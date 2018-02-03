@@ -1,83 +1,137 @@
 <?php namespace Barryvdh\LaravelIdeHelper;
 
+use Illuminate\Config\FileLoader;
+use Illuminate\Events\EventServiceProvider;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Facade;
+
 class ServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
-	/** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Container\Container */
-	protected $app;
-	/** @var IdeHelperServiceProvider */
-	protected $provider;
+    /** @var IdeHelperServiceProvider */
+    protected $provider;
 
-	static function makeAppMock(\PHPUnit_Framework_TestCase $testCase)
-	{
-		$app = $testCase->getMock('Illuminate\Container\Container', array('make', 'bind'));
+    /**
+     * {@inheritdoc}
+     */
+    public static function setUpBeforeClass()
+    {
+        $mocker = new \PHPUnit_Framework_MockObject_Generator;
 
-		$fs = $testCase->getMock('Illuminate\Filesystem\Filesystem', null);
-		$config = $testCase->getMock('Illuminate\Config\Repository', array('get', 'set', 'package'), array(), '', false);
-		$events = $testCase->getMock('Illuminate\Events\Dispatcher', array('listen'), array($app));
-		$view = $testCase->getMock('Illuminate\View\Factory', array('addNamespace'), array(), '', false);
+        $m = new \ReflectionMethod(get_class($mocker), 'getClassMethods');
+        $m->setAccessible(true);
+        $methods = $m->invoke($mocker, 'Illuminate\Container\Container');
 
-		$app->expects($testCase->any())->method('make')->willReturnMap(array(
-			array('files', array(), $fs),
-			array('config', array(), $config),
-			array('events', array(), $events),
-			array('view', array(), $view),
-			array('path', array(), __DIR__),
-		));
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Container\Container $app */
+        $app = $mocker->getMock('Illuminate\Container\Container', array_merge($methods, array('booted')), array(), '', false, true, true, false, true);
+        /** @noinspection PhpParamsInspection */
+        $provider = new EventServiceProvider($app);
+        $provider->register();
 
-		return $app;
-	}
+        // Bind Paths
+        $app->instance('path', __DIR__);
+        $app->instance('path.base', dirname(__DIR__));
+        $app->instance('path.storage', sys_get_temp_dir());
 
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function setUp()
-	{
-		$this->app = static::makeAppMock($this);
-		/** @noinspection PhpParamsInspection */
-		$this->provider = new IdeHelperServiceProvider($this->app);
-	}
+        // Bind The Application In The Container
+        $app->instance('app', $app);
+        // Check For The Test Environment
+        $app['env'] = $env = 'testing';
 
-	public function testDeferred()
-	{
-		$this->assertTrue($this->provider->isDeferred());
-	}
+        // Load The Illuminate Facades
+        Facade::clearResolvedInstances();
+        /** @noinspection PhpParamsInspection */
+        Facade::setFacadeApplication($app);
 
-	public function testProvides()
-	{
-		$this->assertEquals(array('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta'), $this->provider->provides());
-	}
+        // Register The Configuration Repository
+        $loader = new FileLoader(new Filesystem, __DIR__ . '/config');
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Config\Repository $config */
+        $config = $mocker->getMock('Illuminate\Config\Repository', array(), array($loader, $env), '', false, true, true, false, true);
+        $app->instance('config', $config);
 
-	public function testRegister()
-	{
-		$this->app->expects($this->exactly(3))->method('bind')->withConsecutive(
-			array('command.ide-helper.generate', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
-			array('command.ide-helper.models', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
-			array('command.ide-helper.meta', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse())
-		);
+        $config->set('view.paths', array());
+        // Register The Core Service Providers
+        foreach (array(
+                     'Illuminate\Filesystem\FilesystemServiceProvider',
+                     'Illuminate\View\ViewServiceProvider',
+                     'Illuminate\Database\DatabaseServiceProvider',
+                 ) as $provider) {
+            $provider = new $provider($app);
+            /* @var \Illuminate\Support\ServiceProvider $provider */
+            $provider->register();
+        }
 
-		/** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Events\Dispatcher $events */
-		$events = $this->app['events'];
-		$events->expects($this->once())->method('listen')->with('artisan.start', $this->callback(function ($listener) {
-			$params = print_r(array('commands' => array('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta')), true);
-			return strpos(preg_replace('/^\s+/mu', '', print_r($listener, true)), preg_replace('/^\s+/mu', '', $params));
-		}), 0);
+        // Boot The Application -> boot each service provider
+        $provider->boot();
+    }
 
-		$this->provider->register();
-	}
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->provider = new IdeHelperServiceProvider(Facade::getFacadeApplication());
+    }
 
-	public function testBoot()
-	{
-		$path = realpath(__DIR__ . '/../src');
+    public function testDeferred()
+    {
+        $this->assertTrue($this->provider->isDeferred());
+    }
 
-		/** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Config\Repository $config */
-		$config = $this->app['config'];
-		$config->expects($this->once())->method('package')->with('barryvdh/laravel-ide-helper', $path . '/config', 'laravel-ide-helper');
+    public function testProvides()
+    {
+        $this->assertEquals(array('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta'), $this->provider->provides());
+    }
 
-		/** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\View\Factory $view */
-		$view = $this->app['view'];
-		$view->expects($this->once())->method('addNamespace')->with('laravel-ide-helper', $path . '/views');
+    public function testRegister()
+    {
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Container\Container $app */
+        $app = Facade::getFacadeApplication();
 
-		$this->provider->boot();
-	}
+        $app->expects($this->exactly(3))->method('bind')->withConsecutive(
+            array('command.ide-helper.generate', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
+            array('command.ide-helper.models', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
+            array('command.ide-helper.meta', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse())
+        );
+
+        $this->provider->register();
+
+        /** @var \Illuminate\Events\Dispatcher $events */
+        $events = $app['events'];
+        $expected = print_r(array('commands' => array('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta')), true);
+        $this->assertContains(preg_replace('/^\s+/mu', '', $expected), preg_replace('/^\s+/mu', '', print_r($events->getListeners('artisan.start'), true)));
+
+        return $this->provider;
+    }
+
+    /**
+     * @depends testRegister
+     * @param IdeHelperServiceProvider $provider
+     */
+    public function testBoot($provider)
+    {
+        $path = realpath(__DIR__ . '/../src');
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Container\Container $app */
+        $app = Facade::getFacadeApplication();
+
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Config\Repository $config */
+        $config = $app['config'];
+        $config->expects($this->once())->method('package')->with('barryvdh/laravel-ide-helper', $path . '/config', 'laravel-ide-helper');
+
+        $provider->boot();
+
+        $this->assertSame('_ide_helper', $config->get('laravel-ide-helper::filename'));
+        $this->assertEquals(array('\Illuminate\Auth\UserInterface' => 'User'), $config['laravel-ide-helper::interfaces']);
+        $this->assertEquals(array(dirname(__DIR__) . '/vendor/laravel/framework/src/Illuminate/Support/helpers.php'), $config['laravel-ide-helper::helper_files']);
+
+        /** @var \Illuminate\View\Factory $view */
+        $view = $app['view'];
+        $this->assertTrue($view->exists('laravel-ide-helper::ide-helper'));
+        $this->assertTrue($view->exists('laravel-ide-helper::meta'));
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Console\GeneratorCommand', $app['command.ide-helper.generate']);
+        $this->assertInstanceOf(__NAMESPACE__ . '\Console\ModelsCommand', $app['command.ide-helper.models']);
+        $this->assertInstanceOf(__NAMESPACE__ . '\Console\MetaCommand', $app['command.ide-helper.meta']);
+    }
 
 }

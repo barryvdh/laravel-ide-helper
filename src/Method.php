@@ -55,7 +55,7 @@ class Method
         } catch (\Exception $e) {}
 
         //Get the parameters, including formatted default values
-        $this->getParameters($method);
+        list($this->params, $this->params_with_default) = $this->getParameters($method);
 
         //Make the method static
         //$this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
@@ -258,9 +258,9 @@ class Method
      * Get the parameters and format them correctly
      *
      * @param \ReflectionMethod $method
-     * @return void
+     * @return array
      */
-    public function getParameters($method)
+    public static function getParameters($method)
     {
         //Loop through the default values for parameters, and make the correct output string
         $params = array();
@@ -272,25 +272,33 @@ class Method
 
             if ($param->isOptional()) {
                 $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
-                if (is_bool($default)) {
-                    $default = $default ? 'true' : 'false';
-                } elseif (is_array($default)) {
-                    $default = 'array()';
-                } elseif (is_null($default)) {
-                    $default = 'null';
-                } elseif (is_int($default)) {
-                    //$default = $default;
-                } else {
-                    $default = "'" . trim($default) . "'";
-                }
-                $paramStr .= " = $default";
+                $paramStr .= ' = ' . static::exportVar($default);
             }
 
             $paramsWithDefault[] = $paramStr;
         }
 
-        $this->params = $params;
-        $this->params_with_default = $paramsWithDefault;
+        return array($params, $paramsWithDefault);
+    }
+
+    private static function exportVar($var)
+    {
+        if (is_array($var)) {
+            $s = 'array(';
+            if (!empty($var)) {
+                $isAssoc = (($keys = array_keys($var)) !== array_keys($keys));
+                unset($keys);
+
+                foreach ($var as $k => $v) {
+                    if ($isAssoc)
+                        $s .= static::exportVar($k) . ' => ';
+                    $s .= static::exportVar($v) . ', ';
+                }
+                $s = substr($s, 0, -2);
+            }
+            return $s . ')';
+        }
+        return is_null($var) ? 'null' : var_export($var, true);
     }
 
     /**

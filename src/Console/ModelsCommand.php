@@ -10,6 +10,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
@@ -290,7 +291,7 @@ class ModelsCommand extends Command
                     $name = Str::camel(substr($method, 5));
                     if (!empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
-                        $args = $this->getParameters($reflection);
+                        list(, $args) = Method::getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
                         $this->setMethod($name, '\\' . $reflection->class, $args);
@@ -459,46 +460,11 @@ class ModelsCommand extends Command
     }
 
     /**
-     * Get the parameters and format them correctly
-     *
-     * @param \ReflectionMethod $method
-     * @return array
-     */
-    public function getParameters($method)
-    {
-        //Loop through the default values for parameters, and make the correct output string
-        $paramsWithDefault = array();
-
-        foreach ($method->getParameters() as $param) {
-            $paramStr = '$' . $param->getName();
-
-            if ($param->isOptional()) {
-                $default = $param->getDefaultValue();
-                if (is_bool($default)) {
-                    $default = $default ? 'true' : 'false';
-                } elseif (is_array($default)) {
-                    $default = 'array()';
-                } elseif (is_null($default)) {
-                    $default = 'null';
-                } elseif (is_int($default)) {
-                    //$default = $default;
-                } else {
-                    $default = "'" . trim($default) . "'";
-                }
-                $paramStr .= " = $default";
-            }
-            $paramsWithDefault[] = $paramStr;
-        }
-
-        return $paramsWithDefault;
-    }
-
-    /**
      * @param string $className
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return string
      */
-    private function getClassName($className, $model)
+    private static function getClassName($className, $model)
     {
         // If the class name was resolved via get_class($this) or static::class
         if (strpos($className, 'get_class($this)') !== false || strpos($className, 'static::class') !== false) {

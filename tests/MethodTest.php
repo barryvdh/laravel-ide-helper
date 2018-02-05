@@ -127,4 +127,58 @@ class MethodTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $object->getParameters($method));
     }
 
+    public function testGetUseStatements()
+    {
+        $rc = $this->getMock('ReflectionClass', array('getFileName'), array('PHPUnit_Exception'));
+        $rc->expects($this->once())->method('getFileName')->willThrowException(new \Exception);
+
+        $method = new \ReflectionMethod(__NAMESPACE__ . '\Method', 'getUseStatements');
+        $method->setAccessible(true);
+        $this->assertEmpty($method->invoke(null, $rc));
+    }
+
+    public function testGetInheritDocDeeply()
+    {
+        /* @var \PHPUnit_Framework_MockObject_MockObject|\ReflectionMethod $method */
+        $method = $this->getMock('ReflectionMethod', array('getDocComment', 'getPrototype'), array(__NAMESPACE__ . '\Method', 'getRoot'));
+        $method->expects($this->once())->method('getDocComment')->willReturn('/**
+ * {@inheritDoc}
+ * @return dynamic
+ */');
+        $method->expects($this->once())->method('getPrototype')->willReturn(null);
+
+        $object = new Method($method, null, $method->getDeclaringClass());
+        $doc = $object->getDocComment('', true);
+        //
+        $this->assertContains("\n * " . '{@inheritDoc}', $doc);
+        $this->assertContains("\n * " . '@return mixed', $doc);
+
+        /* @var \PHPUnit_Framework_MockObject_MockObject|\ReflectionClass $class */
+        $class = $this->getMock('ReflectionClass', array('getParentClass'), array(__NAMESPACE__ . '\Console\MetaCommand'));
+        $method = $this->getMock('ReflectionMethod', array('getDeclaringClass'), array($class->name, '__construct'));
+        $method->method('getDeclaringClass')->willReturn($class);
+
+        /* @var \PHPUnit_Framework_MockObject_MockObject|\ReflectionClass $parent */
+        $parent = $this->getMock('ReflectionClass', array('getMethod'), array('Illuminate\Console\Command'));
+        $class->expects($this->once())->method('getParentClass')->willReturn($parent);
+
+        $pm = $this->getMock('ReflectionMethod', array('getDeclaringClass', 'getDocComment'), array($parent->name, '__construct'));
+        $parent->expects($this->once())->method('getMethod')->with('__construct')->willReturn($pm);
+
+        $pm->method('getDeclaringClass')->willReturn($parent);
+        $pm->expects($this->once())->method('getDocComment')->willReturn('/**
+ * {@inheritDoc}
+ * @return void
+ */');
+
+        $object = new Method($method, null, $class);
+        $doc = $object->getDocComment('', true);
+
+        $this->assertContains("\n * " . 'Constructor.', $doc);
+        $this->assertContains("\n * " . '@param string|null $name ', $doc);
+        $this->assertContains("\n * " . '@throws \LogicException ', $doc);
+        $this->assertContains("\n * " . '@return void', $doc);
+        $this->assertContains("\n * " . '@param \Illuminate\Container\Container', $doc);
+    }
+
 }

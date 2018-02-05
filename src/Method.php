@@ -158,20 +158,22 @@ class Method
      * Get the description and get the inherited docs.
      *
      * @param DocBlock $phpdoc
+     * @param \ReflectionMethod $method
      */
-    protected function normalizeDescription(DocBlock $phpdoc)
+    protected function normalizeDescription(DocBlock $phpdoc, $method = null)
     {
         //Get the short + long description from the DocBlock
         $description = $phpdoc->getText();
 
         //Loop through parents/interfaces, to fill in {@inheritdoc}
-        if (stripos($description, '{@inheritdoc}') !== false && ($inheritdoc = $this->getInheritDoc($this->method))) {
+        if (stripos($description, '{@inheritdoc}') !== false && ($inheritdoc = $this->getInheritDoc($method ?: $this->method))) {
             $inheritDescription = $inheritdoc->getText();
 
             $description = str_ireplace('{@inheritdoc}', $inheritDescription, $description);
             $phpdoc->setText($description);
 
-            $this->normalizeReturnTags($inheritdoc);
+            if (empty($method))
+                $this->normalizeReturnTags($inheritdoc);
 
             //Add the tags that are inherited
             foreach ($inheritdoc->getTags() as $tag) {
@@ -194,7 +196,6 @@ class Method
             $typeProp->setAccessible(true);
         }
 
-        $this->return = null;
         //Get the return type and adjust them for better autocomplete
         foreach ($phpdoc->getTags() as $tag) {
             if ($tag instanceof ReturnTag) {
@@ -210,7 +211,9 @@ class Method
                     foreach ($this->interfaces as $interface => $real) {
                         $typeValue = preg_replace('/(^|\|)' . preg_quote($interface, '/') . '\b/', $real, $typeValue);
                     }
-                    $this->return = $typeValue;
+
+                    if (is_null($this->return))
+                        $this->return = $typeValue;
                 }
 
                 // Re-set the type
@@ -248,7 +251,7 @@ class Method
     public function shouldReturn()
     {
         if ($this->return !== 'void' && $this->method->name !== '__construct') {
-            return isset($this->return) ? true : 1;
+            return is_null($this->return) ? 1 : true;
         }
 
         return false;
@@ -319,12 +322,9 @@ class Method
             $namespace = $method->getDeclaringClass()->getNamespaceName();
             $phpdoc = new DocBlock($method, new Context($namespace, static::getUseStatements($method->getDeclaringClass())));
 
-            if (stripos($phpdoc->getText(), '{@inheritdoc}') !== false) {
-                //Not at the end yet, try another parent/interface..
-                return $this->getInheritDoc($method);
-            } else {
-                return $phpdoc;
-            }
+            //Not at the end yet, try another parent/interface..
+            $this->normalizeDescription($phpdoc, $method);
+            return $phpdoc;
         }
         return null;
     }

@@ -1,68 +1,11 @@
 <?php namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Config\FileLoader;
-use Illuminate\Events\EventServiceProvider;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
 
 class ServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
     /** @var IdeHelperServiceProvider */
     protected $provider;
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function setUpBeforeClass()
-    {
-        $mocker = new \PHPUnit_Framework_MockObject_Generator;
-
-        $m = new \ReflectionMethod(get_class($mocker), 'getClassMethods');
-        $m->setAccessible(true);
-        $methods = $m->invoke($mocker, 'Illuminate\Container\Container');
-
-        /** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Container\Container $app */
-        $app = $mocker->getMock('Illuminate\Container\Container', array_merge($methods, array('booted')), array(), '', false, true, true, false, true);
-        /** @noinspection PhpParamsInspection */
-        $provider = new EventServiceProvider($app);
-        $provider->register();
-
-        // Bind Paths
-        $app->instance('path', __DIR__);
-        $app->instance('path.base', dirname(__DIR__));
-        $app->instance('path.storage', sys_get_temp_dir());
-
-        // Bind The Application In The Container
-        $app->instance('app', $app);
-        // Check For The Test Environment
-        $app['env'] = $env = 'testing';
-
-        // Load The Illuminate Facades
-        Facade::clearResolvedInstances();
-        /** @noinspection PhpParamsInspection */
-        Facade::setFacadeApplication($app);
-
-        // Register The Configuration Repository
-        $loader = new FileLoader(new Filesystem, __DIR__ . '/config');
-        /** @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Config\Repository $config */
-        $config = $mocker->getMock('Illuminate\Config\Repository', array(), array($loader, $env), '', false, true, true, false, true);
-        $app->instance('config', $config);
-
-        $config->set('view.paths', array());
-        // Register The Core Service Providers
-        foreach (array(
-                     'Illuminate\Filesystem\FilesystemServiceProvider',
-                     'Illuminate\View\ViewServiceProvider',
-                     'Illuminate\Database\DatabaseServiceProvider',
-                 ) as $provider) {
-            $provider = new $provider($app);
-            /* @var \Illuminate\Support\ServiceProvider $provider */
-            $provider->register();
-        }
-
-        // Boot The Application -> boot each service provider
-        $provider->boot();
-    }
 
     /**
      * {@inheritdoc}

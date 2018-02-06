@@ -12,7 +12,7 @@ if (!class_exists('Illuminate\Foundation\Application', false)) {
     eval('namespace Illuminate\Foundation { class Application extends \Illuminate\Container\Container { public function booted() { } } }');
 }
 $mocker = new PHPUnit_Framework_MockObject_Generator;
-/** @var PHPUnit_Framework_MockObject_MockObject|Illuminate\Container\Container $app */
+/* @var PHPUnit_Framework_MockObject_MockObject|Illuminate\Container\Container $app */
 $app = $mocker->getMock('Illuminate\Foundation\Application', array(), array(), '', true, true, true, false, true);
 /** @noinspection PhpParamsInspection */
 $provider = new Illuminate\Events\EventServiceProvider($app);
@@ -56,7 +56,7 @@ $loader = new Illuminate\Config\FileLoader(new Illuminate\Filesystem\Filesystem,
 $config = $mocker->getMock('Illuminate\Config\Repository', array(), array($loader, $env), '', false, true, true, false, true);
 $app->instance('config', $config);
 
-/** @var PHPUnit_Framework_MockObject_MockObject|Illuminate\Config\Repository $config */
+/* @var PHPUnit_Framework_MockObject_MockObject|Illuminate\Config\Repository $config */
 $config->set('view.paths', array());
 unset($config, $env);
 
@@ -71,7 +71,7 @@ unset($config, $env);
 if (!class_exists('Illuminate\Foundation\AliasLoader', false)) {
     eval('namespace Illuminate\Foundation { class AliasLoader { static $instance; public static function getInstance() { return static::$instance; } } }');
 }
-/** @var PHPUnit_Framework_MockObject_MockObject|object $loader */
+/* @var PHPUnit_Framework_MockObject_MockObject|object $loader */
 $loader = $mocker->getMock('Illuminate\Foundation\AliasLoader', array('getAliases'));
 $loader->method('getAliases')->willReturn(array(
     'App' => 'Illuminate\Support\Facades\App',
@@ -102,5 +102,5 @@ foreach (array(
 }
 
 // Boot The Application -> boot each service provider
-$provider->boot();
+//$provider->boot();
 unset($provider, $app);

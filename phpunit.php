@@ -8,15 +8,14 @@ require __DIR__ . '/vendor/autoload.php';
 // Register The Laravel Auto Loader
 
 // Create The Application
-if (!class_exists('Illuminate\Foundation\Application', false)) {
-    eval('namespace Illuminate\Foundation { class Application extends \Illuminate\Container\Container { public function booted() { } } }');
+if (!class_exists('Illuminate\Foundation\Application')) {
+    eval('namespace Illuminate\Foundation { class Application extends \Illuminate\Container\Container { const VERSION = \'4.0.0\'; public function booted() { } } }');
 }
 $mocker = new PHPUnit_Framework_MockObject_Generator;
 /* @var PHPUnit_Framework_MockObject_MockObject|Illuminate\Container\Container $app */
-$app = $mocker->getMock('Illuminate\Foundation\Application', array(), array(), '', true, true, true, false, true);
-/** @noinspection PhpParamsInspection */
-$provider = new Illuminate\Events\EventServiceProvider($app);
-$provider->register();
+$app = $mocker->getMock('Illuminate\Foundation\Application', array('bind', 'make', 'offsetGet', 'offsetSet'), array(), '', true, true, true, false, true, new stdClass);
+$app->__phpunit_setOriginalObject('parent');
+$app->instance('events', $mocker->getMock('Illuminate\Events\Dispatcher', null, array($app)));
 
 // Detect The Application Environment
 $env = 'testing';
@@ -51,14 +50,16 @@ foreach (array(
     $app->alias($key, $alias);
 }
 
+$app->instance('files', $fs = $mocker->getMock('Illuminate\Filesystem\Filesystem', null));
 // Register The Configuration Repository
-$loader = new Illuminate\Config\FileLoader(new Illuminate\Filesystem\Filesystem, __DIR__ . '/tests/config');
-$config = $mocker->getMock('Illuminate\Config\Repository', array(), array($loader, $env), '', false, true, true, false, true);
+$loader = $mocker->getMock('Illuminate\Config\FileLoader', null, array($fs, __DIR__ . '/tests/config'));
+$config = $mocker->getMock('Illuminate\Config\Repository', array('get', 'set', 'package'), array($loader, $env), '', true, true, true, false, true, new stdClass);
+/* @var PHPUnit_Framework_MockObject_MockObject|Illuminate\Config\Repository $config */
+$config->__phpunit_setOriginalObject('parent');
 $app->instance('config', $config);
 
-/* @var PHPUnit_Framework_MockObject_MockObject|Illuminate\Config\Repository $config */
 $config->set('view.paths', array());
-unset($config, $env);
+unset($config);
 
 // Register Application Exception Handling
 
@@ -68,12 +69,30 @@ unset($config, $env);
 //date_default_timezone_set('UTC');
 
 // Register The Alias Loader
-if (!class_exists('Illuminate\Foundation\AliasLoader', false)) {
-    eval('namespace Illuminate\Foundation { class AliasLoader { static $instance; public static function getInstance() { return static::$instance; } } }');
+if (!class_exists('Illuminate\Foundation\AliasLoader')) {
+    eval('namespace Illuminate\Foundation {
+    class AliasLoader {
+        protected $aliases;
+        protected $registered = false;
+        static $instance;
+        public function __construct(array $aliases = array()) { $this->aliases = $aliases; }
+        public static function getInstance() { return static::$instance; }
+        public function load($alias) {
+            if (isset($this->aliases[$alias]))
+                return class_alias($this->aliases[$alias], $alias);
+        }
+        public function register() {
+            if (!$this->registered) {
+                spl_autoload_register(array($this, \'load\'), true, true);
+                $this->registered = true;
+            }
+        }
+        public function getAliases() { return $this->aliases; }
+    }
+}');
 }
 /* @var PHPUnit_Framework_MockObject_MockObject|object $loader */
-$loader = $mocker->getMock('Illuminate\Foundation\AliasLoader', array('getAliases'));
-$loader->method('getAliases')->willReturn(array(
+$loader = $mocker->getMock('Illuminate\Foundation\AliasLoader', null, array(array(
     'App' => 'Illuminate\Support\Facades\App',
     'Blade' => 'Illuminate\Support\Facades\Blade',
     'ClassLoader' => 'Illuminate\Support\ClassLoader',
@@ -86,16 +105,13 @@ $loader->method('getAliases')->willReturn(array(
     'SoftDeletingTrait' => 'Illuminate\Database\Eloquent\SoftDeletingTrait',
     'Str' => 'Illuminate\Support\Str',
     'View' => 'Illuminate\Support\Facades\View',
-));
+)));
+$loader->register();
 $loader::$instance = $loader;
 unset($loader, $mocker);
 
 // Register The Core Service Providers
-foreach (array(
-             'Illuminate\Filesystem\FilesystemServiceProvider',
-             'Illuminate\View\ViewServiceProvider',
-             'Illuminate\Database\DatabaseServiceProvider',
-         ) as $provider) {
+foreach (array('Illuminate\View\ViewServiceProvider', 'Illuminate\Database\DatabaseServiceProvider') as $provider) {
     $provider = new $provider($app);
     /* @var Illuminate\Support\ServiceProvider $provider */
     $provider->register();
@@ -103,4 +119,4 @@ foreach (array(
 
 // Boot The Application -> boot each service provider
 //$provider->boot();
-unset($provider, $app);
+unset($provider);

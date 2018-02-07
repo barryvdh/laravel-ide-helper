@@ -1,7 +1,5 @@
 <?php namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Support\Facades\Facade;
-
 class AliasTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -112,8 +110,9 @@ class AliasTest extends \PHPUnit_Framework_TestCase
 
     public function testDetectRoot()
     {
-        /* @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Container\Container $app */
-        $app = Facade::getFacadeApplication();
+        global $app;
+        ServiceProviderTest::addMockObjects($this, $app);
+
         $app->expects($this->any())->method('offsetGet')->willReturnCallback(function ($key) {
             if ($key === 'db') throw new \PDOException('Foo');
         });

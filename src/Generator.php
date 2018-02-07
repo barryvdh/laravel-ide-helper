@@ -115,8 +115,10 @@ class Generator
             if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
                 /** @noinspection PhpUndefinedClassInspection */
                 $class = get_class(\Auth::driver());
+                /** @noinspection PhpUndefinedClassInspection */
+                $provider = get_class(\Auth::getProvider());
                 $this->extra['Auth'] = array($class);
-                $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
+                $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $provider;
             }
         } catch (\Exception $e) {}
 
@@ -204,7 +206,10 @@ class Generator
         try {
             if ($alias == 'Auth') {
                 /** @noinspection PhpUndefinedClassInspection */
-                $driver = \Auth::driver();
+                $driver = get_class(\Auth::driver());
+                /** @noinspection PhpUndefinedClassInspection */
+                $provider = get_class(\Auth::getProvider());
+                return array($driver, $provider);
             } elseif ($alias == 'DB') {
                 /** @noinspection PhpUndefinedClassInspection */
                 $driver = \DB::connection();

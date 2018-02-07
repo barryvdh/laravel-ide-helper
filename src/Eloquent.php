@@ -48,7 +48,7 @@ class Eloquent
         foreach ($mixins as $m) {
             $mixin = $m->getContent();
 
-            if(isset($expectedMixins[$mixin])) {
+            if (isset($expectedMixins[$mixin])) {
                 $command->info('Tag Exists: @mixin ' . $mixin . ' in ' . $class);
 
                 $expectedMixins[$mixin] = true;
@@ -56,8 +56,8 @@ class Eloquent
         }
 
         $changed = false;
-        foreach($expectedMixins as $expectedMixin => $present) {
-            if($present === false) {
+        foreach ($expectedMixins as $expectedMixin => $present) {
+            if ($present === false) {
                 $phpdoc->appendTag(Tag::createInstance('@mixin ' . $expectedMixin, $phpdoc));
 
                 $changed = true;
@@ -65,7 +65,7 @@ class Eloquent
         }
 
         // If nothing's changed, stop here.
-        if(!$changed) {
+        if (!$changed) {
             return;
         }
 

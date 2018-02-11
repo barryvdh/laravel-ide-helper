@@ -56,6 +56,7 @@ class ModelsCommand extends Command
     protected $write = false;
     protected $dirs = array();
     protected $reset;
+    protected $keep_text;
     /**
      * @var bool[string]
      */
@@ -86,6 +87,9 @@ class ModelsCommand extends Command
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
+        if ($this->option('smart-reset')) {
+            $this->keep_text = $this->reset = true;
+        }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
 
         //If filename is default and Write is not specified, ask what to do
@@ -136,6 +140,7 @@ class ModelsCommand extends Command
           array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
           array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
           array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
+          array('smart-reset', 'r', InputOption::VALUE_NONE, 'Remove the original phpdocs properties/methods, but keep the text'),
           array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
         );
     }
@@ -582,6 +587,11 @@ class ModelsCommand extends Command
 
         if ($this->reset) {
             $phpdoc = new DocBlock('', new Context($namespace));
+            if ($this->keep_text) {
+                $phpdoc->setText(
+                    (new DocBlock($reflection, new Context($namespace)))->getText()
+                );
+            }
         } else {
             $phpdoc = new DocBlock($reflection, new Context($namespace));
         }

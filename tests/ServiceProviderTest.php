@@ -2,19 +2,20 @@
 
 class ServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
-    static function addMockObjects(\PHPUnit_Framework_TestCase $test, $_ = null)
+    static function laravelViewClass()
     {
-        static $prop;
-        if (!isset($prop)) {
-            $prop = new \ReflectionProperty('PHPUnit_Framework_TestCase', 'mockObjects');
-            $prop->setAccessible(true);
+        static $cls;
+        if (!isset($cls)) {
+            $cls = class_exists('Illuminate\View\Environment') ? 'Illuminate\View\Environment' : 'Illuminate\View\Factory';
         }
-        $prop->setValue($test, array_merge($prop->getValue($test), array_slice(func_get_args(), 1)));
+        return $cls;
     }
 
     public function testDeferred()
     {
         $provider = new IdeHelperServiceProvider(null);
+
+        $this->assertAttributeEquals(null, 'app', $provider);
         $this->assertTrue($provider->isDeferred());
     }
 
@@ -26,56 +27,67 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testRegister()
     {
-        global $app;
-        static::addMockObjects($this, $app);
+        $app = $this->getMock('Illuminate\Container\Container', array('bind', 'make'));
 
-        $app->expects($this->exactly(3))->method('bind')->withConsecutive(
-            array('command.ide-helper.generate', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
-            array('command.ide-helper.models', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
-            array('command.ide-helper.meta', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse())
-        );
+        $events = $this->getMock('Illuminate\Events\Dispatcher', array('listen'), array($app));
+        $files = $this->getMock('Illuminate\Filesystem\Filesystem', null);
+        $config = $this->getMock('Illuminate\Config\Repository', array('get'), array(), '', false);
+
+        $app->expects($this->any())->method('make')->willReturnMap(array(
+            array('events', array(), $events),
+            array('files', array(), $files),
+            array('config', array(), $config),
+        ));
+
+        $app->expects($this->exactly(3))->method('bind')
+            ->withConsecutive(
+                array('command.ide-helper.generate', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
+                array('command.ide-helper.models', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse()),
+                array('command.ide-helper.meta', $this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_CALLABLE), $this->isFalse())
+            )
+            ->willReturnCallback(function ($abstract, $closure) use ($app) {
+                /** @noinspection SpellCheckingInspection */
+                $classType = 'Barryvdh\LaravelIdeHelper\Console\\' . str_replace('rate', 'rator', substr($abstract, 19)) . 'Command';
+                $object = $closure($app);
+                assert($object instanceof $classType);
+            });
+
+        $events->expects($this->once())->method('listen')->with('artisan.start', $this->callback(function ($closure) {
+            $expected = print_r(array('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta'), true);
+            return strpos(preg_replace('/^\s+/mu', '', print_r($closure, true)), preg_replace('/^\s+/mu', '', $expected)) > 0;
+        }));
 
         /** @noinspection PhpParamsInspection */
         $provider = new IdeHelperServiceProvider($app);
         $provider->register();
 
-        /** @var \Illuminate\Events\Dispatcher $evt */
-        $evt = $app['events'];
-        $expected = print_r(array('commands' => array('command.ide-helper.generate', 'command.ide-helper.models', 'command.ide-helper.meta')), true);
-        $this->assertContains(preg_replace('/^\s+/mu', '', $expected), preg_replace('/^\s+/mu', '', print_r($evt->getListeners('artisan.start'), true)));
-
         return $provider;
     }
 
-    /**
-     * @depends testRegister
-     * @param IdeHelperServiceProvider $provider
-     */
-    public function testBoot($provider)
+    public function testBoot()
     {
+        $app = $this->getMock('Illuminate\Container\Container', array('make'));
+
+        $files = $this->getMock('Illuminate\Filesystem\Filesystem', null);
+        $config = $this->getMock('Illuminate\Config\Repository', array('package'), array(), '', false);
+        $view = $this->getMock(static::laravelViewClass(), array('addNamespace'), array(), '', false);
+
+        $app->expects($this->any())->method('make')->withConsecutive(array('files'), array('config'))->willReturnMap(array(
+            array('files', array(), $files),
+            array('config', array(), $config),
+            array('view', array(), $view),
+        ));
+
         $path = realpath(__DIR__ . '/../src');
-        global $app;
+        $config->expects($this->once())->method('package')
+            ->with('barryvdh/laravel-ide-helper', $path . '/config', 'laravel-ide-helper');
 
-        /* @var \PHPUnit_Framework_MockObject_MockObject|\Illuminate\Config\Repository $config */
-        $config = $app['config'];
-        static::addMockObjects($this, $config);
+        $view->expects($this->once())->method('addNamespace')
+            ->with('laravel-ide-helper', $path . '/views');
 
-        $config->expects($this->once())->method('package')->with('barryvdh/laravel-ide-helper', $path . '/config', 'laravel-ide-helper');
-
+        /** @noinspection PhpParamsInspection */
+        $provider = new IdeHelperServiceProvider($app);
         $provider->boot();
-
-        $this->assertSame('_ide_helper', $config->get('laravel-ide-helper::filename'));
-        $this->assertEquals(array('\Illuminate\Auth\UserInterface' => 'User'), $config['laravel-ide-helper::interfaces']);
-        $this->assertEquals(array(dirname(__DIR__) . '/vendor/laravel/framework/src/Illuminate/Support/helpers.php'), $config['laravel-ide-helper::helper_files']);
-
-        /* @var \Illuminate\View\Factory $view */
-        $view = $app['view'];
-        $this->assertTrue($view->exists('laravel-ide-helper::ide-helper'));
-        $this->assertTrue($view->exists('laravel-ide-helper::meta'));
-
-        $this->assertInstanceOf(__NAMESPACE__ . '\Console\GeneratorCommand', $app['command.ide-helper.generate']);
-        $this->assertInstanceOf(__NAMESPACE__ . '\Console\ModelsCommand', $app['command.ide-helper.models']);
-        $this->assertInstanceOf(__NAMESPACE__ . '\Console\MetaCommand', $app['command.ide-helper.meta']);
     }
 
 }

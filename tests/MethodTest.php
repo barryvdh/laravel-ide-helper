@@ -20,10 +20,7 @@ class MethodTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('\\' . get_class($this), $object->getRoot());
         $this->assertSame('getMock', $object->getName());
 
-        $prop = new \ReflectionProperty(get_class($object), 'namespace');
-        $prop->setAccessible(true);
-        $this->assertSame('', $prop->getValue($object));
-
+        $this->assertAttributeEquals('', 'namespace', $object);
         $this->assertFalse($object->isDeprecated());
         $this->assertCount($method->getNumberOfParameters(), $object->getDocParams());
 

@@ -50,7 +50,7 @@ class Generator
 
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
-            $interface = '\\' . ltrim($interface, '\\');
+            if ($interface != 'static') $interface = '\\' . ltrim($interface, '\\');
         }
         $this->helpers = $helpers;
     }

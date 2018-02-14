@@ -1,5 +1,8 @@
 <?php namespace Barryvdh\LaravelIdeHelper;
 
+use Doctrine\Instantiator\Instantiator;
+use Illuminate\Support\Facades\Facade;
+
 class AliasTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -17,6 +20,9 @@ class AliasTest extends \PHPUnit_Framework_TestCase
         $object = new Alias(null, ' ');
 
         $this->assertNull($object->getAlias());
+        $this->assertAttributeEquals('\ ', 'facade', $object);
+        $this->assertAttributeEquals(null, 'root', $object);
+
         $this->assertInvalidAlias($object);
     }
 
@@ -33,10 +39,21 @@ class AliasTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $app = $this->getMock('Illuminate\Container\Container', array('make'));
+
+        $view = with(new Instantiator)->instantiate($cls = ServiceProviderTest::laravelViewClass());
+        $app->expects($this->once())->method('make')->with('view')->willReturn($view);
+
+        Facade::clearResolvedInstances();
+        /** @noinspection PhpParamsInspection */
+        Facade::setFacadeApplication($app);
+
         $object = new Alias('Foo\View', 'Illuminate\Support\Facades\View');
 
         $this->assertSame('Foo\View', $object->getAlias());
         $this->assertTrue($object->isValid());
+        $this->assertAttributeEquals('\Illuminate\Support\Facades\View', 'facade', $object);
+        $this->assertAttributeEquals($cls, 'root', $object);
 
         $this->assertSame('class', $object->getClassType());
         $this->assertSame('\Illuminate\Support\Facades\View', $object->getExtends());
@@ -54,6 +71,9 @@ class AliasTest extends \PHPUnit_Framework_TestCase
         $object = new Alias('SoftDeletingTrait', 'Illuminate\Database\Eloquent\SoftDeletingTrait');
 
         $this->assertSame('SoftDeletingTrait', $object->getAlias());
+        $this->assertAttributeEquals('\Illuminate\Database\Eloquent\SoftDeletingTrait', 'facade', $object);
+        $this->assertAttributeEquals(null, 'root', $object);
+
         $this->assertInvalidAlias($object);
     }
 
@@ -110,12 +130,13 @@ class AliasTest extends \PHPUnit_Framework_TestCase
 
     public function testDetectRoot()
     {
-        global $app;
-        ServiceProviderTest::addMockObjects($this, $app);
+        $app = $this->getMock('Illuminate\Container\Container', array('make'));
 
-        $app->expects($this->any())->method('offsetGet')->willReturnCallback(function ($key) {
-            if ($key === 'db') throw new \PDOException('Foo');
-        });
+        Facade::clearResolvedInstances();
+        /** @noinspection PhpParamsInspection */
+        Facade::setFacadeApplication($app);
+
+        $app->expects($this->once())->method('make')->with('db')->willThrowException(new \PDOException('Foo'));
 
         $this->expectOutputString("PDOException: Foo\nPlease configure your database connection correctly, or use the sqlite memory driver (-M). Skipping \\Illuminate\\Support\\Facades\\DB.\r\n");
         new Alias('DB', 'Illuminate\Support\Facades\DB');

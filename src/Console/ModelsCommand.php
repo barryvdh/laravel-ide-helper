@@ -140,7 +140,7 @@ class ModelsCommand extends Command
           array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
           array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
           array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
-          array('smart-reset', 'r', InputOption::VALUE_NONE, 'Remove the original phpdocs properties/methods, but keep the text'),
+          array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
           array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
         );
     }

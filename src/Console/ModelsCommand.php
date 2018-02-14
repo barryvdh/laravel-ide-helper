@@ -460,7 +460,8 @@ class ModelsCommand extends Command
                                'morphOne',
                                'morphTo',
                                'morphMany',
-                               'morphToMany'
+                               'morphToMany',
+                               'morphedByMany'
                              ) as $relation) {
                         $search = '$this->' . $relation . '(';
                         if ($pos = stripos($code, $search)) {
@@ -470,7 +471,7 @@ class ModelsCommand extends Command
                             if ($relationObj instanceof Relation) {
                                 $relatedModel = '\\' . get_class($relationObj->getRelated());
 
-                                $relations = ['hasManyThrough', 'belongsToMany', 'hasMany', 'morphMany', 'morphToMany'];
+                                $relations = ['hasManyThrough', 'belongsToMany', 'hasMany', 'morphMany', 'morphToMany', 'morphedByMany'];
                                 if (in_array($relation, $relations)) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(

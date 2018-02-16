@@ -32,56 +32,26 @@ class Eloquent
         $reflection  = new \ReflectionClass($class);
         $namespace   = $reflection->getNamespaceName();
         $originalDoc = $reflection->getDocComment();
-
         if (!$originalDoc) {
             $command->info('Unexpected no document on ' . $class);
         }
         $phpdoc = new DocBlock($reflection, new Context($namespace));
 
         $mixins = $phpdoc->getTagsByName('mixin');
-        $expectedMixins = [
-            '\Eloquent'                             => false,
-            '\Illuminate\Database\Eloquent\Builder' => false,
-            '\Illuminate\Database\Query\Builder'    => false,
-        ];
-
         foreach ($mixins as $m) {
-            $mixin = $m->getContent();
+            if ($m->getContent() === '\Eloquent') {
+                $command->info('Tag Exists: @mixin \Eloquent in ' . $class);
 
-            if (isset($expectedMixins[$mixin])) {
-                $command->info('Tag Exists: @mixin ' . $mixin . ' in ' . $class);
-
-                $expectedMixins[$mixin] = true;
+                return;
             }
         }
 
-        $changed = false;
-        foreach ($expectedMixins as $expectedMixin => $present) {
-            if ($present === false) {
-                $phpdoc->appendTag(Tag::createInstance('@mixin ' . $expectedMixin, $phpdoc));
-
-                $changed = true;
-            }
-        }
-
-        // If nothing's changed, stop here.
-        if (!$changed) {
-            return;
-        }
+        // add the Eloquent mixin
+        $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
 
         $serializer = new DocBlockSerializer();
         $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
-
-        /*
-            The new DocBlock is appended to the beginning of the class declaration.
-            Since there is no DocBlock, the declaration is used as a guide.
-        */
-        if (!$originalDoc) {
-            $originalDoc = 'abstract class Model implements';
-
-            $docComment .= "\nabstract class Model implements";
-        }
 
         $filename = $reflection->getFileName();
         if ($filename) {
@@ -91,7 +61,7 @@ class Eloquent
                 $contents = str_replace($originalDoc, $docComment, $contents, $count);
                 if ($count > 0) {
                     if ($files->put($filename, $contents)) {
-                        $command->info('Wrote expected docblock to ' . $filename);
+                        $command->info('Wrote @mixin \Eloquent to ' . $filename);
                     } else {
                         $command->error('File write failed to ' . $filename);
                     }

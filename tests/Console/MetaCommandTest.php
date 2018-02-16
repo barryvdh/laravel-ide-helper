@@ -12,7 +12,7 @@ class MetaCommandTest extends \PHPUnit_Framework_TestCase
         $object = new MetaCommand(null);
 
         $this->assertAttributeEquals('ide-helper:meta', 'name', $object);
-        $this->assertAttributeEquals(null, 'laravel', $object);
+        $this->assertNull($object->getLaravel());
         $this->assertAttributeEquals(null, 'files', $object);
         $this->assertAttributeEquals(null, 'view', $object);
     }
@@ -35,9 +35,14 @@ class MetaCommandTest extends \PHPUnit_Framework_TestCase
         return $object;
     }
 
+    /**
+     * @param MetaCommand $object
+     * @param array $bindings
+     * @return array|\PHPUnit_Framework_MockObject_MockObject[]
+     */
     protected function mockExpectations($object, $bindings = array())
     {
-        $app = $this->getObjectAttribute($object, 'laravel');
+        $app = $object->getLaravel();
         $files = $this->getObjectAttribute($object, 'files');
         $view = $this->getObjectAttribute($object, 'view');
         GeneratorTest::addMockObjects($me = $this, $app, $files, $view);

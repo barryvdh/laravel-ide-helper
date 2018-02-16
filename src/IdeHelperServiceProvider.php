@@ -41,7 +41,7 @@ class IdeHelperServiceProvider extends ServiceProvider
     {
         $this->app['command.ide-helper.generate'] = $this->app->share(
             function ($app) {
-                return new GeneratorCommand($app['config'], $app['files'], $app['view']);
+                return new GeneratorCommand($app);
             }
         );
 

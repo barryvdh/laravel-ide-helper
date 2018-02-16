@@ -198,7 +198,7 @@ class ModelsCommand extends Command
         $models = array();
         foreach ($this->dirs as $dir) {
             $dir = base_path() . '/' . $dir;
-            if (file_exists($dir)) {
+            if ($this->files->exists($dir)) {
                 foreach (ClassMapGenerator::createMap($dir) as $model => $path) {
                     $models[] = $model;
                 }

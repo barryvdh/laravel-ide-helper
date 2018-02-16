@@ -33,9 +33,9 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertAttributeEquals(null, 'view', $object);
         $this->assertAttributeEquals(null, 'output', $object);
-        $this->assertAttributeEquals($a, 'extra', $object);
+        $this->assertArrayHasKey('\Bar', $this->getObjectAttribute($object, 'extra'));
         $this->assertAttributeEquals($a, 'magic', $object);
-        $this->assertAttributeEquals(array('\Bar' => '\Foo'), 'interfaces', $object);
+        $this->assertContains('\Foo', $this->getObjectAttribute($object, 'interfaces'));
         $this->assertAttributeEquals('', 'helpers', $object);
 
         return $object;
@@ -50,6 +50,12 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($object->getDriver(null));
     }
 
+    static function mockDbFacade()
+    {
+        if (!class_exists('DB'))
+            class_alias('Illuminate\Support\Facades\DB', 'DB');
+    }
+
     /**
      * @depends testConstructor
      * @param Generator $object
@@ -57,8 +63,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriverError($object)
     {
-        if (!class_exists('DB'))
-            class_alias('Illuminate\Support\Facades\DB', 'DB');
+        static::mockDbFacade();
 
         $db = $this->getMock('Illuminate\Database\DatabaseManager', array('connection'), array(), '', false);
         $app = $this->getMock('Illuminate\Container\Container', array('make'));
@@ -86,11 +91,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
         return $object;
     }
 
-    /**
-     * @depends testConstructor
-     * @param Generator $object
-     */
-    public function testGetDriverAuth($object = null)
+    static function mockAuthFacade()
     {
         if (!class_exists('Illuminate\Auth\Guard')) {
             eval('namespace Illuminate\Auth {
@@ -104,9 +105,16 @@ namespace {
     }
 }');
         }
+    }
 
-        if (isset($object))
-            $this->assertEquals(array('Illuminate\Auth\Guard', 'Illuminate\Auth\EloquentUserProvider'), $object->getDriver('Auth'));
+    /**
+     * @depends testConstructor
+     * @param Generator $object
+     */
+    public function testGetDriverAuth($object)
+    {
+        static::mockAuthFacade();
+        $this->assertEquals(array('Illuminate\Auth\Guard', 'Illuminate\Auth\EloquentUserProvider'), $object->getDriver('Auth'));
     }
 
     static function addMockObjects(\PHPUnit_Framework_TestCase $test, $_ = null)
@@ -119,32 +127,32 @@ namespace {
         $prop->setValue($test, array_merge($prop->getValue($test), array_slice(func_get_args(), 1)));
     }
 
+    static function mockDbObject(\PHPUnit_Framework_MockObject_MockObject $db)
+    {
+        $conn = with(new Instantiator)->instantiate('Illuminate\Database\SQLiteConnection');
+        $db->expects(static::atLeast(1))->method('connection')->with(null)->willReturn($conn);
+    }
+
     /**
      * @depends testGetDriverError
      * @param Generator $object
      */
     public function testGetDriverDB($object = null)
     {
-        $db = DbFacade::getFacadeRoot();
-        if (is_null($db)) {
+        if (is_null($db = DbFacade::getFacadeRoot())) {
             $db = $this->getMock('Illuminate\Database\DatabaseManager', array('connection'), array(), '', false);
             DbFacade::swap($db);
         } else {
             static::addMockObjects($this, $db);
         }
 
-        $conn = with(new Instantiator)->instantiate('Illuminate\Database\SQLiteConnection');
-        $db->expects($this->once())->method('connection')->with(null)->willReturn($conn);
+        static::mockDbObject($db);
 
         if (isset($object))
             $this->assertSame('Illuminate\Database\SQLiteConnection', $object->getDriver('DB'));
     }
 
-    /**
-     * @depends testConstructor
-     * @param Generator $object
-     */
-    public function testGetDriverCache($object = null)
+    static function mockCacheFacade()
     {
         if (!class_exists('Illuminate\Cache\Repository')) {
             eval('namespace Illuminate\Cache {
@@ -158,16 +166,19 @@ namespace {
     }
 }');
         }
-
-        if (isset($object))
-            $this->assertEquals(array('Illuminate\Cache\Repository', 'Illuminate\Cache\FileStore'), $object->getDriver('Cache'));
     }
 
     /**
      * @depends testConstructor
      * @param Generator $object
      */
-    public function testGetDriverQueue($object = null)
+    public function testGetDriverCache($object)
+    {
+        static::mockCacheFacade();
+        $this->assertEquals(array('Illuminate\Cache\Repository', 'Illuminate\Cache\FileStore'), $object->getDriver('Cache'));
+    }
+
+    static function mockQueueFacade()
     {
         if (!class_exists('Illuminate\Queue\SyncQueue')) {
             eval('namespace Illuminate\Queue { class SyncQueue {} }
@@ -177,9 +188,46 @@ namespace {
     }
 }');
         }
+    }
 
-        if (isset($object))
-            $this->assertSame('Illuminate\Queue\SyncQueue', $object->getDriver('Queue'));
+    /**
+     * @depends testConstructor
+     * @param Generator $object
+     */
+    public function testGetDriverQueue($object)
+    {
+        static::mockQueueFacade();
+        $this->assertSame('Illuminate\Queue\SyncQueue', $object->getDriver('Queue'));
+    }
+
+    static function mockSshFacade()
+    {
+        if (!class_exists('Illuminate\Support\Facades\SSH')) {
+            eval('namespace Illuminate\Support\Facades { class SSH {} }');
+        }
+        if (!class_exists('Illuminate\Remote\Connection')) {
+            eval('namespace Illuminate\Remote { class Connection {} }
+namespace {
+    class SSH extends \Illuminate\Support\Facades\SSH {
+        static function connection() { return new \Illuminate\Remote\Connection; }
+    }
+}');
+        }
+    }
+
+    static function mockConfigObject(\PHPUnit_Framework_MockObject_MockObject $config, $map = array())
+    {
+        ConfigFacade::swap($config);
+
+        $config->expects(static::once())->method('get')->with('auth.model', 'User')->willReturn('User');
+        $items = require __DIR__ . '/../src/config/config.php';
+        $config->__phpunit_verify();
+
+        $config->expects(static::atLeast(3))->method('get')->willReturnMap(array_merge($map, array(
+            array('laravel-ide-helper::extra', null, $items['extra']),
+            array('laravel-ide-helper::magic', null, $items['magic']),
+            array('laravel-ide-helper::interfaces', null, $items['interfaces']),
+        )));
     }
 
     /**
@@ -194,34 +242,13 @@ namespace {
         $view = $this->getMock(ServiceProviderTest::laravelViewClass(), array('make', 'getEngineResolver', 'callComposer'), array(), '', false);
 
         Facade::clearResolvedInstances();
-        ConfigFacade::swap($config);
+        static::mockConfigObject($config);
 
-        $config->expects($this->once())->method('get')->with('auth.model', 'User')->willReturn('User');
-        $items = require __DIR__ . '/../src/config/config.php';
-        $config->__phpunit_verify();
-
-        $config->expects($this->exactly(3))->method('get')->willReturnMap(array(
-            array('laravel-ide-helper::extra', null, $items['extra']),
-            array('laravel-ide-helper::magic', null, $items['magic']),
-            array('laravel-ide-helper::interfaces', null, $items['interfaces']),
-        ));
-
-        $this->testGetDriverAuth();
+        static::mockAuthFacade();
         $this->testGetDriverDB();
-        $this->testGetDriverCache();
-        $this->testGetDriverQueue();
-
-        if (!class_exists('Illuminate\Support\Facades\SSH')) {
-            eval('namespace Illuminate\Support\Facades { class SSH {} }');
-        }
-        if (!class_exists('Illuminate\Remote\Connection')) {
-            eval('namespace Illuminate\Remote { class Connection {} }
-namespace {
-    class SSH extends \Illuminate\Support\Facades\SSH {
-        static function connection() { return new \Illuminate\Remote\Connection; }
-    }
-}');
-        }
+        static::mockCacheFacade();
+        static::mockQueueFacade();
+        static::mockSshFacade();
 
         $object = new Generator($config, $view);
 
@@ -284,9 +311,9 @@ namespace {
     }
 
     static function mockLaravelApp(
-        \PHPUnit_Framework_TestCase $test, \PHPUnit_Framework_MockObject_MockObject $view = null, \PHPUnit_Framework_MockObject_MockObject $config = null)
+        \PHPUnit_Framework_TestCase $test, \PHPUnit_Framework_MockObject_MockObject $view = null, $config = null, $files = null, $db = null)
     {
-        if (is_null($db = DbFacade::getFacadeRoot()))
+        if (is_bool($db) || is_null($db = DbFacade::getFacadeRoot()))
             $db = $test->getMock('Illuminate\Database\DatabaseManager', array('connection'), array(), '', false);
 
         if (is_null($config))
@@ -300,15 +327,19 @@ namespace {
         if (!class_exists('Illuminate\Foundation\Application')) {
             eval('namespace Illuminate\Foundation { class Application extends \Illuminate\Container\Container { const VERSION = \'4.0.0\'; } }');
         }
-        $app = $test->getMock('Illuminate\Foundation\Application', array('make'));
+        if (is_null($app = Facade::getFacadeApplication()) || !is_a($app, 'Illuminate\Foundation\Application'))
+            $app = $test->getMock('Illuminate\Foundation\Application', array('make'));
+        else
+            static::addMockObjects($test, $app);
 
         $app->expects($test->atLeast(1))->method('make')->willReturnMap(array(
             array('app', array(), $app),
-            array('events', $test->getMock('Illuminate\Events\Dispatcher', null, array($app))),
-            array('files', $test->getMock('Illuminate\Filesystem\Filesystem', null)),
+            array('events', array(), $test->getMock('Illuminate\Events\Dispatcher', null, array($app))),
+            array('files', array(), $files ?: $test->getMock('Illuminate\Filesystem\Filesystem', null)),
             array('config', array(), $config),
             array('view', array(), $view),
             array('db', array(), $db),
+            array('path.base', array(), dirname(__DIR__)),
         ));
 
         Facade::clearResolvedInstances();
@@ -349,6 +380,17 @@ namespace {
         $this->assertContains('"distinct":' . $s . '"()",', $result);
     }
 
+    static function mockViewObject(\PHPUnit_Framework_TestCase $test, \PHPUnit_Framework_MockObject_MockObject $viewFactory)
+    {
+        $view = $test->getMock('Illuminate\View\View', null, array(
+            $viewFactory,
+            $test->getMock('Illuminate\View\Engines\PhpEngine', null),
+            'laravel-ide-helper::ide-helper',
+            realpath(__DIR__ . '/../src/views') . '/ide-helper.php',
+        ));
+        $viewFactory->expects($test->once())->method('make')->with('laravel-ide-helper::ide-helper')->willReturn($view);
+    }
+
     /**
      * @depends testDetectDrivers
      * @param Generator $object
@@ -357,22 +399,14 @@ namespace {
     {
         static::mockAliasLoaderClass($this);
 
-        $viewFactory = $this->getObjectAttribute($object, 'view');
-        /* @var \PHPUnit_Framework_MockObject_MockObject $viewFactory */
-        static::mockLaravelApp($this, $viewFactory, $this->getObjectAttribute($object, 'config'));
+        $view = $this->getObjectAttribute($object, 'view');
+        static::mockLaravelApp($this, $view, $this->getObjectAttribute($object, 'config'));
         $this->testGetDriverDB();
+        static::mockViewObject($this, $view);
 
         $prop = new \ReflectionProperty(get_class($object), 'helpers');
         $prop->setAccessible(true);
         $prop->setValue($object, 'function is_true() {}');
-
-        $view = $this->getMock('Illuminate\View\View', null, array(
-            $viewFactory,
-            $this->getMock('Illuminate\View\Engines\PhpEngine', null),
-            'laravel-ide-helper::ide-helper',
-            realpath(__DIR__ . '/../src/views') . '/ide-helper.php',
-        ));
-        $viewFactory->expects($this->once())->method('make')->with('laravel-ide-helper::ide-helper')->willReturn($view);
 
         $result = $object->generate(null);
 

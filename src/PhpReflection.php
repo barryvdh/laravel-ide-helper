@@ -17,6 +17,7 @@ class PhpReflection
      * @param  \ReflectionClass $rc
      * @return string  full name
      * @throws \InvalidArgumentException
+     * @codeCoverageIgnore
      */
     public static function expandClassName($name, \ReflectionClass $rc)
     {
@@ -63,6 +64,7 @@ class PhpReflection
     /**
      * @param  string
      * @return bool
+     * @codeCoverageIgnore
      */
     public static function isBuiltinType($type)
     {
@@ -106,7 +108,8 @@ class PhpReflection
                 case T_USE:
                     while (!$class && ($name = self::fetch($tokens, array(T_STRING, T_NS_SEPARATOR)))) {
                         $name = ltrim($name, '\\');
-                        if (self::fetch($tokens, '{')) {
+                        if (self::fetch($tokens, '{')) { // PHP 7+ use Some\Namespace\{ClassA, ClassB, ClassC as C};
+                            // @codeCoverageIgnoreStart
                             while ($suffix = self::fetch($tokens, array(T_STRING, T_NS_SEPARATOR))) {
                                 if (self::fetch($tokens, T_AS)) {
                                     $uses[self::fetch($tokens, T_STRING)] = $name . $suffix;
@@ -118,7 +121,7 @@ class PhpReflection
                                     break;
                                 }
                             }
-
+                            // @codeCoverageIgnoreEnd
                         } elseif (self::fetch($tokens, T_AS)) {
                             $uses[self::fetch($tokens, T_STRING)] = $name;
 

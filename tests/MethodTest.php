@@ -83,14 +83,12 @@ class MethodTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($object->shouldReturn());
         $this->assertCount($method->getNumberOfParameters(), $object->getDocParams());
 
-        $this->assertEquals(array('$config', '$files', '$view'), $object->getParams(false));
-        $this->assertEquals('$config, $files, $view', $object->getParamsWithDefault());
+        $this->assertEquals(array('$app'), $object->getParams(false));
+        $this->assertEquals('$app', $object->getParamsWithDefault());
 
         $doc = $object->getDocComment('', true);
         $this->assertContains("\n * " . 'Create a new console command instance.', $doc);
-        $this->assertContains("\n * " . '@param \Illuminate\Config\Repository ', $doc);
-        $this->assertContains("\n * " . '@param \Illuminate\Filesystem\Filesystem ', $doc);
-        $this->assertContains("\n * " . '@param \Illuminate\View\Factory ', $doc);
+        $this->assertContains("\n * " . '@param \Illuminate\Container\Container', $doc);
         $this->assertContains("\n * " . '@return \Command', $doc);
     }
 

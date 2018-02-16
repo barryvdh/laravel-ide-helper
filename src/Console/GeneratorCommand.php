@@ -11,9 +11,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Generator;
-use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -44,19 +42,16 @@ class GeneratorCommand extends Command
     /** @var \Illuminate\View\Factory */
     protected $view;
 
-    protected $onlyExtend;
-
     /**
      * {@inheritdoc}
      *
-     * @param \Illuminate\Config\Repository $config
-     * @param \Illuminate\Filesystem\Filesystem $files
-     * @param \Illuminate\View\Factory $view
+     * @param \Illuminate\Container\Container $app
      */
-    public function __construct(ConfigRepository $config, Filesystem $files, $view) {
-        $this->config = $config;
-        $this->files = $files;
-        $this->view = $view;
+    public function __construct($app) {
+        $this->laravel = $app;
+        $this->config = $app['config'];
+        $this->files = $app['files'];
+        $this->view = $app['view'];
         parent::__construct();
     }
 
@@ -67,7 +62,7 @@ class GeneratorCommand extends Command
      */
     public function fire()
     {
-        if (file_exists($compiled = base_path() . '/bootstrap/compiled.php')) {
+        if ($this->files->exists($this->laravel['path.base'] . '/bootstrap/compiled.php')) {
             $this->error(
                 'Error generating IDE Helper: first delete bootstrap/compiled.php (php artisan clear-compiled)'
             );
@@ -76,7 +71,7 @@ class GeneratorCommand extends Command
             $format = $this->option('format');
 
             // Strip the php extension
-            if (substr($filename, -4, 4) == '.php') {
+            if (substr($filename, -4) == '.php') {
                 $filename = substr($filename, 0, -4);
             }
 
@@ -87,14 +82,12 @@ class GeneratorCommand extends Command
             }
 
             $helpers = '';
-            if ($this->option('helpers') || ($this->config->get('laravel-ide-helper::include_helpers'))) {
+            if ($this->option('helpers') || $this->config->get('laravel-ide-helper::include_helpers')) {
                 foreach ($this->config->get('laravel-ide-helper::helper_files', array()) as $helper) {
-                    if (file_exists($helper)) {
-                        $helpers .= str_replace(array('<?php', '?>'), '', $this->files->get($helper));
+                    if ($this->files->exists($helper)) {
+                        $helpers .= preg_replace('/^\s*<\?php\h*(?:\r\n|\r|\n)?|(?:\r\n|\r|\n)?\h*\?>\s*$/u', '', $this->files->get($helper));
                     }
                 }
-            } else {
-                $helpers = '';
             }
 
             $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);

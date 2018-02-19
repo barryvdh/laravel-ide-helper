@@ -15,6 +15,7 @@
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
 
+    <?= trim($alias->getDocComment('    ')) ?> 
     <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach($alias->getMethods() as $method): ?>
 

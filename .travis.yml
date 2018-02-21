@@ -19,6 +19,7 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
+  - if [[ $TRAVIS_PHP_VERSION == 5.3 ]]; then echo 'short_open_tag=On' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --no-suggest --no-progress
 

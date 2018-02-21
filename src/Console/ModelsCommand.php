@@ -28,7 +28,6 @@ use phpDocumentor\Reflection\DocBlock\Tag;
  */
 class ModelsCommand extends Command
 {
-
     /**
      * {@inheritdoc}
      */
@@ -74,6 +73,7 @@ class ModelsCommand extends Command
             $this->laravel['config']->get('laravel-ide-helper::model_locations'),
             $this->option('dir')
         );
+
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
@@ -124,7 +124,7 @@ class ModelsCommand extends Command
 
     protected function generateDocs($loadModels, $ignore = '')
     {
-        $output = "<?php
+        $output = '<?php
 /**
  * An helper file for your Eloquent Models
  * Copy the phpDocs from this file to the correct Model,
@@ -132,7 +132,8 @@ class ModelsCommand extends Command
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
-\n\n";
+
+';
 
         $hasDoctrine = interface_exists('Doctrine\DBAL\Driver');
 
@@ -152,6 +153,7 @@ class ModelsCommand extends Command
                 $this->comment("Ignoring model '$name'");
                 continue;
             }
+
             $this->properties = array();
             $this->methods = array();
             if (class_exists($name)) {
@@ -181,7 +183,6 @@ class ModelsCommand extends Command
                     $this->error('Exception: ' . $e->getMessage() . "\nCould not analyze class $name.");
                 }
             }
-
         }
 
         if (!$hasDoctrine) {
@@ -195,15 +196,19 @@ class ModelsCommand extends Command
 
     protected function loadModels()
     {
+        $basePath = $this->laravel['path.base'];
         $models = array();
+
         foreach ($this->dirs as $dir) {
-            $dir = base_path() . '/' . $dir;
+            $dir = $basePath . '/' . ltrim($dir, '/');
             if ($this->files->exists($dir)) {
+
                 foreach (ClassMapGenerator::createMap($dir) as $model => $path) {
                     $models[] = $model;
                 }
             }
         }
+
         return $models;
     }
 
@@ -219,50 +224,49 @@ class ModelsCommand extends Command
         $schema->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
         $columns = $schema->listTableColumns($table);
+        if (!$columns) return;
 
-        if ($columns) {
-            foreach ($columns as $column) {
-                $name = $column->getName();
-                if (in_array($name, $model->getDates())) {
-                    $type = '\Carbon\Carbon';
-                } else {
-                    $type = $column->getType()->getName();
-                    switch ($type) {
-                        case 'string':
-                        case 'text':
-                        case 'date':
-                        case 'time':
-                        case 'guid':
-                        case 'datetimetz':
-                        case 'datetime':
-                            $type = 'string';
-                            break;
-                        case 'integer':
-                        case 'bigint':
-                        case 'smallint':
-                            $type = 'integer';
-                            break;
-                        case 'decimal':
-                        case 'float':
-                            $type = 'float';
-                            break;
-                        case 'boolean':
-                            $type = 'boolean';
-                            break;
-                        default:
-                            $type = 'mixed';
-                            break;
-                    }
+        foreach ($columns as $column) {
+            $name = $column->getName();
+            if (in_array($name, $model->getDates())) {
+                $type = '\Carbon\Carbon';
+            } else {
+                $type = $column->getType()->getName();
+                switch ($type) {
+                    case 'string':
+                    case 'text':
+                    case 'date':
+                    case 'time':
+                    case 'guid':
+                    case 'datetimetz':
+                    case 'datetime':
+                        $type = 'string';
+                        break;
+                    case 'integer':
+                    case 'bigint':
+                    case 'smallint':
+                        $type = 'integer';
+                        break;
+                    case 'decimal':
+                    case 'float':
+                        $type = 'float';
+                        break;
+                    case 'boolean':
+                        $type = 'boolean';
+                        break;
+                    default:
+                        $type = 'mixed';
+                        break;
                 }
-
-                $comment = $column->getComment();
-                $this->setProperty($name, $type, true, true, $comment);
-                $this->setMethod(
-                    Str::camel('where_' . $name),
-                    '\Illuminate\Database\Query\Builder|\\' . get_class($model),
-                    array('$value')
-                );
             }
+
+            $comment = $column->getComment();
+            $this->setProperty($name, $type, true, true, $comment);
+            $this->setMethod(
+                Str::camel('where_' . $name),
+                '\Illuminate\Database\Query\Builder|\\' . get_class($model),
+                array('$value')
+            );
         }
     }
 
@@ -272,69 +276,71 @@ class ModelsCommand extends Command
     protected function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
-        if ($methods) {
-            foreach ($methods as $method) {
-                if (Str::startsWith($method, 'get') && Str::endsWith($method, 'Attribute') && $method !== 'getAttribute') {
-                    //Magic get<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
-                    if (!empty($name)) {
-                        $this->setProperty($name, null, true, null);
-                    }
-                } elseif (Str::startsWith($method, 'set') && Str::endsWith($method, 'Attribute') && $method !== 'setAttribute') {
-                    //Magic set<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
-                    if (!empty($name)) {
-                        $this->setProperty($name, null, null, true);
-                    }
-                } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
-                    //Magic set<name>Attribute
-                    $name = Str::camel(substr($method, 5));
-                    if (!empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
-                        list(, $args) = Method::getParameters($reflection);
-                        //Remove the first ($query) argument
-                        array_shift($args);
-                        $this->setMethod($name, '\\' . $reflection->class, $args);
-                    }
-                } elseif (!method_exists('Eloquent', $method) && !Str::startsWith($method, 'get')) {
+        if (!$methods) return;
 
-                    //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
-                    $reflection = new \ReflectionMethod($model, $method);
-
-                    $file = new \SplFileObject($reflection->getFileName());
-                    $file->seek($reflection->getStartLine() - 1);
-
-                    $code = '';
-                    while ($file->key() < $reflection->getEndLine()) {
-                        $code .= $file->current();
-                        $file->next();
-                    }
-                    $begin = strpos($code, 'function(');
-                    $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
-
-                    foreach (array('hasMany', 'belongsToMany', 'hasOne', 'belongsTo', 'morphTo', 'morphMany', 'morphToMany') as $relation) {
-                        $search = '$this->' . $relation . '(';
-                        if ($pos = stripos($code, $search)) {
-                            $code = substr($code, $pos + strlen($search));
-                            $arguments = explode(',', substr($code, 0, strpos($code, ');')));
-                            //Remove quotes, ensure 1 \ in front of the model
-                            $returnModel = $this->getClassName($arguments[0], $model);
-                            if ($relation === 'belongsToMany' or $relation === 'hasMany' or $relation === 'morphMany' or $relation === 'morphToMany') {
-                                //Collection or array of models (because Collection is Arrayable)
-                                $this->setProperty(
-                                    $method,
-                                    '\Illuminate\Database\Eloquent\Collection|' . $returnModel . '[]',
-                                    true,
-                                    null
-                                );
-                            } else {
-                                //Single model is returned
-                                $this->setProperty($method, $returnModel, true, null);
-                            }
-                        }
-                    }
-
+        foreach ($methods as $method) {
+            if (Str::startsWith($method, 'get') && Str::endsWith($method, 'Attribute') && $method !== 'getAttribute') {
+                //Magic get<name>Attribute
+                $name = Str::snake(substr($method, 3, -9));
+                if (!empty($name)) {
+                    $this->setProperty($name, null, true, null);
                 }
+            } elseif (Str::startsWith($method, 'set') && Str::endsWith($method, 'Attribute') && $method !== 'setAttribute') {
+                //Magic set<name>Attribute
+                $name = Str::snake(substr($method, 3, -9));
+                if (!empty($name)) {
+                    $this->setProperty($name, null, null, true);
+                }
+            } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
+                //Magic scope<name>
+                $name = Str::camel(substr($method, 5));
+                if (!empty($name)) {
+                    $reflection = new \ReflectionMethod($model, $method);
+                    list(, $args) = Method::getParameters($reflection);
+                    //Remove the first ($query) argument
+                    array_shift($args);
+                    $this->setMethod($name, '\\' . $reflection->class, $args);
+                }
+            } elseif (!method_exists('Eloquent', $method) && !Str::startsWith($method, 'get')) {
+
+                //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
+                $reflection = new \ReflectionMethod($model, $method);
+
+                $file = new \SplFileObject($reflection->getFileName());
+                $file->seek($reflection->getStartLine());
+
+                $code = '';
+                while ($file->key() < $reflection->getEndLine()) {
+                    $code .= $file->current();
+                    $file->next();
+                }
+
+                unset($file);
+                $code = substr($code, 0, strrpos($code, '}') + 1);
+
+                foreach (array('hasMany', 'belongsToMany', 'hasOne', 'belongsTo', 'morphTo', 'morphMany', 'morphToMany') as $relation) {
+                    $search = '$this->' . $relation . '(';
+                    if (!($pos = stripos($code, $search)))
+                        continue;
+
+                    $code = substr($code, $pos + strlen($search));
+                    $arguments = explode(',', substr($code, 0, strpos($code, ');')));
+                    //Remove quotes, ensure 1 \ in front of the model
+                    $returnModel = $this->getClassName($arguments[0], $model);
+                    if ($relation === 'belongsToMany' || $relation === 'hasMany' || $relation === 'morphMany' || $relation === 'morphToMany') {
+                        //Collection or array of models (because Collection is Arrayable)
+                        $this->setProperty(
+                            $method,
+                            '\Illuminate\Database\Eloquent\Collection|' . $returnModel . '[]',
+                            true,
+                            null
+                        );
+                    } else {
+                        //Single model is returned
+                        $this->setProperty($method, $returnModel, true, null);
+                    }
+                }
+
             }
         }
     }
@@ -349,11 +355,12 @@ class ModelsCommand extends Command
     protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '')
     {
         if (!isset($this->properties[$name])) {
-            $this->properties[$name] = array();
-            $this->properties[$name]['type'] = 'mixed';
-            $this->properties[$name]['read'] = false;
-            $this->properties[$name]['write'] = false;
-            $this->properties[$name]['comment'] = (string)$comment;
+            $this->properties[$name] = array(
+                'type' => 'mixed',
+                'read' => false,
+                'write' => false,
+                'comment' => (string)$comment,
+            );
         }
         if ($type !== null) {
             $this->properties[$name]['type'] = $type;
@@ -369,9 +376,7 @@ class ModelsCommand extends Command
     protected function setMethod($name, $type = '', $arguments = array())
     {
         if (!isset($this->methods[$name])) {
-            $this->methods[$name] = array();
-            $this->methods[$name]['type'] = $type;
-            $this->methods[$name]['arguments'] = $arguments;
+            $this->methods[$name] = compact('type', 'arguments');
         }
     }
 
@@ -386,18 +391,10 @@ class ModelsCommand extends Command
         $className = $reflection->getShortName();
         $originalDoc = $reflection->getDocComment();
 
-        if ($this->reset) {
-            $phpdoc = new DocBlock('', new Context($namespace));
-        } else {
-            $phpdoc = new DocBlock($reflection, new Context($namespace));
-        }
-
-        if (!$phpdoc->getText()) {
-            $phpdoc->setText($class);
-        }
-
+        $phpdoc = new DocBlock(!$this->reset ? $reflection : '', new Context($namespace));
         $properties = array();
         $methods = array();
+
         foreach ($phpdoc->getTags() as $tag) {
             /* @var Tag|Tag\PropertyTag|Tag\MethodTag $tag */
             $name = $tag->getName();
@@ -407,9 +404,10 @@ class ModelsCommand extends Command
                 $methods[] = $tag->getMethodName();
             }
         }
+        unset($tag);
 
         foreach ($this->properties as $name => $property) {
-            $name = "\$$name";
+            $name = '$' . $name;
             if (in_array($name, $properties)) {
                 continue;
             }
@@ -433,30 +431,37 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
-        $serializer = new DocBlock\Serializer();
-        $serializer->getDocComment($phpdoc);
+        if (!isset($tag)) return null;
+
+        if (!$phpdoc->getText()) {
+            $phpdoc->setText($class);
+        }
+
+        $serializer = new DocBlock\Serializer(!$this->write ? 1 : 0, "\t");
         $docComment = $serializer->getDocComment($phpdoc);
 
         if ($this->write) {
             $filename = $reflection->getFileName();
             $contents = $this->files->get($filename);
+
             if ($originalDoc) {
                 $contents = str_replace($originalDoc, $docComment, $contents);
             } else {
                 $needle = "class {$className}";
                 $replace = "{$docComment}\nclass {$className}";
-                $pos = strpos($contents, $needle);
-                if ($pos !== false) {
+
+                if (($pos = strpos($contents, $needle)) !== false) {
                     $contents = substr_replace($contents, $replace, $pos, strlen($needle));
                 }
             }
             if ($this->files->put($filename, $contents)) {
                 $this->info('Written new phpDocBlock to ' . $filename);
             }
+
+            return null;
         }
 
-        $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$className} {}\n}\n\n";
-        return $output;
+        return "namespace {$namespace}{\n{$docComment}\n\tclass {$className} {}\n}\n\n";
     }
 
     /**
@@ -468,15 +473,14 @@ class ModelsCommand extends Command
     {
         // If the class name was resolved via get_class($this) or static::class
         if (strpos($className, 'get_class($this)') !== false || strpos($className, 'static::class') !== false) {
-            return get_class($model);
+            return '\\' . get_class($model);
         }
 
         // If the class name was resolved via ::class (PHP 5.5+)
-        if (strpos($className, '::class') !== false) {
-            $end = -1 * strlen('::class');
-            return substr($className, 0, $end);
+        if (($end = strpos($className, '::class')) !== false) {
+            return ltrim(substr($className, 0, $end));
         }
 
-        return '\\' . ltrim(trim($className, ' "\''), '\\');
+        return '\\' . ltrim(trim($className, " \"'\t\n\r\0\x0B"), '\\');
     }
 }

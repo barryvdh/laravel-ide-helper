@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Facade;
 class AliasTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @requires PHP 5.4
      * @expectedException \PHPUnit_Framework_Error_Notice
      * @expectedExceptionMessage Uninitialized string offset:
      */

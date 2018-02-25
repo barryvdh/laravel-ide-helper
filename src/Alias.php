@@ -63,7 +63,7 @@ class Alias
         $this->detectClassType();
         $this->detectExtendsNamespace();
 
-        if(!empty($this->namespace)) {
+        if (!empty($this->namespace)) {
             //Create a DocBlock and serializer instance
             $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace));
         }

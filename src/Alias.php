@@ -59,7 +59,6 @@ class Alias
         }
 
         $this->addClass($this->root);
-        $this->detectFake();
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
@@ -178,30 +177,6 @@ class Alias
         $this->addMagicMethods();
         $this->detectMethods();
         return $this->methods;
-    }
-
-    /**
-     * Detect class returned by ::fake()
-     */
-    protected function detectFake()
-    {
-        $facade = $this->facade;
-        
-        if (!method_exists($facade, 'fake')) {
-            return;
-        }
-
-        $real = $facade::getFacadeRoot();
-        
-        try {
-            $facade::fake();
-            $fake = $facade::getFacadeRoot();
-            if ($fake !== $real) {
-                $this->addClass(get_class($fake));
-            }
-        } finally {
-            $facade::swap($real);
-        }
     }
 
     /**

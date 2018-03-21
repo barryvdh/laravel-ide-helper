@@ -60,6 +60,7 @@ class Alias
 
         $this->addClass($this->root);
         $this->detectMixins();
+        $this->detectFake();
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
@@ -191,6 +192,30 @@ class Alias
             if (class_exists($mixin) || interface_exists($mixin)) {
                 $this->addClass($mixin);
             }
+        }
+    }
+
+    /**
+     * Detect class returned by ::fake()
+     */
+    protected function detectFake()
+    {
+        $facade = $this->facade;
+        
+        if (!method_exists($facade, 'fake')) {
+            return;
+        }
+
+        $real = $facade::getFacadeRoot();
+        
+        try {
+            $facade::fake();
+            $fake = $facade::getFacadeRoot();
+            if ($fake !== $real) {
+                $this->addClass(get_class($fake));
+            }
+        } finally {
+            $facade::swap($real);
         }
     }
 

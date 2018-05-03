@@ -15,7 +15,7 @@
         "illuminate/console": "^5.0,<5.7",
         "illuminate/filesystem": "^5.0,<5.7",
         "barryvdh/reflection-docblock": "^2.0.4",
-        "symfony/class-loader": "^2.3|^3.0"
+        "composer/composer": "^1.6",
     },
     "require-dev": {
         "illuminate/config": "^5.0,<5.7",

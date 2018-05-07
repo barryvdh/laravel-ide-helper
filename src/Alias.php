@@ -63,7 +63,7 @@ class Alias
         $this->detectClassType();
         $this->detectExtendsNamespace();
 
-        if(!empty($this->namespace)) {
+        if (!empty($this->namespace)) {
             //Create a DocBlock and serializer instance
             $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace));
         }
@@ -119,7 +119,7 @@ class Alias
     {
         return $this->extends;
     }
-    
+
     /**
      * Get the class short name which this alias extends
      *
@@ -129,7 +129,7 @@ class Alias
     {
         return $this->extendsClass;
     }
-    
+
     /**
      * Get the namespace of the class which this alias extends
      *
@@ -192,7 +192,7 @@ class Alias
             $this->short = $this->alias;
         }
     }
-    
+
     /**
      * Detect the extends namespace
      */

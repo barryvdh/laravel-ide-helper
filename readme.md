@@ -37,6 +37,7 @@ After updating composer, add the service provider to the `providers` array in `c
 ```php
 Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 ```
+**Laravel 5.5** uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider.
 
 To install this package on only development systems, add the `--dev` flag to your composer command:
 

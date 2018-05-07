@@ -10,6 +10,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
@@ -17,7 +18,6 @@ use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\ClassLoader\ClassMapGenerator;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Tag;
@@ -145,6 +145,7 @@ class ModelsCommand extends Command
 
 
         $output = "<?php
+//@formatter:off
 /**
  * A helper file for your Eloquent Models
  * Copy the phpDocs from this file to the correct Model,
@@ -460,7 +461,8 @@ class ModelsCommand extends Command
                                'morphOne',
                                'morphTo',
                                'morphMany',
-                               'morphToMany'
+                               'morphToMany',
+                               'morphedByMany'
                              ) as $relation) {
                         $search = '$this->' . $relation . '(';
                         if ($pos = stripos($code, $search)) {
@@ -470,7 +472,14 @@ class ModelsCommand extends Command
                             if ($relationObj instanceof Relation) {
                                 $relatedModel = '\\' . get_class($relationObj->getRelated());
 
-                                $relations = ['hasManyThrough', 'belongsToMany', 'hasMany', 'morphMany', 'morphToMany'];
+                                $relations = [
+                                    'hasManyThrough',
+                                    'belongsToMany',
+                                    'hasMany',
+                                    'morphMany',
+                                    'morphToMany',
+                                    'morphedByMany',
+                                ];
                                 if (in_array($relation, $relations)) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(

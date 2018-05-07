@@ -22,7 +22,7 @@ If you don't want to generate it, you can add a pre-generated file to the root f
 * Generated version for Lumen: https://gist.github.com/barryvdh/be17164b0ad51f832f20
 * Generated Phpstorm Meta file: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 
-Note: You do need CodeIntel for Sublime Text: https://github.com/SublimeCodeIntel/SublimeCodeIntel
+Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice
 
 ### Install
 
@@ -66,7 +66,7 @@ You can now re-generate the docs yourself (for future updates)
 php artisan ide-helper:generate
 ```
 
-Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating (and `php artisan optimize` after).
+Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating.
 
 You can configure your composer.json to do this after each commit:
 
@@ -75,8 +75,7 @@ You can configure your composer.json to do this after each commit:
     "post-update-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postUpdate",
         "php artisan ide-helper:generate",
-        "php artisan ide-helper:meta",
-        "php artisan optimize"
+        "php artisan ide-helper:meta"
     ]
 },
 ```
@@ -151,9 +150,9 @@ php artisan ide-helper:models --ignore="Post,User"
 
 Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
 
-For properly recognition of `Model` methods (i.e. `paginate`, `findOrFail`) you should extend `\Eloquent` or add 
+For properly recognition of `Model` methods (i.e. `paginate`, `findOrFail`) you should extend `\Eloquent` or add
 ```php
-/** @mixin \Eloquent */ 
+/** @mixin \Eloquent */
 ```
 for your model class.
 
@@ -166,7 +165,7 @@ After publishing vendor, simply change the `include_fluent` line your `config/id
 ```php
 'include_fluent' => true,
 ```
-And then run `php artisan ide-helper:generate` , you will now see all of the Fluent methods are recognized by your IDE now.
+And then run `php artisan ide-helper:generate` , you will now see all of the Fluent methods are recognized by your IDE.
 
 
 ## PhpStorm Meta for Container instances

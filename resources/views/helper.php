@@ -2,20 +2,20 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel <?= $version ?> on <?= date("Y-m-d") ?>.
+ * Generated for Laravel <?= $version ?> on <?= date("Y-m-d H:i:s") ?>.
+ *
+ * This file should not be included in your code, only analyzed by your IDE!
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
-namespace  {
-    exit("This file should not be included, only analyzed by your IDE");
-}
 
 <?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>
 <?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
 
+    <?= trim($alias->getDocComment('    ')) ?> 
     <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach($alias->getMethods() as $method): ?>
 
@@ -72,7 +72,7 @@ namespace Illuminate\Support {
      * @method Fluent charset(string $charset) Add the character set modifier
      * @method Fluent collation(string $collation) Add the collation modifier
      * @method Fluent comment(string $comment) Add comment
-     * @method Fluent default(mixed $value) Add the default modifier
+     * @method Fluent default($value) Add the default modifier
      * @method Fluent first() Select first row
      * @method Fluent index(string $name = null) Add the in dex clause
      * @method Fluent on(string $table) `on` of a foreign key

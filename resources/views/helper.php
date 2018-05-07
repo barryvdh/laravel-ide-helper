@@ -72,7 +72,7 @@ namespace Illuminate\Support {
      * @method Fluent charset(string $charset) Add the character set modifier
      * @method Fluent collation(string $collation) Add the collation modifier
      * @method Fluent comment(string $comment) Add comment
-     * @method Fluent default(mixed $value) Add the default modifier
+     * @method Fluent default($value) Add the default modifier
      * @method Fluent first() Select first row
      * @method Fluent index(string $name = null) Add the in dex clause
      * @method Fluent on(string $table) `on` of a foreign key

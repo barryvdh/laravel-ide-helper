@@ -300,7 +300,7 @@ class ModelsCommand extends Command
 
                 if (isset($this->nullableColumns[$name])) {
                     $this->properties[$name]['type'] .= '|null';
-                }                
+                }
             }
         }
     }

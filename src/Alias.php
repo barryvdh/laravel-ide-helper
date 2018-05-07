@@ -383,7 +383,8 @@ class Alias
 
         return new \ReflectionFunction($macro_func);
     }
-  
+
+    /*
      * Get the docblock for this alias
      *
      * @param string $prefix
@@ -392,7 +393,12 @@ class Alias
     public function getDocComment($prefix = "\t\t")
     {
         $serializer = new DocBlockSerializer(1, $prefix);
-        return ($this->phpdoc) ? $serializer->getDocComment($this->phpdoc) : '';
+
+        if ($this->phpdoc) {
+            return $serializer->getDocComment($this->phpdoc);
+        }
+        
+        return '';
     }
 
     /**

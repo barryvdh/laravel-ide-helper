@@ -20,9 +20,10 @@
     "require-dev": {
         "illuminate/config": "^5.0,<5.7",
         "illuminate/view": "^5.0,<5.7",
+        "phpro/grumphp": "^0.14",
         "phpunit/phpunit" : "4.*",
         "scrutinizer/ocular": "~1.1",
-        "squizlabs/php_codesniffer": "~2.3",
+        "squizlabs/php_codesniffer": "^3",
         "doctrine/dbal": "~2.3"
     },
     "suggest": {
@@ -35,12 +36,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            ":vendor\\:package_name\\": "tests"
+            "Barryvdh\\LaravelIdeHelper\\": "tests"
         }
     },
     "scripts": {
         "test": "phpunit",
-        "cs": "phpcs --standard=psr2 src/"
+        "check-style": "phpcs -p --standard=PSR2 src/",
+        "fix-style": "phpcbf -p --standard=PSR2 src/"
     },
     "extra": {
         "branch-alias": {

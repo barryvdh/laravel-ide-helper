@@ -122,8 +122,8 @@ php artisan ide-helper:models Post
  * @property integer $author_id
  * @property string $title
  * @property string $text
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
  * @property-read \User $author
  * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
  */

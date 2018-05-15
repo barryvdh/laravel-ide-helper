@@ -14,7 +14,7 @@
 <?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
 <?php foreach($aliases as $alias): ?>
-
+    <?php $methods = $alias->getMethods(); if(!count($methods)) continue; ?>
     <?= trim($alias->getDocComment('    ')) ?> 
     <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach($alias->getMethods() as $method): ?>

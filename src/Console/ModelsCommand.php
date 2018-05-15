@@ -474,7 +474,7 @@ class ModelsCommand extends Command
                                'morphedByMany'
                              ) as $relation) {
                         $search = '$this->' . $relation . '(';
-                        if ($pos = stripos($code, $search)) {
+                        if ($pos = stripos($code, $search) && $reflection->getNumberOfParameters() > 0) {
                             //Resolve the relation's model to a Relation object.
                             $relationObj = $model->$method();
 

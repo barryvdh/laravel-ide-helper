@@ -187,8 +187,7 @@ class ModelsCommand extends Command
                     // handle abstract classes, interfaces, ...
                     $reflectionClass = new \ReflectionClass($name);
 
-                    if (!$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Model')
-                            || !$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Relations\Pivot')) {
+                    if (!$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Model')) {
                         continue;
                     }
 

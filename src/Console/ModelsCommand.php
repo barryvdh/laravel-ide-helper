@@ -476,6 +476,11 @@ class ModelsCommand extends Command
                         $search = '$this->' . $relation . '(';
                         if ($pos = stripos($code, $search)) {
                             //Resolve the relation's model to a Relation object.
+                            $methodReflection = new \ReflectionMethod($model, $method);
+                            if ($methodReflection->getNumberOfParameters()) {
+                                return;
+                            }
+
                             $relationObj = $model->$method();
 
                             if ($relationObj instanceof Relation) {

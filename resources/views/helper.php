@@ -80,7 +80,7 @@ namespace Illuminate\Support {
      * @method Fluent onUpdate(string $action) `on update` of a foreign key
      * @method Fluent primary() Add the primary key modifier
      * @method Fluent references(string $column) `references` of a foreign key
-     * @method Fluent nullable() Add the nullable modifier
+     * @method Fluent nullable(bool $value = true) Add the nullable modifier
      * @method Fluent unique(string $name = null) Add unique index clause
      * @method Fluent unsigned() Add the unsigned modifier
      * @method Fluent useCurrent() Add the default timestamp value

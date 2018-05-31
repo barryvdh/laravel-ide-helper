@@ -15,6 +15,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
+use ReflectionClass;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -185,7 +186,7 @@ class ModelsCommand extends Command
             if (class_exists($name)) {
                 try {
                     // handle abstract classes, interfaces, ...
-                    $reflectionClass = new \ReflectionClass($name);
+                    $reflectionClass = new ReflectionClass($name);
 
                     if (!$reflectionClass->isSubclassOf('Illuminate\Database\Eloquent\Model')) {
                         continue;
@@ -597,10 +598,11 @@ class ModelsCommand extends Command
     protected function createPhpDocs($class)
     {
 
-        $reflection = new \ReflectionClass($class);
+        $reflection = new ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
         $classname = $reflection->getShortName();
         $originalDoc = $reflection->getDocComment();
+        $keyword = $this->getClassKeyword($reflection);
 
         if ($this->reset) {
             $phpdoc = new DocBlock('', new Context($namespace));
@@ -688,7 +690,7 @@ class ModelsCommand extends Command
             }
         }
 
-        $output = "namespace {$namespace}{\n{$docComment}\n\tclass {$classname} extends \Eloquent {}\n}\n\n";
+        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent {}\n}\n\n";
         return $output;
     }
 
@@ -790,5 +792,22 @@ class ModelsCommand extends Command
             $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
             $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
         }
+    }
+
+    /**
+     * @param ReflectionClass $reflection
+     * @return string
+     */
+    private function getClassKeyword(ReflectionClass $reflection)
+    {
+        if ($reflection->isFinal()) {
+            $keyword = 'final ';
+        } elseif ($reflection->isAbstract()) {
+            $keyword = 'abstract ';
+        } else {
+            $keyword = '';
+        }
+
+        return $keyword;
     }
 }

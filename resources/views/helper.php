@@ -1,4 +1,5 @@
 <?= '<?php' ?>
+//@formatter:off
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE

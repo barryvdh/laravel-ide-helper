@@ -151,7 +151,8 @@ class ModelsCommand extends Command
 
 
         $output = "<?php
-//@formatter:off
+
+// @formatter:off
 /**
  * A helper file for your Eloquent Models
  * Copy the phpDocs from this file to the correct Model,

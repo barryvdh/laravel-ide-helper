@@ -86,6 +86,7 @@ namespace Illuminate\Support {
      * @method Fluent unique(string $name = null) Add unique index clause
      * @method Fluent unsigned() Add the unsigned modifier
      * @method Fluent useCurrent() Add the default timestamp value
+     * @method Fluent change() Add the change modifier
      */
     class Fluent {}
 }

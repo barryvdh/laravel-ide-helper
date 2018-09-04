@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.6
   - 7.0
   - 7.1
   - 7.2
@@ -17,7 +16,7 @@ cache:
 
 matrix:
   include:
-    - php: 5.6
+    - php: 7.0
       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
 before_script:

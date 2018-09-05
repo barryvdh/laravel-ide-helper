@@ -63,7 +63,7 @@ class Alias
         $this->detectClassType();
         $this->detectExtendsNamespace();
 
-        if(!empty($this->namespace)) {
+        if (!empty($this->namespace)) {
             //Create a DocBlock and serializer instance
             $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace));
         }
@@ -119,7 +119,7 @@ class Alias
     {
         return $this->extends;
     }
-    
+
     /**
      * Get the class short name which this alias extends
      *
@@ -129,7 +129,7 @@ class Alias
     {
         return $this->extendsClass;
     }
-    
+
     /**
      * Get the namespace of the class which this alias extends
      *
@@ -192,7 +192,7 @@ class Alias
             $this->short = $this->alias;
         }
     }
-    
+
     /**
      * Detect the extends namespace
      */
@@ -331,10 +331,9 @@ class Alias
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
-                    $function = new \ReflectionFunction($macro_func);
                     // Add macros
                     $this->methods[] = new Macro(
-                        $function,
+                        $this->getMacroFunction($macro_func),
                         $this->alias,
                         $reflection,
                         $macro_name,
@@ -346,6 +345,21 @@ class Alias
     }
 
     /**
+     * @param $macro_func
+     *
+     * @return \ReflectionFunctionAbstract
+     * @throws \ReflectionException
+     */
+    protected function getMacroFunction($macro_func)
+    {
+        if (is_array($macro_func) && is_callable($macro_func)) {
+            return new \ReflectionMethod($macro_func[0], $macro_func[1]);
+        }
+
+        return new \ReflectionFunction($macro_func);
+    }
+
+    /*
      * Get the docblock for this alias
      *
      * @param string $prefix
@@ -354,7 +368,12 @@ class Alias
     public function getDocComment($prefix = "\t\t")
     {
         $serializer = new DocBlockSerializer(1, $prefix);
-        return ($this->phpdoc) ? $serializer->getDocComment($this->phpdoc) : '';
+
+        if ($this->phpdoc) {
+            return $serializer->getDocComment($this->phpdoc);
+        }
+        
+        return '';
     }
 
     /**

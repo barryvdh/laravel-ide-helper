@@ -209,14 +209,14 @@ class Generator
                 if (array_key_exists($name, $this->extra)) {
                     $alias->addClass($this->extra[$name]);
                 }
-                
+
                 $aliases[] = $alias;
             }
         }
 
         return $aliases;
     }
-    
+
     /**
      * Regroup aliases by namespace of extended classes
      *
@@ -228,7 +228,7 @@ class Generator
             return $alias->getExtendsNamespace();
         });
     }
-    
+
     /**
      * Regroup aliases by namespace of alias
      *
@@ -265,7 +265,8 @@ class Generator
           'Schema' => 'Illuminate\Support\Facades\Schema',
           'Session' => 'Illuminate\Support\Facades\Session',
           'Storage' => 'Illuminate\Support\Facades\Storage',
-          //'Validator' => 'Illuminate\Support\Facades\Validator',
+          'Validator' => 'Illuminate\Support\Facades\Validator',
+          'Gate' => 'Illuminate\Support\Facades\Gate',
         ];
 
         $facades = array_merge($facades, $this->config->get('app.aliases', []));

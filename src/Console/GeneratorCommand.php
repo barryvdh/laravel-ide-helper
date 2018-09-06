@@ -115,7 +115,6 @@ class GeneratorCommand extends Command
 
             if ($written !== false) {
                 $this->info("A new helper file was written to $filename");
-                Eloquent::writeEloquentModelHelper($this, $this->files);
             } else {
                 $this->error("The helper file could not be created at $filename");
             }

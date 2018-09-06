@@ -40,7 +40,7 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Write Model Magic methods
+    | Write Eloquent Model Mixins
     |--------------------------------------------------------------------------
     |
     | This will add the necessary DocBlock mixins to the model class

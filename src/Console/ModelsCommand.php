@@ -409,7 +409,6 @@ class ModelsCommand extends Command
     protected function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
-
         if ($methods) {
             sort($methods);
             foreach ($methods as $method) {

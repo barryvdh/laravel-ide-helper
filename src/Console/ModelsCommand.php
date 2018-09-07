@@ -409,6 +409,7 @@ class ModelsCommand extends Command
     protected function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
+
         if ($methods) {
             sort($methods);
             foreach ($methods as $method) {
@@ -444,6 +445,9 @@ class ModelsCommand extends Command
                         array_shift($args);
                         $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
                     }
+                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
+                    $reflection = new \ReflectionClass($model);
+                    $this->setMethod($method, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->getName());
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {

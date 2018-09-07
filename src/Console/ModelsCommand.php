@@ -444,6 +444,9 @@ class ModelsCommand extends Command
                         array_shift($args);
                         $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
                     }
+                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
+                    $reflection = new \ReflectionClass($model);
+                    $this->setMethod($method, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->getName());
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {

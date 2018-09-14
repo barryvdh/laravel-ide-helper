@@ -272,9 +272,13 @@ class Generator
         $facades = array_merge($facades, $this->config->get('app.aliases', []));
 
         // Only return the ones that actually exist
-        return array_filter($facades, function ($alias) {
-            return class_exists($alias);
-        });
+        return array_filter(
+            $facades,
+            function ($alias) {
+                return class_exists($alias);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
     /**

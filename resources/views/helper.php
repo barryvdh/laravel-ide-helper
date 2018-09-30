@@ -28,7 +28,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
             //Method inherited from <?= $method->getDeclaringClass() ?>
             <?php endif; ?>
 
-            <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRoot() ?>::<?= $method->getName() ?>(<?= $method->getParams() ?>);
+            <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRoot() ?>::<?= $method->getRealName() ?>(<?= $method->getParams() ?>);
         }
         <?php endforeach; ?> 
     }

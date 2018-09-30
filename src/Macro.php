@@ -26,6 +26,7 @@ class Macro extends Method
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
+        $this->real_name = $method->name;
         $this->namespace = $class->getNamespaceName();
 
         //Create a DocBlock and serializer instance

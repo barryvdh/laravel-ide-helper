@@ -31,6 +31,7 @@ class Method
     protected $params = array();
     protected $params_with_default = array();
     protected $interfaces = array();
+    protected $real_name;
     protected $return = null;
 
     /**
@@ -45,6 +46,7 @@ class Method
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
+        $this->real_name = $method->name;
         $this->namespace = $method->getDeclaringClass()->getNamespaceName();
 
         //Create a DocBlock and serializer instance
@@ -110,6 +112,16 @@ class Method
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Get the real method name
+     *
+     * @return string
+     */
+    public function getRealName()
+    {
+        return $this->real_name;
     }
 
     /**

@@ -171,7 +171,7 @@ class Alias
     /**
      * Get the methods found by this Alias
      *
-     * @return array
+     * @return array|Method[]
      */
     public function getMethods()
     {

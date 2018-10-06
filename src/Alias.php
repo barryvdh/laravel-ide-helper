@@ -310,7 +310,7 @@ class Alias
             $method = new \ReflectionMethod($className, $name);
             $class = new \ReflectionClass($className);
 
-            if (!in_array($method->name, $this->usedMethods)) {
+            if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
                     $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
                 }

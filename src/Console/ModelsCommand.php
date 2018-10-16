@@ -482,7 +482,7 @@ class ModelsCommand extends Command
                             //Resolve the relation's model to a Relation object.
                             $methodReflection = new \ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {
-                                return;
+                                continue;
                             }
 
                             $relationObj = $model->$method();

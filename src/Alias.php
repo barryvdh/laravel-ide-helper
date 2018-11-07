@@ -13,6 +13,7 @@ namespace Barryvdh\LaravelIdeHelper;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use ReflectionClass;
 
 class Alias
@@ -395,10 +396,31 @@ class Alias
         $serializer = new DocBlockSerializer(1, $prefix);
 
         if ($this->phpdoc) {
+            $this->removeDuplicateMethodsFromPhpDoc();
             return $serializer->getDocComment($this->phpdoc);
         }
         
         return '';
+    }
+
+    /**
+     * Removes method tags from the doc comment that already appear as functions inside the class.
+     * This prevents duplicate function errors in the IDE.
+     *
+     * @return void
+     */
+    protected function removeDuplicateMethodsFromPhpDoc()
+    {
+        $methods = count($this->methods) > 0 ? $this->methods : $this->getMethods();
+        $methodNames = array_map(function (Method $method) {
+            return $method->getName();
+        }, $methods);
+
+        foreach ($this->phpdoc->getTags() as $tag) {
+            if ($tag instanceof MethodTag && in_array($tag->getMethodName(), $methodNames)) {
+                $this->phpdoc->deleteTag($tag);
+            }
+        }
     }
 
     /**

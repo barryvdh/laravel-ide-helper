@@ -153,13 +153,13 @@ return array(
      |
      | For example, normally you would see this:
      |
-     |  * @property \Carbon\Carbon $created_at
-     |  * @property \Carbon\Carbon $updated_at
+     |  * @property \Illuminate\Support\Carbon $created_at
+     |  * @property \Illuminate\Support\Carbon $updated_at
      |
      | With this enabled, the properties will be this:
      |
-     |  * @property \Carbon\Carbon $createdAt
-     |  * @property \Carbon\Carbon $updatedAt
+     |  * @property \Illuminate\Support\Carbon $createdAt
+     |  * @property \Illuminate\Support\Carbon $updatedAt
      |
      | Note, it is currently an all-or-nothing option.
      |

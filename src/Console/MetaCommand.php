@@ -122,7 +122,11 @@ class MetaCommand extends Command
         $abstracts = $this->laravel->getBindings();
 
         // Return the abstract names only
-        return array_keys($abstracts);
+        $keys = array_keys($abstracts);
+
+        sort($keys);
+
+        return $keys;
     }
 
     /**

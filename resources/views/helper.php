@@ -36,7 +36,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
             //Method inherited from <?= $method->getDeclaringClass() ?>
             <?php endif; ?>
 
-            <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRoot() ?>::<?= $method->getRealName() ?>(<?= $method->getParams() ?>);
+            <?= $method->getRootMethodCall('            ') ?>;
         }
         <?php endforeach; ?> 
     }
@@ -58,7 +58,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
                 //Method inherited from <?= $method->getDeclaringClass() ?>
                 <?php endif; ?>
     
-                <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRoot() ?>::<?= $method->getRealName() ?>(<?= $method->getParams() ?>);
+                <?= $method->getRootMethodCall('                ') ?>;
             }
         <?php endforeach; ?>
 <?php endif; ?>}

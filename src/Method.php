@@ -34,6 +34,7 @@ class Method
     protected $interfaces = array();
     protected $real_name;
     protected $return = null;
+    protected $root;
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
@@ -49,6 +50,9 @@ class Method
         $this->name = $methodName ?: $method->name;
         $this->real_name = $method->name;
         $this->initClassDefinedProperties($method, $class);
+
+        //Reference the 'real' function in the declaring class
+        $this->root = '\\' . ltrim($class->getName(), '\\');
 
         //Create a DocBlock and serializer instance
         $this->initPhpDoc($method);
@@ -66,9 +70,6 @@ class Method
 
         //Make the method static
         $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
-
-        //Reference the 'real' function in the declaring class
-        $this->root = '\\' . ltrim($class->getName(), '\\');
     }
 
     /**
@@ -108,6 +109,21 @@ class Method
     public function getRoot()
     {
         return $this->root;
+    }
+
+    /**
+     * @param string $indent
+     * @return string
+     */
+    public function getRootMethodCall($indent = '')
+    {
+        $returnIfNeeded = $this->shouldReturn() ? 'return ' : '';
+        if ($this->method->isClosure() || $this->method->isStatic()) {
+            return "{$returnIfNeeded}{$this->getRoot()}::{$this->getRealName()}({$this->getParams()})";
+        } else {
+            return "/** @var {$this->getRoot()} \$instance */\n"
+                . "{$indent}{$returnIfNeeded}\$instance->{$this->getRealName()}({$this->getParams()})";
+        }
     }
 
     /**
@@ -243,6 +259,10 @@ class Method
             // Set the changed content
             $tag->setContent($returnValue . ' ' . $tag->getDescription());
             $this->return = $returnValue;
+
+            if ($tag->getType() === '$this') {
+                $tag->setType($this->root);
+            }
         } else {
             $this->return = null;
         }

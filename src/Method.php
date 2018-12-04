@@ -48,6 +48,10 @@ class Method
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
         $this->real_name = $method->name;
+        if (preg_match('/\{(.+)}/', $this->real_name, $matches)) {
+            // 'FQCN::NAMESPACE\{closure}()' -> 'FQCN::closure()'
+            list(, $this->real_name) = $matches;
+        }
         $this->initClassDefinedProperties($method, $class);
 
         //Create a DocBlock and serializer instance

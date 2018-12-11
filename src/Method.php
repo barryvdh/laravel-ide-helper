@@ -47,7 +47,7 @@ class Method
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
-        $this->real_name = $method->name;
+        $this->real_name = $method->isClosure() ? $this->name : $method->name;
         $this->initClassDefinedProperties($method, $class);
 
         //Create a DocBlock and serializer instance

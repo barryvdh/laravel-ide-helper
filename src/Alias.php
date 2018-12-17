@@ -176,6 +176,10 @@ class Alias
      */
     public function getMethods()
     {
+        if (count($this->methods) > 0) {
+            return $this->methods;
+        }
+
         $this->addMagicMethods();
         $this->detectMethods();
         return $this->methods;
@@ -411,10 +415,9 @@ class Alias
      */
     protected function removeDuplicateMethodsFromPhpDoc()
     {
-        $methods = count($this->methods) > 0 ? $this->methods : $this->getMethods();
         $methodNames = array_map(function (Method $method) {
             return $method->getName();
-        }, $methods);
+        }, $this->getMethods());
 
         foreach ($this->phpdoc->getTags() as $tag) {
             if ($tag instanceof MethodTag && in_array($tag->getMethodName(), $methodNames)) {

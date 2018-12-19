@@ -198,7 +198,7 @@ class Generator
         // Get all aliases
         foreach ($this->getAliases() as $name => $facade) {
             // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
-            if ($facade == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
+            if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
 

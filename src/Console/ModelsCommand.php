@@ -148,8 +148,6 @@ class ModelsCommand extends Command
 
     protected function generateDocs($loadModels, $ignore = '')
     {
-
-
         $output = "<?php
 
 // @formatter:off
@@ -601,7 +599,6 @@ class ModelsCommand extends Command
      */
     protected function createPhpDocs($class)
     {
-
         $reflection = new ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
         $classname = $reflection->getShortName();

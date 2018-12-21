@@ -40,13 +40,13 @@ class Alias
     protected $config;
 
     /**
-     * @param string $alias
-     * @param string $facade
-     * @param array $magicMethods
-     * @param array $interfaces
      * @param ConfigRepository $config
+     * @param string           $alias
+     * @param string           $facade
+     * @param array            $magicMethods
+     * @param array            $interfaces
      */
-    public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array(), ConfigRepository $config)
+    public function __construct(ConfigRepository $config, $alias, $facade, $magicMethods = array(), $interfaces = array())
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
@@ -422,7 +422,7 @@ class Alias
             $this->removeDuplicateMethodsFromPhpDoc();
             return $serializer->getDocComment($this->phpdoc);
         }
-        
+
         return '';
     }
 

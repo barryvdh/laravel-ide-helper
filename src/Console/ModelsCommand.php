@@ -184,6 +184,9 @@ class ModelsCommand extends Command
             }
             $this->properties = array();
             $this->methods = array();
+            if(!class_exists($name)){
+                throw new \InvalidArgumentException("$name class does not exist.  With namespaces, wrap your model name in double-quotes (\"): php artisan ide-helper:models \"API\User\", or escape the slashes (Api\\User)");
+            }
             if (class_exists($name)) {
                 try {
                     // handle abstract classes, interfaces, ...

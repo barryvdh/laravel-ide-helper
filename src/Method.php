@@ -26,29 +26,36 @@ class Method
     protected $method;
 
     protected $output = '';
+    protected $declaringClassName;
     protected $name;
     protected $namespace;
     protected $params = array();
     protected $params_with_default = array();
     protected $interfaces = array();
+    protected $real_name;
     protected $return = null;
+    protected $root;
 
     /**
-     * @param \ReflectionMethod $method
+     * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
      * @param string $alias
      * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
      */
-    public function __construct(\ReflectionMethod $method, $alias, $class, $methodName = null, $interfaces = array())
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = array())
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->name = $methodName ?: $method->name;
-        $this->namespace = $method->getDeclaringClass()->getNamespaceName();
+        $this->real_name = $method->isClosure() ? $this->name : $method->name;
+        $this->initClassDefinedProperties($method, $class);
+
+        //Reference the 'real' function in the declaring class
+        $this->root = '\\' . ltrim($class->getName(), '\\');
 
         //Create a DocBlock and serializer instance
-        $this->phpdoc = new DocBlock($method, new Context($this->namespace));
+        $this->initPhpDoc($method);
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
@@ -63,11 +70,25 @@ class Method
 
         //Make the method static
         $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
+    }
 
-        //Reference the 'real' function in the declaringclass
+    /**
+     * @param \ReflectionMethod $method
+     */
+    protected function initPhpDoc($method)
+    {
+        $this->phpdoc = new DocBlock($method, new Context($this->namespace));
+    }
+
+    /**
+     * @param \ReflectionMethod $method
+     * @param \ReflectionClass $class
+     */
+    protected function initClassDefinedProperties($method, \ReflectionClass $class)
+    {
         $declaringClass = $method->getDeclaringClass();
+        $this->namespace = $declaringClass->getNamespaceName();
         $this->declaringClassName = '\\' . ltrim($declaringClass->name, '\\');
-        $this->root = '\\' . ltrim($class->getName(), '\\');
     }
 
     /**
@@ -91,6 +112,26 @@ class Method
     }
 
     /**
+     * @return bool
+     */
+    public function isInstanceCall()
+    {
+        return ! ($this->method->isClosure() || $this->method->isStatic());
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootMethodCall()
+    {
+        if ($this->isInstanceCall()) {
+            return "\$instance->{$this->getRealName()}({$this->getParams()})";
+        } else {
+            return "{$this->getRoot()}::{$this->getRealName()}({$this->getParams()})";
+        }
+    }
+
+    /**
      * Get the docblock for this method
      *
      * @param string $prefix
@@ -110,6 +151,16 @@ class Method
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Get the real method name
+     *
+     * @return string
+     */
+    public function getRealName()
+    {
+        return $this->real_name;
     }
 
     /**
@@ -213,6 +264,10 @@ class Method
             // Set the changed content
             $tag->setContent($returnValue . ' ' . $tag->getDescription());
             $this->return = $returnValue;
+
+            if ($tag->getType() === '$this') {
+                $tag->setType($this->root);
+            }
         } else {
             $this->return = null;
         }

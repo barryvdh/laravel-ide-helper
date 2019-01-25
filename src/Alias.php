@@ -13,6 +13,7 @@ namespace Barryvdh\LaravelIdeHelper;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use ReflectionClass;
 
 class Alias
@@ -170,10 +171,14 @@ class Alias
     /**
      * Get the methods found by this Alias
      *
-     * @return array
+     * @return array|Method[]
      */
     public function getMethods()
     {
+        if (count($this->methods) > 0) {
+            return $this->methods;
+        }
+
         $this->addMagicMethods();
         $this->detectMethods();
         return $this->methods;
@@ -285,7 +290,7 @@ class Alias
             $method = new \ReflectionMethod($className, $name);
             $class = new \ReflectionClass($className);
 
-            if (!in_array($method->name, $this->usedMethods)) {
+            if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
                     $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
                 }
@@ -331,14 +336,17 @@ class Alias
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
-                    // Add macros
-                    $this->methods[] = new Macro(
-                        $this->getMacroFunction($macro_func),
-                        $this->alias,
-                        $reflection,
-                        $macro_name,
-                        $this->interfaces
-                    );
+                    if (!in_array($macro_name, $this->usedMethods)) {
+                        // Add macros
+                        $this->methods[] = new Macro(
+                            $this->getMacroFunction($macro_func),
+                            $this->alias,
+                            $reflection,
+                            $macro_name,
+                            $this->interfaces
+                        );
+                        $this->usedMethods[] = $macro_name;
+                    }
                 }
             }
         }
@@ -370,10 +378,30 @@ class Alias
         $serializer = new DocBlockSerializer(1, $prefix);
 
         if ($this->phpdoc) {
+            $this->removeDuplicateMethodsFromPhpDoc();
             return $serializer->getDocComment($this->phpdoc);
         }
         
         return '';
+    }
+
+    /**
+     * Removes method tags from the doc comment that already appear as functions inside the class.
+     * This prevents duplicate function errors in the IDE.
+     *
+     * @return void
+     */
+    protected function removeDuplicateMethodsFromPhpDoc()
+    {
+        $methodNames = array_map(function (Method $method) {
+            return $method->getName();
+        }, $this->getMethods());
+
+        foreach ($this->phpdoc->getTags() as $tag) {
+            if ($tag instanceof MethodTag && in_array($tag->getMethodName(), $methodNames)) {
+                $this->phpdoc->deleteTag($tag);
+            }
+        }
     }
 
     /**

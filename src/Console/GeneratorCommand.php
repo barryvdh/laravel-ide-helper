@@ -115,7 +115,10 @@ class GeneratorCommand extends Command
 
             if ($written !== false) {
                 $this->info("A new helper file was written to $filename");
-                Eloquent::writeEloquentModelHelper($this, $this->files);
+
+                if ($this->option('write_mixins')) {
+                    Eloquent::writeEloquentModelHelper($this, $this->files);
+                }
             } else {
                 $this->error("The helper file could not be created at $filename");
             }
@@ -159,9 +162,11 @@ class GeneratorCommand extends Command
     protected function getOptions()
     {
         $format = $this->config->get('ide-helper.format');
+        $writeMixins = $this->config->get('ide-helper.write_eloquent_model_mixins');
 
         return array(
             array('format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),
+            array('write_mixins', "W", InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins),
             array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
             array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
             array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),

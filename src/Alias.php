@@ -10,11 +10,12 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use ReflectionClass;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
-use ReflectionClass;
+use Illuminate\Config\Repository as ConfigRepository;
+use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 
 class Alias
 {
@@ -35,17 +36,22 @@ class Alias
     protected $interfaces = array();
     protected $phpdoc = null;
 
+    /** @var ConfigRepository  */
+    protected $config;
+
     /**
-     * @param string $alias
-     * @param string $facade
-     * @param array $magicMethods
-     * @param array $interfaces
+     * @param ConfigRepository $config
+     * @param string           $alias
+     * @param string           $facade
+     * @param array            $magicMethods
+     * @param array            $interfaces
      */
-    public function __construct($alias, $facade, $magicMethods = array(), $interfaces = array())
+    public function __construct($config, $alias, $facade, $magicMethods = array(), $interfaces = array())
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
         $this->interfaces = $interfaces;
+        $this->config = $config;
 
         // Make the class absolute
         $facade = '\\' . ltrim($facade, '\\');
@@ -403,10 +409,20 @@ class Alias
         $serializer = new DocBlockSerializer(1, $prefix);
 
         if ($this->phpdoc) {
+            if ($this->config->get('ide-helper.include_class_docblocks')) {
+                // if a class doesn't expose any DocBlock tags
+                // we can perform reflection on the class and
+                // add in the original class DocBlock
+                if (count($this->phpdoc->getTags()) === 0) {
+                    $class = new ReflectionClass($this->root);
+                    $this->phpdoc = new DocBlock($class->getDocComment());
+                }
+            }
+
             $this->removeDuplicateMethodsFromPhpDoc();
             return $serializer->getDocComment($this->phpdoc);
         }
-        
+
         return '';
     }
 

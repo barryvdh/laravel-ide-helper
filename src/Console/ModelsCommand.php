@@ -450,81 +450,73 @@ class ModelsCommand extends Command
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {
-                    //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     $reflection = new \ReflectionMethod($model, $method);
 
-                    $file = new \SplFileObject($reflection->getFileName());
-                    $file->seek($reflection->getStartLine() - 1);
-
-                    $code = '';
-                    while ($file->key() < $reflection->getEndLine()) {
-                        $code .= $file->current();
-                        $file->next();
+                    if ($reflection->getNumberOfParameters()) {
+                        continue;
                     }
-                    $code = trim(preg_replace('/\s\s+/', '', $code));
-                    $begin = strpos($code, 'function(');
-                    $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
-                    foreach (array(
-                               'hasMany',
-                               'hasManyThrough',
-                               'belongsToMany',
-                               'hasOne',
-                               'belongsTo',
-                               'morphOne',
-                               'morphTo',
-                               'morphMany',
-                               'morphToMany',
-                               'morphedByMany'
-                             ) as $relation) {
-                        $search = '$this->' . $relation . '(';
-                        if ($pos = stripos($code, $search)) {
-                            //Resolve the relation's model to a Relation object.
-                            $methodReflection = new \ReflectionMethod($model, $method);
-                            if ($methodReflection->getNumberOfParameters()) {
-                                continue;
-                            }
+                    $returnType = $reflection->getReturnType();
 
-                            $relationObj = $model->$method();
+                    if ($returnType === null) {
+                        $relationObj = $model->$method();
+                        $methodClass = $relationObj instanceof Relation ? get_class($relationObj) : null;
+                    } else {
+                        $methodClass = (string)$returnType;
+                    }
 
-                            if ($relationObj instanceof Relation) {
-                                $relatedModel = '\\' . get_class($relationObj->getRelated());
+                    if ($methodClass === null) {
+                        continue;
+                    }
 
-                                $relations = [
-                                    'hasManyThrough',
-                                    'belongsToMany',
-                                    'hasMany',
-                                    'morphMany',
-                                    'morphToMany',
-                                    'morphedByMany',
-                                ];
-                                if (in_array($relation, $relations)) {
-                                    //Collection or array of models (because Collection is Arrayable)
-                                    $this->setProperty(
-                                        $method,
-                                        $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
-                                        true,
-                                        null
-                                    );
-                                } elseif ($relation === "morphTo") {
-                                    // Model isn't specified because relation is polymorphic
-                                    $this->setProperty(
-                                        $method,
-                                        '\Illuminate\Database\Eloquent\Model|\Eloquent',
-                                        true,
-                                        null
-                                    );
-                                } else {
-                                    //Single model is returned
-                                    $this->setProperty(
-                                        $method,
-                                        $relatedModel,
-                                        true,
-                                        null,
-                                        '',
-                                        $this->isRelationForeignKeyNullable($relationObj)
-                                    );
-                                }
+                    if (in_array($methodClass, [
+                        \Illuminate\Database\Eloquent\Relations\BelongsTo::class,
+                        \Illuminate\Database\Eloquent\Relations\BelongsToMany::class,
+                        \Illuminate\Database\Eloquent\Relations\HasMany::class,
+                        \Illuminate\Database\Eloquent\Relations\HasManyThrough::class,
+                        \Illuminate\Database\Eloquent\Relations\HasOne::class,
+                        \Illuminate\Database\Eloquent\Relations\MorphMany::class,
+                        \Illuminate\Database\Eloquent\Relations\MorphOne::class,
+                        \Illuminate\Database\Eloquent\Relations\MorphTo::class,
+                        \Illuminate\Database\Eloquent\Relations\MorphToMany::class,
+                    ])) {
+                        $relationObj = $model->$method();
+
+                        if ($relationObj instanceof Relation) {
+                            $relatedModel = '\\' . get_class($relationObj->getRelated());
+
+                            if (in_array($methodClass, [
+                                \Illuminate\Database\Eloquent\Relations\BelongsToMany::class,
+                                \Illuminate\Database\Eloquent\Relations\HasMany::class,
+                                \Illuminate\Database\Eloquent\Relations\HasManyThrough::class,
+                                \Illuminate\Database\Eloquent\Relations\MorphMany::class,
+                                \Illuminate\Database\Eloquent\Relations\MorphToMany::class,
+                            ])) {
+                                //Collection or array of models (because Collection is Arrayable)
+                                $this->setProperty(
+                                    $method,
+                                    $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
+                                    true,
+                                    null
+                                );
+                            } elseif ($methodClass === \Illuminate\Database\Eloquent\Relations\MorphTo::class) {
+                                // Model isn't specified because relation is polymorphic
+                                $this->setProperty(
+                                    $method,
+                                    '\Illuminate\Database\Eloquent\Model|\Eloquent',
+                                    true,
+                                    null
+                                );
+                            } else {
+                                //Single model is returned
+                                $this->setProperty(
+                                    $method,
+                                    $relatedModel,
+                                    true,
+                                    null,
+                                    '',
+                                    $this->isRelationForeignKeyNullable($relationObj)
+                                );
                             }
                         }
                     }

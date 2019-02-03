@@ -452,6 +452,8 @@ class ModelsCommand extends Command
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     $reflection = new \ReflectionMethod($model, $method);
+                    // php 7.x type or fallback to docblock
+                    $type = (string) $reflection->getReturnType() ?: $this->getReturnTypeFromDocBlock($reflection);
 
                     $file = new \SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
@@ -466,19 +468,19 @@ class ModelsCommand extends Command
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
                     foreach (array(
-                               'hasMany',
-                               'hasManyThrough',
-                               'belongsToMany',
-                               'hasOne',
-                               'belongsTo',
-                               'morphOne',
-                               'morphTo',
-                               'morphMany',
-                               'morphToMany',
-                               'morphedByMany'
-                             ) as $relation) {
+                               'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
+                               'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
+                               'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
+                               'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
+                               'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
+                               'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
+                               'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
+                               'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
+                               'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
+                               'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
+                             ) as $relation => $impl) {
                         $search = '$this->' . $relation . '(';
-                        if ($pos = stripos($code, $search)) {
+                        if (stripos($code, $search) || stripos($impl, $type) !== false) {
                             //Resolve the relation's model to a Relation object.
                             $methodReflection = new \ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {

@@ -55,6 +55,7 @@ class ModelsCommand extends Command
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
+    protected $write_mixin = false;
     protected $dirs = array();
     protected $reset;
     protected $keep_text;
@@ -81,6 +82,7 @@ class ModelsCommand extends Command
     {
         $filename = $this->option('filename');
         $this->write = $this->option('write');
+        $this->write_mixin = $this->option('write-mixin');
         $this->dirs = array_merge(
             $this->laravel['config']->get('ide-helper.model_locations'),
             $this->option('dir')
@@ -93,6 +95,7 @@ class ModelsCommand extends Command
         }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
 
+        $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
             if ($this->confirm(
@@ -105,7 +108,7 @@ class ModelsCommand extends Command
 
         $content = $this->generateDocs($model, $ignore);
 
-        if (!$this->write) {
+        if (!$this->write || $this->write_mixin) {
             $written = $this->files->put($filename, $content);
             if ($written !== false) {
                 $this->info("Model information was written to $filename");
@@ -139,6 +142,7 @@ class ModelsCommand extends Command
           array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
           array('dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The model dir', array()),
           array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
+          array('write-mixin', 'M', InputOption::VALUE_NONE, 'Write mixin to Model file'),
           array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
           array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
           array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
@@ -679,13 +683,14 @@ class ModelsCommand extends Command
 
 
         if ($this->write) {
+            $modelDocComment = $this->write_mixin ? "/**\n * @mixin IdeHelper{$classname}\n */" : $docComment;
             $filename = $reflection->getFileName();
             $contents = $this->files->get($filename);
             if ($originalDoc) {
-                $contents = str_replace($originalDoc, $docComment, $contents);
+                $contents = str_replace($originalDoc, $modelDocComment, $contents);
             } else {
                 $needle = "class {$classname}";
-                $replace = "{$docComment}\nclass {$classname}";
+                $replace = "{$modelDocComment}\nclass {$classname}";
                 $pos = strpos($contents, $needle);
                 if ($pos !== false) {
                     $contents = substr_replace($contents, $replace, $pos, strlen($needle));
@@ -696,6 +701,7 @@ class ModelsCommand extends Command
             }
         }
 
+        $classname = $this->write_mixin ? "IdeHelper{$classname}" : $classname;
         $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent {}\n}\n\n";
         return $output;
     }

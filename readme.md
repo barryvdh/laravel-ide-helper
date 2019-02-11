@@ -97,11 +97,11 @@ The `Illuminate/Support/helpers.php` is already set up, but you can add/remove y
 
 ### Automatic phpDocs for models
 
-> You need to require `doctrine/dbal: ~2.3` in your own composer.json to get database columns.
+> You need to add `doctrine/dbal: ~2.3` to require-dev in your own composer.json to get database columns.
 
 
 ```bash
-composer require doctrine/dbal
+composer require --dev doctrine/dbal
 ```
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate

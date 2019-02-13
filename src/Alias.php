@@ -395,6 +395,10 @@ class Alias
             return new \ReflectionMethod($macro_func[0], $macro_func[1]);
         }
 
+        if (is_object($macro_func) && is_callable($macro_func)) {
+            return new \ReflectionMethod($macro_func, '__invoke');
+        }
+
         return new \ReflectionFunction($macro_func);
     }
 

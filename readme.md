@@ -45,18 +45,6 @@ To install this package on only development systems, add the `--dev` flag to you
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
-In Laravel, instead of adding the service provider in the `config/app.php` file, you can add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
-
-```php
-public function register()
-{
-    if ($this->app->environment() !== 'production') {
-        $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
-    }
-    // ...
-}
-```
-
 This will allow your application to load the Laravel IDE Helper on non-production enviroments.
 
 ### Automatic phpDoc generation for Laravel Facades

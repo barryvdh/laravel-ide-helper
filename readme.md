@@ -45,8 +45,6 @@ To install this package on only development systems, add the `--dev` flag to you
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
-This will allow your application to load the Laravel IDE Helper on non-production enviroments.
-
 ### Automatic phpDoc generation for Laravel Facades
 
 You can now re-generate the docs yourself (for future updates)

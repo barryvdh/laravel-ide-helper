@@ -205,4 +205,14 @@ return array(
     */
     'include_class_docblocks' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Include Extra Info
+    |--------------------------------------------------------------------------
+    |
+    | Extra info for dockblocks
+    |
+    */
+    'author' => 'Barry vd. Heuvel <barryvdh@gmail.com>',
+
 );

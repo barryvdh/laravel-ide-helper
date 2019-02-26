@@ -57,6 +57,7 @@ class ModelsCommand extends Command
     protected $write = false;
     protected $dirs = array();
     protected $reset;
+    protected $author;
     protected $keep_text;
     /**
      * @var bool[string]
@@ -92,7 +93,8 @@ class ModelsCommand extends Command
             $this->keep_text = $this->reset = true;
         }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
-
+        $this->author = $this->laravel['config']->get('ide-helper.author', '');
+        
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
             if ($this->confirm(
@@ -623,6 +625,12 @@ class ModelsCommand extends Command
 
         if (!$phpdoc->getText()) {
             $phpdoc->setText($class);
+        }
+        
+        if ($this->author) {
+            $tagLine = trim("@author {$this->author}");
+            $tag = Tag::createInstance($tagLine, $phpdoc);
+            $phpdoc->appendTag($tag);
         }
 
         $properties = array();

@@ -480,7 +480,7 @@ class ModelsCommand extends Command
                                'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
                              ) as $relation => $impl) {
                         $search = '$this->' . $relation . '(';
-                        if (stripos($code, $search) || stripos($impl, $type) !== false) {
+                        if (stripos($code, $search) || stripos($impl, (string)$type) !== false) {
                             //Resolve the relation's model to a Relation object.
                             $methodReflection = new \ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {

@@ -135,7 +135,7 @@ class MetaCommand extends Command
     protected function registerClassAutoloadExceptions()
     {
         spl_autoload_register(function ($class) {
-            throw new \Exception("Class '$class' not found.");
+            throw new \ReflectionException("Class '$class' not found.");
         });
     }
 

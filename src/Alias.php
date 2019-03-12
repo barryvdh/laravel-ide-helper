@@ -10,6 +10,7 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Closure;
 use ReflectionClass;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
@@ -395,7 +396,7 @@ class Alias
             return new \ReflectionMethod($macro_func[0], $macro_func[1]);
         }
 
-        if (is_object($macro_func) && is_callable($macro_func)) {
+        if (is_object($macro_func) && is_callable($macro_func) && !$macro_func instanceof Closure) {
             return new \ReflectionMethod($macro_func, '__invoke');
         }
 

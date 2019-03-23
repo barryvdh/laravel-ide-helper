@@ -338,8 +338,16 @@ class ModelsCommand extends Command
         }
 
         $database = null;
-        if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+        if ($tablePos = strpos($table, '.')) {
+            if ($model->getConnection()->getDriverName() === 'pgsql') {
+                if (strpos($table, '.', $tablePos + 1)) {
+                    list($database, $schemaName, $table) = explode('.', $table);
+
+                    $table = implode('.', [$schemaName, $table]);
+                }
+            } else {
+                list($database, $table) = explode('.', $table);
+            }
         }
 
         $columns = $schema->listTableColumns($table, $database);

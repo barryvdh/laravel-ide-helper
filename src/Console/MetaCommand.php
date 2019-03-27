@@ -90,7 +90,7 @@ class MetaCommand extends Command
                 if (is_object($concrete)) {
                     $bindings[$abstract] = get_class($concrete);
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
                     $this->comment("Cannot make '$abstract': ".$e->getMessage());
                 }

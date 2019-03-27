@@ -217,7 +217,7 @@ class ModelsCommand extends Command
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.");
                 }
             }

@@ -26,10 +26,22 @@ Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/C
 
 ### Install
 
+#### For Laravel 5.5 or later
+
 Require this package with composer using the following command:
 
 ```bash
 composer require --dev barryvdh/laravel-ide-helper
+```
+
+#### For Laravel 5.4 or earlier
+
+Laravel 5.4 or earlier versions do not have Package Auto-Discovery, so you need to add the ServiceProvider manually.
+
+Require this package with composer using the following command:
+
+```bash
+composer require barryvdh/laravel-ide-helper
 ```
 
 After updating composer, add the service provider to the `providers` array in `config/app.php`
@@ -37,7 +49,12 @@ After updating composer, add the service provider to the `providers` array in `c
 ```php
 Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 ```
-**Laravel 5.5** uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider.
+
+To install this package on only development systems, add the `--dev` flag to your composer command:
+
+```bash
+composer require --dev barryvdh/laravel-ide-helper
+```
 
 In Laravel, instead of adding the service provider in the `config/app.php` file, you can add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
 

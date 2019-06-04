@@ -13,7 +13,7 @@ return array(
 
     'filename'  => '_ide_helper',
     'format'    => 'php',
-    
+
     'meta_filename' => '.phpstorm.meta.php',
 
     /*
@@ -83,6 +83,23 @@ return array(
         'app',
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Update models automatically
+    |--------------------------------------------------------------------------
+    |
+    | Affected models are updated automatically when affected by migrations.
+    | Requires Laravel v5.8.16 or higher
+    |
+    */
+
+    'automatic_model_updates' => array(
+        'enabled' => false,
+        'options' => [
+            '--write' => false,
+            '--smart-reset' => true
+        ]
+    ),
 
     /*
     |--------------------------------------------------------------------------

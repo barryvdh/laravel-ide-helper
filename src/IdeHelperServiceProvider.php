@@ -14,6 +14,14 @@ use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Listeners\RecordMigrationQueries;
+use Barryvdh\LaravelIdeHelper\Listeners\UpdateAffectedModels;
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -49,6 +57,20 @@ class IdeHelperServiceProvider extends ServiceProvider
             $publishPath = base_path('config/ide-helper.php');
         }
         $this->publishes([$configPath => $publishPath], 'config');
+        if (Config::get('ide-helper.automatic_model_updates.enabled', false) &&
+            version_compare($this->app->version(), '5.8.16')) {
+            $queryRecorder = new MigrationQueryRecorder();
+            $this->app->singleton('migration-query-recorder', function () use ($queryRecorder) {
+                return $queryRecorder;
+            });
+            DB::listen(function (QueryExecuted $query) use ($queryRecorder) {
+                if ($queryRecorder->isRecording()) {
+                    $queryRecorder->recordQuery($query->sql);
+                }
+            });
+            Event::listen(MigrationsStarted::class, RecordMigrationQueries::class);
+            Event::listen(MigrationsEnded::class, UpdateAffectedModels::class);
+        }
     }
 
     /**

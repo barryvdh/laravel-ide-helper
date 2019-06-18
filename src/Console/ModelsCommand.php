@@ -503,13 +503,19 @@ class ModelsCommand extends Command
                                     'morphToMany',
                                     'morphedByMany',
                                 ];
-                                if (in_array($relation, $relations)) {
+                                if (strpos(get_class($relationObj), 'Many') !== false) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
                                         $method,
                                         $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
                                         true,
                                         null
+                                    );
+                                    $this->setProperty(
+                                        Str::snake($method) . '_count',
+                                        'int|null',
+                                        true,
+                                        false
                                     );
                                 } elseif ($relation === "morphTo") {
                                     // Model isn't specified because relation is polymorphic

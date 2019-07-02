@@ -13,6 +13,7 @@ namespace Barryvdh\LaravelIdeHelper;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -195,8 +196,12 @@ class Generator
     {
         $aliases = new Collection();
 
+        $facades = array_filter($this->getAliases(), function ($class) {
+            return is_subclass_of($class, Facade::class);
+        });
+
         // Get all aliases
-        foreach ($this->getAliases() as $name => $facade) {
+        foreach ($facades as $name => $facade) {
             // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
             if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && !class_exists('Predis\Client')) {
                 continue;

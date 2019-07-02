@@ -461,8 +461,7 @@ class ModelsCommand extends Command
                         // php 7.x type or fallback to docblock
                         $type = (string)$this->getReturnTypeFromDocBlock($reflection);
                     }
-                    $type = $reflection->getReturnType() ? $reflection->getReturnType()->name() : (string)$this->getReturnTypeFromDocBlock($reflection);
-
+                    
                     $file = new \SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
 

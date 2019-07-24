@@ -473,6 +473,7 @@ class ModelsCommand extends Command
                     foreach (array(
                                'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
                                'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
+                               'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
                                'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
                                'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
                                'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',

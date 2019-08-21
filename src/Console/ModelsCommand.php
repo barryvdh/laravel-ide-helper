@@ -409,133 +409,129 @@ class ModelsCommand extends Command
     protected function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
-        if ($methods) {
-            sort($methods);
-            foreach ($methods as $method) {
-                if (Str::startsWith($method, 'get') && Str::endsWith(
-                    $method,
-                    'Attribute'
-                ) && $method !== 'getAttribute'
-                ) {
-                    //Magic get<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
-                    if (!empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
-                        $type = $this->getReturnTypeFromDocBlock($reflection);
-                        $this->setProperty($name, $type, true, null);
-                    }
-                } elseif (Str::startsWith($method, 'set') && Str::endsWith(
-                    $method,
-                    'Attribute'
-                ) && $method !== 'setAttribute'
-                ) {
-                    //Magic set<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
-                    if (!empty($name)) {
-                        $this->setProperty($name, null, null, true);
-                    }
-                } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
-                    //Magic set<name>Attribute
-                    $name = Str::camel(substr($method, 5));
-                    if (!empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
-                        $args = $this->getParameters($reflection);
-                        //Remove the first ($query) argument
-                        array_shift($args);
-                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
-                    }
-                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $reflection = new \ReflectionClass($model);
+        if (!$methods) {
+            return;
+        }
 
-                    $builder = get_class($model->newModelQuery());
-
-                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
-                } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
-                    && !Str::startsWith($method, 'get')
-                ) {
-                    //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
+        sort($methods);
+        foreach ($methods as $method) {
+            if (Str::startsWith($method, 'get') && Str::endsWith(
+                $method,
+                'Attribute'
+            ) && $method !== 'getAttribute'
+            ) {
+                //Magic get<name>Attribute
+                $name = Str::snake(substr($method, 3, -9));
+                if (!empty($name)) {
                     $reflection = new \ReflectionMethod($model, $method);
-                    // php 7.x type or fallback to docblock
-                    $type = (string) $reflection->getReturnType() ?: (string)$this->getReturnTypeFromDocBlock($reflection);
+                    $type = $this->getReturnTypeFromDocBlock($reflection);
+                    $this->setProperty($name, $type, true, null);
+                }
+            } elseif (Str::startsWith($method, 'set') && Str::endsWith(
+                $method,
+                'Attribute'
+            ) && $method !== 'setAttribute'
+            ) {
+                //Magic set<name>Attribute
+                $name = Str::snake(substr($method, 3, -9));
+                if (!empty($name)) {
+                    $this->setProperty($name, null, null, true);
+                }
+            } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
+                //Magic set<name>Attribute
+                $name = Str::camel(substr($method, 5));
+                if (!empty($name)) {
+                    $reflection = new \ReflectionMethod($model, $method);
+                    $args = $this->getParameters($reflection);
+                    //Remove the first ($query) argument
+                    array_shift($args);
+                    $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
+                }
+            } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
+                $reflection = new \ReflectionClass($model);
 
-                    $file = new \SplFileObject($reflection->getFileName());
-                    $file->seek($reflection->getStartLine() - 1);
+                $builder = get_class($model->newModelQuery());
 
-                    $code = '';
-                    while ($file->key() < $reflection->getEndLine()) {
-                        $code .= $file->current();
-                        $file->next();
-                    }
-                    $code = trim(preg_replace('/\s\s+/', '', $code));
-                    $begin = strpos($code, 'function(');
-                    $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
+                $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
+            } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
+                && !Str::startsWith($method, 'get')
+            ) {
+                //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
+                $reflection = new \ReflectionMethod($model, $method);
+                // php 7.x type or fallback to docblock
+                $type = (string) $reflection->getReturnType() ?: (string)$this->getReturnTypeFromDocBlock($reflection);
 
-                    foreach (array(
-                               'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
-                               'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
-                               'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
-                               'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
-                               'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
-                               'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
-                               'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
-                               'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
-                               'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
-                               'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
-                             ) as $relation => $impl) {
-                        $search = '$this->' . $relation . '(';
-                        if (stripos($code, $search) || $impl === (string)$type) {
-                            //Resolve the relation's model to a Relation object.
-                            $methodReflection = new \ReflectionMethod($model, $method);
-                            if ($methodReflection->getNumberOfParameters()) {
-                                continue;
-                            }
+                $file = new \SplFileObject($reflection->getFileName());
+                $file->seek($reflection->getStartLine() - 1);
 
-                            $relationObj = $model->$method();
+                $code = '';
+                while ($file->key() < $reflection->getEndLine()) {
+                    $code .= $file->current();
+                    $file->next();
+                }
+                $code = trim(preg_replace('/\s\s+/', '', $code));
+                $begin = strpos($code, 'function(');
+                $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
-                            if ($relationObj instanceof Relation) {
-                                $relatedModel = '\\' . get_class($relationObj->getRelated());
+                $relationMap = [
+                    'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
+                    'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
+                    'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
+                    'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
+                    'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
+                    'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
+                    'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
+                    'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
+                    'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
+                    'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
+                ];
 
-                                $relations = [
-                                    'hasManyThrough',
-                                    'belongsToMany',
-                                    'hasMany',
-                                    'morphMany',
-                                    'morphToMany',
-                                    'morphedByMany',
-                                ];
-                                if (strpos(get_class($relationObj), 'Many') !== false) {
-                                    //Collection or array of models (because Collection is Arrayable)
-                                    $this->setProperty(
-                                        $method,
-                                        $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
-                                        true,
-                                        null
-                                    );
-                                    $this->setProperty(
-                                        Str::snake($method) . '_count',
-                                        'int|null',
-                                        true,
-                                        false
-                                    );
-                                } elseif ($relation === "morphTo") {
-                                    // Model isn't specified because relation is polymorphic
-                                    $this->setProperty(
-                                        $method,
-                                        '\Illuminate\Database\Eloquent\Model|\Eloquent',
-                                        true,
-                                        null
-                                    );
-                                } else {
-                                    //Single model is returned
-                                    $this->setProperty(
-                                        $method,
-                                        $relatedModel,
-                                        true,
-                                        null,
-                                        '',
-                                        $this->isRelationForeignKeyNullable($relationObj)
-                                    );
-                                }
+                foreach ($relationMap as $relation => $impl) {
+                    $search = '$this->' . $relation . '(';
+                    if (stripos($code, $search) || $impl === (string)$type) {
+                        //Resolve the relation's model to a Relation object.
+                        $methodReflection = new \ReflectionMethod($model, $method);
+                        if ($methodReflection->getNumberOfParameters()) {
+                            continue;
+                        }
+
+                        $relationObj = $model->$method();
+
+                        if ($relationObj instanceof Relation) {
+                            $relatedModel = '\\' . get_class($relationObj->getRelated());
+
+                            if (strpos(get_class($relationObj), 'Many') !== false) {
+                                //Collection or array of models (because Collection is Arrayable)
+                                $this->setProperty(
+                                    $method,
+                                    $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
+                                    true,
+                                    null
+                                );
+                                $this->setProperty(
+                                    Str::snake($method) . '_count',
+                                    'int|null',
+                                    true,
+                                    false
+                                );
+                            } elseif ($relation === "morphTo") {
+                                // Model isn't specified because relation is polymorphic
+                                $this->setProperty(
+                                    $method,
+                                    '\Illuminate\Database\Eloquent\Model|\Eloquent',
+                                    true,
+                                    null
+                                );
+                            } else {
+                                //Single model is returned
+                                $this->setProperty(
+                                    $method,
+                                    $relatedModel,
+                                    true,
+                                    null,
+                                    '',
+                                    $this->isRelationForeignKeyNullable($relationObj)
+                                );
                             }
                         }
                     }

@@ -290,7 +290,7 @@ class ModelsCommand extends Command
                     $realType = '\Illuminate\Support\Collection';
                     break;
                 default:
-                    $realType = 'mixed';
+                    $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
                     break;
             }
 
@@ -456,7 +456,7 @@ class ModelsCommand extends Command
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     $reflection = new \ReflectionMethod($model, $method);
                     // php 7.x type or fallback to docblock
-                    $type = (string) $reflection->getReturnType() ?: (string)$this->getReturnTypeFromDocBlock($reflection);
+                    $type = (string)($reflection->getReturnType() ?: $this->getReturnTypeFromDocBlock($reflection));
 
                     $file = new \SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);

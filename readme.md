@@ -1,4 +1,4 @@
-## Laravel 5 IDE Helper Generator
+## Laravel IDE Helper Generator
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)

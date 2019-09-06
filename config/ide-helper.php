@@ -83,6 +83,20 @@ return array(
         'app',
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | FormRequest locations to include
+    |--------------------------------------------------------------------------
+    |
+    | Define in which directories the ide-helper:form-requests command should look
+    | for form request classes.
+    |
+    */
+
+    'form_request_locations' => array(
+        'app/Http/Requests',
+    ),
+
 
     /*
     |--------------------------------------------------------------------------

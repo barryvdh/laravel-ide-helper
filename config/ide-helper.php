@@ -98,18 +98,7 @@ return array(
         'Session' => array('Illuminate\Session\Store'),
     ),
 
-    'magic' => array(
-        'Log' => array(
-            'debug'     => 'Monolog\Logger::addDebug',
-            'info'      => 'Monolog\Logger::addInfo',
-            'notice'    => 'Monolog\Logger::addNotice',
-            'warning'   => 'Monolog\Logger::addWarning',
-            'error'     => 'Monolog\Logger::addError',
-            'critical'  => 'Monolog\Logger::addCritical',
-            'alert'     => 'Monolog\Logger::addAlert',
-            'emergency' => 'Monolog\Logger::addEmergency',
-        )
-    ),
+    'magic' => array(),
 
     /*
     |--------------------------------------------------------------------------
@@ -189,10 +178,10 @@ return array(
     | Cast the given "real type" to the given "type".
     |
     */
-   'type_overrides' => array(
+    'type_overrides' => array(
         'integer' => 'int',
         'boolean' => 'bool',
-   ),
+    ),
 
     /*
     |--------------------------------------------------------------------------

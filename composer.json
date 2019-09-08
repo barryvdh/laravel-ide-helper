@@ -15,7 +15,8 @@
         "illuminate/console": "^5.5|^6",
         "illuminate/filesystem": "^5.5|^6",
         "barryvdh/reflection-docblock": "^2.0.6",
-        "composer/composer": "^1.6"
+        "composer/composer": "^1.6",
+        "doctrine/dbal": "~2.3"
     },
     "require-dev": {
         "illuminate/config": "^5.5|^6",
@@ -23,11 +24,7 @@
         "phpro/grumphp": "^0.14",
         "phpunit/phpunit" : "4.*",
         "scrutinizer/ocular": "~1.1",
-        "squizlabs/php_codesniffer": "^3",
-        "doctrine/dbal": "~2.3"
-    },
-    "suggest": {
-        "doctrine/dbal": "Load information from the database about models for phpdocs (~2.3)"
+        "squizlabs/php_codesniffer": "^3"
     },
     "autoload": {
         "psr-4": {

@@ -69,8 +69,8 @@ You can configure your composer.json to do this after each commit:
 "scripts":{
     "post-update-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-        "php artisan ide-helper:generate",
-        "php artisan ide-helper:meta"
+        "@php artisan ide-helper:generate",
+        "@php artisan ide-helper:meta"
     ]
 },
 ```

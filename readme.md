@@ -91,7 +91,7 @@ The `Illuminate/Support/helpers.php` is already set up, but you can add/remove y
 
 ### Automatic phpDocs for models
 
-> You need to add `doctrine/dbal: ~2.3` to require-dev in your own composer.json to get database columns.
+> For version < 2.6.5, you need to add `doctrine/dbal: ~2.3` to require-dev in your own composer.json to get database columns.
 
 
 ```bash

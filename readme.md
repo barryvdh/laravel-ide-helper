@@ -91,13 +91,6 @@ The `Illuminate/Support/helpers.php` is already set up, but you can add/remove y
 
 ### Automatic phpDocs for models
 
-> You need to add `doctrine/dbal: ~2.3` to require-dev in your own composer.json to get database columns.
-
-
-```bash
-composer require --dev doctrine/dbal
-```
-
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
 phpDocs, based on table columns, relations and getters/setters. You can write the comments directly to your Model file, using the `--write (-W)` option. By default, you are asked to overwrite or write to a separate file (`_ide_helper_models.php`). You can force No with `--nowrite (-N)`.
 Please make sure to backup your models, before writing the info.

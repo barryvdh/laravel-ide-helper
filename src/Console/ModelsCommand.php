@@ -730,7 +730,7 @@ class ModelsCommand extends Command
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';
                 } elseif (is_array($default)) {
-                    $default = 'array()';
+                    $default = '[]';
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {

@@ -455,9 +455,14 @@ class ModelsCommand extends Command
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     $reflection = new \ReflectionMethod($model, $method);
-                    // php 7.x type or fallback to docblock
-                    $type = (string) ($reflection->getReturnType() ?: $this->getReturnTypeFromDocBlock($reflection));
 
+                    if ($returnType = $reflection->getReturnType()) {
+                        $type = $returnType instanceof \ReflectionNamedType ? $returnType->getName() : (string)$returnType;
+                    } else {
+                        // php 7.x type or fallback to docblock
+                        $type = (string)$this->getReturnTypeFromDocBlock($reflection);
+                    }
+                    
                     $file = new \SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
 

@@ -1,4 +1,4 @@
-## Laravel 5 IDE Helper Generator
+## Laravel IDE Helper Generator
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -69,8 +69,8 @@ You can configure your composer.json to do this after each commit:
 "scripts":{
     "post-update-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-        "php artisan ide-helper:generate",
-        "php artisan ide-helper:meta"
+        "@php artisan ide-helper:generate",
+        "@php artisan ide-helper:meta"
     ]
 },
 ```
@@ -90,13 +90,6 @@ You can choose to include helper files. This is not enabled by default, but you 
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
 ### Automatic phpDocs for models
-
-> You need to add `doctrine/dbal: ~2.3` to require-dev in your own composer.json to get database columns.
-
-
-```bash
-composer require --dev doctrine/dbal
-```
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
 phpDocs, based on table columns, relations and getters/setters. You can write the comments directly to your Model file, using the `--write (-W)` option. By default, you are asked to overwrite or write to a separate file (`_ide_helper_models.php`). You can force No with `--nowrite (-N)`.

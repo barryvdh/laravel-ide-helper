@@ -88,7 +88,8 @@ class MetaCommand extends Command
 
             try {
                 $concrete = $this->laravel->make($abstract);
-                if (is_object($concrete)) {
+                $reflectionClass = new \ReflectionClass($concrete);
+                if (is_object($concrete) && !$reflectionClass->isAnonymous()) {
                     $bindings[$abstract] = get_class($concrete);
                 }
             } catch (\Throwable $e) {

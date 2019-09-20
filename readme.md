@@ -162,6 +162,59 @@ After publishing vendor, simply change the `include_fluent` line your `config/id
 ```
 And then run `php artisan ide-helper:generate` , you will now see all of the Fluent methods are recognized by your IDE.
 
+### Automatic phpDocs generation for Laravel FormRequests
+You can generate phpDocs support for Laravel's FormRequests. To do so run the following command:
+```php
+php artisan ide:form-requests
+```
+By default, this will create a new file called `_ide_helper_form_requests.php` in the root of your project and populate this file with FormRequest classes and phpDocs.
+If you want to change the name of the file generated you may pass the `--filename` argument to the command.
+```php
+php artisan ide:form-requests --filename="form_request_ide_helpers.php"
+```
+You can also generate phpDocs inline, inside the actual files where your FormRequest declarations are you, by passing the `--internal` option
+```php
+php artisan ide:form-requests --internal
+``` 
+The defauld FormRequest directory `app/Http/Requests` will be scanned for FormRequests by default. If you want to add more directories where you keep your FormRequests
+you can do that in the `config/ide-helper.php` configuration file under the `form_request_location` key. 
+```php
+/*
+    |--------------------------------------------------------------------------
+    | FormRequest locations to include
+    |--------------------------------------------------------------------------
+    |
+    | Define in which directories the ide-helper:form-requests command should look
+    | for form request classes.
+    |
+    */
+
+    'form_request_locations' => array(
+        'app/Http/Requests',
+        'app/Http/OtherFormRequests',
+    ),
+```
+Please note that subdirectories __ARE__ included included in the parsing and needn't be listed explicitly.
+
+If you want to provide additional directories when running the command without editing the configuration file, you can do that by passing the `--dir` argument.
+You may pass this argument more than once
+```php
+php artisan ide:form-requests --dir="app/Http/SomeMoreFormRequests" --dir="app/Http/EvenMoreFormRequests"
+```
+Please note that running the command this way __WILL__ include both the directories specified in the command and the ones in the configuration file.
+
+Furthermore, it is possible to generate phpDocs for a single file by passing the `request` argument. 
+Please note that the value of the `request` argument has to be a fully qualified class name of the request to create the phpDocs for.
+``php
+php artisan ide:form-requests request="App\Http\Requests\CreateArticleFormRequest"
+``
+Invoking the command this way will create phpDocs __ONLY__ for the provided request.
+
+The last option that you may pass is `--ignore`. This option allows you to ignore one or more form requests when generating phpDocs.
+The values of the `--ignore` options have to be fully qualified class names of the requests you want to ignore
+```php
+php artisan ide:form-requests --ignore="App\Http\Requests\FirstIgnoredRequest" --ignore="App\Http\Requests\SecondIgnoredRequest"
+```
 
 ## PhpStorm Meta for Container instances
 

@@ -20,10 +20,10 @@
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
 
-<?php foreach ($namespaces_by_extends_ns as $namespace => $aliases): ?>
+<?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>
 <?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
-<?php foreach ($aliases as $alias): ?>
+<?php foreach($aliases as $alias): ?>
 
     <?= trim($alias->getDocComment('    ')) ?>
     <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {

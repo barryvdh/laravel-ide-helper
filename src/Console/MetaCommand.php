@@ -103,8 +103,6 @@ class MetaCommand extends Command
             }
         }
 
-
-
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
           'methods' => $this->methods,

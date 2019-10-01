@@ -198,13 +198,13 @@ class Alias
     protected function detectFake()
     {
         $facade = $this->facade;
-
+        
         if (!method_exists($facade, 'fake')) {
             return;
         }
 
         $real = $facade::getFacadeRoot();
-
+        
         try {
             $facade::fake();
             $fake = $facade::getFacadeRoot();

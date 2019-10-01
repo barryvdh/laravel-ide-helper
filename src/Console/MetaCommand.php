@@ -10,6 +10,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Factories;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -77,6 +78,9 @@ class MetaCommand extends Command
      */
     public function handle()
     {
+        // Needs to run before exception handler is registered
+        $factories = $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [];
+
         $this->registerClassAutoloadExceptions();
 
         $bindings = array();
@@ -102,6 +106,7 @@ class MetaCommand extends Command
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
           'methods' => $this->methods,
+          'factories' => $factories,
         ])->render();
 
         $filename = $this->option('filename');

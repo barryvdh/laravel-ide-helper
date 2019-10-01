@@ -156,6 +156,18 @@ After publishing vendor, simply change the `include_fluent` line your `config/id
 And then run `php artisan ide-helper:generate` , you will now see all of the Fluent methods are recognized by your IDE.
 
 
+### Auto-completion for factory builders
+
+If you would like the `factory()->create()` and `factory()->make()` methods to return the correct model class,
+you can enable custom factory builders with the `include_factory_builders` line your `config/ide-helper.php` file.
+
+```php
+'include_factory_builders' => true,
+```
+
+For this to work, you must also publish the PhpStorm Meta file (see below). 
+
+
 ## PhpStorm Meta for Container instances
 
 It's possible to generate a PhpStorm meta file to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata). For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container. For example, `events` will return an `Illuminate\Events\Dispatcher` object, so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.

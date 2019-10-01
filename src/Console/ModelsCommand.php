@@ -457,7 +457,9 @@ class ModelsCommand extends Command
                     $reflection = new \ReflectionMethod($model, $method);
 
                     if ($returnType = $reflection->getReturnType()) {
-                        $type = $returnType instanceof \ReflectionNamedType ? $returnType->getName() : (string)$returnType;
+                        $type = $returnType instanceof \ReflectionNamedType
+                            ? $returnType->getName()
+                            : (string)$returnType;
                     } else {
                         // php 7.x type or fallback to docblock
                         $type = (string)$this->getReturnTypeFromDocBlock($reflection);

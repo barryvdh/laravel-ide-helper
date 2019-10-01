@@ -1,4 +1,4 @@
-## Laravel 5 IDE Helper Generator
+## Laravel IDE Helper Generator
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -29,7 +29,7 @@ Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/C
 Require this package with composer using the following command:
 
 ```bash
-composer require barryvdh/laravel-ide-helper
+composer require --dev barryvdh/laravel-ide-helper
 ```
 
 After updating composer, add the service provider to the `providers` array in `config/app.php`
@@ -38,12 +38,6 @@ After updating composer, add the service provider to the `providers` array in `c
 Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 ```
 **Laravel 5.5** uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider.
-
-To install this package on only development systems, add the `--dev` flag to your composer command:
-
-```bash
-composer require --dev barryvdh/laravel-ide-helper
-```
 
 In Laravel, instead of adding the service provider in the `config/app.php` file, you can add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
 
@@ -75,8 +69,8 @@ You can configure your composer.json to do this after each commit:
 "scripts":{
     "post-update-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-        "php artisan ide-helper:generate",
-        "php artisan ide-helper:meta"
+        "@php artisan ide-helper:generate",
+        "@php artisan ide-helper:meta"
     ]
 },
 ```
@@ -96,13 +90,6 @@ You can choose to include helper files. This is not enabled by default, but you 
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
 ### Automatic phpDocs for models
-
-> You need to add `doctrine/dbal: ~2.3` to require-dev in your own composer.json to get database columns.
-
-
-```bash
-composer require --dev doctrine/dbal
-```
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
 phpDocs, based on table columns, relations and getters/setters. You can write the comments directly to your Model file, using the `--write (-W)` option. By default, you are asked to overwrite or write to a separate file (`_ide_helper_models.php`). You can force No with `--nowrite (-N)`.

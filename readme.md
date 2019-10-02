@@ -7,6 +7,19 @@
 
 __For Laravel 4.x, check [version 1.11](https://github.com/barryvdh/laravel-ide-helper/tree/1.11)__
 
+  * [Complete phpDocs, directly from the source](#complete-phpdocs--directly-from-the-source)
+  * [Install](#install)
+  * [Automatic phpDoc generation for Laravel Facades](#automatic-phpdoc-generation-for-laravel-facades)
+  * [Automatic phpDocs for models](#automatic-phpdocs-for-models)
+  * [Automatic phpDocs generation for Laravel Fluent methods](#automatic-phpdocs-generation-for-laravel-fluent-methods)
+  * [Auto-completion for factory builders](#auto-completion-for-factory-builders)
+- [PhpStorm Meta for Container instances](#phpstorm-meta-for-container-instances)
+- [Lumen Install](#lumen-install)
+    + [Enabling Facades](#enabling-facades)
+    + [Adding the Service Provider](#adding-the-service-provider)
+    + [Adding Additional Facades](#adding-additional-facades)
+  * [License](#license)
+
 ### Complete phpDocs, directly from the source
 
 _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_

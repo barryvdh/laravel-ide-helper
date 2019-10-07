@@ -82,8 +82,8 @@ class ModelsCommand extends Command
         $filename = $this->option('filename');
         $this->write = $this->option('write');
         $this->dirs = array_merge(
-            $this->laravel['config']->get('ide-helper.model_locations'),
-            $this->option('dir')
+            (array) $this->laravel['config']->get('ide-helper.model_locations'),
+            (array) $this->option('dir')
         );
         $model = $this->argument('model');
         $ignore = $this->option('ignore');

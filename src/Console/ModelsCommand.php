@@ -57,6 +57,7 @@ class ModelsCommand extends Command
     protected $description = 'Generate autocompletion for models';
 
     protected $write_model_magic_where;
+    protected $write_model_relation_count_properties;
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
@@ -107,6 +108,8 @@ class ModelsCommand extends Command
             $this->keep_text = $this->reset = true;
         }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
+        $this->write_model_relation_count_properties =
+            $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
 
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
@@ -587,12 +590,14 @@ class ModelsCommand extends Command
                                         true,
                                         null
                                     );
-                                    $this->setProperty(
-                                        Str::snake($method) . '_count',
-                                        'int|null',
-                                        true,
-                                        false
-                                    );
+                                    if ($this->write_model_relation_count_properties) {
+                                        $this->setProperty(
+                                            Str::snake($method) . '_count',
+                                            'int|null',
+                                            true,
+                                            false
+                                        );
+                                    }
                                 } elseif ($relation === "morphTo") {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(

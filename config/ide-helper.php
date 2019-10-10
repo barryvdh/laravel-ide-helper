@@ -52,6 +52,22 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
+    | Write Model relation count properties
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable writing of relation count properties to model DocBlocks.
+    |
+    | If set to true, every "x to many" relation will generate an accompanying
+    | "$relation_count" property DocBlock comment.
+    |
+    | If set to false, no such DocBlock comments will be generated.
+    |
+    */
+
+    'write_model_relation_count_properties' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Write Eloquent Model Mixins
     |--------------------------------------------------------------------------
     |

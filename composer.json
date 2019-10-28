@@ -26,6 +26,9 @@
         "scrutinizer/ocular": "~1.1",
         "squizlabs/php_codesniffer": "^3"
     },
+    "suggest": {
+        "illuminate/events": "Required for automatic helper generation (^5.5|^6)."
+    },
     "autoload": {
         "psr-4": {
             "Barryvdh\\LaravelIdeHelper\\": "src"

@@ -28,32 +28,51 @@ class GenerateHelpers
      * Handle the event.
      *
      * @param  CommandFinished  $event
-     * @return void
      */
     public function handle(CommandFinished $event)
     {
         switch ($event->command) {
             case "package:discover":
-                $this->artisan->call(
-                    'ide-helper:generate',
-                    $this->config->get(
-                        'ide-helper.listen_generate_parameters',
-                        array()
-                    ),
-                    $event->output
-                );
+                $this->generateHelper($event->output);
                 break;
             case "migrate":
             case "migrate:rollback":
-                $this->artisan->call(
-                    'ide-helper:models',
-                    $this->config->get(
-                        'ide-helper.listen_models_parameters',
-                        array()
-                    ),
-                    $event->output
-                );
+                $this->generateModels($event->output);
                 break;
         }
+    }
+
+    /**
+     * Run "ide-helper:generate" command.
+     *
+     * @param \Symfony\Component\Console\Output\OutputInterface
+     */
+    protected function generateHelper($output)
+    {
+        $this->artisan->call(
+            'ide-helper:generate',
+            $this->config->get(
+                'ide-helper.listen_generate_parameters',
+                array()
+            ),
+            $output
+        );
+    }
+
+    /**
+     * Run "ide-helper:models" command.
+     *
+     * @param \Symfony\Component\Console\Output\OutputInterface
+     */
+    protected function generateModels($output)
+    {
+        $this->artisan->call(
+            'ide-helper:models',
+            $this->config->get(
+                'ide-helper.listen_models_parameters',
+                array()
+            ),
+            $output
+        );
     }
 }

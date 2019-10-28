@@ -14,6 +14,8 @@ use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Listeners\GenerateHelpers;
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -37,6 +39,10 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ($this->app['config']->get('ide-helper.listen_on_commands')) {
+            $this->app['events']->listen(CommandFinished::class, GenerateHelpers::class);
+        }
+
         if ($this->app->has('view')) {
             $viewPath = __DIR__ . '/../resources/views';
             $this->loadViewsFrom($viewPath, 'ide-helper');

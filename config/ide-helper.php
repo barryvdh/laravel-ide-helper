@@ -217,4 +217,30 @@ return array(
     */
     'listen_on_commands' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Automatic helper generation parameters
+    |--------------------------------------------------------------------------
+    |
+    | The command line parameters to be passed for the ide-helper:generate
+    | command.
+    |
+    */
+    'listen_generate_parameters' => array(
+
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Automatic model helper generation parameters
+    |--------------------------------------------------------------------------
+    |
+    | The command line parameters to be passed for the ide-helper:models
+    | command.
+    |
+    */
+    'listen_models_parameters' => array(
+        '--no-write',
+    ),
+
 );

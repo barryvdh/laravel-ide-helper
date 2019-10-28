@@ -3,10 +3,20 @@
 namespace Barryvdh\LaravelIdeHelper\Listeners;
 
 use Illuminate\Console\Events\CommandFinished;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Contracts\Config\Repository as Config;
+use Illuminate\Contracts\Console\Kernel as Artisan;
 
 class GenerateHelpers
 {
+    protected $artisan;
+    protected $config;
+
+    public function __construct(Artisan $artisan, Config $config)
+    {
+        $this->artisan = $artisan;
+        $this->config = $config;
+    }
+
     /**
      * Handle the event.
      *
@@ -17,11 +27,19 @@ class GenerateHelpers
     {
         switch ($event->command) {
             case "package:discover":
-                Artisan::call('ide-helper:generate', [], $event->output);
+                $this->artisan->call(
+                    'ide-helper:generate',
+                    $this->config->get('ide-helper.listen_generate_parameters', []),
+                    $event->output
+                );
                 break;
             case "migrate":
             case "migrate:rollback":
-                Artisan::call('ide-helper:models', ['--no-write'], $event->output);
+                $this->artisan->call(
+                    'ide-helper:models',
+                    $this->config->get('ide-helper.listen_model_parameters', []),
+                    $event->output
+                );
                 break;
         }
     }

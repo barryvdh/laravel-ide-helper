@@ -48,7 +48,7 @@ class GenerateHelpers
                 $this->artisan->call(
                     'ide-helper:models',
                     $this->config->get(
-                        'ide-helper.listen_model_parameters',
+                        'ide-helper.listen_models_parameters',
                         array()
                     ),
                     $event->output

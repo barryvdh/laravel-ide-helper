@@ -36,7 +36,10 @@ class GenerateHelpers
             case "package:discover":
                 $this->artisan->call(
                     'ide-helper:generate',
-                    $this->config->get('ide-helper.listen_generate_parameters', []),
+                    $this->config->get(
+                        'ide-helper.listen_generate_parameters',
+                        array()
+                    ),
                     $event->output
                 );
                 break;
@@ -44,7 +47,10 @@ class GenerateHelpers
             case "migrate:rollback":
                 $this->artisan->call(
                     'ide-helper:models',
-                    $this->config->get('ide-helper.listen_model_parameters', []),
+                    $this->config->get(
+                        'ide-helper.listen_model_parameters',
+                        array()
+                    ),
                     $event->output
                 );
                 break;

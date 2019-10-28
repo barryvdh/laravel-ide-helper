@@ -13,7 +13,7 @@ return array(
 
     'filename'  => '_ide_helper',
     'format'    => 'php',
-    
+
     'meta_filename' => '.phpstorm.meta.php',
 
     /*
@@ -205,5 +205,16 @@ return array(
     |
     */
     'include_class_docblocks' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Generate helper files automatically
+    |--------------------------------------------------------------------------
+    |
+    | Automatically generate facade helpers on package:discover command and
+    | model helpers on migrate and migrate:rollback commands.
+    |
+    */
+    'listen_on_commands' => false,
 
 );

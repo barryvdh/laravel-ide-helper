@@ -240,7 +240,7 @@ return array(
     |
     */
     'listen_models_parameters' => array(
-        '--no-write',
+        '--nowrite' => true,
     ),
 
 );

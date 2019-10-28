@@ -8,9 +8,16 @@ use Illuminate\Contracts\Console\Kernel as Artisan;
 
 class GenerateHelpers
 {
+    /** @var \Illuminate\Contracts\Console\Kernel */
     protected $artisan;
+
+    /** @var \Illuminate\Config\Repository */
     protected $config;
 
+    /**
+     * @param \Illuminate\Contracts\Console\Kernel $artisan
+     * @param \Illuminate\Config\Repository $config
+     */
     public function __construct(Artisan $artisan, Config $config)
     {
         $this->artisan = $artisan;

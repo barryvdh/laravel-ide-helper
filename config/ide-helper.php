@@ -232,6 +232,19 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
+    | Automatic metadata generation parameters
+    |--------------------------------------------------------------------------
+    |
+    | The command line parameters to be passed for the ide-helper:meta command.
+    | Set this variable to false to disable running this command.
+    |
+    */
+    'listen_meta_parameters' => array(
+
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
     | Automatic model helper generation parameters
     |--------------------------------------------------------------------------
     |

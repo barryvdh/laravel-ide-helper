@@ -34,6 +34,7 @@ class GenerateHelpers
         switch ($event->command) {
             case "package:discover":
                 $this->generate('generate', $event->output);
+                $this->generate('meta', $event->output);
                 break;
             case "migrate":
             case "migrate:rollback":
@@ -51,7 +52,7 @@ class GenerateHelpers
     {
         $parameters = $this->config->get(
             'ide-helper.listen_'.$command.'_parameters',
-                array()
+            array()
         );
 
         if ($parameters === false) {

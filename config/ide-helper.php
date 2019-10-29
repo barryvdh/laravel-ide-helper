@@ -223,7 +223,7 @@ return array(
     |--------------------------------------------------------------------------
     |
     | The command line parameters to be passed for the ide-helper:generate
-    | command.
+    | command. Set this variable to false to disable running this command.
     |
     */
     'listen_generate_parameters' => array(
@@ -236,7 +236,7 @@ return array(
     |--------------------------------------------------------------------------
     |
     | The command line parameters to be passed for the ide-helper:models
-    | command.
+    | command. Set this variable to false to disable running this command.
     |
     */
     'listen_models_parameters' => array(

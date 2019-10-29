@@ -54,6 +54,10 @@ class GenerateHelpers
                 array()
         );
 
+        if ($parameters === false) {
+            return;
+        }
+
         $this->artisan->call('ide-helper:'.$command, $parameters, $output);
     }
 }

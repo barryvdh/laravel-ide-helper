@@ -393,9 +393,10 @@ class ModelsCommand extends Command
                 }
                 $this->setProperty($name, $type, true, true, $comment, !$column->getNotnull());
                 if ($this->write_model_magic_where) {
+                    $builder = get_class($model->newModelQuery());
                     $this->setMethod(
                         Str::camel("where_" . $name),
-                        '\Illuminate\Database\Eloquent\Builder|\\' . get_class($model),
+                        "\\{$builder}|\\" . get_class($model),
                         array('$value')
                     );
                 }
@@ -442,7 +443,10 @@ class ModelsCommand extends Command
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
-                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
+
+                        $builder = get_class($model->newModelQuery());
+
+                        $this->setMethod($name, "\\{$builder}|\\" . $reflection->class, $args);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $reflection = new \ReflectionClass($model);
@@ -808,12 +812,14 @@ class ModelsCommand extends Command
     {
         $traits = class_uses(get_class($model), true);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
+            $builder = get_class($model->newModelQuery());
+
             $this->setMethod('forceDelete', 'bool|null', []);
             $this->setMethod('restore', 'bool|null', []);
 
-            $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+            $this->setMethod('withTrashed', "\\{$builder}|\\" . get_class($model), []);
+            $this->setMethod('withoutTrashed', "\\{$builder}|\\" . get_class($model), []);
+            $this->setMethod('onlyTrashed', "\\{$builder}|\\" . get_class($model), []);
         }
     }
 

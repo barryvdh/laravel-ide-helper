@@ -316,7 +316,7 @@ class Alias
     {
         foreach ($this->magicMethods as $magic => $real) {
             list($className, $name) = explode('::', $real);
-            if (!class_exists($className) && !interface_exists($className)) {
+            if ((!class_exists($className) && !interface_exists($className)) || !method_exists($className, $name)) {
                 continue;
             }
             $method = new \ReflectionMethod($className, $name);

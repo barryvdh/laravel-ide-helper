@@ -96,7 +96,7 @@ class ModelsCommand extends Command
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
             if ($this->confirm(
-                "Do you want to overwrite the existing model files? Choose no to write to $filename instead?"
+                "Do you want to overwrite the existing model files? Choose no to write to $filename instead"
             )
             ) {
                 $this->write = true;
@@ -290,7 +290,7 @@ class ModelsCommand extends Command
                     $realType = '\Illuminate\Support\Collection';
                     break;
                 default:
-                    $realType = 'mixed';
+                    $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
                     break;
             }
 
@@ -458,8 +458,13 @@ class ModelsCommand extends Command
             ) {
                 //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                 $reflection = new \ReflectionMethod($model, $method);
-                // php 7.x type or fallback to docblock
-                $type = (string) $reflection->getReturnType() ?: (string)$this->getReturnTypeFromDocBlock($reflection);
+if ($returnType = $reflection->getReturnType()) {
+                        $type = $returnType instanceof \ReflectionNamedType
+                            ? $returnType->getName()
+                            : (string)$returnType;
+                    } else {                // php 7.x type or fallback to docblock
+                $type = (string)$this->getReturnTypeFromDocBlock($reflection);
+                    }
 
                 $file = new \SplFileObject($reflection->getFileName());
                 $file->seek($reflection->getStartLine() - 1);
@@ -476,7 +481,8 @@ class ModelsCommand extends Command
                 $relationMap = [
                     'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
                     'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
-                    'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
+                    'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
+                               'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
                     'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
                     'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
                     'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
@@ -726,7 +732,7 @@ class ModelsCommand extends Command
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';
                 } elseif (is_array($default)) {
-                    $default = 'array()';
+                    $default = '[]';
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {

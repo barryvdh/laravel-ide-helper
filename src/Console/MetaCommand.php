@@ -10,6 +10,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Factories;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,6 +48,7 @@ class MetaCommand extends Command
 
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
+      '\Illuminate\Container\Container::makeWith(0)',
       '\Illuminate\Contracts\Container\Container::make(0)',
       '\Illuminate\Contracts\Container\Container::makeWith(0)',
       '\App::make(0)',
@@ -76,6 +78,9 @@ class MetaCommand extends Command
      */
     public function handle()
     {
+        // Needs to run before exception handler is registered
+        $factories = $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [];
+
         $this->registerClassAutoloadExceptions();
 
         $bindings = array();
@@ -87,10 +92,11 @@ class MetaCommand extends Command
 
             try {
                 $concrete = $this->laravel->make($abstract);
-                if (is_object($concrete)) {
+                $reflectionClass = new \ReflectionClass($concrete);
+                if (is_object($concrete) && !$reflectionClass->isAnonymous()) {
                     $bindings[$abstract] = get_class($concrete);
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
                     $this->comment("Cannot make '$abstract': ".$e->getMessage());
                 }
@@ -100,6 +106,7 @@ class MetaCommand extends Command
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
           'methods' => $this->methods,
+          'factories' => $factories,
         ])->render();
 
         $filename = $this->option('filename');
@@ -135,7 +142,7 @@ class MetaCommand extends Command
     protected function registerClassAutoloadExceptions()
     {
         spl_autoload_register(function ($class) {
-            throw new \Exception("Class '$class' not found.");
+            throw new \ReflectionException("Class '$class' not found.");
         });
     }
 

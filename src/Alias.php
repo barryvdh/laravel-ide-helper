@@ -10,6 +10,7 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Closure;
 use ReflectionClass;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
@@ -315,7 +316,7 @@ class Alias
     {
         foreach ($this->magicMethods as $magic => $real) {
             list($className, $name) = explode('::', $real);
-            if (!class_exists($className) && !interface_exists($className)) {
+            if ((!class_exists($className) && !interface_exists($className)) || !method_exists($className, $name)) {
                 continue;
             }
             $method = new \ReflectionMethod($className, $name);
@@ -393,6 +394,10 @@ class Alias
     {
         if (is_array($macro_func) && is_callable($macro_func)) {
             return new \ReflectionMethod($macro_func[0], $macro_func[1]);
+        }
+
+        if (is_object($macro_func) && is_callable($macro_func) && !$macro_func instanceof Closure) {
+            return new \ReflectionMethod($macro_func, '__invoke');
         }
 
         return new \ReflectionFunction($macro_func);

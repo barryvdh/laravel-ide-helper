@@ -314,9 +314,9 @@ class Method
         $params = array();
         $paramsWithDefault = array();
         foreach ($method->getParameters() as $param) {
-            $paramStr = '$' . $param->getName();
+            $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
             $params[] = $paramStr;
-            if ($param->isOptional()) {
+            if ($param->isOptional() && !$param->isVariadic()) {
                 $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';

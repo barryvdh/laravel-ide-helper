@@ -64,6 +64,14 @@ class ModelsCommand extends Command
     protected $nullableColumns = [];
 
     /**
+     * During initializtion we use Laravels Date Facade to
+     * determine the actual date class and store it here.
+     *
+     * @var string
+     */
+    protected $dateClass;
+
+    /**
      * @param Filesystem $files
      */
     public function __construct(Filesystem $files)
@@ -102,6 +110,10 @@ class ModelsCommand extends Command
                 $this->write = true;
             }
         }
+
+        $this->dateClass = class_exists(\Illuminate\Support\Facades\Date::class)
+            ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
+            : '\Illuminate\Support\Carbon';
 
         $content = $this->generateDocs($model, $ignore);
 
@@ -284,7 +296,7 @@ class ModelsCommand extends Command
                     break;
                 case 'date':
                 case 'datetime':
-                    $realType = '\Illuminate\Support\Carbon';
+                    $realType = $this->dateClass;
                     break;
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
@@ -348,7 +360,7 @@ class ModelsCommand extends Command
             foreach ($columns as $column) {
                 $name = $column->getName();
                 if (in_array($name, $model->getDates())) {
-                    $type = '\Illuminate\Support\Carbon';
+                    $type = $this->dateClass;
                 } else {
                     $type = $column->getType()->getName();
                     switch ($type) {

@@ -261,14 +261,10 @@ The Laravel IDE Helper Generator is open-sourced software licensed under the [MI
 [ico-version]: https://img.shields.io/packagist/v/barryvdh/laravel-ide-helper.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/barryvdh/laravel-ide-helper/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/barryvdh/laravel-ide-helper.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/barryvdh/laravel-ide-helper.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/barryvdh/laravel-ide-helper.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/barryvdh/laravel-ide-helper
 [link-travis]: https://travis-ci.org/barryvdh/laravel-ide-helper
-[link-scrutinizer]: https://scrutinizer-ci.com/g/barryvdh/laravel-ide-helper/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/barryvdh/laravel-ide-helper
 [link-downloads]: https://packagist.org/packages/barryvdh/laravel-ide-helper
 [link-author]: https://github.com/barryvdh
 [link-contributors]: ../../contributors

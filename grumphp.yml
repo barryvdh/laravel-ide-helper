@@ -13,3 +13,6 @@ parameters:
             ignore_patterns:
               - tests/
             triggered_by: [php]
+            whitelist_patterns:
+                - /^src\/.*/
+                - /^config\/.*/

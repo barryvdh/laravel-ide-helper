@@ -81,10 +81,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToSameNameAsColumn
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationHasMany
  * @property-read int|null $relation_has_many_count
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationHasOne
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple|null $relationHasOne
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationHasOneWithDefault
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphMany
  * @property-read int|null $relation_morph_many_count
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationMorphOne
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple|null $relationMorphOne
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $relationMorphTo
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
@@ -105,6 +106,11 @@ class Simple extends Model
     public function relationHasOne(): HasOne
     {
         return $this->hasOne(Simple::class);
+    }
+
+    public function relationHasOneWithDefault(): HasOne
+    {
+        return $this->hasOne(Simple::class)->withDefault();
     }
 
     public function relationBelongsTo(): BelongsTo

@@ -33,7 +33,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Barryvdh\\LaravelIdeHelper\\": "tests"
+            "Barryvdh\\LaravelIdeHelper\\Tests\\": "tests"
         }
     },
     "scripts": {

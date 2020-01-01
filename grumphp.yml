@@ -11,7 +11,7 @@ parameters:
             standard: PSR2
             warning_severity: ~
             ignore_patterns:
-              - tests/
+                - tests/
             triggered_by: [php]
             whitelist_patterns:
                 - /^src\/.*/

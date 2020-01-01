@@ -23,6 +23,14 @@ matrix:
       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
 before_script:
+  - phpenv config-rm xdebug.ini || true
+
+install:
+  - |
+    if [[ $RUN_PHPUNIT = 0 ]]; then
+      # We assume the older PHP/Laravel versions and thus restore a working dependency system for them
+      composer remove --dev orchestra/testbench --no-interaction --no-update
+    fi
   - travis_wait 20 travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:

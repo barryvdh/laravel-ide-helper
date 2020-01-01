@@ -1,8 +1,11 @@
 <?php
 
-namespace Barryvdh\LaravelIdeHelper;
+namespace Barryvdh\LaravelIdeHelper\Tests;
 
-class ExampleTest extends \PHPUnit_Framework_TestCase
+use Barryvdh\LaravelIdeHelper\Method;
+use PHPUnit\Framework\TestCase;
+
+class ExampleTest extends TestCase
 {
     /**
      * Test that we can actually instantiate the class

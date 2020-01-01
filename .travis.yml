@@ -1,12 +1,5 @@
 language: php
 
-php:
-  - 7.0
-  - 7.1
-  - 7.2
-  - 7.3
-  - 7.4
-
 ## Cache composer
 cache:
   directories:
@@ -20,7 +13,15 @@ env:
 matrix:
   include:
     - php: 7.0
-      env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
+      env: RUN_PHPUNIT=0
+    - php: 7.0
+      env: RUN_PHPUNIT=0 COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+    - php: 7.1
+      env: RUN_PHPUNIT=0
+    - php: 7.2
+    - php: 7.3
+    - php: 7.4
+      env: RUN_PHPCS=1
 
 before_script:
   - phpenv config-rm xdebug.ini || true

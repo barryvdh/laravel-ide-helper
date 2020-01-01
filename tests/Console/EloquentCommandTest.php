@@ -1,0 +1,66 @@
+<?php
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console;
+
+use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
+use Barryvdh\LaravelIdeHelper\Tests\TestCase;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\Filesystem;
+use Mockery;
+use ReflectionClass;
+
+class EloquentCommandTest extends TestCase
+{
+    public function testCommand()
+    {
+        $modelFilename = $this->getVendorModelFilename();
+
+        // Ensure the mixins are not present
+        $modelSource = file_get_contents($modelFilename);
+        $this->assertStringNotContainsString('* @mixin \\Eloquent', $modelSource);
+        $this->assertStringNotContainsString('* @mixin \\Illuminate\\Database\\Eloquent\\Builder', $modelSource);
+        $this->assertStringNotContainsString('* @mixin \\Illuminate\\Database\\Query\\Builder', $modelSource);
+
+        $actualContent = null;
+        $mockFilesystem = Mockery::mock(Filesystem::class);
+        $mockFilesystem
+            ->shouldReceive('get')
+            // We don't care about actual args (filename)
+            ->andReturn('abstract class Model implements'); // This is enough to trigger the replacement logic
+        $mockFilesystem
+            ->shouldReceive('put')
+            ->with(
+                Mockery::any(), // First arg is path, we don't care
+                Mockery::capture($actualContent)
+            )
+            ->andReturn(1) // Simulate we wrote _something_ to the file
+            ->once();
+
+        $this->instance(Filesystem::class, $mockFilesystem);
+        $command = $this->app->make(EloquentCommand::class);
+
+        $tester = $this->runCommand($command);
+
+        $expectedContent = '/**
+ * 
+ *
+ * @mixin \Eloquent
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ * @mixin \Illuminate\Database\Query\Builder
+ */
+abstract class Model implements';
+        $this->assertSame($expectedContent, $actualContent);
+
+        $display = $tester->getDisplay();
+        $this->assertRegExp(';Unexpected no document on Illuminate\\\Database\\\Eloquent\\\Model;', $display);
+        $this->assertRegExp(';Wrote expected docblock to .*/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php;', $display);
+    }
+
+    private function getVendorModelFilename(): string
+    {
+        $class = Model::class;
+        $reflectedClass = new ReflectionClass($class);
+
+        return $reflectedClass->getFileName();
+    }
+}

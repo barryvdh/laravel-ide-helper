@@ -35,5 +35,5 @@ install:
   - travis_wait 20 travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
-  - vendor/bin/phpcs --standard=psr2 src/
-  - vendor/bin/phpunit
+  - if [[ $RUN_PHPCS = 1 ]]; then vendor/bin/phpcs --standard=psr2 src/; fi
+  - if [[ $RUN_PHPUNIT = 1 ]]; then vendor/bin/phpunit; fi

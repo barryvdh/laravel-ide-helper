@@ -12,6 +12,11 @@ cache:
   directories:
     - $HOME/.composer/cache
 
+env:
+  global:
+    - RUN_PHPUNIT=1
+    - RUN_PHPCS=0
+
 matrix:
   include:
     - php: 7.0

@@ -1,25 +1,39 @@
 language: php
 
-php:
-  - 7.0
-  - 7.1
-  - 7.2
-  - 7.3
-  - 7.4
-
 ## Cache composer
 cache:
   directories:
     - $HOME/.composer/cache
 
+env:
+  global:
+    - RUN_PHPUNIT=1
+    - RUN_PHPCS=0
+
 matrix:
   include:
     - php: 7.0
-      env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
+      env: RUN_PHPUNIT=0
+    - php: 7.0
+      env: RUN_PHPUNIT=0 COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+    - php: 7.1
+      env: RUN_PHPUNIT=0
+    - php: 7.2
+    - php: 7.3
+    - php: 7.4
+      env: RUN_PHPCS=1
 
 before_script:
+  - phpenv config-rm xdebug.ini || true
+
+install:
+  - |
+    if [[ $RUN_PHPUNIT = 0 ]]; then
+      # We assume the older PHP/Laravel versions and thus restore a working dependency system for them
+      composer remove --dev orchestra/testbench --no-interaction --no-update
+    fi
   - travis_wait 20 travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
-  - vendor/bin/phpcs --standard=psr2 src/
-  - vendor/bin/phpunit
+  - if [[ $RUN_PHPCS = 1 ]]; then vendor/bin/phpcs --standard=psr2 src/; fi
+  - if [[ $RUN_PHPUNIT = 1 ]]; then vendor/bin/phpunit; fi

@@ -4,7 +4,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Illuminate\Console\Command;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use PHPUnit\Framework\Assert;
 use Symfony\Component\Console\Tester\CommandTester;
 
 abstract class TestCase extends BaseTestCase
@@ -33,22 +32,5 @@ abstract class TestCase extends BaseTestCase
         $tester->execute($arguments);
 
         return $tester;
-    }
-
-    /**
-     * @todo if support for Laravel 5.5 is dropped, this shim can be replaced with actual parent call
-     *
-     * @param string $needle
-     * @param string $haystack
-     * @param string $message
-     */
-    public static function assertStringNotContainsString(string $needle, string $haystack, string $message = ''): void
-    {
-        if (!method_exists(Assert::class, 'assertStringContainsString')) {
-            parent::assertNotContains($needle, $haystack, $message);
-            return;
-        }
-
-        parent::assertStringNotContainsString($needle, $haystack, $message);
     }
 }

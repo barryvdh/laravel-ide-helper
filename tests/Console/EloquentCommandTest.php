@@ -14,12 +14,11 @@ class EloquentCommandTest extends TestCase
     public function testCommand()
     {
         $modelFilename = $this->getVendorModelFilename();
-
-        // Ensure the mixins are not present
         $modelSource = file_get_contents($modelFilename);
-        $this->assertStringNotContainsString('* @mixin \\Eloquent', $modelSource);
-        $this->assertStringNotContainsString('* @mixin \\Illuminate\\Database\\Eloquent\\Builder', $modelSource);
-        $this->assertStringNotContainsString('* @mixin \\Illuminate\\Database\\Query\\Builder', $modelSource);
+        if (false !== strpos($modelSource, '* @mixin')) {
+            $msg = sprintf('Class %s already contains the @mixin markers', Model::class);
+            $this->markTestSkipped($msg);
+        }
 
         $actualContent = null;
         $mockFilesystem = Mockery::mock(Filesystem::class);

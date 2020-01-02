@@ -39,7 +39,6 @@ install:
   - composer require "illuminate/filesystem:${LARAVEL}" --no-interaction --no-update
   - composer require --dev "illuminate/config:${LARAVEL}" --no-interaction --no-update
   - composer require --dev "illuminate/view:${LARAVEL}" --no-interaction --no-update
-  - if [[ $LARAVEL = '5.5.*' ]]; then composer require --dev mockery/mockery --no-interaction --no-update; fi
   - composer update --no-interaction --prefer-dist
 
 script:

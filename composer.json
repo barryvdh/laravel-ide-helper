@@ -22,7 +22,6 @@
         "illuminate/config": "^5.5|^6",
         "illuminate/view": "^5.5|^6",
         "phpro/grumphp": "^0.14",
-        "scrutinizer/ocular": "~1.1",
         "squizlabs/php_codesniffer": "^3",
         "orchestra/testbench": "^4.4"
     },

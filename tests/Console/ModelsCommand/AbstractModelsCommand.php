@@ -2,9 +2,9 @@
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand;
 
-use Barryvdh\LaravelIdeHelper\Tests\TestCaseDatabase;
+use Barryvdh\LaravelIdeHelper\Tests\TestCase;
 
-abstract class AbstractModelsCommand extends TestCaseDatabase
+abstract class AbstractModelsCommand extends TestCase
 {
     protected function setUp(): void
     {

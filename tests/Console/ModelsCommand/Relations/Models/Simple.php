@@ -1,0 +1,65 @@
+<?php declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
+
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
+class Simple extends Model
+{
+    // Regular relations
+    public function relationHasMany(): HasMany
+    {
+        return $this->hasMany(Simple::class);
+    }
+
+    public function relationHasOne(): HasOne
+    {
+        return $this->hasOne(Simple::class);
+    }
+
+    public function relationBelongsTo(): BelongsTo
+    {
+        return $this->belongsTo(Simple::class);
+    }
+
+    public function relationBelongsToMany(): BelongsToMany
+    {
+        return $this->belongsToMany(Simple::class);
+    }
+
+    public function relationMorphTo(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function relationMorphOne(): MorphOne
+    {
+        return $this->morphOne(Simple::class, 'relationMorphTo');
+    }
+
+    public function relationMorphMany(): MorphMany
+    {
+        return $this->morphMany(Simple::class, 'relationMorphTo');
+    }
+
+    public function relationMorphedByMany(): MorphToMany
+    {
+        return $this->morphedByMany(Simple::class, 'foo');
+    }
+
+    // Custom relations
+
+    public function relationBelongsToInAnotherNamespace(): BelongsTo
+    {
+        return $this->belongsTo(AnotherModel::class);
+    }
+}

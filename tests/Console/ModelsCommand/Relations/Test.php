@@ -55,6 +55,7 @@ class Test extends AbstractModelsCommand
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
 
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -69,6 +70,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple
  *
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationBelongsTo
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationHasMany
@@ -87,6 +89,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  */
 class Simple extends Model
 {
+    // Regular relations
     public function relationHasMany(): HasMany
     {
         return $this->hasMany(Simple::class);
@@ -125,6 +128,13 @@ class Simple extends Model
     public function relationMorphedByMany(): MorphToMany
     {
         return $this->morphedByMany(Simple::class, 'foo');
+    }
+
+    // Custom relations
+
+    public function relationBelongsToInAnotherNamespace(): BelongsTo
+    {
+        return $this->belongsTo(AnotherModel::class);
     }
 }
 

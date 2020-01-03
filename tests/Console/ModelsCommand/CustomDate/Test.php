@@ -41,11 +41,6 @@ class Test extends AbstractModelsCommand
 
     public function test(): void
     {
-        if (!class_exists(CarbonImmutable::class)) {
-            $msg = sprintf('Class %s necessary for test not present', CarbonImmutable::class);
-            $this->markTestSkipped($msg);
-        }
-
         $actualContent = null;
         $mockFilesystem = Mockery::mock(Filesystem::class);
         $mockFilesystem

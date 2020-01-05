@@ -55,10 +55,8 @@ class GeneratorCommand extends Command
      * @param \Illuminate\View\Factory $view
      */
     public function __construct(
-        /*ConfigRepository */ 
         $config,
         Filesystem $files,
-        /* Illuminate\View\Factory */
         $view
     ) {
         $this->config = $config;

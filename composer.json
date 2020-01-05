@@ -39,8 +39,8 @@
     },
     "scripts": {
         "test": "phpunit",
-        "check-style": "phpcs -p --standard=PSR2 src/",
-        "fix-style": "phpcbf -p --standard=PSR2 src/"
+        "check-style": "php-cs-fixer fix --diff --diff-format=udiff --dry-run",
+        "fix-style": "php-cs-fixer fix"
     },
     "extra": {
         "branch-alias": {

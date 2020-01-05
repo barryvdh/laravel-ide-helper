@@ -7,12 +7,4 @@ parameters:
             testsuite: ~
             group: []
             always_execute: false
-        phpcs:
-            standard: PSR2
-            warning_severity: ~
-            ignore_patterns:
-                - tests/
-            triggered_by: [php]
-            whitelist_patterns:
-                - /^src\/.*/
-                - /^config\/.*/
+        phpcsfixer2:

@@ -53,7 +53,9 @@ class Test extends AbstractModelsCommand
         $this->assertEmpty($tester->getDisplay());
 
         $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
 
@@ -97,22 +99,22 @@ class Simple extends Model
     // Regular relations
     public function relationHasMany(): HasMany
     {
-        return $this->hasMany(Simple::class);
+        return $this->hasMany(self::class);
     }
 
     public function relationHasOne(): HasOne
     {
-        return $this->hasOne(Simple::class);
+        return $this->hasOne(self::class);
     }
 
     public function relationBelongsTo(): BelongsTo
     {
-        return $this->belongsTo(Simple::class);
+        return $this->belongsTo(self::class);
     }
 
     public function relationBelongsToMany(): BelongsToMany
     {
-        return $this->belongsToMany(Simple::class);
+        return $this->belongsToMany(self::class);
     }
 
     public function relationMorphTo(): MorphTo
@@ -122,17 +124,17 @@ class Simple extends Model
 
     public function relationMorphOne(): MorphOne
     {
-        return $this->morphOne(Simple::class, 'relationMorphTo');
+        return $this->morphOne(self::class, 'relationMorphTo');
     }
 
     public function relationMorphMany(): MorphMany
     {
-        return $this->morphMany(Simple::class, 'relationMorphTo');
+        return $this->morphMany(self::class, 'relationMorphTo');
     }
 
     public function relationMorphedByMany(): MorphToMany
     {
-        return $this->morphedByMany(Simple::class, 'foo');
+        return $this->morphedByMany(self::class, 'foo');
     }
 
     // Custom relations

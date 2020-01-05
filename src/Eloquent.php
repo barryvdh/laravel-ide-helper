@@ -1,24 +1,25 @@
 <?php
 
 /**
- * Laravel IDE Helper to add \Eloquent mixin to Eloquent\Model
+ * Laravel IDE Helper to add \Eloquent mixin to Eloquent\Model.
  *
  * @author Charles A. Peterson <artistan@gmail.com>
  */
+
 namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 
 class Eloquent
 {
     /**
      * Write mixin helper to the Eloquent\Model
-     * This is needed since laravel/framework v5.4.29
+     * This is needed since laravel/framework v5.4.29.
      *
      * @param Command    $command
      * @param Filesystem $files
@@ -29,12 +30,12 @@ class Eloquent
     {
         $class = 'Illuminate\Database\Eloquent\Model';
 
-        $reflection  = new \ReflectionClass($class);
-        $namespace   = $reflection->getNamespaceName();
+        $reflection = new \ReflectionClass($class);
+        $namespace = $reflection->getNamespaceName();
         $originalDoc = $reflection->getDocComment();
 
-        if (!$originalDoc) {
-            $command->info('Unexpected no document on ' . $class);
+        if (! $originalDoc) {
+            $command->info('Unexpected no document on '.$class);
         }
         $phpdoc = new DocBlock($reflection, new Context($namespace));
 
@@ -49,7 +50,7 @@ class Eloquent
             $mixin = $m->getContent();
 
             if (isset($expectedMixins[$mixin])) {
-                $command->info('Tag Exists: @mixin ' . $mixin . ' in ' . $class);
+                $command->info('Tag Exists: @mixin '.$mixin.' in '.$class);
 
                 $expectedMixins[$mixin] = true;
             }
@@ -58,14 +59,14 @@ class Eloquent
         $changed = false;
         foreach ($expectedMixins as $expectedMixin => $present) {
             if ($present === false) {
-                $phpdoc->appendTag(Tag::createInstance('@mixin ' . $expectedMixin, $phpdoc));
+                $phpdoc->appendTag(Tag::createInstance('@mixin '.$expectedMixin, $phpdoc));
 
                 $changed = true;
             }
         }
 
         // If nothing's changed, stop here.
-        if (!$changed) {
+        if (! $changed) {
             return;
         }
 
@@ -77,7 +78,7 @@ class Eloquent
             The new DocBlock is appended to the beginning of the class declaration.
             Since there is no DocBlock, the declaration is used as a guide.
         */
-        if (!$originalDoc) {
+        if (! $originalDoc) {
             $originalDoc = 'abstract class Model implements';
 
             $docComment .= "\nabstract class Model implements";
@@ -87,22 +88,22 @@ class Eloquent
         if ($filename) {
             $contents = $files->get($filename);
             if ($contents) {
-                $count    = 0;
+                $count = 0;
                 $contents = str_replace($originalDoc, $docComment, $contents, $count);
                 if ($count > 0) {
                     if ($files->put($filename, $contents)) {
-                        $command->info('Wrote expected docblock to ' . $filename);
+                        $command->info('Wrote expected docblock to '.$filename);
                     } else {
-                        $command->error('File write failed to ' . $filename);
+                        $command->error('File write failed to '.$filename);
                     }
                 } else {
-                    $command->error('Content did not change ' . $contents);
+                    $command->error('Content did not change '.$contents);
                 }
             } else {
-                $command->error('No file contents found ' . $filename);
+                $command->error('No file contents found '.$filename);
             }
         } else {
-            $command->error('Filename not found ' . $class);
+            $command->error('Filename not found '.$class);
         }
     }
 }

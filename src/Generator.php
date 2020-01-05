@@ -1,6 +1,6 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
@@ -10,8 +10,8 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,9 +27,9 @@ class Generator
     /** @var \Symfony\Component\Console\Output\OutputInterface */
     protected $output;
 
-    protected $extra = array();
-    protected $magic = array();
-    protected $interfaces = array();
+    protected $extra = [];
+    protected $magic = [];
+    protected $interfaces = [];
     protected $helpers;
 
     /**
@@ -39,8 +39,10 @@ class Generator
      * @param string $helpers
      */
     public function __construct(
-        /*ConfigRepository */ $config,
-        /* Illuminate\View\Factory */ $view,
+        /*ConfigRepository */ 
+        $config,
+        /* Illuminate\View\Factory */ 
+        $view,
         OutputInterface $output = null,
         $helpers = ''
     ) {
@@ -55,13 +57,13 @@ class Generator
         $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'));
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
-            $interface = '\\' . ltrim($interface, '\\');
+            $interface = '\\'.ltrim($interface, '\\');
         }
         $this->helpers = $helpers;
     }
 
     /**
-     * Generate the helper file contents;
+     * Generate the helper file contents;.
      *
      * @param  string  $format  The format to generate the helper in (php/json)
      * @return string;
@@ -80,6 +82,7 @@ class Generator
     public function generatePhpHelper()
     {
         $app = app();
+
         return $this->view->make('helper')
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
@@ -92,16 +95,16 @@ class Generator
 
     public function generateJsonHelper()
     {
-        $classes = array();
+        $classes = [];
         foreach ($this->getValidAliases() as $aliases) {
             foreach ($aliases as $alias) {
-                $functions = array();
+                $functions = [];
                 foreach ($alias->getMethods() as $method) {
-                    $functions[$method->getName()] = '('. $method->getParamsWithDefault().')';
+                    $functions[$method->getName()] = '('.$method->getParamsWithDefault().')';
                 }
-                $classes[$alias->getAlias()] = array(
+                $classes[$alias->getAlias()] = [
                     'functions' => $functions,
-                );
+                ];
             }
         }
 
@@ -110,11 +113,11 @@ class Generator
             $flags |= JSON_PRETTY_PRINT;
         }
 
-        return json_encode(array(
-            'php' => array(
+        return json_encode([
+            'php' => [
                 'classes' => $classes,
-            ),
-        ), $flags);
+            ],
+        ], $flags);
     }
 
     protected function detectDrivers()
@@ -134,7 +137,7 @@ class Generator
                         (strpos($versionStr, 'Lumen (5.1') === 0 ? 'driver' : 'guard');
                 }
                 $class = get_class(\Auth::$authMethod());
-                $this->extra['Auth'] = array($class);
+                $this->extra['Auth'] = [$class];
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
             }
         } catch (\Exception $e) {
@@ -143,7 +146,7 @@ class Generator
         try {
             if (class_exists('DB') && is_a('DB', '\Illuminate\Support\Facades\DB', true)) {
                 $class = get_class(\DB::connection());
-                $this->extra['DB'] = array($class);
+                $this->extra['DB'] = [$class];
                 $this->interfaces['\Illuminate\Database\ConnectionInterface'] = $class;
             }
         } catch (\Exception $e) {
@@ -153,7 +156,7 @@ class Generator
             if (class_exists('Cache') && is_a('Cache', '\Illuminate\Support\Facades\Cache', true)) {
                 $driver = get_class(\Cache::driver());
                 $store = get_class(\Cache::getStore());
-                $this->extra['Cache'] = array($driver, $store);
+                $this->extra['Cache'] = [$driver, $store];
                 $this->interfaces['\Illuminate\Cache\StoreInterface'] = $store;
             }
         } catch (\Exception $e) {
@@ -162,7 +165,7 @@ class Generator
         try {
             if (class_exists('Queue') && is_a('Queue', '\Illuminate\Support\Facades\Queue', true)) {
                 $class = get_class(\Queue::connection());
-                $this->extra['Queue'] = array($class);
+                $this->extra['Queue'] = [$class];
                 $this->interfaces['\Illuminate\Queue\QueueInterface'] = $class;
             }
         } catch (\Exception $e) {
@@ -171,7 +174,7 @@ class Generator
         try {
             if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)) {
                 $class = get_class(\SSH::connection());
-                $this->extra['SSH'] = array($class);
+                $this->extra['SSH'] = [$class];
                 $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;
             }
         } catch (\Exception $e) {
@@ -180,7 +183,7 @@ class Generator
         try {
             if (class_exists('Storage') && is_a('Storage', '\Illuminate\Support\Facades\Storage', true)) {
                 $class = get_class(\Storage::disk());
-                $this->extra['Storage'] = array($class);
+                $this->extra['Storage'] = [$class];
                 $this->interfaces['\Illuminate\Contracts\Filesystem\Filesystem'] = $class;
             }
         } catch (\Exception $e) {
@@ -188,7 +191,7 @@ class Generator
     }
 
     /**
-     * Find all aliases that are valid for us to render
+     * Find all aliases that are valid for us to render.
      *
      * @return Collection
      */
@@ -199,11 +202,11 @@ class Generator
         // Get all aliases
         foreach ($this->getAliases() as $name => $facade) {
             // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
-            if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && !class_exists('Predis\Client')) {
+            if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && ! class_exists('Predis\Client')) {
                 continue;
             }
 
-            $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
+            $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
             $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
                 //Add extra methods, from other classes (magic static calls)
@@ -219,7 +222,7 @@ class Generator
     }
 
     /**
-     * Regroup aliases by namespace of extended classes
+     * Regroup aliases by namespace of extended classes.
      *
      * @return Collection
      */
@@ -231,7 +234,7 @@ class Generator
     }
 
     /**
-     * Regroup aliases by namespace of alias
+     * Regroup aliases by namespace of alias.
      *
      * @return Collection
      */
@@ -250,24 +253,24 @@ class Generator
         }
 
         $facades = [
-          'App' => 'Illuminate\Support\Facades\App',
-          'Auth' => 'Illuminate\Support\Facades\Auth',
-          'Bus' => 'Illuminate\Support\Facades\Bus',
-          'DB' => 'Illuminate\Support\Facades\DB',
-          'Cache' => 'Illuminate\Support\Facades\Cache',
-          'Cookie' => 'Illuminate\Support\Facades\Cookie',
-          'Crypt' => 'Illuminate\Support\Facades\Crypt',
-          'Event' => 'Illuminate\Support\Facades\Event',
-          'Hash' => 'Illuminate\Support\Facades\Hash',
-          'Log' => 'Illuminate\Support\Facades\Log',
-          'Mail' => 'Illuminate\Support\Facades\Mail',
-          'Queue' => 'Illuminate\Support\Facades\Queue',
-          'Request' => 'Illuminate\Support\Facades\Request',
-          'Schema' => 'Illuminate\Support\Facades\Schema',
-          'Session' => 'Illuminate\Support\Facades\Session',
-          'Storage' => 'Illuminate\Support\Facades\Storage',
-          'Validator' => 'Illuminate\Support\Facades\Validator',
-          'Gate' => 'Illuminate\Support\Facades\Gate',
+            'App' => 'Illuminate\Support\Facades\App',
+            'Auth' => 'Illuminate\Support\Facades\Auth',
+            'Bus' => 'Illuminate\Support\Facades\Bus',
+            'DB' => 'Illuminate\Support\Facades\DB',
+            'Cache' => 'Illuminate\Support\Facades\Cache',
+            'Cookie' => 'Illuminate\Support\Facades\Cookie',
+            'Crypt' => 'Illuminate\Support\Facades\Crypt',
+            'Event' => 'Illuminate\Support\Facades\Event',
+            'Hash' => 'Illuminate\Support\Facades\Hash',
+            'Log' => 'Illuminate\Support\Facades\Log',
+            'Mail' => 'Illuminate\Support\Facades\Mail',
+            'Queue' => 'Illuminate\Support\Facades\Queue',
+            'Request' => 'Illuminate\Support\Facades\Request',
+            'Schema' => 'Illuminate\Support\Facades\Schema',
+            'Session' => 'Illuminate\Support\Facades\Session',
+            'Storage' => 'Illuminate\Support\Facades\Storage',
+            'Validator' => 'Illuminate\Support\Facades\Validator',
+            'Gate' => 'Illuminate\Support\Facades\Gate',
         ];
 
         $facades = array_merge($facades, $this->config->get('app.aliases', []));
@@ -283,7 +286,7 @@ class Generator
     }
 
     /**
-     * Get the driver/connection/store from the managers
+     * Get the driver/connection/store from the managers.
      *
      * @param $alias
      * @return array|bool|string
@@ -291,15 +294,16 @@ class Generator
     public function getDriver($alias)
     {
         try {
-            if ($alias == "Auth") {
+            if ($alias == 'Auth') {
                 $driver = \Auth::driver();
-            } elseif ($alias == "DB") {
+            } elseif ($alias == 'DB') {
                 $driver = \DB::connection();
-            } elseif ($alias == "Cache") {
+            } elseif ($alias == 'Cache') {
                 $driver = get_class(\Cache::driver());
                 $store = get_class(\Cache::getStore());
-                return array($driver, $store);
-            } elseif ($alias == "Queue") {
+
+                return [$driver, $store];
+            } elseif ($alias == 'Queue') {
                 $driver = \Queue::connection();
             } else {
                 return false;
@@ -308,6 +312,7 @@ class Generator
             return get_class($driver);
         } catch (\Exception $e) {
             $this->error("Could not determine driver/connection for $alias.");
+
             return false;
         }
     }
@@ -323,7 +328,7 @@ class Generator
         if ($this->output) {
             $this->output->writeln("<error>$string</error>");
         } else {
-            echo $string . "\r\n";
+            echo $string."\r\n";
         }
     }
 }

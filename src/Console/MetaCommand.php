@@ -1,6 +1,6 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2015 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
@@ -16,13 +16,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * A command to generate phpstorm meta data
+ * A command to generate phpstorm meta data.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
 class MetaCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -47,18 +46,17 @@ class MetaCommand extends Command
     protected $config;
 
     protected $methods = [
-      'new \Illuminate\Contracts\Container\Container',
-      '\Illuminate\Container\Container::makeWith(0)',
-      '\Illuminate\Contracts\Container\Container::make(0)',
-      '\Illuminate\Contracts\Container\Container::makeWith(0)',
-      '\App::make(0)',
-      '\App::makeWith(0)',
-      '\app(0)',
-      '\resolve(0)',
+        'new \Illuminate\Contracts\Container\Container',
+        '\Illuminate\Container\Container::makeWith(0)',
+        '\Illuminate\Contracts\Container\Container::make(0)',
+        '\Illuminate\Contracts\Container\Container::makeWith(0)',
+        '\App::make(0)',
+        '\App::makeWith(0)',
+        '\app(0)',
+        '\resolve(0)',
     ];
 
     /**
-     *
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
      * @param \Illuminate\Contracts\Config $config
@@ -83,7 +81,7 @@ class MetaCommand extends Command
 
         $this->registerClassAutoloadExceptions();
 
-        $bindings = array();
+        $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
             // Validator and seeder cause problems
             if (in_array($abstract, ['validator', 'seeder'])) {
@@ -93,7 +91,7 @@ class MetaCommand extends Command
             try {
                 $concrete = $this->laravel->make($abstract);
                 $reflectionClass = new \ReflectionClass($concrete);
-                if (is_object($concrete) && !$reflectionClass->isAnonymous()) {
+                if (is_object($concrete) && ! $reflectionClass->isAnonymous()) {
                     $bindings[$abstract] = get_class($concrete);
                 }
             } catch (\Throwable $e) {
@@ -104,9 +102,9 @@ class MetaCommand extends Command
         }
 
         $content = $this->view->make('meta', [
-          'bindings' => $bindings,
-          'methods' => $this->methods,
-          'factories' => $factories,
+            'bindings' => $bindings,
+            'methods' => $this->methods,
+            'factories' => $factories,
         ])->render();
 
         $filename = $this->option('filename');
@@ -155,8 +153,8 @@ class MetaCommand extends Command
     {
         $filename = $this->config->get('ide-helper.meta_filename');
 
-        return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
-        );
+        return [
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
+        ];
     }
 }

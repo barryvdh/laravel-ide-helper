@@ -1,7 +1,7 @@
 <?= '<?php' ?>
 <?php
 /**
- * @var \Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_alias_ns
+ * @var \Barryvdh\LaravelIdeHelper\Alias[][]
  * @var \Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_extends_ns
  * @var bool $include_fluent
  * @var string $helpers
@@ -12,7 +12,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel <?= $version ?> on <?= date("Y-m-d H:i:s") ?>.
+ * Generated for Laravel <?= $version ?> on <?= date('Y-m-d H:i:s') ?>.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -20,26 +20,26 @@
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
 
-<?php foreach($namespaces_by_extends_ns as $namespace => $aliases): ?>
+<?php foreach ($namespaces_by_extends_ns as $namespace => $aliases): ?>
 <?php if ($namespace == '\Illuminate\Database\Eloquent'): continue; endif; ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
-<?php foreach($aliases as $alias): ?>
+<?php foreach ($aliases as $alias): ?>
 
     <?= trim($alias->getDocComment('    ')) ?> 
     <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
-        <?php foreach($alias->getMethods() as $method): ?>
+        <?php foreach ($alias->getMethods() as $method): ?>
 
         <?= trim($method->getDocComment('        ')) ?> 
         public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
-        {<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
+        {<?php if ($method->getDeclaringClass() !== $method->getRoot()): ?>
 
             //Method inherited from <?= $method->getDeclaringClass() ?>
             <?php endif; ?>
 
-            <?php if($method->isInstanceCall()):?>
+            <?php if ($method->isInstanceCall()):?>
             /** @var <?=$method->getRoot()?> $instance */
             <?php endif?>
-            <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRootMethodCall() ?>;
+            <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;
         }
         <?php endforeach; ?> 
     }
@@ -48,23 +48,23 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 
 <?php endforeach; ?>
 
-<?php foreach($namespaces_by_alias_ns as $namespace => $aliases): ?>
+<?php foreach ($namespaces_by_alias_ns as $namespace => $aliases): ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
-<?php foreach($aliases as $alias): ?>
+<?php foreach ($aliases as $alias): ?>
 
     <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent'): ?>
-        <?php foreach($alias->getMethods() as $method): ?> 
+        <?php foreach ($alias->getMethods() as $method): ?> 
             <?= trim($method->getDocComment('            ')) ?> 
             public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
-            {<?php if($method->getDeclaringClass() !== $method->getRoot()): ?>
+            {<?php if ($method->getDeclaringClass() !== $method->getRoot()): ?>
     
                 //Method inherited from <?= $method->getDeclaringClass() ?>
                 <?php endif; ?>
 
-                <?php if($method->isInstanceCall()):?>
+                <?php if ($method->isInstanceCall()):?>
                 /** @var <?=$method->getRoot()?> $instance */
                 <?php endif?>
-                <?= $method->shouldReturn() ? 'return ': '' ?><?= $method->getRootMethodCall() ?>;
+                <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;
             }
         <?php endforeach; ?>
 <?php endif; ?>}
@@ -73,13 +73,13 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 
 <?php endforeach; ?>
 
-<?php if($helpers): ?>
+<?php if ($helpers): ?>
 namespace {
 <?= $helpers ?> 
 }
 <?php endif; ?>
 
-<?php if($include_fluent): ?>
+<?php if ($include_fluent): ?>
 namespace Illuminate\Support {
     /**
      * Methods commonly used in migrations

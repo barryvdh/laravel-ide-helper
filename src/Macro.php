@@ -3,7 +3,6 @@
 namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Tag;
 
 class Macro extends Method
 {
@@ -21,7 +20,7 @@ class Macro extends Method
         $alias,
         $class,
         $methodName = null,
-        $interfaces = array()
+        $interfaces = []
     ) {
         parent::__construct($method, $alias, $class, $methodName, $interfaces);
     }
@@ -41,6 +40,6 @@ class Macro extends Method
     protected function initClassDefinedProperties($method, \ReflectionClass $class)
     {
         $this->namespace = $class->getNamespaceName();
-        $this->declaringClassName = '\\' . ltrim($class->name, '\\');
+        $this->declaringClassName = '\\'.ltrim($class->name, '\\');
     }
 }

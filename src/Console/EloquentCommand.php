@@ -1,6 +1,6 @@
 <?php
 /**
- * Laravel IDE Helper Generator - Eloquent Model Mixin
+ * Laravel IDE Helper Generator - Eloquent Model Mixin.
  *
  * @author    Charles A. Peterson <artistan@gmail.com>
  * @copyright 2017 Charles A. Peterson / Fruitcake Studio (http://www.fruitcakestudio.nl)
@@ -15,7 +15,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
 /**
- * A command to add \Eloquent mixin to Eloquent\Model
+ * A command to add \Eloquent mixin to Eloquent\Model.
  *
  * @author Charles A. Peterson <artistan@gmail.com>
  */
@@ -29,7 +29,7 @@ class EloquentCommand extends Command
     protected $name = 'ide-helper:eloquent';
 
     /**
-     * @var Filesystem $files
+     * @var Filesystem
      */
     protected $files;
 

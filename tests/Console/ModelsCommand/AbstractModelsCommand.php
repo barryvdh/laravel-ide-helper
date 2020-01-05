@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand;
 
@@ -14,10 +16,11 @@ abstract class AbstractModelsCommand extends TestCase
         // Skip older Laravel version for these tests
         if (version_compare(Application::VERSION, '6.0', '<')) {
             $this->markTestSkipped('This test requires Laravel 6.0 or higher');
+
             return;
         }
 
-        $this->loadMigrationsFrom(__DIR__ . '/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/migrations');
         $this->artisan('migrate');
     }
 

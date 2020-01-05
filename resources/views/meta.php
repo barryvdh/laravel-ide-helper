@@ -6,7 +6,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on <?= date("Y-m-d H:i:s") ?>.
+    * Generated on <?= date('Y-m-d H:i:s') ?>.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -14,7 +14,7 @@ namespace PHPSTORM_META {
 <?php foreach ($methods as $method): ?>
     override(<?= $method ?>, map([
         '' => '@',
-<?php foreach($bindings as $abstract => $class): ?>
+<?php foreach ($bindings as $abstract => $class): ?>
         '<?= $abstract ?>' => \<?= $class ?>::class,
 <?php endforeach; ?>
     ]));
@@ -23,7 +23,7 @@ namespace PHPSTORM_META {
 <?php if (count($factories)): ?>
 	override(\factory(0), map([
         '' => '@FactoryBuilder',
-<?php foreach($factories as $factory): ?>
+<?php foreach ($factories as $factory): ?>
         '<?= $factory->getName() ?>' => \<?= $factory->getName() ?>FactoryBuilder::class,
 <?php endforeach; ?>
 	]));

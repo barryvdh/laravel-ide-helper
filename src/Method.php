@@ -1,6 +1,6 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
@@ -12,26 +12,26 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
-use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag;
+use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
+use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
 
 class Method
 {
-    /** @var \Barryvdh\Reflection\DocBlock  */
+    /** @var \Barryvdh\Reflection\DocBlock */
     protected $phpdoc;
 
-    /** @var \ReflectionMethod  */
+    /** @var \ReflectionMethod */
     protected $method;
 
     protected $output = '';
     protected $declaringClassName;
     protected $name;
     protected $namespace;
-    protected $params = array();
-    protected $params_with_default = array();
-    protected $interfaces = array();
+    protected $params = [];
+    protected $params_with_default = [];
+    protected $interfaces = [];
     protected $real_name;
     protected $return = null;
     protected $root;
@@ -43,7 +43,7 @@ class Method
      * @param string|null $methodName
      * @param array $interfaces
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = array())
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
@@ -52,7 +52,7 @@ class Method
         $this->initClassDefinedProperties($method, $class);
 
         //Reference the 'real' function in the declaring class
-        $this->root = '\\' . ltrim($class->getName(), '\\');
+        $this->root = '\\'.ltrim($class->getName(), '\\');
 
         //Create a DocBlock and serializer instance
         $this->initPhpDoc($method);
@@ -88,11 +88,11 @@ class Method
     {
         $declaringClass = $method->getDeclaringClass();
         $this->namespace = $declaringClass->getNamespaceName();
-        $this->declaringClassName = '\\' . ltrim($declaringClass->name, '\\');
+        $this->declaringClassName = '\\'.ltrim($declaringClass->name, '\\');
     }
 
     /**
-     * Get the class wherein the function resides
+     * Get the class wherein the function resides.
      *
      * @return string
      */
@@ -102,7 +102,7 @@ class Method
     }
 
     /**
-     * Return the class from which this function would be called
+     * Return the class from which this function would be called.
      *
      * @return string
      */
@@ -132,7 +132,7 @@ class Method
     }
 
     /**
-     * Get the docblock for this method
+     * Get the docblock for this method.
      *
      * @param string $prefix
      * @return mixed
@@ -140,11 +140,12 @@ class Method
     public function getDocComment($prefix = "\t\t")
     {
         $serializer = new DocBlockSerializer(1, $prefix);
+
         return $serializer->getDocComment($this->phpdoc);
     }
 
     /**
-     * Get the method name
+     * Get the method name.
      *
      * @return string
      */
@@ -154,7 +155,7 @@ class Method
     }
 
     /**
-     * Get the real method name
+     * Get the real method name.
      *
      * @return string
      */
@@ -164,7 +165,7 @@ class Method
     }
 
     /**
-     * Get the parameters for this method
+     * Get the parameters for this method.
      *
      * @param bool $implode Wether to implode the array or not
      * @return string
@@ -175,7 +176,7 @@ class Method
     }
 
     /**
-     * Get the parameters for this method including default values
+     * Get the parameters for this method including default values.
      *
      * @param bool $implode Wether to implode the array or not
      * @return string
@@ -219,7 +220,7 @@ class Method
     }
 
     /**
-     * Normalize the parameters
+     * Normalize the parameters.
      *
      * @param DocBlock $phpdoc
      */
@@ -235,14 +236,14 @@ class Method
                 $tag->setContent($content);
 
                 // Get the expanded type and re-set the content
-                $content = $tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
+                $content = $tag->getType().' '.$tag->getVariableName().' '.$tag->getDescription();
                 $tag->setContent(trim($content));
             }
         }
     }
 
     /**
-     * Normalize the return tag (make full namespace, replace interfaces)
+     * Normalize the return tag (make full namespace, replace interfaces).
      *
      * @param DocBlock $phpdoc
      */
@@ -262,7 +263,7 @@ class Method
             }
 
             // Set the changed content
-            $tag->setContent($returnValue . ' ' . $tag->getDescription());
+            $tag->setContent($returnValue.' '.$tag->getDescription());
             $this->return = $returnValue;
 
             if ($tag->getType() === '$this') {
@@ -295,7 +296,7 @@ class Method
      */
     public function shouldReturn()
     {
-        if ($this->return !== "void" && $this->method->name !== "__construct") {
+        if ($this->return !== 'void' && $this->method->name !== '__construct') {
             return true;
         }
 
@@ -303,7 +304,7 @@ class Method
     }
 
     /**
-     * Get the parameters and format them correctly
+     * Get the parameters and format them correctly.
      *
      * @param  \ReflectionMethod $method
      * @return array
@@ -311,25 +312,25 @@ class Method
     public function getParameters($method)
     {
         //Loop through the default values for paremeters, and make the correct output string
-        $params = array();
-        $paramsWithDefault = array();
+        $params = [];
+        $paramsWithDefault = [];
         foreach ($method->getParameters() as $param) {
-            $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
+            $paramStr = $param->isVariadic() ? '...$'.$param->getName() : '$'.$param->getName();
             $params[] = $paramStr;
-            if ($param->isOptional() && !$param->isVariadic()) {
+            if ($param->isOptional() && ! $param->isVariadic()) {
                 $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';
                 } elseif (is_array($default)) {
                     $default = '[]';
-                } elseif (is_null($default)) {
+                } elseif (null === $default) {
                     $default = 'null';
                 } elseif (is_int($default)) {
                     //$default = $default;
                 } elseif (is_resource($default)) {
                     //skip to not fail
                 } else {
-                    $default = "'" . trim($default) . "'";
+                    $default = "'".trim($default)."'";
                 }
                 $paramStr .= " = $default";
             }
@@ -357,7 +358,7 @@ class Method
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
             $phpdoc = new DocBlock($method, new Context($namespace));
-            
+
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);

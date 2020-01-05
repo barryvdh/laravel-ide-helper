@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class ExampleTest extends TestCase
 {
     /**
-     * Test that we can actually instantiate the class
+     * Test that we can actually instantiate the class.
      */
     public function testCanInstantiate()
     {
@@ -21,7 +21,7 @@ class ExampleTest extends TestCase
     }
 
     /**
-     * Test the output of a class
+     * Test the output of a class.
      */
     public function testOutput()
     {
@@ -58,6 +58,5 @@ class ExampleClass
      */
     public function setName($last, $first = 'Barry', ...$middle)
     {
-        return;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
@@ -14,17 +14,16 @@ use Barryvdh\LaravelIdeHelper\Eloquent;
 use Barryvdh\LaravelIdeHelper\Generator;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
- * A command to generate autocomplete information for your IDE
+ * A command to generate autocomplete information for your IDE.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
 class GeneratorCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -50,15 +49,14 @@ class GeneratorCommand extends Command
 
     protected $onlyExtend;
 
-
     /**
-     *
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\Filesystem\Filesystem $files
      * @param \Illuminate\View\Factory $view
      */
     public function __construct(
-        /*ConfigRepository */ $config,
+        /*ConfigRepository */ 
+        $config,
         Filesystem $files,
         /* Illuminate\View\Factory */
         $view
@@ -76,9 +74,9 @@ class GeneratorCommand extends Command
      */
     public function handle()
     {
-        if (file_exists(base_path() . '/vendor/compiled.php') ||
-            file_exists(base_path() . '/bootstrap/cache/compiled.php') ||
-            file_exists(base_path() . '/storage/framework/compiled.php')) {
+        if (file_exists(base_path().'/vendor/compiled.php') ||
+            file_exists(base_path().'/bootstrap/cache/compiled.php') ||
+            file_exists(base_path().'/storage/framework/compiled.php')) {
             $this->error(
                 'Error generating IDE Helper: first delete your compiled file (php artisan clear-compiled)'
             );
@@ -91,18 +89,17 @@ class GeneratorCommand extends Command
                 $filename = substr($filename, 0, -4);
             }
 
-            $filename .= '.' . $format;
+            $filename .= '.'.$format;
 
             if ($this->option('memory')) {
                 $this->useMemoryDriver();
             }
 
-
             $helpers = '';
             if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {
-                foreach ($this->config->get('ide-helper.helper_files', array()) as $helper) {
+                foreach ($this->config->get('ide-helper.helper_files', []) as $helper) {
                     if (file_exists($helper)) {
-                        $helpers .= str_replace(array('<?php', '?>'), '', $this->files->get($helper));
+                        $helpers .= str_replace(['<?php', '?>'], '', $this->files->get($helper));
                     }
                 }
             } else {
@@ -130,10 +127,10 @@ class GeneratorCommand extends Command
         //Use a sqlite database in memory, to avoid connection errors on Database facades
         $this->config->set(
             'database.connections.sqlite',
-            array(
+            [
                 'driver' => 'sqlite',
                 'database' => ':memory:',
-            )
+            ]
         );
         $this->config->set('database.default', 'sqlite');
     }
@@ -147,11 +144,11 @@ class GeneratorCommand extends Command
     {
         $filename = $this->config->get('ide-helper.filename');
 
-        return array(
-            array(
-                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename
-            ),
-        );
+        return [
+            [
+                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename,
+            ],
+        ];
     }
 
     /**
@@ -164,12 +161,12 @@ class GeneratorCommand extends Command
         $format = $this->config->get('ide-helper.format');
         $writeMixins = $this->config->get('ide-helper.write_eloquent_model_mixins');
 
-        return array(
-            array('format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),
-            array('write_mixins', "W", InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins),
-            array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
-            array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
-            array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),
-        );
+        return [
+            ['format', 'F', InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format],
+            ['write_mixins', 'W', InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins],
+            ['helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'],
+            ['memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'],
+            ['sublime', 'S', InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'],
+        ];
     }
 }

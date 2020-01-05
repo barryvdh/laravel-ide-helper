@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdoc;
 
@@ -28,7 +30,7 @@ class Test extends AbstractModelsCommand
         $mockFilesystem = Mockery::mock(Filesystem::class);
         $mockFilesystem
             ->shouldReceive('get')
-            ->andReturn(file_get_contents(__DIR__ . '/Models/Post.php'))
+            ->andReturn(file_get_contents(__DIR__.'/Models/Post.php'))
             ->once();
         $mockFilesystem
             ->shouldReceive('put')

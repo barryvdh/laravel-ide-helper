@@ -5,10 +5,6 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-env:
-  global:
-    - RUN_PHPCS=0
-
 matrix:
   include:
     - php: '7.2'
@@ -46,13 +42,14 @@ matrix:
     - php: '7.4'
       env: LARAVEL='^6.0' COMPOSER_FLAGS='--prefer-lowest'
     - php: '7.4'
-      env: LARAVEL='^6.0' COMPOSER_FLAGS='--prefer-stable' RUN_PHPCS=1
+      env: LARAVEL='^6.0' COMPOSER_FLAGS='--prefer-stable'
 
 before_script:
   - phpenv config-rm xdebug.ini || true
 
 install:
   - travis_retry composer remove phpro/grumphp --no-interaction --no-update --dev
+  - composer remove matt-allan/laravel-code-style --no-interaction --no-update --dev
   - composer require "illuminate/support:${LARAVEL}" --no-interaction --no-update
   - composer require "illuminate/console:${LARAVEL}" --no-interaction --no-update
   - composer require "illuminate/filesystem:${LARAVEL}" --no-interaction --no-update
@@ -62,4 +59,3 @@ install:
 
 script:
   - vendor/bin/phpunit
-  - if [[ $RUN_PHPCS = 1 ]]; then vendor/bin/phpcs --standard=psr2 src/; fi

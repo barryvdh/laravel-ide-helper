@@ -22,7 +22,6 @@
         "illuminate/config": "^5.5|^6",
         "illuminate/view": "^5.5|^6",
         "phpro/grumphp": "^0.17.1",
-        "squizlabs/php_codesniffer": "^3",
         "orchestra/testbench": "^3|^4",
         "mockery/mockery": "^1.3",
         "matt-allan/laravel-code-style": "^0.5.0"

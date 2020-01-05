@@ -230,7 +230,7 @@ class ModelsCommand extends Command
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
                 } catch (\Throwable $e) {
-                    $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.");
+                    $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.\n\nTrace:\n".$e->getTraceAsString());
                 }
             }
         }

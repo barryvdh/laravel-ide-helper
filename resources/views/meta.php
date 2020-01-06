@@ -20,6 +20,15 @@ namespace PHPSTORM_META {
     ]));
 <?php endforeach; ?>
 
+<?php if (count($factories)): ?>
+	override(\factory(0), map([
+        '' => '@FactoryBuilder',
+<?php foreach($factories as $factory): ?>
+        '<?= $factory->getName() ?>' => \<?= $factory->getName() ?>FactoryBuilder::class,
+<?php endforeach; ?>
+	]));
+<?php endif; ?>
+
     override(\Illuminate\Support\Arr::add(0), type(0));
     override(\Illuminate\Support\Arr::except(0), type(0));
     override(\Illuminate\Support\Arr::first(0), elementType(0));

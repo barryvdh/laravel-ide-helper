@@ -64,6 +64,14 @@ class ModelsCommand extends Command
     protected $nullableColumns = [];
 
     /**
+     * During initializtion we use Laravels Date Facade to
+     * determine the actual date class and store it here.
+     *
+     * @var string
+     */
+    protected $dateClass;
+
+    /**
      * @param Filesystem $files
      */
     public function __construct(Filesystem $files)
@@ -96,12 +104,16 @@ class ModelsCommand extends Command
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
             if ($this->confirm(
-                "Do you want to overwrite the existing model files? Choose no to write to $filename instead?"
+                "Do you want to overwrite the existing model files? Choose no to write to $filename instead"
             )
             ) {
                 $this->write = true;
             }
         }
+
+        $this->dateClass = class_exists(\Illuminate\Support\Facades\Date::class)
+            ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
+            : '\Illuminate\Support\Carbon';
 
         $content = $this->generateDocs($model, $ignore);
 
@@ -217,8 +229,8 @@ class ModelsCommand extends Command
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
-                } catch (\Exception $e) {
-                    $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.");
+                } catch (\Throwable $e) {
+                    $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.\n\nTrace:\n".$e->getTraceAsString());
                 }
             }
         }
@@ -284,13 +296,13 @@ class ModelsCommand extends Command
                     break;
                 case 'date':
                 case 'datetime':
-                    $realType = '\Illuminate\Support\Carbon';
+                    $realType = $this->dateClass;
                     break;
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
                     break;
                 default:
-                    $realType = 'mixed';
+                    $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
                     break;
             }
 
@@ -348,7 +360,7 @@ class ModelsCommand extends Command
             foreach ($columns as $column) {
                 $name = $column->getName();
                 if (in_array($name, $model->getDates())) {
-                    $type = '\Illuminate\Support\Carbon';
+                    $type = $this->dateClass;
                 } else {
                     $type = $column->getType()->getName();
                     switch ($type) {
@@ -446,15 +458,25 @@ class ModelsCommand extends Command
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $reflection = new \ReflectionClass($model);
-                    $this->setMethod($method, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->getName());
+
+                    $builder = get_class($model->newModelQuery());
+
+                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     $reflection = new \ReflectionMethod($model, $method);
-                    // php 7.x type or fallback to docblock
-                    $type = (string) $reflection->getReturnType() ?: $this->getReturnTypeFromDocBlock($reflection);
 
+                    if ($returnType = $reflection->getReturnType()) {
+                        $type = $returnType instanceof \ReflectionNamedType
+                            ? $returnType->getName()
+                            : (string)$returnType;
+                    } else {
+                        // php 7.x type or fallback to docblock
+                        $type = (string)$this->getReturnTypeFromDocBlock($reflection);
+                    }
+                    
                     $file = new \SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
 
@@ -470,6 +492,7 @@ class ModelsCommand extends Command
                     foreach (array(
                                'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
                                'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
+                               'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
                                'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
                                'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
                                'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
@@ -480,7 +503,7 @@ class ModelsCommand extends Command
                                'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
                              ) as $relation => $impl) {
                         $search = '$this->' . $relation . '(';
-                        if (stripos($code, $search) || stripos($impl, $type) !== false) {
+                        if (stripos($code, $search) || stripos($impl, (string)$type) !== false) {
                             //Resolve the relation's model to a Relation object.
                             $methodReflection = new \ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {
@@ -500,13 +523,19 @@ class ModelsCommand extends Command
                                     'morphToMany',
                                     'morphedByMany',
                                 ];
-                                if (in_array($relation, $relations)) {
+                                if (strpos(get_class($relationObj), 'Many') !== false) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
                                         $method,
                                         $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
                                         true,
                                         null
+                                    );
+                                    $this->setProperty(
+                                        Str::snake($method) . '_count',
+                                        'int|null',
+                                        true,
+                                        false
                                     );
                                 } elseif ($relation === "morphTo") {
                                     // Model isn't specified because relation is polymorphic
@@ -721,7 +750,7 @@ class ModelsCommand extends Command
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';
                 } elseif (is_array($default)) {
-                    $default = 'array()';
+                    $default = '[]';
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {

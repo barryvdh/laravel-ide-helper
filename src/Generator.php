@@ -86,6 +86,7 @@ class Generator
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
+            ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
     }
 
@@ -203,7 +204,7 @@ class Generator
             }
 
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
-            $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
+            $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
                 //Add extra methods, from other classes (magic static calls)
                 if (array_key_exists($name, $this->extra)) {

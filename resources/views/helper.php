@@ -88,3 +88,13 @@ namespace Illuminate\Support {
     class Fluent {}
 }
 <?php endif ?>
+
+<?php foreach ($factories as $factory): ?>
+namespace <?=$factory->getNamespaceName()?> {
+    /**
+    * @method \Illuminate\Database\Eloquent\Collection|<?=$factory->getShortName()?>[]|<?=$factory->getShortName()?> create($attributes = [])
+    * @method \Illuminate\Database\Eloquent\Collection|<?=$factory->getShortName()?>[]|<?=$factory->getShortName()?> make($attributes = [])
+    */
+    class <?=$factory->getShortName()?>FactoryBuilder extends \Illuminate\Database\Eloquent\FactoryBuilder {}
+}
+<?php endforeach; ?>

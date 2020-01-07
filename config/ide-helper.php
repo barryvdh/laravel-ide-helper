@@ -29,6 +29,18 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
+    | Factory Builders
+    |--------------------------------------------------------------------------
+    |
+    | Set to true to generate factory generators for better factory()
+    | method auto-completion.
+    |
+    */
+
+    'include_factory_builders' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Write Model Magic methods
     |--------------------------------------------------------------------------
     |
@@ -98,18 +110,7 @@ return array(
         'Session' => array('Illuminate\Session\Store'),
     ),
 
-    'magic' => array(
-        'Log' => array(
-            'debug'     => 'Monolog\Logger::addDebug',
-            'info'      => 'Monolog\Logger::addInfo',
-            'notice'    => 'Monolog\Logger::addNotice',
-            'warning'   => 'Monolog\Logger::addWarning',
-            'error'     => 'Monolog\Logger::addError',
-            'critical'  => 'Monolog\Logger::addCritical',
-            'alert'     => 'Monolog\Logger::addAlert',
-            'emergency' => 'Monolog\Logger::addEmergency',
-        )
-    ),
+    'magic' => array(),
 
     /*
     |--------------------------------------------------------------------------
@@ -189,8 +190,20 @@ return array(
     | Cast the given "real type" to the given "type".
     |
     */
-   'type_overrides' => array(
+    'type_overrides' => array(
         'integer' => 'int',
         'boolean' => 'bool',
-   ),
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Include DocBlocks from classes
+    |--------------------------------------------------------------------------
+    |
+    | Include DocBlocks from classes to allow additional code inspection for
+    | magic methods and properties.
+    |
+    */
+    'include_class_docblocks' => false,
+
 );

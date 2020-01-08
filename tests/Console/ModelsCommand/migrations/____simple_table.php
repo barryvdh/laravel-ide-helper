@@ -8,7 +8,7 @@ class SimpleTable extends Migration
 {
     public function up(): void
     {
-        Schema::create('simple', function (Blueprint $table) {
+        Schema::create('simples', function (Blueprint $table) {
             $table->bigIncrements('id');
         });
     }

@@ -61,6 +61,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple
  *
+ * @property integer $id
  * @property-read mixed $attribute_return_type_int_or_null
  * @property-read \what|\ever|\we-write/here $attribute_takes_phpdoc_literal
  * @property-read int $attribute_with_int_return_phpdoc
@@ -71,6 +72,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

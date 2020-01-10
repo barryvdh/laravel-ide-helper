@@ -62,4 +62,9 @@ class Simple extends Model
     {
         return $this->belongsTo(AnotherModel::class);
     }
+
+    public function relationBelongsToSameNameAsColumn(): BelongsTo
+    {
+        return $this->belongsTo(AnotherModel::class, __FUNCTION__);
+    }
 }

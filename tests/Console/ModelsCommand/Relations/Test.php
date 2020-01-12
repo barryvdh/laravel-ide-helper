@@ -69,6 +69,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple
  *
+ * @property integer $id
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationBelongsTo
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToMany
@@ -86,6 +87,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

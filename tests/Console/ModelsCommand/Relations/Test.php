@@ -81,7 +81,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphMany
  * @property-read int|null $relation_morph_many_count
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationMorphOne
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationMorphTo
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $relationMorphTo
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newModelQuery()

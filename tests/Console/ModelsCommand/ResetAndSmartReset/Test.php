@@ -53,14 +53,16 @@ class Test extends AbstractModelsCommand
         $this->assertEmpty($tester->getDisplay());
 
         $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Text of existing phpdoc
+ * Text of existing phpdoc.
  *
  * @property string $foo
  * @property integer $id
@@ -109,7 +111,9 @@ PHP;
         $this->assertEmpty($tester->getDisplay());
 
         $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models;
 
@@ -164,14 +168,16 @@ PHP;
         $this->assertEmpty($tester->getDisplay());
 
         $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Text of existing phpdoc
+ * Text of existing phpdoc.
  *
  * @property integer $id
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple newModelQuery()

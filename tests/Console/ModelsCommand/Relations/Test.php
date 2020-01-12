@@ -73,6 +73,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToSameNameAsColumn
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationHasMany
  * @property-read int|null $relation_has_many_count
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationHasOne
@@ -135,6 +136,11 @@ class Simple extends Model
     public function relationBelongsToInAnotherNamespace(): BelongsTo
     {
         return $this->belongsTo(AnotherModel::class);
+    }
+
+    public function relationBelongsToSameNameAsColumn(): BelongsTo
+    {
+        return $this->belongsTo(AnotherModel::class, __FUNCTION__);
     }
 }
 

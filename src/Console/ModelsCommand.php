@@ -230,7 +230,9 @@ class ModelsCommand extends Command
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
                 } catch (\Throwable $e) {
-                    $this->error("Exception: " . $e->getMessage() . "\nCould not analyze class $name.\n\nTrace:\n".$e->getTraceAsString());
+                    $this->error("Exception: " . $e->getMessage() .
+                        "\nCould not analyze class $name.\n\nTrace:\n" .
+                        $e->getTraceAsString());
                 }
             }
         }
@@ -476,7 +478,7 @@ class ModelsCommand extends Command
                         // php 7.x type or fallback to docblock
                         $type = (string)$this->getReturnTypeFromDocBlock($reflection);
                     }
-                    
+
                     $file = new \SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
 
@@ -510,7 +512,12 @@ class ModelsCommand extends Command
                                 continue;
                             }
 
-                            $relationObj = $model->$method();
+                            // Adding constraints requires reading model properties which
+                            // can cause errors. Since we don't need constraints we can
+                            // disable them when we fetch the relation to avoid errors.
+                            $relationObj = Relation::noConstraints(function () use ($model, $method) {
+                                return $model->$method();
+                            });
 
                             if ($relationObj instanceof Relation) {
                                 $relatedModel = '\\' . get_class($relationObj->getRelated());

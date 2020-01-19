@@ -16,6 +16,7 @@ use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Database\Eloquent\Model;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 
 class Alias
@@ -213,6 +214,9 @@ class Alias
             }
         } finally {
             $facade::swap($real);
+            if(get_class($fake) == 'Illuminate\Support\Testing\Fakes\EventFake') {
+                Model::setEventDispatcher($real);
+            }
         }
     }
 

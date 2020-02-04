@@ -57,7 +57,7 @@ In Laravel, instead of adding the service provider in the `config/app.php` file,
 ```php
 public function register()
 {
-    if ($this->app->environment() !== 'production') {
+    if ($this->app->isLocal()) {
         $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
     }
     // ...

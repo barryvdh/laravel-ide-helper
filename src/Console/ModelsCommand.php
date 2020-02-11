@@ -531,10 +531,10 @@ class ModelsCommand extends Command
                                     'morphedByMany',
                                 ];
                                 if (strpos(get_class($relationObj), 'Many') !== false) {
-                                    //Collection or array of models (because Collection is Arrayable)
+                                    //Collection of type model
                                     $this->setProperty(
                                         $method,
-                                        $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
+                                        $this->getCollectionClass($relatedModel) . '<' . $relatedModel  . '>',
                                         true,
                                         null
                                     );

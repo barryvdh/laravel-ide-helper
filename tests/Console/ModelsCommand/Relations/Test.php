@@ -72,17 +72,17 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property integer $id
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationBelongsTo
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToInAnotherNamespace
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple> $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToSameNameAsColumn
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationHasMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple> $relationHasMany
  * @property-read int|null $relation_has_many_count
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationHasOne
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple> $relationMorphMany
  * @property-read int|null $relation_morph_many_count
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationMorphOne
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $relationMorphTo
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphedByMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple> $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newQuery()

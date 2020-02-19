@@ -22,11 +22,16 @@ class FormRequestsCommand extends Command
      * @var string
      */
     protected $signature = 'ide-helper:form-requests 
-                                {request?}                                  : Fully qualified class name of the FormRequest to generate the helper for.
-                                {--dir=*}                                   : An array of the directories in which to search for form requests. The default directory is automatically injected.
-                                {--internal}                                : Force the command to write all the docblocks inside class files. 
-                                {--filename=_ide_helper_forms_requests.php} : Override the name of the helper file. This has no effect when --internal is used. 
-                                {--ignore=*}                                : Ignore form requests. You can use this option multiple times.';
+        {request?}                                  
+            : Fully qualified class name of the FormRequest to generate the helper for.
+        {--dir=*}                                   
+            : An array of the directories to search for form requests. The default directory is automatically injected.
+        {--internal}                                
+            : Force the command to write all the docblocks inside class files. 
+        {--filename=_ide_helper_forms_requests.php} 
+            : Override the name of the helper file. This has no effect when --internal is used. 
+        {--ignore=*}                                
+            : Ignore form requests. You can use this option multiple times.';
 
     /**
      * The console command description.
@@ -171,7 +176,8 @@ class FormRequestsCommand extends Command
             
             ($this->writeToExternal)
                 ? $this->appendToOutput($output, $request, $values)
-                : $this->writeToFile($request, $values) && $this->info("Written new phpDocBlock to" . $request->getFileName());
+                : $this->writeToFile($request, $values) &&
+                  $this->info("Written new phpDocBlock to" . $request->getFileName());
         }
 
         if ($this->writeToExternal) {
@@ -187,7 +193,7 @@ class FormRequestsCommand extends Command
     protected function initializeExternalOutput()
     {
         return
-"<?php
+            "<?php
 
 // @formatter off
 
@@ -391,7 +397,8 @@ class FormRequestsCommand extends Command
     }
 
     /**
-     * Extract all the relevant FormRequest classess from an array of all the classes and return ReflectionClass objects for them.
+     * Extract all the relevant FormRequest classess
+     * from an array of all the classes and return ReflectionClass objects for them.
      *
      * @param array<string> $allClasses
      * @return array<\ReflectionClass>

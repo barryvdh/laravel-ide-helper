@@ -83,6 +83,9 @@ class GeneratorCommand extends Command
                 'Error generating IDE Helper: first delete your compiled file (php artisan clear-compiled)'
             );
         } else {
+            // Clear our cache to avoid merging errors
+            $this->call('config:clear');
+
             $filename = $this->argument('filename');
             $format = $this->option('format');
 
@@ -96,7 +99,6 @@ class GeneratorCommand extends Command
             if ($this->option('memory')) {
                 $this->useMemoryDriver();
             }
-
 
             $helpers = '';
             if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {

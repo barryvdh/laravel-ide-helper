@@ -578,7 +578,7 @@ class ModelsCommand extends Command
      *
      * @return bool
      */
-    private function isRelationForeignKeyNullable(Relation $relation)
+    protected function isRelationForeignKeyNullable(Relation $relation)
     {
         $reflectionObj = new \ReflectionObject($relation);
         if (!$reflectionObj->hasProperty('foreignKey')) {

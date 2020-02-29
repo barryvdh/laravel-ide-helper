@@ -74,6 +74,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToManyWithSub
+ * @property-read int|null $relation_belongs_to_many_with_sub_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToManyWithSubAnother
+ * @property-read int|null $relation_belongs_to_many_with_sub_another_count
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToSameNameAsColumn
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationHasMany
  * @property-read int|null $relation_has_many_count
@@ -111,6 +115,16 @@ class Simple extends Model
     public function relationBelongsToMany(): BelongsToMany
     {
         return $this->belongsToMany(Simple::class);
+    }
+
+    public function relationBelongsToManyWithSub(): BelongsToMany
+    {
+        return $this->belongsToMany(Simple::class)->where('foo', 'bar');
+    }
+
+    public function relationBelongsToManyWithSubAnother(): BelongsToMany
+    {
+        return $this->relationBelongsToManyWithSub()->where('foo', 'bar');
     }
 
     public function relationMorphTo(): MorphTo

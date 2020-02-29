@@ -36,6 +36,16 @@ class Simple extends Model
         return $this->belongsToMany(Simple::class);
     }
 
+    public function relationBelongsToManyWithSub(): BelongsToMany
+    {
+        return $this->belongsToMany(Simple::class)->where('foo', 'bar');
+    }
+
+    public function relationBelongsToManyWithSubAnother(): BelongsToMany
+    {
+        return $this->relationBelongsToManyWithSub()->where('foo', 'bar');
+    }
+
     public function relationMorphTo(): MorphTo
     {
         return $this->morphTo();

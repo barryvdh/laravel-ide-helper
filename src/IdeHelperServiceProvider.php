@@ -11,9 +11,11 @@
 namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
+use Barryvdh\LaravelIdeHelper\Console\FormRequestsCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\Reflection\DocBlock\Serializer;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -90,11 +92,22 @@ class IdeHelperServiceProvider extends ServiceProvider
             }
         );
 
+        $this->app->singleton(
+            'command.ide-helper.requests',
+            function ($app) use ($localViewFactory) {
+                return new FormRequestsCommand(
+                    $app['files'],
+                    new Serializer(),
+                );
+            }
+        );
+
         $this->commands(
             'command.ide-helper.generate',
             'command.ide-helper.models',
             'command.ide-helper.meta',
-            'command.ide-helper.eloquent'
+            'command.ide-helper.eloquent',
+            'command.ide-helper.requests'
         );
     }
 

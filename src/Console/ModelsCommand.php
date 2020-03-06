@@ -463,7 +463,7 @@ class ModelsCommand extends Command
 
                     $builder = get_class($model->newModelQuery());
 
-                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
+                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName(), array(), $method === 'query');
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {
@@ -622,7 +622,7 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = array())
+    protected function setMethod($name, $type = '', $arguments = array(), $static = true)
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
@@ -630,6 +630,7 @@ class ModelsCommand extends Command
             $this->methods[$name] = array();
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;
+            $this->methods[$name]['static'] = $static;
         }
     }
 
@@ -701,7 +702,8 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
+            $static = $method['static'] ? 'static ' : '';
+            $tag = Tag::createInstance("@method {$static}{$method['type']} {$name}({$arguments})", $phpdoc);
             $phpdoc->appendTag($tag);
         }
 

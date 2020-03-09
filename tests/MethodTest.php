@@ -1,8 +1,11 @@
 <?php
 
-namespace Barryvdh\LaravelIdeHelper;
+namespace Barryvdh\LaravelIdeHelper\Tests;
 
-class ExampleTest extends \PHPUnit_Framework_TestCase
+use Barryvdh\LaravelIdeHelper\Method;
+use PHPUnit\Framework\TestCase;
+
+class ExampleTest extends TestCase
 {
     /**
      * Test that we can actually instantiate the class
@@ -32,15 +35,16 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
  *
  * @param string $last
  * @param string $first
+ * @param string $middle
  * @static 
  */';
         $this->assertEquals($output, $method->getDocComment(''));
         $this->assertEquals('setName', $method->getName());
         $this->assertEquals('\\'.ExampleClass::class, $method->getDeclaringClass());
-        $this->assertEquals('$last, $first', $method->getParams(true));
-        $this->assertEquals(['$last', '$first'], $method->getParams(false));
-        $this->assertEquals('$last, $first = \'Barry\'', $method->getParamsWithDefault(true));
-        $this->assertEquals(['$last', '$first = \'Barry\''], $method->getParamsWithDefault(false));
+        $this->assertEquals('$last, $first, ...$middle', $method->getParams(true));
+        $this->assertEquals(['$last', '$first', '...$middle'], $method->getParams(false));
+        $this->assertEquals('$last, $first = \'Barry\', ...$middle', $method->getParamsWithDefault(true));
+        $this->assertEquals(['$last', '$first = \'Barry\'', '...$middle'], $method->getParamsWithDefault(false));
         $this->assertEquals(true, $method->shouldReturn());
     }
 }
@@ -50,8 +54,9 @@ class ExampleClass
     /**
      * @param string $last
      * @param string $first
+     * @param string $middle
      */
-    public function setName($last, $first = 'Barry')
+    public function setName($last, $first = 'Barry', ...$middle)
     {
         return;
     }

@@ -47,6 +47,8 @@ matrix:
       env: LARAVEL='^6.0' COMPOSER_FLAGS='--prefer-lowest'
     - php: '7.4'
       env: LARAVEL='^6.0' COMPOSER_FLAGS='--prefer-stable' RUN_PHPCS=1
+    - php: '7.4'
+      env: LARAVEL='^7.0' COMPOSER_FLAGS='--prefer-stable' RUN_PHPCS=1
 
 before_script:
   - phpenv config-rm xdebug.ini || true

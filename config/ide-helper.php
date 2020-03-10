@@ -13,7 +13,7 @@ return array(
 
     'filename'  => '_ide_helper',
     'format'    => 'php',
-    
+
     'meta_filename' => '.phpstorm.meta.php',
 
     /*
@@ -95,6 +95,18 @@ return array(
         'app',
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Models to ignore
+    |--------------------------------------------------------------------------
+    |
+    | Define which models should be ignored.
+    |
+    */
+
+    'ignored_models' => array(
+
+    ),
 
     /*
     |--------------------------------------------------------------------------

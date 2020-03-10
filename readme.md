@@ -149,6 +149,14 @@ Models can be ignored using the `--ignore (-I)` option
 php artisan ide-helper:models --ignore="Post,User"
 ```
 
+Or can be ignored by setting the `ignored_models` config
+```php
+'ignored_models' => array(
+    Post::class,
+    Api\User::class
+),
+```
+
 Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`)
 
 For properly recognition of `Model` methods (i.e. `paginate`, `findOrFail`) you should extend `\Eloquent` or add

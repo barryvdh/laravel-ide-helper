@@ -674,6 +674,11 @@ class ModelsCommand extends Command
 
         foreach ($this->properties as $name => $property) {
             $name = "\$$name";
+
+            if ($this->hasCamelCaseModelProperties()) {
+                $name = Str::camel($name);
+            }
+
             if (in_array($name, $properties)) {
                 continue;
             }
@@ -683,10 +688,6 @@ class ModelsCommand extends Command
                 $attr = 'property-write';
             } else {
                 $attr = 'property-read';
-            }
-
-            if ($this->hasCamelCaseModelProperties()) {
-                $name = Str::camel($name);
             }
 
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");

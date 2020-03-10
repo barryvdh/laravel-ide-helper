@@ -32,6 +32,7 @@ class Test extends AbstractModelsCommand
         $mockFilesystem = Mockery::mock(Filesystem::class);
         $mockFilesystem
             ->shouldReceive('get')
+            ->andReturn(file_get_contents(__DIR__ . '/Models/Ignored.php'))
             ->andReturn(file_get_contents(__DIR__ . '/Models/NotIgnored.php'))
             ->once();
         $mockFilesystem

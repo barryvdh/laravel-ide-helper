@@ -4,6 +4,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Unignored extends Model
+class NotIgnored extends Model
 {
 }

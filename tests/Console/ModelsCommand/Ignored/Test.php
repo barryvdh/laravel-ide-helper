@@ -32,7 +32,7 @@ class Test extends AbstractModelsCommand
         $mockFilesystem = Mockery::mock(Filesystem::class);
         $mockFilesystem
             ->shouldReceive('get')
-            ->andReturn(file_get_contents(__DIR__ . '/Models/Unignored.php'))
+            ->andReturn(file_get_contents(__DIR__ . '/Models/NotIgnored.php'))
             ->once();
         $mockFilesystem
             ->shouldReceive('put')
@@ -62,14 +62,14 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\Unignored
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\Unignored newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\Unignored newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\Unignored query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored query()
  * @mixin \Eloquent
  */
-class Unignored extends Model
+class NotIgnored extends Model
 {
 }
 

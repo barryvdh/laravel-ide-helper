@@ -52,6 +52,7 @@ before_script:
   - phpenv config-rm xdebug.ini || true
 
 install:
+  - composer global require hirak/prestissimo --no-interaction --no-update --dev
   - travis_retry composer remove phpro/grumphp --no-interaction --no-update --dev
   - composer require "illuminate/support:${LARAVEL}" --no-interaction --no-update
   - composer require "illuminate/console:${LARAVEL}" --no-interaction --no-update
@@ -59,6 +60,7 @@ install:
   - composer require --dev "illuminate/config:${LARAVEL}" --no-interaction --no-update
   - composer require --dev "illuminate/view:${LARAVEL}" --no-interaction --no-update
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist --no-suggest
+  - composer global remove hirak/prestissimo --no-interaction --no-update --dev
 
 script:
   - vendor/bin/phpunit

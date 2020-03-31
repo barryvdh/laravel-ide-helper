@@ -847,12 +847,11 @@ class ModelsCommand extends Command
      */
     protected function getCollectionMethods($model)
     {
-        $modelClass = get_class($model);
-        $collectionClass = $this->getCollectionClass($modelClass);
+        $collectionClass = $this->getCollectionClass(get_class($model));
 
         if ($collectionClass !== '\Illuminate\Database\Eloquent\Collection') {
-            $this->setMethod('get', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
-            $this->setMethod('all', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
+            $this->setMethod('get', $collectionClass . '|static[]', ['$columns = [\'*\']']);
+            $this->setMethod('all', $collectionClass . '|static[]', ['$columns = [\'*\']']);
         }
     }
 

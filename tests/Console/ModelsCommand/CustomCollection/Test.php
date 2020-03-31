@@ -58,11 +58,14 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Collections\SimpleCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Models\Simple
  *
  * @property integer $id
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Collections\SimpleCollection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Models\Simple[] $relationHasMany
+ * @property-read int|null $relation_has_many_count
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Collections\SimpleCollection|static[] all($columns = ['*'])
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Collections\SimpleCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Models\Simple newModelQuery()
@@ -76,6 +79,11 @@ class Simple extends Model
     public function newCollection(array $models = [])
     {
         return new SimpleCollection($models);
+    }
+
+    public function relationHasMany(): HasMany
+    {
+        return $this->hasMany(Simple::class);
     }
 }
 

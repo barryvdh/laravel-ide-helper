@@ -58,6 +58,7 @@ class ModelsCommand extends Command
     protected $dirs = array();
     protected $reset;
     protected $keep_text;
+    protected $phpstorm_noinspections;
     /**
      * @var bool[string]
      */
@@ -96,6 +97,7 @@ class ModelsCommand extends Command
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
         $this->reset = $this->option('reset');
+        $this->phpstorm_noinspections = $this->option('phpstorm-noinspections');
         if ($this->option('smart-reset')) {
             $this->keep_text = $this->reset = true;
         }
@@ -154,6 +156,7 @@ class ModelsCommand extends Command
           array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
           array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
           array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
+          array('phpstorm-noinspections', 'p', InputOption::VALUE_NONE, 'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm noinspection tags'),
           array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
         );
     }
@@ -721,6 +724,10 @@ class ModelsCommand extends Command
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
             $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
+        }
+        if ($this->phpstorm_noinspections) {
+            $phpdoc->appendTag(Tag::createInstance("@noinspection PhpFullyQualifiedNameUsageInspection", $phpdoc));
+            $phpdoc->appendTag(Tag::createInstance("@noinspection PhpUnnecessaryFullyQualifiedNameInspection", $phpdoc));
         }
 
         $serializer = new DocBlockSerializer();

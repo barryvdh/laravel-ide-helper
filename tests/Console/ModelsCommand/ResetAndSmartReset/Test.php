@@ -62,8 +62,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property string $foo
  * @property integer $id
- * @method static \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple[] all($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple query()
@@ -119,8 +117,6 @@ use Illuminate\Database\Eloquent\Model;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple
  *
  * @property integer $id
- * @method static \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple[] all($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple query()
@@ -176,8 +172,6 @@ use Illuminate\Database\Eloquent\Model;
  * Text of existing phpdoc
  *
  * @property integer $id
- * @method static \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple[] all($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple query()

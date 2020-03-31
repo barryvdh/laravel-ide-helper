@@ -850,8 +850,10 @@ class ModelsCommand extends Command
         $modelClass = get_class($model);
         $collectionClass = $this->getCollectionClass($modelClass);
 
-        $this->setMethod('get', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
-        $this->setMethod('all', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
+        if ($collectionClass !== '\Illuminate\Database\Eloquent\Collection') {
+            $this->setMethod('get', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
+            $this->setMethod('all', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
+        }
     }
 
     /**

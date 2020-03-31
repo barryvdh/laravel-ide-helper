@@ -49,9 +49,9 @@ class ExampleTest extends TestCase
     }
 
     /**
-     * Test special characters in method
+     * Test special characters in methods default values
      */
-    public function testSpecialChars()
+    public function testDefaultSpecialChars()
     {
         $reflectionClass = new \ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setSpecialChars');

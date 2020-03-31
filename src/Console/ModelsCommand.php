@@ -229,6 +229,7 @@ class ModelsCommand extends Command
 
                     $this->getPropertiesFromMethods($model);
                     $this->getSoftDeleteMethods($model);
+                    $this->getCollectionMethods($model);
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
@@ -838,6 +839,19 @@ class ModelsCommand extends Command
             $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
             $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
         }
+    }
+
+    /**
+     * Generates methods that return collections
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
+    protected function getCollectionMethods($model)
+    {
+        $modelClass = get_class($model);
+        $collectionClass = $this->getCollectionClass($modelClass);
+
+        $this->setMethod('get', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
+        $this->setMethod('all', $collectionClass . '|\\' . $modelClass . '[]', ['$columns = [\'*\']']);
     }
 
     /**

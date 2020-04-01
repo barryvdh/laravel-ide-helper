@@ -726,7 +726,15 @@ class ModelsCommand extends Command
             $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
         }
         if ($this->phpstorm_noinspections) {
+            /**
+             * Facades, Eloquent API
+             * @see https://www.jetbrains.com/help/phpstorm/php-fully-qualified-name-usage.html
+             */
             $phpdoc->appendTag(Tag::createInstance("@noinspection PhpFullyQualifiedNameUsageInspection", $phpdoc));
+            /**
+             * Relations, other models in the same namespace
+             * @see https://www.jetbrains.com/help/phpstorm/php-unnecessary-fully-qualified-name.html
+             */
             $phpdoc->appendTag(Tag::createInstance("@noinspection PhpUnnecessaryFullyQualifiedNameInspection", $phpdoc));
         }
 

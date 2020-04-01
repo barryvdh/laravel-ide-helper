@@ -410,10 +410,12 @@ class ModelsCommand extends Command
                 }
                 $this->setProperty($name, $type, true, true, $comment, !$column->getNotnull());
                 if ($this->write_model_magic_where) {
+                    $method = Str::camel("where_" . $name);
                     $this->setMethod(
-                        Str::camel("where_" . $name),
+                        $method,
                         '\Illuminate\Database\Eloquent\Builder|\\' . get_class($model),
-                        array('$value')
+                        array('$value'),
+                        (new \ReflectionMethod($model, $method))->isStatic()
                     );
                 }
             }
@@ -459,14 +461,15 @@ class ModelsCommand extends Command
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
-                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
+                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args, $reflection->isStatic());
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $reflection = new \ReflectionClass($model);
+                    $methodReflection = new \ReflectionMethod($model, $method);
 
                     $builder = get_class($model->newModelQuery());
 
-                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
+                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName(), $methodReflection->isStatic());
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {
@@ -635,7 +638,7 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = array())
+    protected function setMethod($name, $type = '', $arguments = array(), bool $isStatic = false)
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
@@ -643,6 +646,7 @@ class ModelsCommand extends Command
             $this->methods[$name] = array();
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;
+            $this->methods[$name]['isStatic'] = $isStatic;
         }
     }
 
@@ -715,7 +719,11 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
+            $tag = Tag::createInstance(
+                "@method ".($method['isStatic'] ? '@static' : '').
+                " {$method['type']} {$name}({$arguments})",
+                $phpdoc
+            );
             $phpdoc->appendTag($tag);
         }
 
@@ -841,12 +849,37 @@ class ModelsCommand extends Command
     {
         $traits = class_uses(get_class($model), true);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
-            $this->setMethod('forceDelete', 'bool|null', []);
-            $this->setMethod('restore', 'bool|null', []);
+            $this->setMethod(
+                'forceDelete',
+                'bool|null',
+                [],
+                (new \ReflectionMethod($model, 'forceDelete'))->isStatic()
+            );
+            $this->setMethod(
+                'restore',
+                'bool|null',
+                [],
+                (new \ReflectionMethod($model, 'restore'))->isStatic()
+            );
 
-            $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
-            $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+            $this->setMethod(
+                'withTrashed',
+                '\Illuminate\Database\Query\Builder|\\' . get_class($model),
+                [],
+                (new \ReflectionMethod($model, 'withTrashed'))->isStatic()
+            );
+            $this->setMethod(
+                'withoutTrashed',
+                '\Illuminate\Database\Query\Builder|\\' . get_class($model),
+                [],
+                (new \ReflectionMethod($model, 'withoutTrashed'))->isStatic()
+            );
+            $this->setMethod(
+                'onlyTrashed',
+                '\Illuminate\Database\Query\Builder|\\' . get_class($model),
+                [],
+                (new \ReflectionMethod($model, 'onlyTrashed'))->isStatic()
+            );
         }
     }
 

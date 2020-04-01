@@ -67,9 +67,6 @@ class Method
 
         //Get the parameters, including formatted default values
         $this->getParameters($method);
-
-        //Make the method static
-        $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
     }
 
     /**
@@ -357,7 +354,7 @@ class Method
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
             $phpdoc = new DocBlock($method, new Context($namespace));
-            
+
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);

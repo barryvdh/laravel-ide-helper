@@ -156,7 +156,10 @@ class ModelsCommand extends Command
           array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
           array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
           array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
-          array('phpstorm-noinspections', 'p', InputOption::VALUE_NONE, 'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm noinspection tags'),
+          array('phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
+              'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
+              'noinspection tags'
+          ),
           array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
         );
     }
@@ -735,7 +738,9 @@ class ModelsCommand extends Command
              * Relations, other models in the same namespace
              * @see https://www.jetbrains.com/help/phpstorm/php-unnecessary-fully-qualified-name.html
              */
-            $phpdoc->appendTag(Tag::createInstance("@noinspection PhpUnnecessaryFullyQualifiedNameInspection", $phpdoc));
+            $phpdoc->appendTag(
+                Tag::createInstance("@noinspection PhpUnnecessaryFullyQualifiedNameInspection", $phpdoc)
+            );
         }
 
         $serializer = new DocBlockSerializer();

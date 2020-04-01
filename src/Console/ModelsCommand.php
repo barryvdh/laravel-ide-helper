@@ -849,7 +849,7 @@ class ModelsCommand extends Command
     {
         $collectionClass = $this->getCollectionClass(get_class($model));
 
-        if ($collectionClass !== '\Illuminate\Database\Eloquent\Collection') {
+        if ($collectionClass !== \Illuminate\Database\Eloquent\Collection::class) {
             $this->setMethod('get', $collectionClass . '|static[]', ['$columns = [\'*\']']);
             $this->setMethod('all', $collectionClass . '|static[]', ['$columns = [\'*\']']);
         }

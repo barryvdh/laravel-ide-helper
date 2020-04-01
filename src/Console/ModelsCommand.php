@@ -12,6 +12,7 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
@@ -849,7 +850,7 @@ class ModelsCommand extends Command
     {
         $collectionClass = $this->getCollectionClass(get_class($model));
 
-        if ($collectionClass !== \Illuminate\Database\Eloquent\Collection::class) {
+        if ($collectionClass !== '\\' . \Illuminate\Database\Eloquent\Collection::class) {
             $this->setMethod('get', $collectionClass . '|static[]', ['$columns = [\'*\']']);
             $this->setMethod('all', $collectionClass . '|static[]', ['$columns = [\'*\']']);
         }

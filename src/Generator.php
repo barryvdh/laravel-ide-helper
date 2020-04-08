@@ -129,9 +129,7 @@ class Generator
                 } else {
                     $refClass = new ReflectionClass('\Laravel\Lumen\Application');
                     $versionStr = $refClass->newInstanceWithoutConstructor()->version();
-                    $authMethod = strpos($versionStr, 'Lumen (5.0') === 0 ?
-                        'driver' :
-                        (strpos($versionStr, 'Lumen (5.1') === 0 ? 'driver' : 'guard');
+                    $authMethod = preg_match('/5\.[01]/', $versionStr) ? 'driver' : 'guard';
                 }
                 $class = get_class(\Auth::$authMethod());
                 $this->extra['Auth'] = array($class);

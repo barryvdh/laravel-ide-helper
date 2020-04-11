@@ -12,6 +12,7 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
@@ -314,6 +315,8 @@ class ModelsCommand extends Command
             if (!isset($this->properties[$name])) {
                 continue;
             } else {
+                $realType = $this->checkForCustomLaravelCasts($realType);
+
                 $this->properties[$name]['type'] = $this->getTypeOverride($realType);
 
                 if (isset($this->nullableColumns[$name])) {
@@ -865,5 +868,45 @@ class ModelsCommand extends Command
         }
 
         return $keyword;
+    }
+
+    protected function checkForCustomLaravelCasts(string $type): ?string
+    {
+        if (!class_exists($type)) {
+            return $type;
+        }
+
+        $reflection = new \ReflectionClass($type);
+
+        if (!$reflection->implementsInterface(CastsAttributes::class)) {
+            return $type;
+        }
+
+        $methodReflection = new \ReflectionMethod($type, 'get');
+
+        return $this->getReturnTypeFromReflection($methodReflection);
+    }
+
+    protected function getReturnTypeFromReflection(\ReflectionMethod $reflection): ?string
+    {
+        $returnType = $reflection->getReturnType();
+
+        if (!$returnType) {
+            return $this->getReturnTypeFromDocBlock($reflection);
+        }
+
+        $type = $returnType instanceof \ReflectionNamedType
+            ? $returnType->getName()
+            : (string)$returnType;
+
+        if (!$returnType->isBuiltin()) {
+            $type = '\\' . $type;
+        }
+
+        if ($returnType->allowsNull()) {
+            $type .= '|null';
+        }
+
+        return $type;
     }
 }

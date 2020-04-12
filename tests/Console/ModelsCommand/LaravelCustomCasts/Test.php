@@ -68,6 +68,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCas
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithNullablePrimitiveReturn;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithoutReturnType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithPrimitiveDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithPrimitiveReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithReturnType;
@@ -81,6 +82,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $casted_property_with_return_primitive
  * @property array|null $casted_property_with_return_primitive_docblock
  * @property array|null $casted_property_with_return_nullable_primitive
+ * @property $casted_property_without_return
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast query()
@@ -89,6 +91,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnPrimitive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnPrimitiveDocblock($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithoutReturn($value)
  * @mixin \Eloquent
  */
 class CustomCast extends Model
@@ -99,6 +102,7 @@ class CustomCast extends Model
         'casted_property_with_return_primitive' => CustomCasterWithPrimitiveReturn::class,
         'casted_property_with_return_primitive_docblock' => CustomCasterWithPrimitiveDocblockReturn::class,
         'casted_property_with_return_nullable_primitive' => CustomCasterWithNullablePrimitiveReturn::class,
+        'casted_property_without_return' => CustomCasterWithoutReturnType::class,
     ];
 }
 

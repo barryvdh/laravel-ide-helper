@@ -9,7 +9,11 @@ class CustomCastsTable extends Migration
     public function up(): void
     {
         Schema::create('custom_casts', static function (Blueprint $table) {
-            $table->string('casted_property');
+            $table->string('casted_property_with_return_type');
+            $table->string('casted_property_with_return_docblock');
+            $table->string('casted_property_with_return_primitive');
+            $table->string('casted_property_with_return_primitive_docblock');
+            $table->string('casted_property_with_return_nullable_primitive');
         });
     }
 }

@@ -271,7 +271,11 @@ class Alias
         try {
             //If possible, get the facade root
             if (method_exists($facade, 'getFacadeRoot')) {
-                $root = get_class($facade::getFacadeRoot());
+                if (is_object($facade::getFacadeRoot())) {
+                    $root = get_class($facade::getFacadeRoot());
+                } else {
+                    $root = $facade::getFacadeAccessor();   
+                }
             } else {
                 $root = $facade;
             }

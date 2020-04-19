@@ -12,6 +12,7 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
@@ -229,6 +230,7 @@ class ModelsCommand extends Command
 
                     $this->getPropertiesFromMethods($model);
                     $this->getSoftDeleteMethods($model);
+                    $this->getCollectionMethods($model);
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
@@ -847,6 +849,20 @@ class ModelsCommand extends Command
             $this->setMethod('withTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
             $this->setMethod('withoutTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
             $this->setMethod('onlyTrashed', '\Illuminate\Database\Query\Builder|\\' . get_class($model), []);
+        }
+    }
+
+    /**
+     * Generates methods that return collections
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
+    protected function getCollectionMethods($model)
+    {
+        $collectionClass = $this->getCollectionClass(get_class($model));
+
+        if ($collectionClass !== '\\' . \Illuminate\Database\Eloquent\Collection::class) {
+            $this->setMethod('get', $collectionClass . '|static[]', ['$columns = [\'*\']']);
+            $this->setMethod('all', $collectionClass . '|static[]', ['$columns = [\'*\']']);
         }
     }
 

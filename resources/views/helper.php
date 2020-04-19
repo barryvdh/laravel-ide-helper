@@ -11,7 +11,7 @@
 // @formatter:off
 
 /**
- * A helper file for Laravel 5+, to provide autocomplete information to your IDE
+ * A helper file for Laravel, to provide autocomplete information to your IDE
  * Generated for Laravel <?= $version ?> on <?= date("Y-m-d H:i:s") ?>.
  *
  * This file should not be included in your code, only analyzed by your IDE!

@@ -660,6 +660,10 @@ class ModelsCommand extends Command
         $classname = $reflection->getShortName();
         $originalDoc = $reflection->getDocComment();
         $keyword = $this->getClassKeyword($reflection);
+        $interfaceNames = array_diff_key(
+            $reflection->getInterfaceNames(),
+            $reflection->getParentClass()->getInterfaceNames()
+        );
 
         if ($this->reset) {
             $phpdoc = new DocBlock('', new Context($namespace));
@@ -748,8 +752,14 @@ class ModelsCommand extends Command
             }
         }
 
-        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent {}\n}\n\n";
-        return $output;
+        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent ";
+
+        if ($interfaceNames) {
+            $interfaces = implode(', \\', $interfaceNames);
+            $output .= "implements \\{$interfaces} ";
+        }
+
+        return $output . "{}\n}\n\n";
     }
 
     /**

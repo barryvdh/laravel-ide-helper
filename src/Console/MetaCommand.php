@@ -103,6 +103,8 @@ class MetaCommand extends Command
             }
         }
 
+        $this->unregisterClassAutoloadExceptions();
+
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
           'methods' => $this->methods,
@@ -158,5 +160,15 @@ class MetaCommand extends Command
         return array(
             array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
         );
+    }
+
+    /**
+     * Remove our custom autoloader that we pushed onto the autoload stack
+     */
+    private function unregisterClassAutoloadExceptions()
+    {
+        $autoloadFunctions = spl_autoload_functions();
+        $ourAutoloader = array_pop($autoloadFunctions);
+        spl_autoload_unregister($ourAutoloader);
     }
 }

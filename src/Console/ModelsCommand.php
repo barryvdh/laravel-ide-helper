@@ -16,7 +16,7 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -322,6 +322,8 @@ class ModelsCommand extends Command
             if (!isset($this->properties[$name])) {
                 continue;
             } else {
+                $realType = $this->checkForCustomLaravelCasts($realType);
+
                 $this->properties[$name]['type'] = $this->getTypeOverride($realType);
 
                 if (isset($this->nullableColumns[$name])) {
@@ -941,5 +943,33 @@ class ModelsCommand extends Command
         }
 
         return $keyword;
+    }
+
+    /**
+     * @param  string  $type
+     * @return string|null
+     * @throws \ReflectionException
+     */
+    protected function checkForCustomLaravelCasts(string $type): ?string
+    {
+        if (!class_exists($type)) {
+            return $type;
+        }
+
+        $reflection = new \ReflectionClass($type);
+
+        if (!$reflection->implementsInterface(CastsAttributes::class)) {
+            return $type;
+        }
+
+        $methodReflection = new \ReflectionMethod($type, 'get');
+
+        $type = $this->getReturnTypeFromReflection($methodReflection);
+
+        if ($type === null) {
+            $type = $this->getReturnTypeFromDocBlock($methodReflection);
+        }
+
+        return $type;
     }
 }

@@ -955,7 +955,7 @@ class ModelsCommand extends Command
      */
     protected function checkForCustomLaravelCasts(string $type): ?string
     {
-        if (!class_exists($type)) {
+        if (!class_exists($type) || !interface_exists(CastsAttributes::class)) {
             return $type;
         }
 

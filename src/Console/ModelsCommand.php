@@ -595,7 +595,7 @@ class ModelsCommand extends Command
      *
      * @return bool
      */
-    private function isRelationNullable(string $relation, Relation $relationObj): bool
+    protected function isRelationNullable(string $relation, Relation $relationObj): bool
     {
         $reflectionObj = new \ReflectionObject($relationObj);
 
@@ -830,7 +830,7 @@ class ModelsCommand extends Command
      * @param string $className
      * @return string
      */
-    private function getCollectionClass($className)
+    protected function getCollectionClass($className)
     {
         // Return something in the very very unlikely scenario the model doesn't
         // have a newCollection() method.
@@ -935,7 +935,7 @@ class ModelsCommand extends Command
      * @param ReflectionClass $reflection
      * @return string
      */
-    private function getClassKeyword(ReflectionClass $reflection)
+    protected function getClassKeyword(ReflectionClass $reflection)
     {
         if ($reflection->isFinal()) {
             $keyword = 'final ';

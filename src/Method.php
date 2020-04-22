@@ -16,6 +16,8 @@ use Barryvdh\Reflection\DocBlock\Tag;
 use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
 use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class Method
 {
@@ -266,7 +268,9 @@ class Method
             $this->return = $returnValue;
 
             if ($tag->getType() === '$this') {
-                $tag->setType($this->root);
+                Str::contains($this->root, Builder::class)
+                    ? $tag->setType($this->root . '|static')
+                    : $tag->setType($this->root);
             }
         } else {
             $this->return = null;
@@ -357,7 +361,7 @@ class Method
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
             $phpdoc = new DocBlock($method, new Context($namespace));
-            
+
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);

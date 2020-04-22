@@ -3,6 +3,7 @@
 namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
+use Illuminate\Database\Eloquent\Builder;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
@@ -38,14 +39,41 @@ class ExampleTest extends TestCase
  * @param string $middle
  * @static 
  */';
-        $this->assertEquals($output, $method->getDocComment(''));
-        $this->assertEquals('setName', $method->getName());
-        $this->assertEquals('\\'.ExampleClass::class, $method->getDeclaringClass());
-        $this->assertEquals('$last, $first, ...$middle', $method->getParams(true));
-        $this->assertEquals(['$last', '$first', '...$middle'], $method->getParams(false));
-        $this->assertEquals('$last, $first = \'Barry\', ...$middle', $method->getParamsWithDefault(true));
-        $this->assertEquals(['$last', '$first = \'Barry\'', '...$middle'], $method->getParamsWithDefault(false));
-        $this->assertEquals(true, $method->shouldReturn());
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('setName', $method->getName());
+        $this->assertSame('\\'.ExampleClass::class, $method->getDeclaringClass());
+        $this->assertSame('$last, $first, ...$middle', $method->getParams(true));
+        $this->assertSame(['$last', '$first', '...$middle'], $method->getParams(false));
+        $this->assertSame('$last, $first = \'Barry\', ...$middle', $method->getParamsWithDefault(true));
+        $this->assertSame(['$last', '$first = \'Barry\'', '...$middle'], $method->getParamsWithDefault(false));
+        $this->assertSame(true, $method->shouldReturn());
+    }
+
+    /**
+     * Test the output of a class
+     */
+    public function testEloquentBuilderOutput()
+    {
+        $reflectionClass = new \ReflectionClass(Builder::class);
+        $reflectionMethod = $reflectionClass->getMethod('with');
+
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
+
+        $output = '/**
+ * Set the relationships that should be eager loaded.
+ *
+ * @param mixed $relations
+ * @return \Illuminate\Database\Eloquent\Builder|static 
+ * @static 
+ */';
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('with', $method->getName());
+        $this->assertSame('\\'.Builder::class, $method->getDeclaringClass());
+        $this->assertSame('$relations', $method->getParams(true));
+        $this->assertSame(['$relations'], $method->getParams(false));
+        $this->assertSame('$relations', $method->getParamsWithDefault(true));
+        $this->assertSame(['$relations'], $method->getParamsWithDefault(false));
+        $this->assertSame(true, $method->shouldReturn());
     }
 
     /**
@@ -57,10 +85,10 @@ class ExampleTest extends TestCase
         $reflectionMethod = $reflectionClass->getMethod('setSpecialChars');
 
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
-        $this->assertEquals('$chars', $method->getParams(true));
-        $this->assertEquals(['$chars'], $method->getParams(false));
-        $this->assertEquals('$chars = \'$\\\'\\\\\'', $method->getParamsWithDefault(true));
-        $this->assertEquals(['$chars = \'$\\\'\\\\\''], $method->getParamsWithDefault(false));
+        $this->assertSame('$chars', $method->getParams(true));
+        $this->assertSame(['$chars'], $method->getParams(false));
+        $this->assertSame('$chars = \'$\\\'\\\\\'', $method->getParamsWithDefault(true));
+        $this->assertSame(['$chars = \'$\\\'\\\\\''], $method->getParamsWithDefault(false));
     }
 }
 

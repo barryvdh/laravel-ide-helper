@@ -16,7 +16,6 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
@@ -946,6 +945,11 @@ class ModelsCommand extends Command
         return $keyword;
     }
 
+    /**
+     * @param  string  $type
+     * @return string|null
+     * @throws \ReflectionException
+     */
     protected function checkForCustomLaravelCasts(string $type): ?string
     {
         if (!class_exists($type)) {
@@ -960,27 +964,10 @@ class ModelsCommand extends Command
 
         $methodReflection = new \ReflectionMethod($type, 'get');
 
-        return $this->getReturnTypeFromReflection($methodReflection);
-    }
+        $type = $this->getReturnTypeFromReflection($methodReflection);
 
-    protected function getReturnTypeFromReflection(\ReflectionMethod $reflection): ?string
-    {
-        $returnType = $reflection->getReturnType();
-
-        if (!$returnType) {
-            return $this->getReturnTypeFromDocBlock($reflection);
-        }
-
-        $type = $returnType instanceof \ReflectionNamedType
-            ? $returnType->getName()
-            : (string)$returnType;
-
-        if (!$returnType->isBuiltin()) {
-            $type = '\\' . $type;
-        }
-
-        if ($returnType->allowsNull()) {
-            $type .= '|null';
+        if ($type === null) {
+            $type = $this->getReturnTypeFromDocBlock($methodReflection);
         }
 
         return $type;

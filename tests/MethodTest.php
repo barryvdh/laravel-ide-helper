@@ -3,6 +3,7 @@
 namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
+use Illuminate\Database\Eloquent\Builder;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
@@ -45,6 +46,33 @@ class ExampleTest extends TestCase
         $this->assertEquals(['$last', '$first', '...$middle'], $method->getParams(false));
         $this->assertEquals('$last, $first = \'Barry\', ...$middle', $method->getParamsWithDefault(true));
         $this->assertEquals(['$last', '$first = \'Barry\'', '...$middle'], $method->getParamsWithDefault(false));
+        $this->assertEquals(true, $method->shouldReturn());
+    }
+
+    /**
+     * Test the output of a class
+     */
+    public function testEloquentBuilderOutput()
+    {
+        $reflectionClass = new \ReflectionClass(Builder::class);
+        $reflectionMethod = $reflectionClass->getMethod('with');
+
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
+
+        $output = '/**
+ * Set the relationships that should be eager loaded.
+ *
+ * @param mixed $relations
+ * @return \Illuminate\Database\Eloquent\Builder|static 
+ * @static 
+ */';
+        $this->assertEquals($output, $method->getDocComment(''));
+        $this->assertEquals('with', $method->getName());
+        $this->assertEquals('\\'.Builder::class, $method->getDeclaringClass());
+        $this->assertEquals('$relations', $method->getParams(true));
+        $this->assertEquals(['$relations'], $method->getParams(false));
+        $this->assertEquals('$relations', $method->getParamsWithDefault(true));
+        $this->assertEquals(['$relations'], $method->getParamsWithDefault(false));
         $this->assertEquals(true, $method->shouldReturn());
     }
 

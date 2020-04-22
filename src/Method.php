@@ -71,7 +71,7 @@ class Method
         $this->getParameters($method);
 
         //Make the method static
-        $this->phpdoc-> appendTag(Tag::createInstance('@static', $this->phpdoc));
+        $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
     }
 
     /**

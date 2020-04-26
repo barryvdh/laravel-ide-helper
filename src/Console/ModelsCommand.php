@@ -139,7 +139,7 @@ class ModelsCommand extends Command
     protected function getArguments()
     {
         return array(
-          array('model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', array()),
+            array('model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', array()),
         );
     }
 
@@ -151,19 +151,19 @@ class ModelsCommand extends Command
     protected function getOptions()
     {
         return array(
-          array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
-          array('dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-              'The model dir, supports glob patterns', array()),
-          array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
-          array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
-          array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
-          array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
-          array('phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
-              'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
-              'noinspection tags'
-          ),
-          array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
-          array('openapi', 'O', InputOption::VALUE_OPTIONAL, 'Generate openapi schemas', ''),
+            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
+            array('dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'The model dir, supports glob patterns', array()),
+            array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
+            array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
+            array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
+            array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
+            array('phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
+                'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
+                'noinspection tags'
+            ),
+            array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
+            array('openapi', 'O', InputOption::VALUE_OPTIONAL, 'Generate openapi schemas', ''),
         );
     }
 
@@ -239,8 +239,8 @@ class ModelsCommand extends Command
                     $this->getPropertiesFromMethods($model);
                     $this->getSoftDeleteMethods($model);
                     $this->getCollectionMethods($model);
-                    $output                .= $this->createPhpDocs($name);
-                    $ignore[]              = $name;
+                    $output .= $this->createPhpDocs($name);
+                    $ignore[] = $name;
                     $this->nullableColumns = [];
                 } catch (\Throwable $e) {
                     $this->error("Exception: " . $e->getMessage() .
@@ -252,7 +252,7 @@ class ModelsCommand extends Command
 
         if (!$hasDoctrine) {
             $this->error(
-                'Warning: `"doctrine/dbal": "~2.3"` is required to load database information. '.
+                'Warning: `"doctrine/dbal": "~2.3"` is required to load database information. ' .
                 'Please require that in your composer.json and run `composer update`.'
             );
         }
@@ -445,9 +445,9 @@ class ModelsCommand extends Command
             sort($methods);
             foreach ($methods as $method) {
                 if (Str::startsWith($method, 'get') && Str::endsWith(
-                    $method,
-                    'Attribute'
-                ) && $method !== 'getAttribute'
+                        $method,
+                        'Attribute'
+                    ) && $method !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -457,9 +457,9 @@ class ModelsCommand extends Command
                         $this->setProperty($name, $type, true, null);
                     }
                 } elseif (Str::startsWith($method, 'set') && Str::endsWith(
-                    $method,
-                    'Attribute'
-                ) && $method !== 'setAttribute'
+                        $method,
+                        'Attribute'
+                    ) && $method !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -510,17 +510,17 @@ class ModelsCommand extends Command
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
                     foreach (array(
-                               'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
-                               'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
-                               'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
-                               'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
-                               'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
-                               'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
-                               'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
-                               'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
-                               'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
-                               'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
-                               'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
+                                 'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
+                                 'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
+                                 'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
+                                 'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
+                                 'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
+                                 'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
+                                 'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
+                                 'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
+                                 'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
+                                 'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
+                                 'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
                              ) as $relation => $impl) {
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
@@ -592,7 +592,7 @@ class ModelsCommand extends Command
     /**
      * Check if the relation is nullable
      *
-     * @param string   $relation
+     * @param string $relation
      * @param Relation $relationObj
      *
      * @return bool
@@ -619,12 +619,12 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param string      $name
+     * @param string $name
      * @param string|null $type
-     * @param bool|null   $read
-     * @param bool|null   $write
+     * @param bool|null $read
+     * @param bool|null $write
      * @param string|null $comment
-     * @param bool        $nullable
+     * @param bool $nullable
      */
     protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
     {
@@ -633,12 +633,12 @@ class ModelsCommand extends Command
             $this->properties[$name]['type'] = 'mixed';
             $this->properties[$name]['read'] = false;
             $this->properties[$name]['write'] = false;
-            $this->properties[$name]['comment'] = (string) $comment;
+            $this->properties[$name]['comment'] = (string)$comment;
         }
         if ($type !== null) {
             $newType = $this->getTypeOverride($type);
             if ($nullable) {
-                $newType .='|null';
+                $newType .= '|null';
             }
             $this->properties[$name]['type'] = $newType;
         }
@@ -707,9 +707,9 @@ class ModelsCommand extends Command
         $oaTags = [];
         foreach ($this->properties as $name => $property) {
             // Generate OpenAPI schema if option is enables
-            if($this->option('openapi') && $property['read'] && $property['write'] &&
+            if ($this->option('openapi') && $property['read'] && $property['write'] &&
                 $property['type'] != 'array'
-            ){
+            ) {
                 // TODO convert types to OA Types
                 $oaTagLine = trim("@OA\\Property(property=\"{$name}\",type=\"{$property['type']}\",description=\"{$property['comment']}\")");
                 $oaTags[] = $oaTagLine;
@@ -736,7 +736,7 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
 
             // Generate OpenAPI schema if option is enables
-            if($this->option('openapi') && $attr == 'property'){
+            if ($this->option('openapi') && $attr == 'property') {
                 $oaTagLine = " @OA\Property(property=\"{$name}\",type=\"{$property['type']}\",description=\"{$property['comment']}\")";
                 $tag = Tag::createInstance($oaTagLine, $phpdoc);
                 $phpdoc->appendTag($tag);
@@ -754,7 +754,7 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
-        if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
+        if ($this->write && !$phpdoc->getTagsByName('mixin')) {
             $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
         }
         if ($this->phpstorm_noinspections) {
@@ -777,23 +777,23 @@ class ModelsCommand extends Command
         $docComment = $serializer->getDocComment($phpdoc);
 
         // TODO hard-write to the comment section, should be moved to ReflectionClass and as  a Tag.
-        if(count($oaTags)){
-            if(strpos($docComment, "@OA\\Schema") === false){
-                $docComment = substr_replace($docComment," * @OA\\Schema ()\n", 4, 0 );
+        if (count($oaTags)) {
+            if (strpos($docComment, "@OA\\Schema") === false) {
+                $docComment = substr_replace($docComment, " * @OA\\Schema ()\n", 4, 0);
             }
 
             $lines = explode("\n", $docComment);
             // Remove all existing @OA\\Properties Lines
             $lines_to_keep = [];
-            foreach ($lines as $line){
-                if(strpos($line, " * @OA\\Property") !== 0){
+            foreach ($lines as $line) {
+                if (strpos($line, " * @OA\\Property") !== 0) {
                     $lines_to_keep[] = $line;
                 }
             }
             $docComment = implode("\n", $lines_to_keep);
         }
-        foreach ($oaTags as $oa){
-            $docComment = substr_replace($docComment," * {$oa}\n", strlen($docComment)-3, 0 );
+        foreach ($oaTags as $oa) {
+            $docComment = substr_replace($docComment, " * {$oa}\n", strlen($docComment) - 3, 0);
         }
 
         if ($this->write) {
@@ -986,7 +986,7 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param  string  $type
+     * @param string $type
      * @return string|null
      * @throws \ReflectionException
      */

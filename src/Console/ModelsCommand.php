@@ -163,6 +163,7 @@ class ModelsCommand extends Command
               'noinspection tags'
           ),
           array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
+          array('openapi', 'O', InputOption::VALUE_OPTIONAL, 'Generate openapi schemas', ''),
         );
     }
 
@@ -703,7 +704,16 @@ class ModelsCommand extends Command
             }
         }
 
+        $oaTags = [];
         foreach ($this->properties as $name => $property) {
+            // Generate OpenAPI schema if option is enables
+            if($this->option('openapi') && $property['read'] && $property['write'] &&
+                $property['type'] != 'array'
+            ){
+                // TODO convert types to OA Types
+                $oaTagLine = trim("@OA\\Property(property=\"{$name}\",type=\"{$property['type']}\",description=\"{$property['comment']}\")");
+                $oaTags[] = $oaTagLine;
+            }
             $name = "\$$name";
 
             if ($this->hasCamelCaseModelProperties()) {
@@ -724,6 +734,13 @@ class ModelsCommand extends Command
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");
             $tag = Tag::createInstance($tagLine, $phpdoc);
             $phpdoc->appendTag($tag);
+
+            // Generate OpenAPI schema if option is enables
+            if($this->option('openapi') && $attr == 'property'){
+                $oaTagLine = " @OA\Property(property=\"{$name}\",type=\"{$property['type']}\",description=\"{$property['comment']}\")";
+                $tag = Tag::createInstance($oaTagLine, $phpdoc);
+                $phpdoc->appendTag($tag);
+            }
         }
 
         ksort($this->methods);
@@ -759,6 +776,25 @@ class ModelsCommand extends Command
         $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
 
+        // TODO hard-write to the comment section, should be moved to ReflectionClass and as  a Tag.
+        if(count($oaTags)){
+            if(strpos($docComment, "@OA\\Schema") === false){
+                $docComment = substr_replace($docComment," * @OA\\Schema ()\n", 4, 0 );
+            }
+
+            $lines = explode("\n", $docComment);
+            // Remove all existing @OA\\Properties Lines
+            $lines_to_keep = [];
+            foreach ($lines as $line){
+                if(strpos($line, " * @OA\\Property") !== 0){
+                    $lines_to_keep[] = $line;
+                }
+            }
+            $docComment = implode("\n", $lines_to_keep);
+        }
+        foreach ($oaTags as $oa){
+            $docComment = substr_replace($docComment," * {$oa}\n", strlen($docComment)-3, 0 );
+        }
 
         if ($this->write) {
             $filename = $reflection->getFileName();

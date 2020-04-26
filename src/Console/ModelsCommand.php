@@ -157,7 +157,9 @@ class ModelsCommand extends Command
             array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
             array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
             array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
-            array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
+            array('smart-reset', 'r', InputOption::VALUE_NONE,
+                'Refresh the properties/methods list, but keep the text'
+            ),
             array('phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
                 'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
                 'noinspection tags'
@@ -445,9 +447,9 @@ class ModelsCommand extends Command
             sort($methods);
             foreach ($methods as $method) {
                 if (Str::startsWith($method, 'get') && Str::endsWith(
-                        $method,
-                        'Attribute'
-                    ) && $method !== 'getAttribute'
+                    $method,
+                    'Attribute'
+                ) && $method !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -457,9 +459,9 @@ class ModelsCommand extends Command
                         $this->setProperty($name, $type, true, null);
                     }
                 } elseif (Str::startsWith($method, 'set') && Str::endsWith(
-                        $method,
-                        'Attribute'
-                    ) && $method !== 'setAttribute'
+                    $method,
+                    'Attribute'
+                ) && $method !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -711,7 +713,8 @@ class ModelsCommand extends Command
                 $property['type'] != 'array'
             ) {
                 // TODO convert types to OA Types
-                $oaTagLine = trim("@OA\\Property(property=\"{$name}\",type=\"{$property['type']}\",description=\"{$property['comment']}\")");
+                $oaTagLine = trim("@OA\\Property(property=\"{$name}\"," .
+                    "type=\"{$property['type']}\",description=\"{$property['comment']}\")");
                 $oaTags[] = $oaTagLine;
             }
             $name = "\$$name";
@@ -734,13 +737,6 @@ class ModelsCommand extends Command
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");
             $tag = Tag::createInstance($tagLine, $phpdoc);
             $phpdoc->appendTag($tag);
-
-            // Generate OpenAPI schema if option is enables
-            if ($this->option('openapi') && $attr == 'property') {
-                $oaTagLine = " @OA\Property(property=\"{$name}\",type=\"{$property['type']}\",description=\"{$property['comment']}\")";
-                $tag = Tag::createInstance($oaTagLine, $phpdoc);
-                $phpdoc->appendTag($tag);
-            }
         }
 
         ksort($this->methods);

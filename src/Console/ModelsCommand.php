@@ -139,7 +139,7 @@ class ModelsCommand extends Command
     protected function getArguments()
     {
         return array(
-          array('model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', array()),
+            array('model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', array()),
         );
     }
 
@@ -795,9 +795,9 @@ class ModelsCommand extends Command
             $docComment = implode("\n", $lines_to_keep);
 
             // Finally, append the Model Properties as @OA\Properies
-            foreach ($oaTags as $oa){
+        foreach ($oaTags as $oa){
                 $docComment = substr_replace($docComment," * {$oa}\n", strlen($docComment)-3, 0);
-            }
+        }
         }
 
         if ($this->write) {

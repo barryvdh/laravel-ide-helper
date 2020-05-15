@@ -439,10 +439,17 @@ class ModelsCommand extends Command
      */
     protected function getPropertiesFromMethods($model)
     {
-        $methods = get_class_methods($model);
+        $reflection = new ReflectionClass($model);
+        $methods = $reflection->getMethods();
         if ($methods) {
-            sort($methods);
-            foreach ($methods as $method) {
+            usort($methods, function ($a, $b) {
+                if ($a->name == $b->name) {
+                    return 0;
+                }
+                return ($a->name < $b->name) ? -1 : 1;
+            });
+            foreach ($methods as $reflection_method) {
+                $method = $reflection_method->name;
                 if (Str::startsWith($method, 'get') && Str::endsWith(
                     $method,
                     'Attribute'
@@ -458,7 +465,7 @@ class ModelsCommand extends Command
                 } elseif (Str::startsWith($method, 'set') && Str::endsWith(
                     $method,
                     'Attribute'
-                ) && $method !== 'setAttribute'
+                ) && $method !== 'setAttribute' && $method !== 'setClassCastableAttribute'
                 ) {
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));

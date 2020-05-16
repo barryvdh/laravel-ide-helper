@@ -62,13 +62,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple
  *
  * @property integer $id
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple newQuery()
- * @method static \Illuminate\Database\Query\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|self newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self newQuery()
+ * @method static \Illuminate\Database\Query\Builder|self onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|self query()
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|self withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|self withoutTrashed()
  * @mixin \Eloquent
  */
 class Simple extends Model

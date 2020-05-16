@@ -82,10 +82,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int $attribute_with_int_return_type_and_phpdoc
  * @property-read int $attribute_with_int_return_type
  * @property-read mixed $attribute_without_type
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self query()
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

@@ -68,10 +68,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $relation_has_many_count
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Collections\SimpleCollection|static[] all($columns = ['*'])
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Collections\SimpleCollection|static[] get($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Models\Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Models\Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Models\Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Models\Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self query()
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

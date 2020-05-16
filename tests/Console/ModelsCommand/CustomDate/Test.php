@@ -79,11 +79,11 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self query()
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CustomDate extends Model

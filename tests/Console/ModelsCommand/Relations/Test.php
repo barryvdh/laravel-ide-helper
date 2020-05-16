@@ -89,10 +89,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $relationMorphTo
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self query()
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

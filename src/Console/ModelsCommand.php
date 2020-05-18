@@ -443,10 +443,7 @@ class ModelsCommand extends Command
         $methods = $reflection->getMethods();
         if ($methods) {
             usort($methods, function ($a, $b) {
-                if ($a->name == $b->name) {
-                    return 0;
-                }
-                return ($a->name < $b->name) ? -1 : 1;
+                return $a->name <=> $b->name;
             });
             foreach ($methods as $reflection_method) {
                 $method = $reflection_method->name;

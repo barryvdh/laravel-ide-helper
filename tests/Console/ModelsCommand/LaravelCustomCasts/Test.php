@@ -83,15 +83,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $casted_property_with_return_primitive_docblock
  * @property array|null $casted_property_with_return_nullable_primitive
  * @property $casted_property_without_return
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnDocblock($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnNullablePrimitive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnPrimitive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnPrimitiveDocblock($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithReturnType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models\CustomCast whereCastedPropertyWithoutReturn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|self query()
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereCastedPropertyWithReturnDocblock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereCastedPropertyWithReturnNullablePrimitive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereCastedPropertyWithReturnPrimitive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereCastedPropertyWithReturnPrimitiveDocblock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereCastedPropertyWithReturnType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|self whereCastedPropertyWithoutReturn($value)
  * @mixin \Eloquent
  */
 class CustomCast extends Model

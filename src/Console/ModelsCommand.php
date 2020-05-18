@@ -425,7 +425,7 @@ class ModelsCommand extends Command
                 if ($this->write_model_magic_where) {
                     $this->setMethod(
                         Str::camel("where_" . $name),
-                        '\Illuminate\Database\Eloquent\Builder|' . ($this->write ? 'self' : '\\'. get_class($model)),
+                        '\Illuminate\Database\Eloquent\Builder|' . ($this->write ? 'self' : ('\\'. get_class($model))),
                         array('$value')
                     );
                 }
@@ -472,14 +472,14 @@ class ModelsCommand extends Command
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
-                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->class, $args);
+                        $this->setMethod($name, '\Illuminate\Database\Eloquent\Builder|' . ($this->write ? 'self' : "\\$reflection->class"), $args);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $reflection = new \ReflectionClass($model);
 
                     $builder = get_class($model->newModelQuery());
 
-                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
+                    $this->setMethod($method, "\\{$builder}|" . ($this->write ? 'self' : "\\{$reflection->getName()}"));
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {

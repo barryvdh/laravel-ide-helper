@@ -82,6 +82,26 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int $attribute_with_int_return_type_and_phpdoc
  * @property-read int $attribute_with_int_return_type
  * @property-read mixed $attribute_without_type
+ * @property-read int|null $protected_attribute_return_type_int_or_null
+ * @property-read array $protected_attribute_returns_array
+ * @property-read bool $protected_attribute_returns_bool
+ * @property-read callable $protected_attribute_returns_callable
+ * @property-read bool $protected_attribute_returns_float
+ * @property-read \Illuminate\Support\Facades\Date $protected_attribute_returns_fqn_class
+ * @property-read \DateTime $protected_attribute_returns_imported_class
+ * @property-read array|null $protected_attribute_returns_nullable_array
+ * @property-read bool|null $protected_attribute_returns_nullable_bool
+ * @property-read callable|null $protected_attribute_returns_nullable_callable
+ * @property-read bool|null $protected_attribute_returns_nullable_float
+ * @property-read \stdClass|null $protected_attribute_returns_nullable_std_class
+ * @property-read \stdClass $protected_attribute_returns_std_class
+ * @property-read void $protected_attribute_returns_void
+ * @property-read \what|\ever|\we-write/here $protected_attribute_takes_phpdoc_literal
+ * @property-read int $protected_attribute_with_int_return_phpdoc
+ * @property-read string $protected_attribute_with_int_return_type_and_but_phpdoc_string
+ * @property-read int $protected_attribute_with_int_return_type_and_phpdoc
+ * @property-read int $protected_attribute_with_int_return_type
+ * @property-read mixed $protected_attribute_without_type
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple query()
@@ -182,6 +202,101 @@ class Simple extends Model
      * Doesn't make sense, but…
      */
     public function getAttributeReturnsVoidAttribute(): void
+    {
+    }
+
+    /**
+     * @return int
+     */
+    protected function getProtectedAttributeWithIntReturnPhpdocAttribute()
+    {
+    }
+
+    protected function getProtectedAttributeWithIntReturnTypeAttribute(): int
+    {
+    }
+
+    /**
+     * @return int
+     */
+    protected function getProtectedAttributeWithIntReturnTypeAndPhpdocAttribute(): int
+    {
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProtectedAttributeWithIntReturnTypeAndButPhpdocStringAttribute(): int
+    {
+    }
+
+    protected function getProtectedAttributeWithoutTypeAttribute()
+    {
+    }
+
+    /**
+     * @return what|ever|we-write/here
+     */
+    protected function getProtectedAttributeTakesPhpdocLiteralAttribute()
+    {
+    }
+
+    protected function getProtectedAttributeReturnTypeIntOrNullAttribute(): ?int
+    {
+    }
+
+    protected function getProtectedAttributeReturnsImportedClassAttribute(): DateTime
+    {
+    }
+
+    protected function getProtectedAttributeReturnsFqnClassAttribute(): \Illuminate\Support\Facades\Date
+    {
+    }
+
+    protected function getProtectedAttributeReturnsArrayAttribute(): array
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableArrayAttribute(): ?array
+    {
+    }
+
+    protected function getProtectedAttributeReturnsStdClassAttribute(): \stdClass
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableStdClassAttribute(): ?\stdClass
+    {
+    }
+
+    protected function getProtectedAttributeReturnsBoolAttribute(): bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableBoolAttribute(): ?bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsFloatAttribute(): bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableFloatAttribute(): ?bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsCallableAttribute(): callable
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableCallableAttribute(): ?callable
+    {
+    }
+
+    /**
+     * Doesn't make sense, but…
+     */
+    protected function getProtectedAttributeReturnsVoidAttribute(): void
     {
     }
 }

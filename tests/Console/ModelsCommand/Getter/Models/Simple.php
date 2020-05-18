@@ -101,4 +101,99 @@ class Simple extends Model
     public function getAttributeReturnsVoidAttribute(): void
     {
     }
+
+    /**
+     * @return int
+     */
+    protected function getProtectedAttributeWithIntReturnPhpdocAttribute()
+    {
+    }
+
+    protected function getProtectedAttributeWithIntReturnTypeAttribute(): int
+    {
+    }
+
+    /**
+     * @return int
+     */
+    protected function getProtectedAttributeWithIntReturnTypeAndPhpdocAttribute(): int
+    {
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProtectedAttributeWithIntReturnTypeAndButPhpdocStringAttribute(): int
+    {
+    }
+
+    protected function getProtectedAttributeWithoutTypeAttribute()
+    {
+    }
+
+    /**
+     * @return what|ever|we-write/here
+     */
+    protected function getProtectedAttributeTakesPhpdocLiteralAttribute()
+    {
+    }
+
+    protected function getProtectedAttributeReturnTypeIntOrNullAttribute(): ?int
+    {
+    }
+
+    protected function getProtectedAttributeReturnsImportedClassAttribute(): DateTime
+    {
+    }
+
+    protected function getProtectedAttributeReturnsFqnClassAttribute(): \Illuminate\Support\Facades\Date
+    {
+    }
+
+    protected function getProtectedAttributeReturnsArrayAttribute(): array
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableArrayAttribute(): ?array
+    {
+    }
+
+    protected function getProtectedAttributeReturnsStdClassAttribute(): \stdClass
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableStdClassAttribute(): ?\stdClass
+    {
+    }
+
+    protected function getProtectedAttributeReturnsBoolAttribute(): bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableBoolAttribute(): ?bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsFloatAttribute(): bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableFloatAttribute(): ?bool
+    {
+    }
+
+    protected function getProtectedAttributeReturnsCallableAttribute(): callable
+    {
+    }
+
+    protected function getProtectedAttributeReturnsNullableCallableAttribute(): ?callable
+    {
+    }
+
+    /**
+     * Doesn't make sense, but…
+     */
+    protected function getProtectedAttributeReturnsVoidAttribute(): void
+    {
+    }
 }

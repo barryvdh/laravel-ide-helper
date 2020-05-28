@@ -14,6 +14,9 @@ Generation is done based on the files in your project, so they are always up-to-
 - [Usage](#usage)
   - [Automatic PHPDoc generation for Laravel Facades](#automatic-phpdoc-generation-for-laravel-facades)
   - [Automatic PHPDocs for models](#automatic-phpdocs-for-models)
+    - [Model Directories](#model-directories)
+    - [Ignore Models](#ignore-models)
+    - [Model Hooks](#model-hooks)
   - [Automatic PHPDocs generation for Laravel Fluent methods](#automatic-phpdocs-generation-for-laravel-fluent-methods)
   - [Auto-completion for factory builders](#auto-completion-for-factory-builders)
   - [PhpStorm Meta for Container instances](#phpstorm-meta-for-container-instances)
@@ -175,6 +178,8 @@ With the `--write-mixin (-M)` option
  */
 ```
 
+#### Model Directories
+
 By default, models in `app/models` are scanned. The optional argument tells what models to use (also outside app/models).
 
 ```bash
@@ -188,6 +193,8 @@ php artisan ide-helper:models --dir="path/to/models" --dir="app/src/Model"
 ```
 
 You can publish the config file (`php artisan vendor:publish`) and set the default directories.
+
+#### Ignore Models
 
 Models can be ignored using the `--ignore (-I)` option
 
@@ -268,6 +275,42 @@ For those special cases, you can map them via the config `custom_db_types`. Exam
         '_int4' => 'array',
     ],
 ],
+```
+
+#### Model Hooks
+
+If you need additional information on your model from sources that are not handled by default, you can hook in to the
+ generation process with model hooks to add extra information on the fly.
+ Simply create a class that implements `ModelHookInterface` and add it to the `model_hooks` array in the config:
+ 
+ ```php
+'model_hooks' => [
+    MyCustomHook::class,
+],
+```
+
+The `run` method will be called during generation for every model and receives the current running `ModelsCommand` and the current `Model`, e.g.:
+
+```php
+class MyCustomHook implements ModelHookInterface
+{
+    public function run(ModelsCommand $command, Model $model): void
+    {
+        if (! $model instanceof MyModel) {
+            return;
+        }
+
+        $command->setProperty('custom', 'string', true, false, 'My custom property');
+    }
+}
+```
+
+```php
+/**
+ * MyModel
+ *
+ * @property integer $id
+ * @property-read string $custom
 ```
 
 ### Automatic PHPDocs generation for Laravel Fluent methods

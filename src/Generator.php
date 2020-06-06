@@ -123,7 +123,8 @@ class Generator
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
 
         try {
-            if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
+            if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)
+                && app()->bound('auth')) {
                 if (class_exists('\Illuminate\Foundation\Application')) {
                     $authMethod = version_compare(Application::VERSION, '5.2', '>=') ? 'guard' : 'driver';
                 } else {

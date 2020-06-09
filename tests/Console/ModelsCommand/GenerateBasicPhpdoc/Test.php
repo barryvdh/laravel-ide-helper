@@ -95,10 +95,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $float_not_nullable
  * @property float|null $double_nullable
  * @property float $double_not_nullable
- * @property float|null $decimal_nullable
- * @property float $decimal_not_nullable
- * @property float|null $unsigned_decimal_nullable
- * @property float $unsigned_decimal_not_nullable
+ * @property string|null $decimal_nullable
+ * @property string $decimal_not_nullable
+ * @property string|null $unsigned_decimal_nullable
+ * @property string $unsigned_decimal_not_nullable
  * @property integer|null $boolean_nullable
  * @property integer $boolean_not_nullable
  * @property string|null $enum_nullable

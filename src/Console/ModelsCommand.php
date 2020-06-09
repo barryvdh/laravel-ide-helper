@@ -390,6 +390,7 @@ class ModelsCommand extends Command
                         case 'guid':
                         case 'datetimetz':
                         case 'datetime':
+                        case 'decimal':
                             $type = 'string';
                             break;
                         case 'integer':
@@ -408,7 +409,6 @@ class ModelsCommand extends Command
                                     break;
                             }
                             break;
-                        case 'decimal':
                         case 'float':
                             $type = 'float';
                             break;

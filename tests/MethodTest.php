@@ -4,8 +4,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
+use \Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Carbon as AliasedCarbon;
 
 class ExampleTest extends TestCase
 {
@@ -104,6 +105,7 @@ class ExampleTest extends TestCase
  *
  * @param \Illuminate\Support\Collection $collection
  * @param \Illuminate\Database\Eloquent\Builder $builder
+ * @param \Illuminate\Support\Carbon $carbon
  * @param \Barryvdh\LaravelIdeHelper\Tests\UnknownClass $unknownClass
  * @return \Illuminate\Support\Collection
  * @static
@@ -135,13 +137,14 @@ class ExampleClass
 
 class SampleClass {
     /**
-     * @param Collection   $collection
-     * @param Builder      $builder
-     * @param UnknownClass $unknownClass
+     * @param Collection    $collection
+     * @param Builder       $builder
+     * @param AliasedCarbon $carbon
+     * @param UnknownClass  $unknownClass
      *
      * @return Collection
      */
-    function someMethod(Collection $collection, Builder $builder, UnknownClass $unknownClass) {
+    function someMethod(Collection $collection, Builder $builder, AliasedCarbon $carbon, UnknownClass $unknownClass) {
         return collect();
     }
 }

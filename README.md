@@ -5,6 +5,12 @@
 [![Build Status][ico-travis]][link-travis]
 [![Total Downloads][ico-downloads]][link-downloads]
 
+## About this fork
+
+This fork fixes the long-standing problem that the IDE Helper cannot correctly determine the namespace for method parameters and returns if the types in the docblock do not contain the fully qualified name space.
+
+The solution in this fork extracts the use statements from each class in order to determine the full namespace for each class alias.
+
 **Complete PHPDocs, directly from the source**
 
 This package generates helper files that enable your IDE to provide accurate autocompletion.

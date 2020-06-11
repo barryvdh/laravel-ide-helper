@@ -4,6 +4,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
@@ -32,12 +33,12 @@ class ExampleTest extends TestCase
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
 
         $output = '/**
- * 
+ *
  *
  * @param string $last
  * @param string $first
  * @param string $middle
- * @static 
+ * @static
  */';
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('setName', $method->getName());
@@ -63,8 +64,8 @@ class ExampleTest extends TestCase
  * Set the relationships that should be eager loaded.
  *
  * @param mixed $relations
- * @return \Illuminate\Database\Eloquent\Builder|static 
- * @static 
+ * @return \Illuminate\Database\Eloquent\Builder|static
+ * @static
  */';
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('with', $method->getName());
@@ -90,6 +91,28 @@ class ExampleTest extends TestCase
         $this->assertSame('$chars = \'$\\\'\\\\\'', $method->getParamsWithDefault(true));
         $this->assertSame(['$chars = \'$\\\'\\\\\''], $method->getParamsWithDefault(false));
     }
+
+    public function testRespectsImportedNamespaces()
+    {
+        $reflectionClass = new \ReflectionClass(SampleClass::class);
+        $reflectionMethod = $reflectionClass->getMethod('someMethod');
+
+        $method = new Method($reflectionMethod, 'SampleClass', $reflectionClass);
+
+        $output = '/**
+ *
+ *
+ * @param \Illuminate\Support\Collection $collection
+ * @param \Illuminate\Database\Eloquent\Builder $builder
+ * @param \Barryvdh\LaravelIdeHelper\Tests\UnknownClass $unknownClass
+ * @return \Illuminate\Support\Collection
+ * @static
+ */';
+
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('with', $method->getName());
+        $this->assertSame('\\'. SampleClass::class, $method->getDeclaringClass());
+    }
 }
 
 class ExampleClass
@@ -107,5 +130,18 @@ class ExampleClass
     public function setSpecialChars($chars = "\$'\\")
     {
         return;
+    }
+}
+
+class SampleClass {
+    /**
+     * @param Collection   $collection
+     * @param Builder      $builder
+     * @param UnknownClass $unknownClass
+     *
+     * @return Collection
+     */
+    function someMethod(Collection $collection, Builder $builder, UnknownClass $unknownClass) {
+        return collect();
     }
 }

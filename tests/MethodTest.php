@@ -8,7 +8,7 @@ use \Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Carbon as AliasedCarbon;
 
-class ExampleTest extends TestCase
+class MethodTest extends TestCase
 {
     /**
      * Test that we can actually instantiate the class
@@ -33,14 +33,15 @@ class ExampleTest extends TestCase
 
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
 
-        $output = '/**
- *
- *
- * @param string $last
- * @param string $first
- * @param string $middle
- * @static
- */';
+        $output = "/**\n";
+        $output .= " * \n";
+        $output .= " *\n";
+        $output .= " * @param string \$last\n";
+        $output .= " * @param string \$first\n";
+        $output .= " * @param string \$middle\n";
+        $output .= " * @static \n";
+        $output .= " */";
+
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('setName', $method->getName());
         $this->assertSame('\\'.ExampleClass::class, $method->getDeclaringClass());
@@ -61,13 +62,14 @@ class ExampleTest extends TestCase
 
         $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
 
-        $output = '/**
- * Set the relationships that should be eager loaded.
- *
- * @param mixed $relations
- * @return \Illuminate\Database\Eloquent\Builder|static
- * @static
- */';
+        $output = "/**\n";
+        $output .= " * Set the relationships that should be eager loaded.\n";
+        $output .= " *\n";
+        $output .= " * @param mixed \$relations\n";
+        $output .= " * @return \Illuminate\Database\Eloquent\Builder|static \n";
+        $output .= " * @static \n";
+        $output .= " */";
+
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('with', $method->getName());
         $this->assertSame('\\'.Builder::class, $method->getDeclaringClass());
@@ -100,19 +102,19 @@ class ExampleTest extends TestCase
 
         $method = new Method($reflectionMethod, 'SampleClass', $reflectionClass);
 
-        $output = '/**
- *
- *
- * @param \Illuminate\Support\Collection $collection
- * @param \Illuminate\Database\Eloquent\Builder $builder
- * @param \Illuminate\Support\Carbon $carbon
- * @param \Barryvdh\LaravelIdeHelper\Tests\UnknownClass $unknownClass
- * @return \Illuminate\Support\Collection
- * @static
- */';
+        $output = "/**\n";
+        $output .= " * \n";
+        $output .= " *\n";
+        $output .= " * @param \Illuminate\Support\Collection \$collection\n";
+        $output .= " * @param \Illuminate\Database\Eloquent\Builder \$builder\n";
+        $output .= " * @param \Illuminate\Support\Carbon \$carbon\n";
+        $output .= " * @param \Barryvdh\LaravelIdeHelper\Tests\UnknownClass \$unknownClass\n";
+        $output .= " * @return \Illuminate\Support\Collection \n";
+        $output .= " * @static \n";
+        $output .= " */";
 
         $this->assertSame($output, $method->getDocComment(''));
-        $this->assertSame('with', $method->getName());
+        $this->assertSame('someMethod', $method->getName());
         $this->assertSame('\\'. SampleClass::class, $method->getDeclaringClass());
     }
 }

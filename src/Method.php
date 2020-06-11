@@ -422,7 +422,6 @@ class Method
                     } else {
                         $currentString .= $token[1] ?? '';
                     }
-
                 } else {
                     if ($currentUse != '') {
                         $uses[$currentString] = $currentUse;
@@ -471,5 +470,4 @@ class Method
     {
         return basename(str_replace('\\', '/', $className));
     }
-
 }

@@ -242,7 +242,7 @@ class Method
                 $tag->setContent($content);
 
                 // Get the expanded type and re-set the content
-                $type    = $this->subsituteMissingClasses($tag->getType());
+                $type    = $this->substituteMissingClasses($tag->getType());
                 $content = $type . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
                 $tag->setContent(trim($content));
             }
@@ -269,7 +269,7 @@ class Method
                 $returnValue = str_replace($interface, $real, $returnValue);
             }
 
-            $returnValue = $this->subsituteMissingClasses($returnValue);
+            $returnValue = $this->substituteMissingClasses($returnValue);
 
             // Set the changed content
             $tag->setContent($returnValue . ' ' . $tag->getDescription());
@@ -442,7 +442,7 @@ class Method
      *
      * @return string
      */
-    protected function subsituteMissingClasses(string $types)
+    protected function substituteMissingClasses(string $types)
     {
         $newTypes = [];
         foreach (explode('|', $types) as $type) {

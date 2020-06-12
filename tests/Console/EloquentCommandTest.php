@@ -41,7 +41,7 @@ class EloquentCommandTest extends TestCase
         $tester = $this->runCommand($command);
 
         $expectedContent = '/**
- *
+ * 
  *
  * @mixin \Eloquent
  * @mixin \Illuminate\Database\Eloquent\Builder

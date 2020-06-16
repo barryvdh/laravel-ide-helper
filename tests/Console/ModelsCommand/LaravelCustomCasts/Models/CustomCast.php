@@ -3,6 +3,7 @@
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models;
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithDocblockReturn;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithDocblockReturnFqn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithNullablePrimitiveReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithoutReturnType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithPrimitiveDocblockReturn;
@@ -15,6 +16,7 @@ class CustomCast extends Model
     protected $casts = [
         'casted_property_with_return_type' => CustomCasterWithReturnType::class,
         'casted_property_with_return_docblock' => CustomCasterWithDocblockReturn::class,
+        'casted_property_with_return_docblock_fqn' => CustomCasterWithDocblockReturnFqn::class,
         'casted_property_with_return_primitive' => CustomCasterWithPrimitiveReturn::class,
         'casted_property_with_return_primitive_docblock' => CustomCasterWithPrimitiveDocblockReturn::class,
         'casted_property_with_return_nullable_primitive' => CustomCasterWithNullablePrimitiveReturn::class,

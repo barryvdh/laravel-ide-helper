@@ -65,9 +65,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\NotIgnored query()
+ * @method static \Illuminate\Database\Eloquent\Builder|NotIgnored newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|NotIgnored newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|NotIgnored query()
  * @mixin \Eloquent
  */
 class NotIgnored extends Model

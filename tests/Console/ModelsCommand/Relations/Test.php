@@ -70,29 +70,29 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple
  *
  * @property integer $id
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationBelongsTo
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToInAnotherNamespace
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToMany
+ * @property-read Simple $relationBelongsTo
+ * @property-read AnotherModel $relationBelongsToInAnotherNamespace
+ * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToManyWithSub
+ * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToManyWithSub
  * @property-read int|null $relation_belongs_to_many_with_sub_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationBelongsToManyWithSubAnother
+ * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToManyWithSubAnother
  * @property-read int|null $relation_belongs_to_many_with_sub_another_count
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel $relationBelongsToSameNameAsColumn
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationHasMany
+ * @property-read AnotherModel $relationBelongsToSameNameAsColumn
+ * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationHasMany
  * @property-read int|null $relation_has_many_count
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple|null $relationHasOne
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple $relationHasOneWithDefault
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphMany
+ * @property-read Simple|null $relationHasOne
+ * @property-read Simple $relationHasOneWithDefault
+ * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationMorphMany
  * @property-read int|null $relation_morph_many_count
- * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple|null $relationMorphOne
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $relationMorphTo
- * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple[] $relationMorphedByMany
+ * @property-read Simple|null $relationMorphOne
+ * @property-read Model|\Eloquent $relationMorphTo
+ * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

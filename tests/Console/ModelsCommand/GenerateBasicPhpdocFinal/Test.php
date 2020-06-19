@@ -1,0 +1,224 @@
+<?php declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal;
+
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\FinalPost;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post;
+use Illuminate\Filesystem\Filesystem;
+use Mockery;
+
+class Test extends AbstractModelsCommand
+{
+    protected function getEnvironmentSetUp($app)
+    {
+        parent::getEnvironmentSetUp($app);
+
+        $app['config']->set('ide-helper', [
+            'model_locations' => [
+                // This is calculated from the base_path() which points to
+                // vendor/orchestra/testbench-core/laravel
+                '/../../../../tests/Console/ModelsCommand/GenerateBasicPhpdocFinal/Models',
+            ],
+        ]);
+    }
+
+    public function test(): void
+    {
+        $actualContent = null;
+        $mockFilesystem = Mockery::mock(Filesystem::class);
+        $mockFilesystem
+            ->shouldReceive('get')
+            ->andReturn(file_get_contents(__DIR__ . '/Models/Post.php'))
+            ->once();
+        $mockFilesystem
+            ->shouldReceive('put')
+            ->with(
+                Mockery::any(),
+                Mockery::capture($actualContent)
+            )
+            ->andReturn(1) // Simulate we wrote _something_ to the file
+            ->once();
+
+        $this->instance(Filesystem::class, $mockFilesystem);
+
+        $command = $this->app->make(ModelsCommand::class);
+
+        $tester = $this->runCommand($command, [
+            '--write' => true,
+        ]);
+
+        $this->assertSame(0, $tester->getStatusCode());
+        $this->assertEmpty($tester->getDisplay());
+
+        $expectedContent = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post
+ *
+ * @property integer $id
+ * @property string|null $char_nullable
+ * @property string $char_not_nullable
+ * @property string|null $string_nullable
+ * @property string $string_not_nullable
+ * @property string|null $text_nullable
+ * @property string $text_not_nullable
+ * @property string|null $medium_text_nullable
+ * @property string $medium_text_not_nullable
+ * @property string|null $long_text_nullable
+ * @property string $long_text_not_nullable
+ * @property integer|null $integer_nullable
+ * @property integer $integer_not_nullable
+ * @property integer|null $tiny_integer_nullable
+ * @property integer $tiny_integer_not_nullable
+ * @property integer|null $small_integer_nullable
+ * @property integer $small_integer_not_nullable
+ * @property integer|null $medium_integer_nullable
+ * @property integer $medium_integer_not_nullable
+ * @property integer|null $big_integer_nullable
+ * @property integer $big_integer_not_nullable
+ * @property integer|null $unsigned_integer_nullable
+ * @property integer $unsigned_integer_not_nullable
+ * @property integer|null $unsigned_tiny_integer_nullable
+ * @property integer $unsigned_tiny_integer_not_nullable
+ * @property integer|null $unsigned_small_integer_nullable
+ * @property integer $unsigned_small_integer_not_nullable
+ * @property integer|null $unsigned_medium_integer_nullable
+ * @property integer $unsigned_medium_integer_not_nullable
+ * @property integer|null $unsigned_big_integer_nullable
+ * @property integer $unsigned_big_integer_not_nullable
+ * @property float|null $float_nullable
+ * @property float $float_not_nullable
+ * @property float|null $double_nullable
+ * @property float $double_not_nullable
+ * @property string|null $decimal_nullable
+ * @property string $decimal_not_nullable
+ * @property string|null $unsigned_decimal_nullable
+ * @property string $unsigned_decimal_not_nullable
+ * @property integer|null $boolean_nullable
+ * @property integer $boolean_not_nullable
+ * @property string|null $enum_nullable
+ * @property string $enum_not_nullable
+ * @property string|null $json_nullable
+ * @property string $json_not_nullable
+ * @property string|null $jsonb_nullable
+ * @property string $jsonb_not_nullable
+ * @property string|null $date_nullable
+ * @property string $date_not_nullable
+ * @property string|null $datetime_nullable
+ * @property string $datetime_not_nullable
+ * @property string|null $datetimetz_nullable
+ * @property string $datetimetz_not_nullable
+ * @property string|null $time_nullable
+ * @property string $time_not_nullable
+ * @property string|null $timetz_nullable
+ * @property string $timetz_not_nullable
+ * @property string|null $timestamp_nullable
+ * @property string $timestamp_not_nullable
+ * @property string|null $timestamptz_nullable
+ * @property string $timestamptz_not_nullable
+ * @property integer|null $year_nullable
+ * @property integer $year_not_nullable
+ * @property mixed|null $binary_nullable
+ * @property mixed $binary_not_nullable
+ * @property string|null $uuid_nullable
+ * @property string $uuid_not_nullable
+ * @property string|null $ipaddress_nullable
+ * @property string $ipaddress_not_nullable
+ * @property string|null $macaddress_nullable
+ * @property string $macaddress_not_nullable
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereBigIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereBigIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereBinaryNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereBinaryNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereBooleanNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereBooleanNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereCharNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereCharNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDateNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDateNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDatetimeNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDatetimeNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDatetimetzNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDatetimetzNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDecimalNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDecimalNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDoubleNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereDoubleNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereEnumNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereEnumNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereFloatNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereFloatNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereIpaddressNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereIpaddressNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereJsonNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereJsonNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereJsonbNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereJsonbNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereLongTextNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereLongTextNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereMacaddressNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereMacaddressNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereMediumIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereMediumIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereMediumTextNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereMediumTextNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereSmallIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereSmallIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereStringNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereStringNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTextNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTextNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimeNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimeNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimestampNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimestampNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimestamptzNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimestamptzNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimetzNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTimetzNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTinyIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereTinyIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedBigIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedBigIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedDecimalNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedDecimalNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedMediumIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedMediumIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedSmallIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedSmallIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedTinyIntegerNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUnsignedTinyIntegerNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUuidNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereUuidNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereYearNotNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocFinal\Models\Post whereYearNullable($value)
+ * @mixin \Eloquent
+ */
+final class Post extends Model
+{
+}
+
+PHP;
+
+        $this->assertSame($expectedContent, $actualContent);
+    }
+}

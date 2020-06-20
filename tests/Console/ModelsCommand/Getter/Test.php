@@ -68,7 +68,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read callable $attribute_returns_callable
  * @property-read bool $attribute_returns_float
  * @property-read \Illuminate\Support\Facades\Date $attribute_returns_fqn_class
- * @property-read \DateTime $attribute_returns_imported_class
+ * @property-read DateTime $attribute_returns_imported_class
  * @property-read array|null $attribute_returns_nullable_array
  * @property-read bool|null $attribute_returns_nullable_bool
  * @property-read callable|null $attribute_returns_nullable_callable
@@ -82,10 +82,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int $attribute_with_int_return_type_and_phpdoc
  * @property-read int $attribute_with_int_return_type
  * @property-read mixed $attribute_without_type
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model
@@ -120,7 +120,7 @@ class Simple extends Model
     }
 
     /**
-     * @return what|ever|we-write/here
+     * @return \what|\ever|\we-write/here
      */
     public function getAttributeTakesPhpdocLiteralAttribute()
     {

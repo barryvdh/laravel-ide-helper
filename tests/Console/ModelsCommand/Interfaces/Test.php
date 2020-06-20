@@ -64,9 +64,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Interfaces\Model
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Interfaces\Models\User
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Interfaces\Models\User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Interfaces\Models\User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Interfaces\Models\User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User query()
  */
 	class User extends \Eloquent implements \Illuminate\Contracts\Auth\Authenticatable {}
 }

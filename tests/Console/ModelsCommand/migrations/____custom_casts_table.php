@@ -11,6 +11,7 @@ class CustomCastsTable extends Migration
         Schema::create('custom_casts', static function (Blueprint $table) {
             $table->string('casted_property_with_return_type');
             $table->string('casted_property_with_return_docblock');
+            $table->string('casted_property_with_return_docblock_fqn');
             $table->string('casted_property_with_return_primitive');
             $table->string('casted_property_with_return_primitive_docblock');
             $table->string('casted_property_with_return_nullable_primitive');

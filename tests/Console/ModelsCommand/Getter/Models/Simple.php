@@ -37,7 +37,7 @@ class Simple extends Model
     }
 
     /**
-     * @return what|ever|we-write/here
+     * @return \what|\ever|\we-write/here
      */
     public function getAttributeTakesPhpdocLiteralAttribute()
     {

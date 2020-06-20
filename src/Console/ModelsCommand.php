@@ -766,11 +766,10 @@ class ModelsCommand extends Command
             if ($originalDoc) {
                 $contents = str_replace($originalDoc, $docComment, $contents);
             } else {
-                $needle = "class {$classname}";
-                $replace = "{$docComment}\nclass {$classname}";
-                $pos = strpos($contents, $needle);
+                $replace = "{$docComment}\n";
+                $pos = strpos($contents, "final class {$classname}") ?: strpos($contents, "class {$classname}");
                 if ($pos !== false) {
-                    $contents = substr_replace($contents, $replace, $pos, strlen($needle));
+                    $contents = substr_replace($contents, $replace, $pos, 0);
                 }
             }
             if ($this->files->put($filename, $contents)) {

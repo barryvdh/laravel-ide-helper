@@ -85,6 +85,8 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer update  --prefer-dist --no-suggest --no-progress
+        run: |
+          composer remove phpro/grumphp vimeo/psalm --no-update --dev
+          composer update --prefer-dist --no-suggest --no-progress
 
       - run: composer check-style

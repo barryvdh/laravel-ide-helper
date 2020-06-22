@@ -36,7 +36,8 @@
         "orchestra/testbench": "^3 || ^4 || ^5",
         "phpro/grumphp": "^0.17.1",
         "spatie/phpunit-snapshot-assertions": "^3.0",
-        "squizlabs/php_codesniffer": "^3.5"
+        "squizlabs/php_codesniffer": "^3.5",
+        "vimeo/psalm": "^3.12"
     },
     "config": {
         "sort-packages": true
@@ -62,6 +63,7 @@
         }
     },
     "scripts": {
+        "analyze": "psalm",
         "check-style": "phpcs -p --standard=PSR2 src/",
         "fix-style": "phpcbf -p --standard=PSR2 src/",
         "test": "phpunit",

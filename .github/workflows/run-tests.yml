@@ -61,7 +61,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        composer remove phpro/grumphp --no-interaction --no-update --dev
+        composer remove phpro/grumphp vimeo/psalm --no-interaction --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --no-progress
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
 

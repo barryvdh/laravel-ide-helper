@@ -284,36 +284,6 @@ class Generator
     }
 
     /**
-     * Get the driver/connection/store from the managers
-     *
-     * @param $alias
-     * @return array|bool|string
-     */
-    public function getDriver($alias)
-    {
-        try {
-            if ($alias == "Auth") {
-                $driver = \Auth::driver();
-            } elseif ($alias == "DB") {
-                $driver = \DB::connection();
-            } elseif ($alias == "Cache") {
-                $driver = get_class(\Cache::driver());
-                $store = get_class(\Cache::getStore());
-                return array($driver, $store);
-            } elseif ($alias == "Queue") {
-                $driver = \Queue::connection();
-            } else {
-                return false;
-            }
-
-            return get_class($driver);
-        } catch (\Exception $e) {
-            $this->error("Could not determine driver/connection for $alias.");
-            return false;
-        }
-    }
-
-    /**
      * Write a string as error output.
      *
      * @param  string  $string

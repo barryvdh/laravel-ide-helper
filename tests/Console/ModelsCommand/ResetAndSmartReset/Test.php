@@ -49,32 +49,7 @@ class Test extends AbstractModelsCommand
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertEmpty($tester->getDisplay());
-
-        $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * Text of existing phpdoc
- *
- * @property string $foo
- * @property integer $id
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
- * @mixin \Eloquent
- */
-class Simple extends Model
-{
-}
-
-PHP;
-
-        $this->assertSame($expectedContent, $actualContent);
+        $this->assertMatchesPhpSnapshot($actualContent);
     }
 
     public function testReset(): void
@@ -105,31 +80,7 @@ PHP;
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertEmpty($tester->getDisplay());
-
-        $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple
- *
- * @property integer $id
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
- * @mixin \Eloquent
- */
-class Simple extends Model
-{
-}
-
-PHP;
-
-        $this->assertSame($expectedContent, $actualContent);
+        $this->assertMatchesPhpSnapshot($actualContent);
     }
 
     public function testSmartReset(): void
@@ -160,30 +111,6 @@ PHP;
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertEmpty($tester->getDisplay());
-
-        $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * Text of existing phpdoc
- *
- * @property integer $id
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
- * @mixin \Eloquent
- */
-class Simple extends Model
-{
-}
-
-PHP;
-
-        $this->assertSame($expectedContent, $actualContent);
+        $this->assertMatchesPhpSnapshot($actualContent);
     }
 }

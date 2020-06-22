@@ -62,7 +62,7 @@ jobs:
     - name: Install dependencies
       run: |
         composer remove phpro/grumphp --no-interaction --no-update --dev
-        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "orchestra/testbench-dusk:${{ matrix.testbench }}" --no-interaction --no-update
+        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
 
     - name: Execute Unit Tests

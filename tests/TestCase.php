@@ -41,4 +41,9 @@ abstract class TestCase extends BaseTestCase
     {
         $this->assertMatchesSnapshot($actualContent, new SnapshotPhpDriver());
     }
+
+    protected function assertMatchesTxtSnapshot(?string $actualContent)
+    {
+        $this->assertMatchesSnapshot($actualContent, new SnapshotTxtDriver());
+    }
 }

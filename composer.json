@@ -36,7 +36,7 @@
         "orchestra/testbench": "^3 || ^4 || ^5",
         "phpro/grumphp": "^0.17.1",
         "spatie/phpunit-snapshot-assertions": "^3.0",
-        "squizlabs/php_codesniffer": "^3"
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "config": {
         "sort-packages": true

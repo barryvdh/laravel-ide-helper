@@ -1,8 +1,12 @@
+name: Tests
+
 on: [push, pull_request]
 
 jobs:
   php-tests:
     runs-on: ubuntu-latest
+    env:
+      COMPOSER_NO_INTERACTION: 1
 
     strategy:
       matrix:
@@ -57,12 +61,32 @@ jobs:
 
     - name: Install dependencies
       run: |
-        composer remove phpro/grumphp vimeo/psalm --no-interaction --no-update --dev
-        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --no-progress
-        composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+        composer remove phpro/grumphp vimeo/psalm --no-update --dev
+        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-update --no-progress
+        composer update --${{ matrix.dependency-version }} --prefer-dist --no-suggest --no-progress
 
     - name: Execute Unit Tests
-      run: vendor/bin/phpunit
+      run: composer test
 
-    - name: Check PSR-12 Codestyle
-      run: vendor/bin/phpcs --standard=psr2 src/
+  check-style:
+    name: Check Code Style
+    runs-on: ubuntu-latest
+    env:
+      COMPOSER_NO_INTERACTION: 1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer remove phpro/grumphp vimeo/psalm --no-update --dev
+          composer update --prefer-dist --no-suggest --no-progress
+
+      - run: composer check-style

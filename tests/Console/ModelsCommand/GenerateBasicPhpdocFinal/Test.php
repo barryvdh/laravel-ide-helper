@@ -6,12 +6,9 @@ use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
-use Spatie\Snapshots\MatchesSnapshots;
 
 class Test extends AbstractModelsCommand
 {
-    use MatchesSnapshots;
-
     protected function getEnvironmentSetUp($app)
     {
         parent::getEnvironmentSetUp($app);
@@ -52,6 +49,6 @@ class Test extends AbstractModelsCommand
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertEmpty($tester->getDisplay());
-        $this->assertMatchesTextSnapshot($actualContent);
+        $this->assertMatchesPhpSnapshot($actualContent);
     }
 }

@@ -36,7 +36,7 @@ jobs:
             php: 7.2
             dependency-version: prefer-stable
           - laravel: 5.5.*
-            testbench: 3.6.*
+            testbench: 3.5.*
             php: 7.2
             dependency-version: prefer-stable
         exclude:

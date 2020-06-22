@@ -43,7 +43,7 @@ class MetaCommand extends Command
     /** @var \Illuminate\Contracts\View\Factory */
     protected $view;
 
-    /** @var \Illuminate\Contracts\Config */
+    /** @var \Illuminate\Contracts\Config\Repository */
     protected $config;
 
     protected $methods = [
@@ -61,7 +61,7 @@ class MetaCommand extends Command
      *
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Illuminate\Contracts\Config $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct($files, $view, $config)
     {

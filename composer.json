@@ -59,9 +59,9 @@
         }
     },
     "scripts": {
+        "analyze": "psalm",
         "check-style": "phpcs -p --standard=PSR2 src/",
         "fix-style": "phpcbf -p --standard=PSR2 src/",
-        "test": "phpunit",
-        "analyze": "psalm"
+        "test": "phpunit"
     }
 }

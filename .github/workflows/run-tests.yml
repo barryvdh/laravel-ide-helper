@@ -1,9 +1,6 @@
 name: Tests
-on:
-  push:
-  pull_request:
-  schedule:
-  - cron: '0 0 * * *'
+
+on: [push, pull_request]
 
 jobs:
   php-tests:
@@ -64,7 +61,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        composer remove phpro/grumphp --no-update --dev
+        composer remove phpro/grumphp vimeo/psalm --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-update --no-progress
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-suggest --no-progress
 

@@ -16,3 +16,12 @@ parameters:
             whitelist_patterns:
                 - /^src\/.*/
                 - /^config\/.*/
+        psalm:
+            config: psalm.xml
+            ignore_patterns: []
+            no_cache: false
+            report: null
+            output_format: null
+            threads: null
+            triggered_by: ['php']
+            show_info: false

@@ -19,6 +19,6 @@ class SnapshotPhpDriver implements Driver
 
     public function match($expected, $actual)
     {
-        Assert::assertEquals($expected, $this->serialize($actual));
+        Assert::assertSame($expected, $this->serialize($actual));
     }
 }

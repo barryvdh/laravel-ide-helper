@@ -1,0 +1,25 @@
+name: normalize composer.json
+
+on:
+  push:
+    paths:
+      - composer.json
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Validate Composer configuration
+        run: composer validate --strict
+
+      - name: Normalize composer.json
+        run: |
+          composer global require ergebnis/composer-normalize
+          composer normalize
+
+      - uses: stefanzweifel/git-auto-commit-action@v4.0.0
+        with:
+          commit_message: normalize composer.json

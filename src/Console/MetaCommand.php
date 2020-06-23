@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -98,7 +99,7 @@ class MetaCommand extends Command
                 }
             } catch (\Throwable $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                    $this->comment("Cannot make '$abstract': ".$e->getMessage());
+                    $this->comment("Cannot make '$abstract': " . $e->getMessage());
                 }
             }
         }

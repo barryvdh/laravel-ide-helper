@@ -5,6 +5,7 @@
  *
  * @author Charles A. Peterson <artistan@gmail.com>
  */
+
 namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Console\Command;

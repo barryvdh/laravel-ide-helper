@@ -1,6 +1,4 @@
-parameters:
-    git_dir: .
-    bin_dir: vendor/bin
+grumphp:
     tasks:
         phpunit:
             config_file: ~

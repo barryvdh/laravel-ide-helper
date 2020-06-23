@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -69,7 +70,7 @@ class Generator
     public function generate($format = 'php')
     {
         // Check if the generator for this format exists
-        $method = 'generate'.ucfirst($format).'Helper';
+        $method = 'generate' . ucfirst($format) . 'Helper';
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -97,7 +98,7 @@ class Generator
             foreach ($aliases as $alias) {
                 $functions = array();
                 foreach ($alias->getMethods() as $method) {
-                    $functions[$method->getName()] = '('. $method->getParamsWithDefault().')';
+                    $functions[$method->getName()] = '(' . $method->getParamsWithDefault() . ')';
                 }
                 $classes[$alias->getAlias()] = array(
                     'functions' => $functions,
@@ -123,8 +124,10 @@ class Generator
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
 
         try {
-            if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)
-                && app()->bound('auth')) {
+            if (
+                class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)
+                && app()->bound('auth')
+            ) {
                 if (class_exists('\Illuminate\Foundation\Application')) {
                     $authMethod = version_compare(Application::VERSION, '5.2', '>=') ? 'guard' : 'driver';
                 } else {

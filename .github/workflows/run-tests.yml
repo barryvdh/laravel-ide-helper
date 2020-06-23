@@ -1,49 +1,20 @@
-on:
-  push:
-  pull_request:
-  schedule:
-  - cron: '0 0 * * *'
+name: Tests
+
+on: [push, pull_request]
 
 jobs:
   php-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSER_NO_INTERACTION: 1
 
     strategy:
       matrix:
         php: [7.4, 7.3, 7.2]
-        laravel: [7.*]
-        testbench: [5.*]
+        laravel: [7.*, 6.*, 5.5.*]
         dependency-version: [prefer-lowest, prefer-stable]
-        include:
-          - laravel: 7.*
-            testbench: 5.*
-            php: 7.4
-            dependency-version: prefer-stable
-          - laravel: 6.*
-            testbench: 4.*
-            php: 7.3
-            dependency-version: prefer-stable
-          - laravel: 5.8.*
-            testbench: 3.8.*
-            php: 7.3
-            dependency-version: prefer-stable
-          - laravel: 5.7.*
-            testbench: 3.7.*
-            php: 7.2
-            dependency-version: prefer-stable
-          - laravel: 5.6.*
-            testbench: 3.6.*
-            php: 7.2
-            dependency-version: prefer-stable
-          - laravel: 5.5.*
-            testbench: 3.5.*
-            php: 7.2
-            dependency-version: prefer-stable
         exclude:
-          - laravel: 5.7.*
-            php: 7.4
-          - laravel: 5.6.*
-            php: 7.4
           - laravel: 5.5.*
             php: 7.4
 
@@ -58,15 +29,36 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
-
+        
     - name: Install dependencies
       run: |
-        composer remove phpro/grumphp vimeo/psalm --no-interaction --no-update --dev
-        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --no-progress
-        composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+        composer remove phpro/grumphp vimeo/psalm --no-update --dev
+        composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
+        composer update --${{ matrix.dependency-version }} --prefer-dist --no-suggest --no-progress
 
     - name: Execute Unit Tests
-      run: vendor/bin/phpunit
+      run: composer test
 
-    - name: Check PSR-12 Codestyle
-      run: vendor/bin/phpcs --standard=psr2 src/
+  check-style:
+    name: Check Code Style
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    env:
+      COMPOSER_NO_INTERACTION: 1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+        
+      - name: Install dependencies
+        run: |
+          composer remove phpro/grumphp vimeo/psalm --no-update --dev
+          composer update --prefer-dist --no-suggest --no-progress
+
+      - run: composer check-style

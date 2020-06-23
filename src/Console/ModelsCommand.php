@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -56,6 +57,7 @@ class ModelsCommand extends Command
     protected $description = 'Generate autocompletion for models';
 
     protected $write_model_magic_where;
+    protected $write_model_relation_count_properties;
     protected $properties = array();
     protected $methods = array();
     protected $write = false;
@@ -106,12 +108,15 @@ class ModelsCommand extends Command
             $this->keep_text = $this->reset = true;
         }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
+        $this->write_model_relation_count_properties =
+            $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
 
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
-            if ($this->confirm(
-                "Do you want to overwrite the existing model files? Choose no to write to $filename instead"
-            )
+            if (
+                $this->confirm(
+                    "Do you want to overwrite the existing model files? Choose no to write to $filename instead"
+                )
             ) {
                 $this->write = true;
             }
@@ -254,7 +259,7 @@ class ModelsCommand extends Command
 
         if (!$hasDoctrine) {
             $this->error(
-                'Warning: `"doctrine/dbal": "~2.3"` is required to load database information. '.
+                'Warning: `"doctrine/dbal": "~2.3"` is required to load database information. ' .
                 'Please require that in your composer.json and run `composer update`.'
             );
         }
@@ -455,10 +460,11 @@ class ModelsCommand extends Command
         if ($methods) {
             sort($methods);
             foreach ($methods as $method) {
-                if (Str::startsWith($method, 'get') && Str::endsWith(
-                    $method,
-                    'Attribute'
-                ) && $method !== 'getAttribute'
+                if (
+                    Str::startsWith($method, 'get') && Str::endsWith(
+                        $method,
+                        'Attribute'
+                    ) && $method !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -468,10 +474,11 @@ class ModelsCommand extends Command
                         $type = $this->getTypeInModel($model, $type);
                         $this->setProperty($name, $type, true, null);
                     }
-                } elseif (Str::startsWith($method, 'set') && Str::endsWith(
-                    $method,
-                    'Attribute'
-                ) && $method !== 'setAttribute'
+                } elseif (
+                    Str::startsWith($method, 'set') && Str::endsWith(
+                        $method,
+                        'Attribute'
+                    ) && $method !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -500,7 +507,8 @@ class ModelsCommand extends Command
                     $builder = $this->getClassNameInModel($model, get_class($model->newModelQuery()));
 
                     $this->setMethod($method, $builder . "|" . $this->getClassNameInModel($model, get_class($model)));
-                } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
+                } elseif (
+                    !method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
@@ -527,7 +535,8 @@ class ModelsCommand extends Command
                     $begin = strpos($code, 'function(');
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
-                    foreach (array(
+                    foreach (
+                        array(
                                'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
                                'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
                                'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
@@ -539,7 +548,8 @@ class ModelsCommand extends Command
                                'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
                                'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
                                'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
-                             ) as $relation => $impl) {
+                             ) as $relation => $impl
+                    ) {
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
                             //Resolve the relation's model to a Relation object.
@@ -580,12 +590,14 @@ class ModelsCommand extends Command
                                         true,
                                         null
                                     );
-                                    $this->setProperty(
-                                        Str::snake($method) . '_count',
-                                        'int|null',
-                                        true,
-                                        false
-                                    );
+                                    if ($this->write_model_relation_count_properties) {
+                                        $this->setProperty(
+                                            Str::snake($method) . '_count',
+                                            'int|null',
+                                            true,
+                                            false
+                                        );
+                                    }
                                 } elseif ($relation === "morphTo") {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
@@ -662,7 +674,7 @@ class ModelsCommand extends Command
         if ($type !== null) {
             $newType = $this->getTypeOverride($type);
             if ($nullable) {
-                $newType .='|null';
+                $newType .= '|null';
             }
             $this->properties[$name]['type'] = $newType;
         }
@@ -865,7 +877,7 @@ class ModelsCommand extends Command
         }
 
         /** @var \Illuminate\Database\Eloquent\Model $model */
-        $model = new $className;
+        $model = new $className();
         return '\\' . get_class($model->newCollection());
     }
 

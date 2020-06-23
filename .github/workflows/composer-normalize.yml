@@ -7,6 +7,7 @@ on:
 
 jobs:
   normalize:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - name: Git checkout

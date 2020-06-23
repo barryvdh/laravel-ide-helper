@@ -60,6 +60,17 @@ jobs:
         php-version: ${{ matrix.php }}
         coverage: none
 
+    - name: Get composer cache directory
+      id: composercache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.composercache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-composer-
+        
     - name: Install dependencies
       run: |
         composer remove phpro/grumphp vimeo/psalm --no-update --dev
@@ -86,6 +97,17 @@ jobs:
           php-version: 7.4
           coverage: none
 
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+        
       - name: Install dependencies
         run: |
           composer remove phpro/grumphp vimeo/psalm --no-update --dev

@@ -41,7 +41,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        composer self-update
+        composer self-update --2
         composer remove vimeo/psalm --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress

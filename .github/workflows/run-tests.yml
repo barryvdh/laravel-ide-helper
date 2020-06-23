@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   php-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       COMPOSER_NO_INTERACTION: 1
 
@@ -70,6 +71,7 @@ jobs:
 
   check-style:
     name: Check Code Style
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
       COMPOSER_NO_INTERACTION: 1

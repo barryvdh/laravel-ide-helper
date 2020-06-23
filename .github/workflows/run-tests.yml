@@ -37,7 +37,8 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
-        
+        tools: composer:v2
+
     - name: Install dependencies
       run: |
         composer remove vimeo/psalm --no-update --dev

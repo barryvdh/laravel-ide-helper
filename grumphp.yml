@@ -6,7 +6,7 @@ grumphp:
             group: []
             always_execute: false
         phpcs:
-            standard: PSR2
+            standard: PSR12
             warning_severity: ~
             ignore_patterns:
                 - tests/

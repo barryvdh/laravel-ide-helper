@@ -172,7 +172,6 @@ class GeneratorCommand extends Command
             array('write_mixins', "W", InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins),
             array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
             array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
-            array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),
         );
     }
 }

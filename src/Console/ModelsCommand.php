@@ -378,7 +378,14 @@ class ModelsCommand extends Command
 
         $database = null;
         if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+            /*
+             * This adds support for when the models `$table` is either:
+             * - `database.table` => ['database', 'table']
+             *   or when a schema is given
+             * - `database.schema.table` => ['database', 'schema.table']
+             */
+            $database = strtok($table, '.');
+            $table = strtok('');
         }
 
         $columns = $schema->listTableColumns($table, $database);

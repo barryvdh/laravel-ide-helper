@@ -171,6 +171,12 @@ Or can be ignored by setting the `ignored_models` config
 
 > Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`).
 
+#### Magic `where*` methods
+
+Eloquent allows calling `where<Attribute>` on your modes, e.g. `Post::whereTitle(…)` and automatically translates this to e.g. `Post::where('title', '=', '…')`.
+
+If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_magic_where` and setting it to `false`.
+
 ### Automatic PHPDocs generation for Laravel Fluent methods
 
 If you need PHPDocs support for Fluent methods in migration, for example

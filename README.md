@@ -85,7 +85,7 @@ You can configure your `composer.json` to do this each time you update your depe
 },
 ```
 
-You can also publish the config file to change implementations (ie. interface to specific class) or set defaults for `--helpers` or `--sublime`.
+You can also publish the config file to change implementations (ie. interface to specific class) or set defaults for `--helpers`.
 
 ```bash
 php artisan vendor:publish --provider="Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider" --tag=config

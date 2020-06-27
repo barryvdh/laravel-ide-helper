@@ -122,7 +122,7 @@ php artisan ide-helper:models Post
 
 ```php
 /**
- * An Eloquent Model: 'Post'
+ * App\Models\Post
  *
  * @property integer $id
  * @property integer $author_id
@@ -132,6 +132,11 @@ php artisan ide-helper:models Post
  * @property \Illuminate\Support\Carbon $updated_at
  * @property-read \User $author
  * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post whereTitle($value)
+ * …
  */
 ```
 

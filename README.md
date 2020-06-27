@@ -166,14 +166,6 @@ Or can be ignored by setting the `ignored_models` config
 
 > Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`).
 
-For properly recognition of `Model` methods (i.e. `paginate`, `findOrFail`) you should extend `\Eloquent` or add
-
-```php
-/** @mixin \Eloquent */
-```
-
-for your model class.
-
 ### Automatic PHPDocs generation for Laravel Fluent methods
 
 If you need PHPDocs support for Fluent methods in migration, for example

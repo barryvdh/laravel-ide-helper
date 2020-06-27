@@ -31,26 +31,33 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
-If you are using Laravel versions older than 5.5, add the service provider to the `providers` array in `config/app.php`:
+This package makes use of [Laravels package auto-discovery mechanism](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518), which means if you don't install dev dependencies in production, it also won't be loaded.
 
-```php
-Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-```
-
-In Laravel, instead of adding the service provider in the `config/app.php` file,
-you can add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
-
-```php
-public function register()
-{
-    if ($this->app->environment() !== 'production') {
-        $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+If for some reason you want manually control this:
+- add the package to the `extra.laravel.dont-discover` key in `composer.json`, e.g.
+  ```json
+  "extra": {
+    "laravel": {
+      "dont-discover": [
+        "barryvdh/laravel-ide-helper",
+      ]
     }
-    // ...
-}
-```
-
-This will allow your application to load the Laravel IDE Helper on non-production environments.
+  }
+  ```
+- Add the following class to the `providers` array in `config/app.php`:
+  ```php
+  Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+  ```
+  If you want to manually load it only in non-production environments, instead you can add this to your `AppServiceProvider` with the `register()` method:
+  ```php
+  public function register()
+  {
+      if ($this->app->environment() !== 'production') {
+          $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+      }
+      // ...
+  }
+  ```
 
 ## Usage
 

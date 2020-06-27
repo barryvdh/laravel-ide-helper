@@ -73,6 +73,8 @@ php artisan ide-helper:generate
 
 Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating.
 
+This will generate the file `_ide_helper.php` which is expected to be additionally parsed by your IDE for autocomplete. You can use the config `filename` to change its name.
+
 You can configure your `composer.json` to do this each time you update your dependencies:
 
 ```js

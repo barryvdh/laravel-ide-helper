@@ -177,6 +177,12 @@ Eloquent allows calling `where<Attribute>` on your modes, e.g. `Post::whereTitle
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_magic_where` and setting it to `false`.
 
+#### Magic `*_count` properties
+
+You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) method to count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columname>_count` convention.
+
+By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
+
 ### Automatic PHPDocs generation for Laravel Fluent methods
 
 If you need PHPDocs support for Fluent methods in migration, for example

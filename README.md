@@ -221,11 +221,16 @@ $app->make('events')->fire();
 
 // When the key is not found, it uses the argument as class name
 app('App\SomeClass');
+// Also works with
+app(App\SomeClass::class);
 ```
 
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
+>
 > Note: When you receive a FatalException: class not found, check your config
 > (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
+
+You can change the generated filename via the config `meta_filename`. This can be useful for cases you want to take advantage the PhpStorm also supports the _directory_ `.phpstorm.meta.php/` which would parse any file places there, should your want provide additional files to PhpStorm.
 
 ## Usage with Lumen
 

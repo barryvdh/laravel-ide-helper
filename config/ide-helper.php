@@ -14,6 +14,16 @@ return array(
     'filename'  => '_ide_helper',
     'format'    => 'php',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Where to write the PhpStorm specific meta file
+    |--------------------------------------------------------------------------
+    |
+    | PhpStorm also supports the directory `.phpstorm.meta.php/` with arbitrary
+    | files in it, should you need additional files for your project; e.g.
+    | `.phpstorm.meta.php/laravel_ide_Helper.php'.
+    |
+    */
     'meta_filename' => '.phpstorm.meta.php',
 
     /*

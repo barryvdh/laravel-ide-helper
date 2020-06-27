@@ -201,7 +201,7 @@ For this to work, you must also publish the PhpStorm Meta file (see below).
 
 ## PhpStorm Meta for Container instances
 
-It's possible to generate a PhpStorm meta file to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata).
+It's possible to generate a PhpStorm meta file to [add support for factory design pattern](https://www.jetbrains.com/help/phpstorm/ide-advanced-metadata.html).
 For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container.
 For example, `events` will return an `Illuminate\Events\Dispatcher` object,
 so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.

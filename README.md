@@ -106,6 +106,8 @@ The `Illuminate/Support/helpers.php` is already set up, but you can add/remove y
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
 PHPDocs, based on table columns, relations and getters/setters.
 
+> Note: this command requires a working database connection to introspect the table of each model
+
 By default, you are asked to overwrite or write to a separate file (`_ide_helper_models.php`).
 You can write the comments directly to your Model file, using the `--write (-W)` option, or
 force to not write with `--nowrite (-N)`.
@@ -182,6 +184,26 @@ If for some reason it's undesired to have them generated (one for each column), 
 You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) method to count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columname>_count` convention.
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
+
+#### Unsupported or custom database types
+
+Common column types (e.g. varchar, integer) are correctly mapped to PHP types (`string`, `int`).
+
+But sometimes you may want to use custom column types in your database like `geography`, `jsonb`, `citext`, `bit`, etc. which may throw an "Unknown database type"-Exception.
+
+For those special cases, you can map them via the config `custom_db_types`. Example:
+```php
+'custom_db_types' => [
+    'mysql' => [
+        'geography' => 'array',
+        'point' => 'array',
+    ],
+    'postgresql' => [
+        'jsonb' => 'string',
+        '_int4' => 'array',
+    ],
+],
+```
 
 ### Automatic PHPDocs generation for Laravel Fluent methods
 

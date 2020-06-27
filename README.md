@@ -60,12 +60,6 @@ _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome
 - [`php artisan ide-helper:models` - PHPDocs for models](#automatic-PHPDocs-for-models)
 - [`php artisan ide-helper:meta` - PhpStorm Meta file](#phpstorm-meta-for-container-instances)
 
-If you don't want to generate it, you can add a pre-generated file to the root folder
-of your Laravel project (but this isn't as up-to-date as self generated files).
-
-- Generated version for Laravel 5: https://gist.github.com/barryvdh/5227822
-- Generated version for Lumen: https://gist.github.com/barryvdh/be17164b0ad51f832f20
-- Generated Phpstorm Meta file: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 
 Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice
 
@@ -226,8 +220,6 @@ $app->make('events')->fire();
 // When the key is not found, it uses the argument as class name
 app('App\SomeClass');
 ```
-
-Pre-generated example: https://gist.github.com/barryvdh/bb6ffc5d11e0a75dba67
 
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
 > Note: When you receive a FatalException: class not found, check your config

@@ -276,7 +276,12 @@ class ModelsCommand extends Command
             $dirs = glob($dir, GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
                 if (file_exists($dir)) {
-                    foreach (ClassMapGenerator::createMap($dir) as $model => $path) {
+                    $classMap = ClassMapGenerator::createMap($dir);
+
+                    // Sort list so it's stable across different environments
+                    ksort($classMap);
+
+                    foreach ($classMap as $model => $path) {
                         $models[] = $model;
                     }
                 }

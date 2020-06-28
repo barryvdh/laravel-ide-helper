@@ -31,26 +31,35 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
-If you are using Laravel versions older than 5.5, add the service provider to the `providers` array in `config/app.php`:
+This package makes use of [Laravels package auto-discovery mechanism](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518), which means if you don't install dev dependencies in production, it also won't be loaded.
 
-```php
-Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-```
-
-In Laravel, instead of adding the service provider in the `config/app.php` file,
-you can add the following code to your `app/Providers/AppServiceProvider.php` file, within the `register()` method:
-
-```php
-public function register()
-{
-    if ($this->app->environment() !== 'production') {
-        $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+If for some reason you want manually control this:
+- add the package to the `extra.laravel.dont-discover` key in `composer.json`, e.g.
+  ```json
+  "extra": {
+    "laravel": {
+      "dont-discover": [
+        "barryvdh/laravel-ide-helper",
+      ]
     }
-    // ...
-}
-```
+  }
+  ```
+- Add the following class to the `providers` array in `config/app.php`:
+  ```php
+  Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+  ```
+  If you want to manually load it only in non-production environments, instead you can add this to your `AppServiceProvider` with the `register()` method:
+  ```php
+  public function register()
+  {
+      if ($this->app->environment() !== 'production') {
+          $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+      }
+      // ...
+  }
+  ```
 
-This will allow your application to load the Laravel IDE Helper on non-production environments.
+> Note: Avoid caching the configuration in your development environment, it may cause issues after installing this package; respectively clear the cache beforehand via `php artisan cache:clear` if you encounter problems when running the commands
 
 ## Usage
 
@@ -73,6 +82,8 @@ php artisan ide-helper:generate
 
 Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating.
 
+This will generate the file `_ide_helper.php` which is expected to be additionally parsed by your IDE for autocomplete. You can use the config `filename` to change its name.
+
 You can configure your `composer.json` to do this each time you update your dependencies:
 
 ```js
@@ -85,7 +96,7 @@ You can configure your `composer.json` to do this each time you update your depe
 },
 ```
 
-You can also publish the config file to change implementations (ie. interface to specific class) or set defaults for `--helpers` or `--sublime`.
+You can also publish the config file to change implementations (ie. interface to specific class) or set defaults for `--helpers`.
 
 ```bash
 php artisan vendor:publish --provider="Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider" --tag=config
@@ -104,6 +115,8 @@ The `Illuminate/Support/helpers.php` is already set up, but you can add/remove y
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
 PHPDocs, based on table columns, relations and getters/setters.
 
+> Note: this command requires a working database connection to introspect the table of each model
+
 By default, you are asked to overwrite or write to a separate file (`_ide_helper_models.php`).
 You can write the comments directly to your Model file, using the `--write (-W)` option, or
 force to not write with `--nowrite (-N)`.
@@ -120,7 +133,7 @@ php artisan ide-helper:models Post
 
 ```php
 /**
- * An Eloquent Model: 'Post'
+ * App\Models\Post
  *
  * @property integer $id
  * @property integer $author_id
@@ -130,6 +143,11 @@ php artisan ide-helper:models Post
  * @property \Illuminate\Support\Carbon $updated_at
  * @property-read \User $author
  * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post whereTitle($value)
+ * …
  */
 ```
 
@@ -164,13 +182,37 @@ Or can be ignored by setting the `ignored_models` config
 
 > Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`).
 
-For properly recognition of `Model` methods (i.e. `paginate`, `findOrFail`) you should extend `\Eloquent` or add
+#### Magic `where*` methods
 
+Eloquent allows calling `where<Attribute>` on your modes, e.g. `Post::whereTitle(…)` and automatically translates this to e.g. `Post::where('title', '=', '…')`.
+
+If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_magic_where` and setting it to `false`.
+
+#### Magic `*_count` properties
+
+You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) method to count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columname>_count` convention.
+
+By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
+
+#### Unsupported or custom database types
+
+Common column types (e.g. varchar, integer) are correctly mapped to PHP types (`string`, `int`).
+
+But sometimes you may want to use custom column types in your database like `geography`, `jsonb`, `citext`, `bit`, etc. which may throw an "Unknown database type"-Exception.
+
+For those special cases, you can map them via the config `custom_db_types`. Example:
 ```php
-/** @mixin \Eloquent */
+'custom_db_types' => [
+    'mysql' => [
+        'geography' => 'array',
+        'point' => 'array',
+    ],
+    'postgresql' => [
+        'jsonb' => 'string',
+        '_int4' => 'array',
+    ],
+],
 ```
-
-for your model class.
 
 ### Automatic PHPDocs generation for Laravel Fluent methods
 
@@ -201,7 +243,7 @@ For this to work, you must also publish the PhpStorm Meta file (see below).
 
 ## PhpStorm Meta for Container instances
 
-It's possible to generate a PhpStorm meta file to [add support for factory design pattern](https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Advanced+Metadata).
+It's possible to generate a PhpStorm meta file to [add support for factory design pattern](https://www.jetbrains.com/help/phpstorm/ide-advanced-metadata.html).
 For Laravel, this means we can make PhpStorm understand what kind of object we are resolving from the IoC Container.
 For example, `events` will return an `Illuminate\Events\Dispatcher` object,
 so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.
@@ -219,11 +261,16 @@ $app->make('events')->fire();
 
 // When the key is not found, it uses the argument as class name
 app('App\SomeClass');
+// Also works with
+app(App\SomeClass::class);
 ```
 
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
+>
 > Note: When you receive a FatalException: class not found, check your config
 > (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
+
+You can change the generated filename via the config `meta_filename`. This can be useful for cases you want to take advantage the PhpStorm also supports the _directory_ `.phpstorm.meta.php/` which would parse any file places there, should your want provide additional files to PhpStorm.
 
 ## Usage with Lumen
 

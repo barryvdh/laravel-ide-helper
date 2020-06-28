@@ -128,16 +128,7 @@ class Generator
                 class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)
                 && app()->bound('auth')
             ) {
-                if (class_exists('\Illuminate\Foundation\Application')) {
-                    $authMethod = version_compare(Application::VERSION, '5.2', '>=') ? 'guard' : 'driver';
-                } else {
-                    $refClass = new ReflectionClass('\Laravel\Lumen\Application');
-                    $versionStr = $refClass->newInstanceWithoutConstructor()->version();
-                    $authMethod = strpos($versionStr, 'Lumen (5.0') === 0 ?
-                        'driver' :
-                        (strpos($versionStr, 'Lumen (5.1') === 0 ? 'driver' : 'guard');
-                }
-                $class = get_class(\Auth::$authMethod());
+                $class = get_class(\Auth::guard());
                 $this->extra['Auth'] = array($class);
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
             }

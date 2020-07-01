@@ -332,7 +332,8 @@ class ModelsCommand extends Command
                     $realType = '\Illuminate\Support\Collection';
                     break;
                 default:
-                    $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
+                    $explodedType = head(explode(':', $type));
+                    $realType = class_exists($explodedType) ? ('\\' . $explodedType) : 'mixed';
                     break;
             }
 

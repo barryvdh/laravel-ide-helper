@@ -36,6 +36,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ModelsCommand extends Command
 {
+    protected const RELATION_TYPES = array(
+        'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
+        'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
+        'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
+        'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
+        'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
+        'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
+        'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
+        'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
+        'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
+        'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
+        'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
+    );
+
     /**
      * @var Filesystem $files
      */
@@ -541,19 +555,7 @@ class ModelsCommand extends Command
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
                     foreach (
-                        array(
-                               'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
-                               'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
-                               'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
-                               'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
-                               'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
-                               'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
-                               'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
-                               'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
-                               'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
-                               'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
-                               'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
-                             ) as $relation => $impl
+                        $this->getRelationTypes() as $relation => $impl
                     ) {
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
@@ -884,6 +886,15 @@ class ModelsCommand extends Command
         /** @var \Illuminate\Database\Eloquent\Model $model */
         $model = new $className();
         return '\\' . get_class($model->newCollection());
+    }
+
+    /**
+     * Returns the available relation types
+     */
+    public function getRelationTypes(): array
+    {
+        $configuredRelations = $this->laravel['config']->get('ide-helper.additional_relation_types', []);
+        return array_merge(self::RELATION_TYPES, $configuredRelations);
     }
 
     /**

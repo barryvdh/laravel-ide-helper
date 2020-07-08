@@ -242,4 +242,16 @@ return array(
     */
     'include_class_docblocks' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Additional relation types
+    |--------------------------------------------------------------------------
+    |
+    | Sometimes it's needed to create custom relation types. The key of the array
+    | is the Relationship Method name. The value of the array is the canonical class
+    | name of the Relationship.
+    |
+    */
+    'additional_relation_types' => [],
+
 );

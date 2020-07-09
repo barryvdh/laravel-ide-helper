@@ -891,7 +891,7 @@ class ModelsCommand extends Command
     /**
      * Returns the available relation types
      */
-    public function getRelationTypes(): array
+    protected function getRelationTypes(): array
     {
         $configuredRelations = $this->laravel['config']->get('ide-helper.additional_relation_types', []);
         return array_merge(self::RELATION_TYPES, $configuredRelations);

@@ -19,6 +19,16 @@ use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -37,17 +47,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ModelsCommand extends Command
 {
     protected const RELATION_TYPES = array(
-        'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
-        'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
-        'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
-        'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
-        'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
-        'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
-        'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
-        'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
-        'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
-        'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
-        'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
+        'hasMany' => HasMany::class,
+        'hasManyThrough' => HasManyThrough::class,
+        'hasOneThrough' => HasOneThrough::class,
+        'belongsToMany' => BelongsToMany::class,
+        'hasOne' => HasOne::class,
+        'belongsTo' => BelongsTo::class,
+        'morphOne' => MorphOne::class,
+        'morphTo' => MorphTo::class,
+        'morphMany' => MorphMany::class,
+        'morphToMany' => MorphToMany::class,
+        'morphedByMany' => MorphToMany::class,
     );
 
     /**
@@ -578,14 +588,6 @@ class ModelsCommand extends Command
                                     get_class($relationObj->getRelated())
                                 );
 
-                                $relations = [
-                                    'hasManyThrough',
-                                    'belongsToMany',
-                                    'hasMany',
-                                    'morphMany',
-                                    'morphToMany',
-                                    'morphedByMany',
-                                ];
                                 if (strpos(get_class($relationObj), 'Many') !== false) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());

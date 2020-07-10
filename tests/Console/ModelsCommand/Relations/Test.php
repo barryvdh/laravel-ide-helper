@@ -1,10 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToManyRelationType;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToOneRelationType;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Config;
 use Mockery;
 
 class Test extends AbstractModelsCommand
@@ -20,6 +25,15 @@ class Test extends AbstractModelsCommand
                 '/../../../../tests/Console/ModelsCommand/Relations/Models',
             ],
         ]);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::set('ide-helper.additional_relation_types', [
+            'testToOneRelation' => SampleToOneRelationType::class,
+            'testToManyRelation' => SampleToManyRelationType::class,
+                ]);
     }
 
     public function test(): void

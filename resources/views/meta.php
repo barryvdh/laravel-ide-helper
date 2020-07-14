@@ -6,7 +6,9 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
+<?php if(!(isset($hide_datetime) && $hide_datetime)): ?>
     * Generated on <?= date("Y-m-d H:i:s") ?>.
+<?php endif; ?>
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper

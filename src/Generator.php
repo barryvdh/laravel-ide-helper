@@ -88,6 +88,7 @@ class Generator
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
             ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
+            ->with('hide_datetime', $this->config->get('ide-helper.hide_datetime', false))
             ->render();
     }
 

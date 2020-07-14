@@ -242,4 +242,8 @@ return array(
     */
     'include_class_docblocks' => false,
 
+    /**
+     * Hide the datetime from the generated files
+     */
+    'hide_datetime' => false,
 );

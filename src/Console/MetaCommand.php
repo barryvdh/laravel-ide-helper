@@ -110,6 +110,7 @@ class MetaCommand extends Command
           'bindings' => $bindings,
           'methods' => $this->methods,
           'factories' => $factories,
+          'hide_datetime' => $this->config->get('ide-helper.hide_datetime', false)
         ])->render();
 
         $filename = $this->option('filename');

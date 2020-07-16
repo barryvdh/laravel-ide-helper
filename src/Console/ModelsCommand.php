@@ -446,9 +446,9 @@ class ModelsCommand extends Command
                 if ($this->write_model_magic_where) {
                     $this->setMethod(
                         Str::camel("where_" . $name),
-                        $this->getClassNameInModel($model, \Illuminate\Database\Eloquent\Builder::class)
+                        $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
                         . '|'
-                        . $this->getClassNameInModel($model, get_class($model)),
+                        . $this->getClassNameInDestinationFile($model, get_class($model)),
                         array('$value')
                     );
                 }
@@ -498,20 +498,23 @@ class ModelsCommand extends Command
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
-                        $builder = $this->getClassNameInModel(
+                        $builder = $this->getClassNameInDestinationFile(
                             $reflection->getDeclaringClass(),
                             \Illuminate\Database\Eloquent\Builder::class
                         );
-                        $modelName = $this->getClassNameInModel(
+                        $modelName = $this->getClassNameInDestinationFile(
                             $reflection->getDeclaringClass(),
                             $reflection->getDeclaringClass()->getName()
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $builder = $this->getClassNameInModel($model, get_class($model->newModelQuery()));
+                    $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
-                    $this->setMethod($method, $builder . "|" . $this->getClassNameInModel($model, get_class($model)));
+                    $this->setMethod(
+                        $method,
+                        $builder . "|" . $this->getClassNameInDestinationFile($model, get_class($model))
+                    );
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
@@ -571,7 +574,7 @@ class ModelsCommand extends Command
                             });
 
                             if ($relationObj instanceof Relation) {
-                                $relatedModel = $this->getClassNameInModel(
+                                $relatedModel = $this->getClassNameInDestinationFile(
                                     $model,
                                     get_class($relationObj->getRelated())
                                 );
@@ -588,7 +591,10 @@ class ModelsCommand extends Command
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);
-                                    $collectionClassNameInModel = $this->getClassNameInModel($model, $collectionClass);
+                                    $collectionClassNameInModel = $this->getClassNameInDestinationFile(
+                                        $model,
+                                        $collectionClass
+                                    );
                                     $this->setProperty(
                                         $method,
                                         $collectionClassNameInModel . '|' . $relatedModel . '[]',
@@ -607,7 +613,7 @@ class ModelsCommand extends Command
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
                                         $method,
-                                        $this->getClassNameInModel($model, Model::class) . '|\Eloquent',
+                                        $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
                                         true,
                                         null
                                     );
@@ -780,7 +786,7 @@ class ModelsCommand extends Command
         }
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
-            $eloquentClassNameInModel = $this->getClassNameInModel($reflection, 'Eloquent');
+            $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
             $phpdoc->appendTag(Tag::createInstance("@mixin " . $eloquentClassNameInModel, $phpdoc));
         }
         if ($this->phpstorm_noinspections) {
@@ -959,8 +965,8 @@ class ModelsCommand extends Command
     {
         $traits = class_uses(get_class($model), true);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
-            $modelName = $this->getClassNameInModel($model, get_class($model));
-            $builder = $this->getClassNameInModel($model, \Illuminate\Database\Query\Builder::class);
+            $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
+            $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Query\Builder::class);
             $this->setMethod('withTrashed', $builder . '|' . $modelName, []);
             $this->setMethod('withoutTrashed', $builder . '|' . $modelName, []);
             $this->setMethod('onlyTrashed', $builder . '|' . $modelName, []);
@@ -976,7 +982,7 @@ class ModelsCommand extends Command
         $collectionClass = $this->getCollectionClass(get_class($model));
 
         if ($collectionClass !== '\\' . \Illuminate\Database\Eloquent\Collection::class) {
-            $collectionClassInModel = $this->getClassNameInModel($model, $collectionClass);
+            $collectionClassInModel = $this->getClassNameInDestinationFile($model, $collectionClass);
 
             $this->setMethod('get', $collectionClassInModel . '|static[]', ['$columns = [\'*\']']);
             $this->setMethod('all', $collectionClassInModel . '|static[]', ['$columns = [\'*\']']);
@@ -1040,7 +1046,7 @@ class ModelsCommand extends Command
         }
 
         if (class_exists($type)) {
-            $type = $this->getClassNameInModel($model, $type);
+            $type = $this->getClassNameInDestinationFile($model, $type);
         }
 
         return $type;
@@ -1051,24 +1057,31 @@ class ModelsCommand extends Command
      * @param string $className
      * @return string
      */
-    protected function getClassNameInModel(object $model, string $className): string
-    {
-        $className = trim($className, '\\');
-        $usedClassNames = $this->getUsedClassNames($model);
-        return $usedClassNames[$className] ?? ('\\' . $className);
-    }
-
-    /**
-     * @param object|ReflectionClass $model
-     * @return string[]
-     */
-    protected function getUsedClassNames(object $model): array
+    protected function getClassNameInDestinationFile(object $model, string $className): string
     {
         $reflection = $model instanceof ReflectionClass
             ? $model
             : new ReflectionObject($model)
         ;
 
+        $className = trim($className, '\\');
+        $writingToExternalFile = !$this->write;
+        $classIsNotInExternalFile = $reflection->getName() !== $className;
+
+        if ($writingToExternalFile && $classIsNotInExternalFile) {
+            return '\\' . $className;
+        }
+
+        $usedClassNames = $this->getUsedClassNames($reflection);
+        return $usedClassNames[$className] ?? ('\\' . $className);
+    }
+
+    /**
+     * @param ReflectionClass $reflection
+     * @return string[]
+     */
+    protected function getUsedClassNames(ReflectionClass $reflection): array
+    {
         $namespaceAliases = array_flip((new ContextFactory())->createFromReflector($reflection)->getNamespaceAliases());
         $namespaceAliases[$reflection->getName()] = $reflection->getShortName();
 

@@ -13,7 +13,17 @@ return array(
 
     'filename'  => '_ide_helper',
     'format'    => 'php',
-    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Where to write the PhpStorm specific meta file
+    |--------------------------------------------------------------------------
+    |
+    | PhpStorm also supports the directory `.phpstorm.meta.php/` with arbitrary
+    | files in it, should you need additional files for your project; e.g.
+    | `.phpstorm.meta.php/laravel_ide_Helper.php'.
+    |
+    */
     'meta_filename' => '.phpstorm.meta.php',
 
     /*
@@ -49,6 +59,17 @@ return array(
     */
 
     'write_model_magic_where' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write Model relation count properties
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable writing of relation count properties to model DocBlocks.
+    |
+    */
+
+    'write_model_relation_count_properties' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -89,12 +110,27 @@ return array(
     | Define in which directories the ide-helper:models command should look
     | for models.
     |
+    | glob patterns are supported to easier reach models in sub-directories,
+    | e.g. `app/Services/* /Models` (without the space)
+    |
     */
 
     'model_locations' => array(
         'app',
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Models to ignore
+    |--------------------------------------------------------------------------
+    |
+    | Define which models should be ignored.
+    |
+    */
+
+    'ignored_models' => array(
+
+    ),
 
     /*
     |--------------------------------------------------------------------------

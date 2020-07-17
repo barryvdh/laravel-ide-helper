@@ -1,0 +1,8 @@
+/**
+ * 
+ *
+ * @mixin \Eloquent
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ * @mixin \Illuminate\Database\Query\Builder
+ */
+abstract class Model implements

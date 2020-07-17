@@ -66,32 +66,6 @@ class Test extends AbstractModelsCommand
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertEmpty($tester->getDisplay());
-
-        $expectedContent = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate
- *
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate query()
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate whereUpdatedAt($value)
- * @mixin \Eloquent
- */
-class CustomDate extends Model
-{
-}
-
-PHP;
-
-        $this->assertSame($expectedContent, $actualContent);
+        $this->assertMatchesPhpSnapshot($actualContent);
     }
 }

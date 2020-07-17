@@ -4,10 +4,13 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Illuminate\Console\Command;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Spatie\Snapshots\MatchesSnapshots;
 use Symfony\Component\Console\Tester\CommandTester;
 
 abstract class TestCase extends BaseTestCase
 {
+    use MatchesSnapshots;
+
     /**
      * The `CommandTester` is directly returned, use methods like
      * `->getDisplay()` or `->getStatusCode()` on it.
@@ -32,5 +35,15 @@ abstract class TestCase extends BaseTestCase
         $tester->execute($arguments);
 
         return $tester;
+    }
+
+    protected function assertMatchesPhpSnapshot(?string $actualContent)
+    {
+        $this->assertMatchesSnapshot($actualContent, new SnapshotPhpDriver());
+    }
+
+    protected function assertMatchesTxtSnapshot(?string $actualContent)
+    {
+        $this->assertMatchesSnapshot($actualContent, new SnapshotTxtDriver());
     }
 }

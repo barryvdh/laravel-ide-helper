@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -69,7 +70,7 @@ class Generator
     public function generate($format = 'php')
     {
         // Check if the generator for this format exists
-        $method = 'generate'.ucfirst($format).'Helper';
+        $method = 'generate' . ucfirst($format) . 'Helper';
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -97,7 +98,7 @@ class Generator
             foreach ($aliases as $alias) {
                 $functions = array();
                 foreach ($alias->getMethods() as $method) {
-                    $functions[$method->getName()] = '('. $method->getParamsWithDefault().')';
+                    $functions[$method->getName()] = '(' . $method->getParamsWithDefault() . ')';
                 }
                 $classes[$alias->getAlias()] = array(
                     'functions' => $functions,
@@ -123,17 +124,11 @@ class Generator
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
 
         try {
-            if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
-                if (class_exists('\Illuminate\Foundation\Application')) {
-                    $authMethod = version_compare(Application::VERSION, '5.2', '>=') ? 'guard' : 'driver';
-                } else {
-                    $refClass = new ReflectionClass('\Laravel\Lumen\Application');
-                    $versionStr = $refClass->newInstanceWithoutConstructor()->version();
-                    $authMethod = strpos($versionStr, 'Lumen (5.0') === 0 ?
-                        'driver' :
-                        (strpos($versionStr, 'Lumen (5.1') === 0 ? 'driver' : 'guard');
-                }
-                $class = get_class(\Auth::$authMethod());
+            if (
+                class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)
+                && app()->bound('auth')
+            ) {
+                $class = get_class(\Auth::guard());
                 $this->extra['Auth'] = array($class);
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
             }
@@ -280,36 +275,6 @@ class Generator
             },
             ARRAY_FILTER_USE_KEY
         );
-    }
-
-    /**
-     * Get the driver/connection/store from the managers
-     *
-     * @param $alias
-     * @return array|bool|string
-     */
-    public function getDriver($alias)
-    {
-        try {
-            if ($alias == "Auth") {
-                $driver = \Auth::driver();
-            } elseif ($alias == "DB") {
-                $driver = \DB::connection();
-            } elseif ($alias == "Cache") {
-                $driver = get_class(\Cache::driver());
-                $store = get_class(\Cache::getStore());
-                return array($driver, $store);
-            } elseif ($alias == "Queue") {
-                $driver = \Queue::connection();
-            } else {
-                return false;
-            }
-
-            return get_class($driver);
-        } catch (\Exception $e) {
-            $this->error("Could not determine driver/connection for $alias.");
-            return false;
-        }
     }
 
     /**

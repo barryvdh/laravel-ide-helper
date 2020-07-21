@@ -40,19 +40,17 @@ class EloquentCommandTest extends TestCase
 
         $tester = $this->runCommand($command);
 
-        $expectedContent = '/**
- * 
- *
- * @mixin \Eloquent
- * @mixin \Illuminate\Database\Eloquent\Builder
- * @mixin \Illuminate\Database\Query\Builder
- */
-abstract class Model implements';
-        $this->assertSame($expectedContent, $actualContent);
+        $this->assertMatchesTxtSnapshot($actualContent);
 
         $display = $tester->getDisplay();
-        $this->assertRegExp(';Unexpected no document on Illuminate\\\Database\\\Eloquent\\\Model;', $display);
-        $this->assertRegExp(';Wrote expected docblock to .*/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php;', $display);
+        $this->assertRegExp(
+            ';Unexpected no document on Illuminate\\\Database\\\Eloquent\\\Model;',
+            $display
+        );
+        $this->assertRegExp(
+            ';Wrote expected docblock to .*/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php;',
+            $display
+        );
     }
 
     private function getVendorModelFilename(): string

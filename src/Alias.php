@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -21,6 +22,7 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 class Alias
 {
     protected $alias;
+    /** @psalm-var class-string $facade */
     protected $facade;
     protected $extends = null;
     protected $extendsClass = null;
@@ -43,6 +45,7 @@ class Alias
     /**
      * @param ConfigRepository $config
      * @param string           $alias
+     * @psalm-param class-string $facade
      * @param string           $facade
      * @param array            $magicMethods
      * @param array            $interfaces

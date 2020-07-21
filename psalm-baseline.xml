@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.12.0@d46283075d76ed244f7825b378eeb1cee246af73">
+  <file src="src/Generator.php">
+    <UndefinedClass occurrences="8">
+      <code>'\Laravel\Lumen\Application'</code>
+      <code>\Auth</code>
+      <code>\DB</code>
+      <code>\Cache</code>
+      <code>\Cache</code>
+      <code>\Queue</code>
+      <code>\SSH</code>
+      <code>\Storage</code>
+    </UndefinedClass>
+  </file>
+</files>

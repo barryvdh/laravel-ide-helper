@@ -50,12 +50,15 @@ class MetaCommand extends Command
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
       '\Illuminate\Container\Container::makeWith(0)',
+      '\Illuminate\Contracts\Container\Container::get(0)',
       '\Illuminate\Contracts\Container\Container::make(0)',
       '\Illuminate\Contracts\Container\Container::makeWith(0)',
+      '\App::get(0)',
       '\App::make(0)',
       '\App::makeWith(0)',
       '\app(0)',
       '\resolve(0)',
+      '\Psr\Container\ContainerInterface::get',
     ];
 
     /**

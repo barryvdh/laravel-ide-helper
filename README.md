@@ -121,6 +121,9 @@ By default, you are asked to overwrite or write to a separate file (`_ide_helper
 You can write the comments directly to your Model file, using the `--write (-W)` option, or
 force to not write with `--nowrite (-N)`.
 
+Alternatively using the `--write-mixin (-M)` option will only add a mixin tag to your Model file,
+writing the rest in (`_ide_helper_models.php`).
+
 > Please make sure to back up your models, before writing the info.
 
 Writing to the models should keep the existing comments and only append new properties/methods.
@@ -148,6 +151,14 @@ php artisan ide-helper:models Post
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post whereTitle($value)
  * …
+ */
+```
+
+With the `--write-mixin (-M)` option
+```php
+/**
+ * …
+ * @mixin IdeHelperPost
  */
 ```
 

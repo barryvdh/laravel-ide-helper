@@ -166,7 +166,10 @@ class ModelsCommand extends Command
           array('dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
               'The model dir, supports glob patterns', array()),
           array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
-          array('write-mixin', 'M', InputOption::VALUE_NONE, 'Write mixin to Model file'),
+          array('write-mixin', 'M', InputOption::VALUE_NONE,
+              "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate " .
+              'declaration warnings'
+          ),
           array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
           array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
           array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),

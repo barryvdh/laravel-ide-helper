@@ -809,12 +809,28 @@ class ModelsCommand extends Command
         }
 
         $serializer = new DocBlockSerializer();
-        $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
 
+        if ($this->write_mixin) {
+            $phpdocMixin = new DocBlock($reflection, new Context($namespace));
+            // remove all mixin tags prefixed with IdeHelper
+            foreach ($phpdocMixin->getTagsByName('mixin') as $tag) {
+                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
+                    $phpdocMixin->deleteTag($tag);
+                }
+            }
+
+            $mixinClassName = "IdeHelper{$classname}";
+            $phpdocMixin->appendTag(Tag::createInstance("@mixin {$mixinClassName}", $phpdocMixin));
+            $mixinDocComment = $serializer->getDocComment($phpdocMixin);
+            // remove blank lines if there's no text
+            if (!$phpdocMixin->getText()) {
+                $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
+            }
+        }
 
         if ($this->write) {
-            $modelDocComment = $this->write_mixin ? "/**\n * @mixin IdeHelper{$classname}\n */" : $docComment;
+            $modelDocComment = $this->write_mixin ? $mixinDocComment : $docComment;
             $filename = $reflection->getFileName();
             $contents = $this->files->get($filename);
             if ($originalDoc) {
@@ -831,7 +847,7 @@ class ModelsCommand extends Command
             }
         }
 
-        $classname = $this->write_mixin ? "IdeHelper{$classname}" : $classname;
+        $classname = $this->write_mixin ? $mixinClassName : $classname;
         $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent ";
 
         if ($interfaceNames) {

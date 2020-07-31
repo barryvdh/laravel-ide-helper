@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\PHPStormNoInspection;
 
@@ -6,6 +8,7 @@ use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
+
 use function file_get_contents;
 
 class Test extends AbstractModelsCommand

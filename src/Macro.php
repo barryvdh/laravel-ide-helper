@@ -15,15 +15,17 @@ class Macro extends Method
      * @param \ReflectionClass    $class
      * @param null                $methodName
      * @param array               $interfaces
+     * @param NamespaceUses       $namespaceUses
      */
     public function __construct(
         $method,
         $alias,
         $class,
         $methodName = null,
-        $interfaces = array()
+        $interfaces = array(),
+        $namespaceUses = null
     ) {
-        parent::__construct($method, $alias, $class, $methodName, $interfaces);
+        parent::__construct($method, $alias, $class, $methodName, $interfaces, $namespaceUses);
     }
 
     /**

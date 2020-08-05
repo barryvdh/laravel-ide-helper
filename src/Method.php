@@ -18,7 +18,13 @@ use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
 use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\UseUse;
+use PhpParser\ParserFactory;
 
 class Method
 {
@@ -38,6 +44,7 @@ class Method
     protected $real_name;
     protected $return = null;
     protected $root;
+    protected $namespaceUses;
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
@@ -45,11 +52,19 @@ class Method
      * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
+     * @param NamespaceUses $namespaceUses
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = array())
-    {
+    public function __construct(
+        $method,
+        $alias,
+        $class,
+        $methodName = null,
+        $interfaces = [],
+        NamespaceUses $namespaceUses = null
+    ) {
         $this->method = $method;
         $this->interfaces = $interfaces;
+        $this->namespaceUses = $namespaceUses;
         $this->name = $methodName ?: $method->name;
         $this->real_name = $method->isClosure() ? $this->name : $method->name;
         $this->initClassDefinedProperties($method, $class);
@@ -80,7 +95,13 @@ class Method
      */
     protected function initPhpDoc($method)
     {
-        $this->phpdoc = new DocBlock($method, new Context($this->namespace));
+        $this->phpdoc = new DocBlock(
+            $method,
+            new Context(
+                $this->namespace,
+                $this->namespaceUses->classAliases ?? []
+            )
+        );
     }
 
     /**
@@ -361,7 +382,13 @@ class Method
         }
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
-            $phpdoc = new DocBlock($method, new Context($namespace));
+            $phpdoc = new DocBlock(
+                $method,
+                new Context(
+                    $namespace,
+                    $this->namespaceUses->classAliases ?? []
+                )
+            );
 
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..

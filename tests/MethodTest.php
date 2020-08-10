@@ -41,7 +41,7 @@ class ExampleTest extends TestCase
  */';
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('setName', $method->getName());
-        $this->assertSame('\\'.ExampleClass::class, $method->getDeclaringClass());
+        $this->assertSame('\\' . ExampleClass::class, $method->getDeclaringClass());
         $this->assertSame('$last, $first, ...$middle', $method->getParams(true));
         $this->assertSame(['$last', '$first', '...$middle'], $method->getParams(false));
         $this->assertSame('$last, $first = \'Barry\', ...$middle', $method->getParamsWithDefault(true));
@@ -68,7 +68,7 @@ class ExampleTest extends TestCase
  */';
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('with', $method->getName());
-        $this->assertSame('\\'.Builder::class, $method->getDeclaringClass());
+        $this->assertSame('\\' . Builder::class, $method->getDeclaringClass());
         $this->assertSame('$relations', $method->getParams(true));
         $this->assertSame(['$relations'], $method->getParams(false));
         $this->assertSame('$relations', $method->getParamsWithDefault(true));

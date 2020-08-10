@@ -64,8 +64,8 @@
     },
     "scripts": {
         "analyze": "psalm",
-        "check-style": "phpcs -p --standard=PSR12 src/",
-        "fix-style": "phpcbf -p --standard=PSR12 src/",
+        "check-style": "phpcs -p --standard=PSR12 config/ resources/ src/ tests/ '--ignore=*__snapshots_*'",
+        "fix-style": "phpcbf -p --standard=PSR12 config/ resources/ src/ tests/ '--ignore=*__snapshots_*'",
         "test": "phpunit",
         "test-regenerate": "phpunit -d --update-snapshots"
     }

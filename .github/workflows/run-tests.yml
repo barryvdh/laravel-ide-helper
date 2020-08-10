@@ -39,8 +39,8 @@ jobs:
     - name: Execute Unit Tests
       run: composer test
 
-  check-style:
-    name: Check Code Style
+  fix-style:
+    name: Fix Code Style
     timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
@@ -55,10 +55,20 @@ jobs:
         with:
           php-version: 7.4
           coverage: none
-        
+          tools: composer:v2
+
       - name: Install dependencies
         run: |
           composer remove phpro/grumphp vimeo/psalm --no-update --dev
           composer update --prefer-dist --no-suggest --no-progress
 
-      - run: composer check-style
+      - run: composer fix-style
+        continue-on-error: true
+
+      # Revert modifications so they don't get commited 💥
+      - run: git checkout -- composer.json
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: composer fix-style
+          commit_author: laravel-ide-helper <laravel-ide-helper@users.noreply.github.com>

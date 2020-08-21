@@ -123,6 +123,7 @@ force to not write with `--nowrite (-N)`.
 
 Alternatively using the `--write-mixin (-M)` option will only add a mixin tag to your Model file,
 writing the rest in (`_ide_helper_models.php`).
+The class name will be different from the model, avoiding the IDE duplicate annoyance.
 
 > Please make sure to back up your models, before writing the info.
 

@@ -20,6 +20,20 @@
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
 
+namespace Illuminate\Support {
+
+    use Carbon\CarbonPeriod;
+    use Carbon\CarbonTimeZone;
+    use DateTimeInterface;
+    use DateTimeZone;
+
+    <?= $carbonPhpDoc ?>
+    class Carbon extends \Carbon\Carbon
+    {
+        //
+    }
+}
+
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
     <?php if ($namespace == '\Illuminate\Database\Eloquent') :
         continue;

@@ -11,10 +11,12 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
 use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Generator
@@ -82,6 +84,7 @@ class Generator
     {
         $app = app();
         return $this->view->make('helper')
+            ->with('carbonPhpDoc', $this->getCarbonPhpDoc())
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
             ->with('helpers', $this->helpers)
@@ -290,5 +293,17 @@ class Generator
         } else {
             echo $string . "\r\n";
         }
+    }
+
+    /**
+     * Return the PHPDoc block of the Carbon class as string.
+     *
+     * @return string
+     */
+    protected function getCarbonPhpDoc(): string
+    {
+        $phpDoc = new ReflectionClass(Carbon::class);
+
+        return $phpDoc->getDocComment() ?: '';
     }
 }

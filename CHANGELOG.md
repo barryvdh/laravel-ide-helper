@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Support Laravel 8 [\#1022 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1022)
 - Add option to force usage of FQN [\#1031 / edvordo](https://github.com/barryvdh/laravel-ide-helper/pull/1031)
+- Add support for macros of all macroable classes [\#1006 / domkrm](https://github.com/barryvdh/laravel-ide-helper/pull/1006)
 
 2020-08-11, 2.8.0
 -----------------

@@ -110,6 +110,18 @@ You can use an in-memory SQLite driver by adding the `-M` option.
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
+### Automatic PHPDoc generation for macros and mixins
+
+This package can generate PHPDocs for macros and mixins which will be added to the `_ide_helper.php` file.
+
+But this only works if you use type hinting when declaring a macro.
+
+```php
+Str::macro('concat', function(string $str1, string $str2) : string {
+    return $str1 . $str2;
+});
+```
+
 ### Automatic PHPDocs for models
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate

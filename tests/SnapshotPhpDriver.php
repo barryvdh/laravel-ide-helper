@@ -9,7 +9,7 @@ class SnapshotPhpDriver implements Driver
 {
     public function serialize($data): string
     {
-        return $data;
+        return (string) $data;
     }
 
     public function extension(): string

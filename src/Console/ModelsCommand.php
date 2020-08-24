@@ -570,7 +570,11 @@ class ModelsCommand extends Command
                             // can cause errors. Since we don't need constraints we can
                             // disable them when we fetch the relation to avoid errors.
                             $relationObj = Relation::noConstraints(function () use ($model, $method) {
-                                return $model->$method();
+                                try {
+                                    return $model->$method();
+                                } catch (\Throwable $e) {
+                                    return null;
+                                }
                             });
 
                             if ($relationObj instanceof Relation) {

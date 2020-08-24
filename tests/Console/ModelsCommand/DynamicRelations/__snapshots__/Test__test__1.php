@@ -12,10 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DynamicRelations\Models\Dynamic
  *
- * @property-read Dynamic $dynamicBelongsTo
- * @property-read \Illuminate\Database\Eloquent\Collection|Dynamic[] $dynamicHasMany
- * @property-read int|null $dynamic_has_many_count
- * @property-read Dynamic|null $dynamicHasOne
  * @property-read \Illuminate\Database\Eloquent\Collection|Dynamic[] $regularHasMany
  * @property-read int|null $regular_has_many_count
  * @method static \Illuminate\Database\Eloquent\Builder|Dynamic newModelQuery()
@@ -37,16 +33,16 @@ class Dynamic extends Model
     // Dynamic relations
     public function dynamicHasMany(): HasMany
     {
-        return $this->hasMany(Dynamic::class);
+        return $this->hasMany(Dynamic::class)->where('date', '>=', $this->account->created_at);
     }
 
     public function dynamicHasOne(): HasOne
     {
-        return $this->hasOne(Dynamic::class);
+        return $this->hasOne(Dynamic::class)->where('date', '>=', $this->account->created_at);
     }
 
     public function dynamicBelongsTo(): BelongsTo
     {
-        return $this->belongsTo(Dynamic::class);
+        return $this->belongsTo(Dynamic::class)->where('date', '>=', $this->account->created_at);
     }
 }

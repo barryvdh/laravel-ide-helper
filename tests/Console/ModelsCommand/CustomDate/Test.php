@@ -67,7 +67,7 @@ class Test extends AbstractModelsCommand
         ]);
 
         $this->assertSame(0, $tester->getStatusCode());
-        $this->assertEmpty($tester->getDisplay());
+        $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
         $this->assertMatchesPhpSnapshot($actualContent);
     }
 }

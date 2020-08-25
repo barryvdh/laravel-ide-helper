@@ -50,7 +50,7 @@ class Test extends AbstractModelsCommand
         ]);
 
         $this->assertSame(0, $tester->getStatusCode());
-        $this->assertEmpty($tester->getDisplay());
+        $this->assertStringContainsString('Model information was written to _ide_helper_models.php', $tester->getDisplay());
         $this->assertMatchesPhpSnapshot($actualContent);
     }
 }

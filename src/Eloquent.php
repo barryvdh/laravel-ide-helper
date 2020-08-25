@@ -85,25 +85,29 @@ class Eloquent
         }
 
         $filename = $reflection->getFileName();
-        if ($filename) {
-            $contents = $files->get($filename);
-            if ($contents) {
-                $count    = 0;
-                $contents = str_replace($originalDoc, $docComment, $contents, $count);
-                if ($count > 0) {
-                    if ($files->put($filename, $contents)) {
-                        $command->info('Wrote expected docblock to ' . $filename);
-                    } else {
-                        $command->error('File write failed to ' . $filename);
-                    }
-                } else {
-                    $command->error('Content did not change ' . $contents);
-                }
-            } else {
-                $command->error('No file contents found ' . $filename);
-            }
-        } else {
+        if (!$filename) {
             $command->error('Filename not found ' . $class);
+            return;
         }
+
+        $contents = $files->get($filename);
+        if (!$contents) {
+            $command->error('No file contents found ' . $filename);
+            return;
+        }
+
+        $count = 0;
+        $contents = str_replace($originalDoc, $docComment, $contents, $count);
+        if ($count <= 0) {
+            $command->error('Content did not change ' . $contents);
+            return;
+        }
+
+        if (!$files->put($filename, $contents)) {
+            $command->error('File write failed to ' . $filename);
+            return;
+        }
+
+        $command->info('Wrote expected docblock to ' . $filename);
     }
 }

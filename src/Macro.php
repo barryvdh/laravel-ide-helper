@@ -3,7 +3,6 @@
 namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Tag;
 
 class Macro extends Method
 {

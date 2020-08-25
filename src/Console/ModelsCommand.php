@@ -97,7 +97,7 @@ class ModelsCommand extends Command
         $filename = $this->option('filename');
         $this->write = $this->option('write');
         $this->dirs = array_merge(
-            $this->laravel['config']->get('ide-helper.model_locations'),
+            $this->laravel['config']->get('ide-helper.model_locations', []),
             $this->option('dir')
         );
         $model = $this->argument('model');
@@ -272,7 +272,15 @@ class ModelsCommand extends Command
     {
         $models = array();
         foreach ($this->dirs as $dir) {
-            $dir = base_path() . '/' . $dir;
+            if (is_dir(base_path($dir))) {
+                $dir = base_path($dir);
+            }
+
+            if (!is_dir($dir)) {
+                $this->error("Cannot locate directory '{'$dir}'");
+                continue;
+            }
+
             $dirs = glob($dir, GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
                 if (file_exists($dir)) {

@@ -13,10 +13,10 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
-use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag;
+use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
+use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
@@ -38,6 +38,7 @@ class Method
     protected $real_name;
     protected $return = null;
     protected $root;
+    protected $uses = array();
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
@@ -54,11 +55,15 @@ class Method
         $this->real_name = $method->isClosure() ? $this->name : $method->name;
         $this->initClassDefinedProperties($method, $class);
 
+        // TODO: Runtime-cache this.
+        $this->uses = $this->getUses($class);
+
         //Reference the 'real' function in the declaring class
         $this->root = '\\' . ltrim($class->getName(), '\\');
 
         //Create a DocBlock and serializer instance
         $this->initPhpDoc($method);
+
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
@@ -238,7 +243,8 @@ class Method
                 $tag->setContent($content);
 
                 // Get the expanded type and re-set the content
-                $content = $tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
+                $type    = $this->substituteMissingClasses($tag->getType());
+                $content = $type . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
                 $tag->setContent(trim($content));
             }
         }
@@ -263,6 +269,8 @@ class Method
             foreach ($this->interfaces as $interface => $real) {
                 $returnValue = str_replace($interface, $real, $returnValue);
             }
+
+            $returnValue = $this->substituteMissingClasses($returnValue);
 
             // Set the changed content
             $tag->setContent($returnValue . ' ' . $tag->getDescription());
@@ -370,5 +378,97 @@ class Method
                 return $phpdoc;
             }
         }
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return array
+     */
+    protected function getUses(\ReflectionClass $class)
+    {
+        $start = false;
+        $currentString = '';
+        $currentUse = '';
+        $uses = [];
+        foreach (token_get_all(file_get_contents($class->getFileName())) as $token) {
+            if ($start === false) {
+                if (is_numeric($token[0])) {
+                    switch (token_name($token[0])) {
+                        case 'T_CLASS':
+                            // Stop on reaching class definition for performance reasons.
+                            // This leads to not catching any use statements behind the class definition.
+                            break 2;
+                        case 'T_USE':
+                            $start         = true;
+                            $currentString = '';
+                            $currentUse    = '';
+                            break;
+                    }
+                }
+            } else {
+                if ($token[0] != ';') {
+                    if (is_numeric($token[0])) {
+                        switch (token_name($token[0])) {
+                            case 'T_WHITESPACE':
+                                // Skip Whitespaces.
+                                break;
+                            case 'T_AS':
+                                $currentUse    = $currentString;
+                                $currentString = '';
+                                break;
+                            default:
+                                $currentString .= $token[1] ?? '';
+                        }
+                    } else {
+                        $currentString .= $token[1] ?? '';
+                    }
+                } else {
+                    if ($currentUse != '') {
+                        $uses[$currentString] = $currentUse;
+                    } else {
+                        $uses[$this->classBasename($currentString)] = $currentString;
+                    }
+
+                    $start = false;
+                }
+            }
+        }
+        return $uses;
+    }
+
+    /**
+     * @param string $types
+     *
+     * @return string
+     */
+    protected function substituteMissingClasses(string $types)
+    {
+        $newTypes = [];
+        foreach (explode('|', $types) as $type) {
+            if (!class_exists($type)) {
+                $baseClassName = $this->classBasename($type);
+
+                if ($this->uses[$baseClassName] ?? false) {
+                    $type = $this->uses[$baseClassName];
+                    if (substr($type, 0, 1) != '\\') {
+                        $type = '\\' . $type;
+                    }
+                }
+            }
+            $newTypes[] = $type;
+        }
+
+        return implode('|', $newTypes);
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return string
+     */
+    protected function classBasename(string $className)
+    {
+        return basename(str_replace('\\', '/', $className));
     }
 }

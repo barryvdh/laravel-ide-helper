@@ -39,7 +39,7 @@ If for some reason you want manually control this:
   "extra": {
     "laravel": {
       "dont-discover": [
-        "barryvdh/laravel-ide-helper",
+        "barryvdh/laravel-ide-helper"
       ]
     }
   }

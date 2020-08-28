@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Illuminate\Console\Command;
-use Illuminate\Console\OutputStyle;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -30,8 +29,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function runCommand(Command $command, array $arguments = [], array $interactiveInput = []): CommandTester
     {
-        // TODO: once Laravel 5.5 is dropped, call `$this->withoutMockingConsoleOutput()` instead
-        $this->app->offsetUnset(OutputStyle::class);
+        $this->withoutMockingConsoleOutput();
 
         $command->setLaravel($this->app);
 

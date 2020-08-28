@@ -4,9 +4,10 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Application;
 use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends TestCase
+class MethodTest extends TestCase
 {
     /**
      * Test that we can actually instantiate the class
@@ -31,14 +32,16 @@ class ExampleTest extends TestCase
 
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
 
-        $output = '/**
+        $output = <<<'DOC'
+/**
  * 
  *
  * @param string $last
  * @param string $first
  * @param string $middle
  * @static 
- */';
+ */
+DOC;
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('setName', $method->getName());
         $this->assertSame('\\' . ExampleClass::class, $method->getDeclaringClass());
@@ -54,25 +57,32 @@ class ExampleTest extends TestCase
      */
     public function testEloquentBuilderOutput()
     {
+        if ((int) Application::VERSION < 8) {
+            $this->markTestSkipped('This test requires Laravel 8.0 or higher');
+        }
+
         $reflectionClass = new \ReflectionClass(Builder::class);
         $reflectionMethod = $reflectionClass->getMethod('with');
 
         $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
 
-        $output = '/**
+        $output =  <<<'DOC'
+/**
  * Set the relationships that should be eager loaded.
  *
- * @param mixed $relations
+ * @param string|array $relations
+ * @param string|\Closure|null $callback
  * @return \Illuminate\Database\Eloquent\Builder|static 
  * @static 
- */';
+ */
+DOC;
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('with', $method->getName());
         $this->assertSame('\\' . Builder::class, $method->getDeclaringClass());
-        $this->assertSame('$relations', $method->getParams(true));
-        $this->assertSame(['$relations'], $method->getParams(false));
-        $this->assertSame('$relations', $method->getParamsWithDefault(true));
-        $this->assertSame(['$relations'], $method->getParamsWithDefault(false));
+        $this->assertSame('$relations, $callback', $method->getParams(true));
+        $this->assertSame(['$relations', '$callback'], $method->getParams(false));
+        $this->assertSame('$relations, $callback = null', $method->getParamsWithDefault(true));
+        $this->assertSame(['$relations', '$callback = null'], $method->getParamsWithDefault(false));
         $this->assertSame(true, $method->shouldReturn());
     }
 

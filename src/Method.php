@@ -251,35 +251,37 @@ class Method
      */
     protected function normalizeReturn(DocBlock $phpdoc)
     {
-        //Get the return type and adjust them for beter autocomplete
+        //Get the return type and adjust them for better autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
-        if ($returnTags) {
-            /** @var ReturnTag $tag */
-            $tag = reset($returnTags);
-            // Get the expanded type
-            $returnValue = $tag->getType();
 
-            // Replace the interfaces
-            foreach ($this->interfaces as $interface => $real) {
-                $returnValue = str_replace($interface, $real, $returnValue);
-            }
-
-            // Set the changed content
-            $tag->setContent($returnValue . ' ' . $tag->getDescription());
-            $this->return = $returnValue;
-
-            if ($tag->getType() === '$this') {
-                Str::contains($this->root, Builder::class)
-                    ? $tag->setType($this->root . '|static')
-                    : $tag->setType($this->root);
-            }
-        } else {
+        if (count($returnTags) === 0) {
             $this->return = null;
+            return;
+        }
+
+        /** @var ReturnTag $tag */
+        $tag = reset($returnTags);
+        // Get the expanded type
+        $returnValue = $tag->getType();
+
+        // Replace the interfaces
+        foreach ($this->interfaces as $interface => $real) {
+            $returnValue = str_replace($interface, $real, $returnValue);
+        }
+
+        // Set the changed content
+        $tag->setContent($returnValue . ' ' . $tag->getDescription());
+        $this->return = $returnValue;
+
+        if ($tag->getType() === '$this') {
+            Str::contains($this->root, Builder::class)
+                ? $tag->setType($this->root . '|static')
+                : $tag->setType($this->root);
         }
     }
 
     /**
-     * Convert keywwords that are incorrect.
+     * Convert keywords that are incorrect.
      *
      * @param  string $string
      * @return string
@@ -311,11 +313,11 @@ class Method
      * Get the parameters and format them correctly
      *
      * @param  \ReflectionMethod $method
-     * @return array
+     * @return void
      */
     public function getParameters($method)
     {
-        //Loop through the default values for paremeters, and make the correct output string
+        //Loop through the default values for parameters, and make the correct output string
         $params = array();
         $paramsWithDefault = array();
         foreach ($method->getParameters() as $param) {
@@ -366,9 +368,9 @@ class Method
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);
-            } else {
-                return $phpdoc;
             }
+
+            return $phpdoc;
         }
     }
 }

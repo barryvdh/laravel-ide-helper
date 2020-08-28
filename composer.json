@@ -21,6 +21,7 @@
     ],
     "require": {
         "php": ">=7.2",
+        "ext-json": "*",
         "barryvdh/reflection-docblock": "^2.0.6",
         "composer/composer": "^1.6 || ^2.0@dev",
         "doctrine/dbal": "~2.3",

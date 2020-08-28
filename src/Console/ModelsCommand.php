@@ -71,7 +71,7 @@ class ModelsCommand extends Command
     protected $nullableColumns = [];
 
     /**
-     * During initializtion we use Laravels Date Facade to
+     * During initialization we use Laravels Date Facade to
      * determine the actual date class and store it here.
      *
      * @var string
@@ -224,9 +224,7 @@ class ModelsCommand extends Command
                         continue;
                     }
 
-                    if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                        $this->comment("Loading model '$name'");
-                    }
+                    $this->comment("Loading model '$name'", OutputInterface::VERBOSITY_VERBOSE);
 
                     if (!$reflectionClass->IsInstantiable()) {
                         // ignore abstract class or interface
@@ -346,20 +344,20 @@ class ModelsCommand extends Command
 
             if (!isset($this->properties[$name])) {
                 continue;
-            } else {
-                $realType = $this->checkForCustomLaravelCasts($realType);
-                $realType = $this->getTypeOverride($realType);
-                $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
+            }
 
-                if (isset($this->nullableColumns[$name])) {
-                    $this->properties[$name]['type'] .= '|null';
-                }
+            $realType = $this->checkForCustomLaravelCasts($realType);
+            $realType = $this->getTypeOverride($realType);
+            $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
+
+            if (isset($this->nullableColumns[$name])) {
+                $this->properties[$name]['type'] .= '|null';
             }
         }
     }
 
     /**
-     * Returns the overide type for the give type.
+     * Returns the override type for the give type.
      *
      * @param string $type
      * @return string|null
@@ -368,7 +366,7 @@ class ModelsCommand extends Command
     {
         $typeOverrides = $this->laravel['config']->get('ide-helper.type_overrides', array());
 
-        return isset($typeOverrides[$type]) ? $typeOverrides[$type] : $type;
+        return $typeOverrides[$type] ?? $type;
     }
 
     /**
@@ -396,70 +394,72 @@ class ModelsCommand extends Command
 
         $columns = $schema->listTableColumns($table, $database);
 
-        if ($columns) {
-            foreach ($columns as $column) {
-                $name = $column->getName();
-                if (in_array($name, $model->getDates())) {
-                    $type = $this->dateClass;
-                } else {
-                    $type = $column->getType()->getName();
-                    switch ($type) {
-                        case 'string':
-                        case 'text':
-                        case 'date':
-                        case 'time':
-                        case 'guid':
-                        case 'datetimetz':
-                        case 'datetime':
-                        case 'decimal':
-                            $type = 'string';
-                            break;
-                        case 'integer':
-                        case 'bigint':
-                        case 'smallint':
-                            $type = 'integer';
-                            break;
-                        case 'boolean':
-                            switch (config('database.default')) {
-                                case 'sqlite':
-                                case 'mysql':
-                                    $type = 'integer';
-                                    break;
-                                default:
-                                    $type = 'boolean';
-                                    break;
-                            }
-                            break;
-                        case 'float':
-                            $type = 'float';
-                            break;
-                        default:
-                            $type = 'mixed';
-                            break;
-                    }
-                }
+        if (!$columns) {
+            return;
+        }
 
-                $comment = $column->getComment();
-                if (!$column->getNotnull()) {
-                    $this->nullableColumns[$name] = true;
+        foreach ($columns as $column) {
+            $name = $column->getName();
+            if (in_array($name, $model->getDates())) {
+                $type = $this->dateClass;
+            } else {
+                $type = $column->getType()->getName();
+                switch ($type) {
+                    case 'string':
+                    case 'text':
+                    case 'date':
+                    case 'time':
+                    case 'guid':
+                    case 'datetimetz':
+                    case 'datetime':
+                    case 'decimal':
+                        $type = 'string';
+                        break;
+                    case 'integer':
+                    case 'bigint':
+                    case 'smallint':
+                        $type = 'integer';
+                        break;
+                    case 'boolean':
+                        switch (config('database.default')) {
+                            case 'sqlite':
+                            case 'mysql':
+                                $type = 'integer';
+                                break;
+                            default:
+                                $type = 'boolean';
+                                break;
+                        }
+                        break;
+                    case 'float':
+                        $type = 'float';
+                        break;
+                    default:
+                        $type = 'mixed';
+                        break;
                 }
-                $this->setProperty(
-                    $name,
-                    $this->getTypeInModel($model, $type),
-                    true,
-                    true,
-                    $comment,
-                    !$column->getNotnull()
+            }
+
+            $comment = $column->getComment();
+            if (!$column->getNotnull()) {
+                $this->nullableColumns[$name] = true;
+            }
+            $this->setProperty(
+                $name,
+                $this->getTypeInModel($model, $type),
+                true,
+                true,
+                $comment,
+                !$column->getNotnull()
+            );
+            if ($this->write_model_magic_where) {
+                $this->setMethod(
+                    Str::camel("where_" . $name),
+                    $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
+                    . '|'
+                    . $this->getClassNameInDestinationFile($model, get_class($model)),
+                    array('$value')
                 );
-                if ($this->write_model_magic_where) {
-                    $this->setMethod(
-                        Str::camel("where_" . $name),
-                        $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
-                        . '|'
-                        . $this->getClassNameInDestinationFile($model, get_class($model)),
-                        array('$value')
-                    );
-                }
             }
         }
     }
@@ -856,14 +856,12 @@ class ModelsCommand extends Command
      */
     public function getParameters($method)
     {
-        //Loop through the default values for paremeters, and make the correct output string
-        $params = array();
+        //Loop through the default values for parameters, and make the correct output string
         $paramsWithDefault = array();
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
             $paramClass = $param->getClass();
             $paramStr = (!is_null($paramClass) ? '\\' . $paramClass->getName() . ' ' : '') . '$' . $param->getName();
-            $params[] = $paramStr;
             if ($param->isOptional() && $param->isDefaultValueAvailable()) {
                 $default = $param->getDefaultValue();
                 if (is_bool($default)) {
@@ -1046,11 +1044,6 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    /**
-     * @param object|ReflectionClass  $model
-     * @param string $type
-     * @return string
-     */
     protected function getTypeInModel(object $model, ?string $type): ?string
     {
         if ($type === null) {
@@ -1064,11 +1057,6 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    /**
-     * @param object|ReflectionClass $model
-     * @param string $className
-     * @return string
-     */
     protected function getClassNameInDestinationFile(object $model, string $className): string
     {
         $reflection = $model instanceof ReflectionClass

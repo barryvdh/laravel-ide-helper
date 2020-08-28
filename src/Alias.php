@@ -63,11 +63,11 @@ class Alias
 
         $this->detectRoot();
 
-        if ((!$this->isTrait() && $this->root)) {
-            $this->valid = true;
-        } else {
+        if (!$this->root || $this->isTrait()) {
             return;
         }
+
+        $this->valid = true;
 
         $this->addClass($this->root);
         $this->detectFake();
@@ -201,13 +201,13 @@ class Alias
     protected function detectFake()
     {
         $facade = $this->facade;
-        
+
         if (!method_exists($facade, 'fake')) {
             return;
         }
 
         $real = $facade::getFacadeRoot();
-        
+
         try {
             $facade::fake();
             $fake = $facade::getFacadeRoot();
@@ -306,10 +306,7 @@ class Alias
     protected function isTrait()
     {
         // Check if the facade is not a Trait
-        if (function_exists('trait_exists') && trait_exists($this->facade)) {
-            return true;
-        }
-        return false;
+        return trait_exists($this->facade);
     }
 
     /**
@@ -416,22 +413,22 @@ class Alias
     {
         $serializer = new DocBlockSerializer(1, $prefix);
 
-        if ($this->phpdoc) {
-            if ($this->config->get('ide-helper.include_class_docblocks')) {
-                // if a class doesn't expose any DocBlock tags
-                // we can perform reflection on the class and
-                // add in the original class DocBlock
-                if (count($this->phpdoc->getTags()) === 0) {
-                    $class = new ReflectionClass($this->root);
-                    $this->phpdoc = new DocBlock($class->getDocComment());
-                }
-            }
-
-            $this->removeDuplicateMethodsFromPhpDoc();
-            return $serializer->getDocComment($this->phpdoc);
+        if (!$this->phpdoc) {
+            return '';
         }
 
-        return '';
+        if ($this->config->get('ide-helper.include_class_docblocks')) {
+            // if a class doesn't expose any DocBlock tags
+            // we can perform reflection on the class and
+            // add in the original class DocBlock
+            if (count($this->phpdoc->getTags()) === 0) {
+                $class = new ReflectionClass($this->root);
+                $this->phpdoc = new DocBlock($class->getDocComment());
+            }
+        }
+
+        $this->removeDuplicateMethodsFromPhpDoc();
+        return $serializer->getDocComment($this->phpdoc);
     }
 
     /**

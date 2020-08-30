@@ -6,10 +6,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Barryvdh\LaravelIdeHelper\Tests\SnapshotPhpDriver;
-use Barryvdh\LaravelIdeHelper\Tests\SnapshotTxtDriver;
 use Barryvdh\LaravelIdeHelper\Tests\TestCase;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\Application;
 use Mockery;
 
 abstract class AbstractModelsCommand extends TestCase
@@ -20,17 +18,8 @@ abstract class AbstractModelsCommand extends TestCase
     {
         parent::setUp();
 
-        // Skip older Laravel version for these tests
-        if (version_compare(Application::VERSION, '6.0', '<')) {
-            $this->markTestSkipped('This test requires Laravel 6.0 or higher');
-            return;
-        }
-
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
         $this->artisan('migrate');
-
-
-
         $this->mockFilesystem();
     }
 

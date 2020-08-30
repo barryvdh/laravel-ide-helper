@@ -58,7 +58,7 @@ class MetaCommand extends Command
       '\App::makeWith(0)',
       '\app(0)',
       '\resolve(0)',
-      '\Psr\Container\ContainerInterface::get',
+      '\Psr\Container\ContainerInterface::get(0)',
     ];
 
     /**

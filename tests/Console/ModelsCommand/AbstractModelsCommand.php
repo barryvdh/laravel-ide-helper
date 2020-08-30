@@ -7,13 +7,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Barryvdh\LaravelIdeHelper\Tests\SnapshotPhpDriver;
 use Barryvdh\LaravelIdeHelper\Tests\TestCase;
-use Illuminate\Filesystem\Filesystem;
-use Mockery;
 
 abstract class AbstractModelsCommand extends TestCase
 {
-    protected $mockFilesystemOutput;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -55,33 +51,6 @@ abstract class AbstractModelsCommand extends TestCase
 
         // Don't override integer -> int for tests
         $config->set('ide-helper.type_overrides', []);
-    }
-
-    protected function mockFilesystem()
-    {
-        $this->mockOutput = '';
-
-        $mockFilesystem = Mockery::mock(Filesystem::class);
-
-        $mockFilesystem
-            ->shouldReceive('get')
-            ->andReturnUsing(function ($file) {
-                return file_get_contents($file);
-            });
-
-        $mockFilesystem
-            ->shouldReceive('put')
-            ->with(
-                Mockery::any(),
-                Mockery::any()
-            )
-            ->andReturnUsing(function ($path, $contents) {
-                $this->mockFilesystemOutput .= $contents;
-
-                return strlen($contents);
-            });
-
-        $this->instance(Filesystem::class, $mockFilesystem);
     }
 
     protected function assertMatchesMockedSnapshot()

@@ -86,7 +86,7 @@ class IdeHelperServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             'command.ide-helper.eloquent',
-            function ($app) use ($localViewFactory) {
+            function ($app) {
                 return new EloquentCommand($app['files']);
             }
         );

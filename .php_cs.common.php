@@ -47,6 +47,9 @@ return [
     'array_syntax' => [
         'syntax' => 'short',
     ],
+    'concat_space' => [
+        'spacing' => 'one',
+    ],
     'fully_qualified_strict_types' => true,
     'native_function_invocation' => [
         'include' => [],

@@ -23,15 +23,10 @@ jobs:
           tools: composer:v2
 
       - name: Install dependencies
-        run: |
-          composer remove phpro/grumphp vimeo/psalm --no-update --dev
-          composer update --prefer-dist --no-progress
+        run: composer update --prefer-dist --no-progress
 
       - run: composer fix-style
         continue-on-error: true
-
-      # Revert manual modifications so they don't get commited 💥
-      - run: git checkout -- composer.json
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:

@@ -68,8 +68,14 @@
     "prefer-stable": true,
     "scripts": {
         "analyze": "psalm",
-        "check-style": "php-cs-fixer fix --diff --diff-format=udiff --dry-run",
-        "fix-style": "php-cs-fixer fix",
+        "check-style": [
+            "php-cs-fixer fix --diff --diff-format=udiff --dry-run",
+            "php-cs-fixer fix --diff --diff-format=udiff --dry-run --config=.php_cs.tests.php"
+        ],
+        "fix-style": [
+            "php-cs-fixer fix",
+            "php-cs-fixer fix --config=.php_cs.tests.php"
+        ],
         "test": "phpunit",
         "test-regenerate": "phpunit -d --update-snapshots"
     }

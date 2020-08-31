@@ -38,7 +38,6 @@
         "orchestra/testbench": "^4 || ^5 || ^6",
         "phpro/grumphp": "^0.19.0",
         "spatie/phpunit-snapshot-assertions": "^1.4 || ^2.2 || ^3",
-        "squizlabs/php_codesniffer": "^3.5",
         "vimeo/psalm": "^3.12"
     },
     "config": {

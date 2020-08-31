@@ -5,7 +5,7 @@ grumphp:
             triggered_by: [php]
             metadata:
                 task: composer_script
-        phpcs:
+        phpcsfixer:
             script: check-style
             triggered_by: [php]
             metadata:

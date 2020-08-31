@@ -119,7 +119,7 @@ class Method
      */
     public function isInstanceCall()
     {
-        return ! ($this->method->isClosure() || $this->method->isStatic());
+        return !($this->method->isClosure() || $this->method->isStatic());
     }
 
     /**

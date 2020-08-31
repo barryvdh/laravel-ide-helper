@@ -11,10 +11,8 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
-use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Generator
@@ -40,9 +38,9 @@ class Generator
      * @param string $helpers
      */
     public function __construct(
-        /*ConfigRepository */ 
+        /*ConfigRepository */
         $config,
-        /* Illuminate\View\Factory */ 
+        /* Illuminate\View\Factory */
         $view,
         OutputInterface $output = null,
         $helpers = ''

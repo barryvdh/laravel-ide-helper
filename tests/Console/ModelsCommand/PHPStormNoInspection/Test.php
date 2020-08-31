@@ -6,10 +6,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\PHPStormNoInspec
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Illuminate\Filesystem\Filesystem;
-use Mockery;
-
-use function file_get_contents;
 
 class Test extends AbstractModelsCommand
 {

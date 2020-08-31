@@ -6,9 +6,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomCollection\Collections\SimpleCollection;
-use Illuminate\Filesystem\Filesystem;
-use Mockery;
 
 class Test extends AbstractModelsCommand
 {

@@ -7,10 +7,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 use Carbon\CarbonImmutable;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
-use Mockery;
 
 class Test extends AbstractModelsCommand
 {

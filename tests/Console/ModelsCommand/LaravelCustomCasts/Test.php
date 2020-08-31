@@ -6,9 +6,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCas
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application;
-use Mockery;
 
 class Test extends AbstractModelsCommand
 {

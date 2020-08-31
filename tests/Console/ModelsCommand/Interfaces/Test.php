@@ -6,8 +6,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Interfaces;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Illuminate\Filesystem\Filesystem;
-use Mockery;
 
 final class Test extends AbstractModelsCommand
 {

@@ -15,7 +15,7 @@ class Test extends AbstractModelsCommand
         parent::getEnvironmentSetUp($app);
 
         $app['config']->set('ide-helper.ignored_models', [
-            Ignored::class
+            Ignored::class,
         ]);
     }
 

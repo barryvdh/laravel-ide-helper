@@ -153,7 +153,7 @@ class GeneratorCommand extends Command
 
         return [
             [
-                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename
+                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename,
             ],
         ];
     }

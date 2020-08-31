@@ -161,14 +161,14 @@ class ModelsCommand extends Command
         return [
           ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename],
           ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-              'The model dir, supports glob patterns', []],
+              'The model dir, supports glob patterns', [], ],
           ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
           ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
           ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
           ['smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
           ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
               'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
-              'noinspection tags'
+              'noinspection tags',
           ],
           ['ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''],
         ];
@@ -563,7 +563,7 @@ class ModelsCommand extends Command
                                'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
                                'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
                                'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
-                               'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
+                               'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
                              ] as $relation => $impl
                     ) {
                         $search = '$this->' . $relation . '(';

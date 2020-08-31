@@ -51,4 +51,5 @@ return [
     'no_unused_imports' => true,
     'single_quote' => true,
     'space_after_semicolon' => true,
+    'trailing_comma_in_multiline_array' => true,
 ];

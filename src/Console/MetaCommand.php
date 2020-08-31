@@ -23,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MetaCommand extends Command
 {
-
     /**
      * The console command name.
      *

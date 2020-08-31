@@ -12,7 +12,6 @@ use Mockery;
 
 class Test extends AbstractModelsCommand
 {
-
     protected function setUp(): void
     {
         parent::setUp();

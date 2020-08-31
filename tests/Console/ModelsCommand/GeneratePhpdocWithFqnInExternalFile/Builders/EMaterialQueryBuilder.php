@@ -8,5 +8,4 @@ use Illuminate\Database\Eloquent\Builder;
 
 class EMaterialQueryBuilder extends Builder
 {
-
 }

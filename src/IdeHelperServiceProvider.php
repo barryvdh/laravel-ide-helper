@@ -24,7 +24,6 @@ use Illuminate\View\FileViewFinder;
 
 class IdeHelperServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *

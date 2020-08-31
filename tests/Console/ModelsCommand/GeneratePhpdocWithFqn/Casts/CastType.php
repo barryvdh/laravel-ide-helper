@@ -6,5 +6,4 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 
 final class CastType
 {
-
 }

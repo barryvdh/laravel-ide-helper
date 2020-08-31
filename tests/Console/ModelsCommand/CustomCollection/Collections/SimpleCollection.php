@@ -6,5 +6,4 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SimpleCollection extends Collection
 {
-
 }

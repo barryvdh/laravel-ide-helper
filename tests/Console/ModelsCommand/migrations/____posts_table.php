@@ -12,7 +12,7 @@ class PostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            
+
             $table->char('char_nullable')->nullable();
             $table->char('char_not_nullable');
 

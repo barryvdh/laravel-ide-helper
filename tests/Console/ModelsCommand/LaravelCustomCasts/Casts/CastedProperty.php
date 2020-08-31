@@ -4,5 +4,4 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCas
 
 class CastedProperty
 {
-
 }

@@ -40,8 +40,10 @@ class Generator
      * @param string $helpers
      */
     public function __construct(
-        /*ConfigRepository */ $config,
-        /* Illuminate\View\Factory */ $view,
+        /*ConfigRepository */ 
+        $config,
+        /* Illuminate\View\Factory */ 
+        $view,
         OutputInterface $output = null,
         $helpers = ''
     ) {

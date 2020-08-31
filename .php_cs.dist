@@ -1,0 +1,13 @@
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__)
+    ->exclude('__snapshots__');
+
+return PhpCsFixer\Config::create()
+    ->setFinder($finder)
+    ->setRules([
+        '@PSR2' => true,
+    ])
+    ->setRiskyAllowed(true);

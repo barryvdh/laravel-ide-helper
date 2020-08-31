@@ -32,9 +32,9 @@ class Method
     protected $declaringClassName;
     protected $name;
     protected $namespace;
-    protected $params = array();
-    protected $params_with_default = array();
-    protected $interfaces = array();
+    protected $params = [];
+    protected $params_with_default = [];
+    protected $interfaces = [];
     protected $real_name;
     protected $return = null;
     protected $root;
@@ -46,7 +46,7 @@ class Method
      * @param string|null $methodName
      * @param array $interfaces
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = array())
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
@@ -318,8 +318,8 @@ class Method
     public function getParameters($method)
     {
         //Loop through the default values for parameters, and make the correct output string
-        $params = array();
-        $paramsWithDefault = array();
+        $params = [];
+        $paramsWithDefault = [];
         foreach ($method->getParameters() as $param) {
             $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
             $params[] = $paramStr;

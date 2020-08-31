@@ -86,7 +86,7 @@ class MetaCommand extends Command
 
         $this->registerClassAutoloadExceptions();
 
-        $bindings = array();
+        $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
             // Validator and seeder cause problems
             if (in_array($abstract, ['validator', 'seeder'])) {
@@ -160,9 +160,9 @@ class MetaCommand extends Command
     {
         $filename = $this->config->get('ide-helper.meta_filename');
 
-        return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
-        );
+        return [
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
+        ];
     }
 
     /**

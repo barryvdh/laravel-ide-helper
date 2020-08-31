@@ -31,12 +31,12 @@ class Alias
     protected $short;
     protected $namespace = '__root';
     protected $root = null;
-    protected $classes = array();
-    protected $methods = array();
-    protected $usedMethods = array();
+    protected $classes = [];
+    protected $methods = [];
+    protected $usedMethods = [];
     protected $valid = false;
-    protected $magicMethods = array();
-    protected $interfaces = array();
+    protected $magicMethods = [];
+    protected $interfaces = [];
     protected $phpdoc = null;
 
     /** @var ConfigRepository  */
@@ -50,7 +50,7 @@ class Alias
      * @param array            $magicMethods
      * @param array            $interfaces
      */
-    public function __construct($config, $alias, $facade, $magicMethods = array(), $interfaces = array())
+    public function __construct($config, $alias, $facade, $magicMethods = [], $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
@@ -82,7 +82,7 @@ class Alias
 
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
-            $this->usedMethods = array('decrement', 'increment');
+            $this->usedMethods = ['decrement', 'increment'];
         }
     }
 

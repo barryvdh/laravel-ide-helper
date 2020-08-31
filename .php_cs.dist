@@ -50,6 +50,9 @@ return PhpCsFixer\Config::create()
         ],
 
         // Further quality-of-life improvements
+        'array_syntax' => [
+            'syntax' => 'short',
+        ],
         'no_unused_imports' => true,
     ])
     ->setRiskyAllowed(true);

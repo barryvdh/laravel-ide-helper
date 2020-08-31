@@ -7,6 +7,14 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = require __DIR__ . '/.php_cs.common.php';
 
+// Additional rules for tests
+$config = array_merge(
+    $config,
+    [
+        'declare_strict_types' => true,
+    ]
+);
+
 return PhpCsFixer\Config::create()
     ->setFinder($finder)
     ->setRules($config)

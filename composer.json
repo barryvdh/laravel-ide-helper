@@ -68,8 +68,8 @@
     "prefer-stable": true,
     "scripts": {
         "analyze": "psalm",
-        "check-style": "phpcs -p --standard=PSR12 config/ resources/ src/ tests/ '--ignore=*__snapshots_*'",
-        "fix-style": "phpcbf -p --standard=PSR12 config/ resources/ src/ tests/ '--ignore=*__snapshots_*'",
+        "check-style": "php-cs-fixer fix --diff --diff-format=udiff --dry-run",
+        "fix-style": "php-cs-fixer fix",
         "test": "phpunit",
         "test-regenerate": "phpunit -d --update-snapshots"
     }

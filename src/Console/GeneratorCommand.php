@@ -169,10 +169,10 @@ class GeneratorCommand extends Command
         $writeMixins = $this->config->get('ide-helper.write_eloquent_model_mixins');
 
         return [
-            ['format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format],
-            ['write_mixins', "W", InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins],
-            ['helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'],
-            ['memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'],
+            ['format', 'F', InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format],
+            ['write_mixins', 'W', InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins],
+            ['helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'],
+            ['memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'],
         ];
     }
 }

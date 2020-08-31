@@ -248,7 +248,7 @@ class ModelsCommand extends Command
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
                 } catch (\Throwable $e) {
-                    $this->error("Exception: " . $e->getMessage() .
+                    $this->error('Exception: ' . $e->getMessage() .
                         "\nCould not analyze class $name.\n\nTrace:\n" .
                         $e->getTraceAsString());
                 }
@@ -454,7 +454,7 @@ class ModelsCommand extends Command
             );
             if ($this->write_model_magic_where) {
                 $this->setMethod(
-                    Str::camel("where_" . $name),
+                    Str::camel('where_' . $name),
                     $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
                     . '|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
@@ -521,7 +521,7 @@ class ModelsCommand extends Command
 
                     $this->setMethod(
                         $method,
-                        $builder . "|" . $this->getClassNameInDestinationFile($model, get_class($model))
+                        $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
@@ -621,7 +621,7 @@ class ModelsCommand extends Command
                                             false
                                         );
                                     }
-                                } elseif ($relation === "morphTo") {
+                                } elseif ($relation === 'morphTo') {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
                                         $method,
@@ -756,9 +756,9 @@ class ModelsCommand extends Command
         $methods = [];
         foreach ($phpdoc->getTags() as $tag) {
             $name = $tag->getName();
-            if ($name == "property" || $name == "property-read" || $name == "property-write") {
+            if ($name == 'property' || $name == 'property-read' || $name == 'property-write') {
                 $properties[] = $tag->getVariableName();
-            } elseif ($name == "method") {
+            } elseif ($name == 'method') {
                 $methods[] = $tag->getMethodName();
             }
         }
@@ -799,20 +799,20 @@ class ModelsCommand extends Command
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
             $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
-            $phpdoc->appendTag(Tag::createInstance("@mixin " . $eloquentClassNameInModel, $phpdoc));
+            $phpdoc->appendTag(Tag::createInstance('@mixin ' . $eloquentClassNameInModel, $phpdoc));
         }
         if ($this->phpstorm_noinspections) {
             /**
              * Facades, Eloquent API
              * @see https://www.jetbrains.com/help/phpstorm/php-fully-qualified-name-usage.html
              */
-            $phpdoc->appendTag(Tag::createInstance("@noinspection PhpFullyQualifiedNameUsageInspection", $phpdoc));
+            $phpdoc->appendTag(Tag::createInstance('@noinspection PhpFullyQualifiedNameUsageInspection', $phpdoc));
             /**
              * Relations, other models in the same namespace
              * @see https://www.jetbrains.com/help/phpstorm/php-unnecessary-fully-qualified-name.html
              */
             $phpdoc->appendTag(
-                Tag::createInstance("@noinspection PhpUnnecessaryFullyQualifiedNameInspection", $phpdoc)
+                Tag::createInstance('@noinspection PhpUnnecessaryFullyQualifiedNameInspection', $phpdoc)
             );
         }
 

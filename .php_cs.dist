@@ -54,5 +54,6 @@ return PhpCsFixer\Config::create()
             'syntax' => 'short',
         ],
         'no_unused_imports' => true,
+        'single_quote' => true,
     ])
     ->setRiskyAllowed(true);

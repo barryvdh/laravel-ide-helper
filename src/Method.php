@@ -302,7 +302,7 @@ class Method
      */
     public function shouldReturn()
     {
-        if ($this->return !== "void" && $this->method->name !== "__construct") {
+        if ($this->return !== 'void' && $this->method->name !== '__construct') {
             return true;
         }
 

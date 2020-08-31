@@ -48,6 +48,10 @@ return [
         'syntax' => 'short',
     ],
     'fully_qualified_strict_types' => true,
+    'native_function_invocation' => [
+        'include' => [],
+        'strict' => true,
+    ],
     'no_unused_imports' => true,
     'single_quote' => true,
     'space_after_semicolon' => true,

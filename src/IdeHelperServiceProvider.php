@@ -15,6 +15,7 @@ use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -116,7 +117,11 @@ class IdeHelperServiceProvider extends ServiceProvider
     {
         $resolver = new EngineResolver();
         $resolver->register('php', function () {
-            return new PhpEngine();
+            if ((int) Application::VERSION < 8) {
+                return new PhpEngine();
+            }
+
+            return new PhpEngine($this->app['files']);
         });
         $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
         $factory = new Factory($resolver, $finder, $this->app['events']);

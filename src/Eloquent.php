@@ -8,12 +8,12 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 
 class Eloquent
 {

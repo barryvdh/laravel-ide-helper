@@ -11,13 +11,13 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Closure;
-use ReflectionClass;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
-use Illuminate\Config\Repository as ConfigRepository;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
+use Closure;
+use Illuminate\Config\Repository as ConfigRepository;
+use ReflectionClass;
 
 class Alias
 {

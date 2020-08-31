@@ -178,6 +178,18 @@ class Post extends Model
 {
     use SoftDeletes;
 
+    /**
+     * Special hack to avoid code style fixer removing unused imports
+     * which play a role when generating the snapshot
+     */
+    private $hack = [
+        Carbon::class,
+        Collection::class,
+        Eloquent::class,
+        EloquentBuilder::class,
+        QueryBuilder::class,
+    ];
+
     protected $casts = [
         'char_not_nullable' => CastType::class,
     ];

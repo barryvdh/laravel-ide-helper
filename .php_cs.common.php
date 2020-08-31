@@ -52,4 +52,5 @@ return [
     'single_quote' => true,
     'space_after_semicolon' => true,
     'trailing_comma_in_multiline_array' => true,
+    'trim_array_spaces' => true,
 ];

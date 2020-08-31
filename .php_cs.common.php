@@ -54,4 +54,5 @@ return [
     'trailing_comma_in_multiline_array' => true,
     'trim_array_spaces' => true,
     'unary_operator_spaces' => true,
+    'whitespace_after_comma_in_array' => true,
 ];

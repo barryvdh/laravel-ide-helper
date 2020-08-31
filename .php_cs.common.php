@@ -50,4 +50,5 @@ return [
     'fully_qualified_strict_types' => true,
     'no_unused_imports' => true,
     'single_quote' => true,
+    'space_after_semicolon' => true,
 ];

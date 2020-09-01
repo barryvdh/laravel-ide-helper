@@ -4,16 +4,9 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\{
-    Builder as EloquentBuilder,
-    Collection,
-    SoftDeletes
-};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {

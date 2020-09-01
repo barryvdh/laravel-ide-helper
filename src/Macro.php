@@ -20,7 +20,7 @@ class Macro extends Method
         $alias,
         $class,
         $methodName = null,
-        $interfaces = array()
+        $interfaces = []
     ) {
         parent::__construct($method, $alias, $class, $methodName, $interfaces);
     }

@@ -7,8 +7,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Ignored\Models\Ignored;
-use Illuminate\Filesystem\Filesystem;
-use Mockery;
 
 class Test extends AbstractModelsCommand
 {
@@ -17,7 +15,7 @@ class Test extends AbstractModelsCommand
         parent::getEnvironmentSetUp($app);
 
         $app['config']->set('ide-helper.ignored_models', [
-            Ignored::class
+            Ignored::class,
         ]);
     }
 

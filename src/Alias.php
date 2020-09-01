@@ -11,13 +11,13 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Closure;
-use ReflectionClass;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
-use Illuminate\Config\Repository as ConfigRepository;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
+use Closure;
+use Illuminate\Config\Repository as ConfigRepository;
+use ReflectionClass;
 
 class Alias
 {
@@ -31,12 +31,12 @@ class Alias
     protected $short;
     protected $namespace = '__root';
     protected $root = null;
-    protected $classes = array();
-    protected $methods = array();
-    protected $usedMethods = array();
+    protected $classes = [];
+    protected $methods = [];
+    protected $usedMethods = [];
     protected $valid = false;
-    protected $magicMethods = array();
-    protected $interfaces = array();
+    protected $magicMethods = [];
+    protected $interfaces = [];
     protected $phpdoc = null;
 
     /** @var ConfigRepository  */
@@ -50,7 +50,7 @@ class Alias
      * @param array            $magicMethods
      * @param array            $interfaces
      */
-    public function __construct($config, $alias, $facade, $magicMethods = array(), $interfaces = array())
+    public function __construct($config, $alias, $facade, $magicMethods = [], $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
@@ -82,7 +82,7 @@ class Alias
 
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
-            $this->usedMethods = array('decrement', 'increment');
+            $this->usedMethods = ['decrement', 'increment'];
         }
     }
 
@@ -289,12 +289,12 @@ class Alias
             //When the database connection is not set, some classes will be skipped
         } catch (\PDOException $e) {
             $this->error(
-                "PDOException: " . $e->getMessage() .
+                'PDOException: ' . $e->getMessage() .
                 "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)." .
                 " Skipping $facade."
             );
         } catch (\Exception $e) {
-            $this->error("Exception: " . $e->getMessage() . "\nSkipping $facade.");
+            $this->error('Exception: ' . $e->getMessage() . "\nSkipping $facade.");
         }
     }
 

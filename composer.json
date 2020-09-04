@@ -36,7 +36,6 @@
         "illuminate/view": "^6 || ^7 || ^8",
         "mockery/mockery": "^1.3",
         "orchestra/testbench": "^4 || ^5 || ^6",
-        "phpro/grumphp": "^0.19.0",
         "spatie/phpunit-snapshot-assertions": "^1.4 || ^2.2 || ^3",
         "vimeo/psalm": "^3.12"
     },

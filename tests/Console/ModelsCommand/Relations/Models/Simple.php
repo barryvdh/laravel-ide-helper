@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
 
@@ -26,6 +28,11 @@ class Simple extends Model
         return $this->hasOne(Simple::class);
     }
 
+    public function relationHasOneWithDefault(): HasOne
+    {
+        return $this->hasOne(Simple::class)->withDefault();
+    }
+
     public function relationBelongsTo(): BelongsTo
     {
         return $this->belongsTo(Simple::class);
@@ -34,6 +41,16 @@ class Simple extends Model
     public function relationBelongsToMany(): BelongsToMany
     {
         return $this->belongsToMany(Simple::class);
+    }
+
+    public function relationBelongsToManyWithSub(): BelongsToMany
+    {
+        return $this->belongsToMany(Simple::class)->where('foo', 'bar');
+    }
+
+    public function relationBelongsToManyWithSubAnother(): BelongsToMany
+    {
+        return $this->relationBelongsToManyWithSub()->where('foo', 'bar');
     }
 
     public function relationMorphTo(): MorphTo

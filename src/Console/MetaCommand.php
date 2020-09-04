@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -22,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MetaCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -43,25 +43,28 @@ class MetaCommand extends Command
     /** @var \Illuminate\Contracts\View\Factory */
     protected $view;
 
-    /** @var \Illuminate\Contracts\Config */
+    /** @var \Illuminate\Contracts\Config\Repository */
     protected $config;
 
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
       '\Illuminate\Container\Container::makeWith(0)',
+      '\Illuminate\Contracts\Container\Container::get(0)',
       '\Illuminate\Contracts\Container\Container::make(0)',
       '\Illuminate\Contracts\Container\Container::makeWith(0)',
+      '\App::get(0)',
       '\App::make(0)',
       '\App::makeWith(0)',
       '\app(0)',
       '\resolve(0)',
+      '\Psr\Container\ContainerInterface::get(0)',
     ];
 
     /**
      *
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Illuminate\Contracts\Config $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct($files, $view, $config)
     {
@@ -83,7 +86,7 @@ class MetaCommand extends Command
 
         $this->registerClassAutoloadExceptions();
 
-        $bindings = array();
+        $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
             // Validator and seeder cause problems
             if (in_array($abstract, ['validator', 'seeder'])) {
@@ -98,10 +101,12 @@ class MetaCommand extends Command
                 }
             } catch (\Throwable $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                    $this->comment("Cannot make '$abstract': ".$e->getMessage());
+                    $this->comment("Cannot make '$abstract': " . $e->getMessage());
                 }
             }
         }
+
+        $this->unregisterClassAutoloadExceptions();
 
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
@@ -155,8 +160,18 @@ class MetaCommand extends Command
     {
         $filename = $this->config->get('ide-helper.meta_filename');
 
-        return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
-        );
+        return [
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
+        ];
+    }
+
+    /**
+     * Remove our custom autoloader that we pushed onto the autoload stack
+     */
+    private function unregisterClassAutoloadExceptions()
+    {
+        $autoloadFunctions = spl_autoload_functions();
+        $ourAutoloader = array_pop($autoloadFunctions);
+        spl_autoload_unregister($ourAutoloader);
     }
 }

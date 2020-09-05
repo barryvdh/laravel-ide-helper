@@ -39,7 +39,7 @@ If for some reason you want manually control this:
   "extra": {
     "laravel": {
       "dont-discover": [
-        "barryvdh/laravel-ide-helper",
+        "barryvdh/laravel-ide-helper"
       ]
     }
   }
@@ -132,7 +132,7 @@ The existing PHPDoc is replaced, or added if not found.
 With the `--reset (-R)` option, the existing PHPDocs are ignored, and only the newly found columns/relations are saved as PHPDocs.
 
 ```bash
-php artisan ide-helper:models Post
+php artisan ide-helper:models "App\Models\Post"
 ```
 
 ```php
@@ -166,7 +166,7 @@ With the `--write-mixin (-M)` option
 By default, models in `app/models` are scanned. The optional argument tells what models to use (also outside app/models).
 
 ```bash
-php artisan ide-helper:models Post User
+php artisan ide-helper:models "App\Models\Post" "App\Models\User"
 ```
 
 You can also scan a different directory, using the `--dir` option (relative from the base path):
@@ -180,19 +180,17 @@ You can publish the config file (`php artisan vendor:publish`) and set the defau
 Models can be ignored using the `--ignore (-I)` option
 
 ```bash
-php artisan ide-helper:models --ignore="Post,User"
+php artisan ide-helper:models --ignore="App\Models\Post,App\Models\User"
 ```
 
 Or can be ignored by setting the `ignored_models` config
 
 ```php
 'ignored_models' => [
-    Post::class,
+    App\Post::class,
     Api\User::class
 ],
 ```
-
-> Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`).
 
 #### Magic `where*` methods
 

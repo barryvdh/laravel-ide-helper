@@ -1,6 +1,14 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "*"
+  schedule:
+  - cron: '0 0 * * *'
 
 jobs:
   php-tests:
@@ -12,11 +20,11 @@ jobs:
     strategy:
       matrix:
         php: [7.4, 7.3, 7.2]
-        laravel: [7.*, 6.*, 5.5.*]
+        laravel: [8.*, 7.*, 6.*]
         dependency-version: [prefer-lowest, prefer-stable]
         exclude:
-          - laravel: 5.5.*
-            php: 7.4
+          - laravel: 8.*
+            php: 7.2
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
@@ -32,33 +40,9 @@ jobs:
         
     - name: Install dependencies
       run: |
-        composer remove phpro/grumphp vimeo/psalm --no-update --dev
+        composer remove vimeo/psalm --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-suggest --no-progress
 
     - name: Execute Unit Tests
       run: composer test
-
-  check-style:
-    name: Check Code Style
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    env:
-      COMPOSER_NO_INTERACTION: 1
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 7.4
-          coverage: none
-        
-      - name: Install dependencies
-        run: |
-          composer remove phpro/grumphp vimeo/psalm --no-update --dev
-          composer update --prefer-dist --no-suggest --no-progress
-
-      - run: composer check-style

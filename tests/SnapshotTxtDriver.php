@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use PHPUnit\Framework\Assert;
@@ -9,7 +11,7 @@ class SnapshotTxtDriver implements Driver
 {
     public function serialize($data): string
     {
-        return $data;
+        return (string) $data;
     }
 
     public function extension(): string

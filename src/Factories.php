@@ -8,7 +8,6 @@ use ReflectionClass;
 
 class Factories
 {
-
     public static function all()
     {
         $factories = [];

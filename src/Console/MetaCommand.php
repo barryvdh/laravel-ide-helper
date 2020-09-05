@@ -23,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MetaCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -50,12 +49,15 @@ class MetaCommand extends Command
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
       '\Illuminate\Container\Container::makeWith(0)',
+      '\Illuminate\Contracts\Container\Container::get(0)',
       '\Illuminate\Contracts\Container\Container::make(0)',
       '\Illuminate\Contracts\Container\Container::makeWith(0)',
+      '\App::get(0)',
       '\App::make(0)',
       '\App::makeWith(0)',
       '\app(0)',
       '\resolve(0)',
+      '\Psr\Container\ContainerInterface::get(0)',
     ];
 
     /**
@@ -84,7 +86,7 @@ class MetaCommand extends Command
 
         $this->registerClassAutoloadExceptions();
 
-        $bindings = array();
+        $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
             // Validator and seeder cause problems
             if (in_array($abstract, ['validator', 'seeder'])) {
@@ -158,9 +160,9 @@ class MetaCommand extends Command
     {
         $filename = $this->config->get('ide-helper.meta_filename');
 
-        return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
-        );
+        return [
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
+        ];
     }
 
     /**

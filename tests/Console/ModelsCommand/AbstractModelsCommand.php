@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand;
 
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Barryvdh\LaravelIdeHelper\Tests\SnapshotPhpDriver;
 use Barryvdh\LaravelIdeHelper\Tests\TestCase;
-use Illuminate\Foundation\Application;
 
 abstract class AbstractModelsCommand extends TestCase
 {
@@ -11,14 +14,21 @@ abstract class AbstractModelsCommand extends TestCase
     {
         parent::setUp();
 
-        // Skip older Laravel version for these tests
-        if (version_compare(Application::VERSION, '6.0', '<')) {
-            $this->markTestSkipped('This test requires Laravel 6.0 or higher');
-            return;
-        }
-
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
         $this->artisan('migrate');
+        $this->mockFilesystem();
+    }
+
+    /**
+     * Get package providers.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     *
+     * @return array
+     */
+    protected function getPackageProviders($app)
+    {
+        return [IdeHelperServiceProvider::class];
     }
 
     protected function getEnvironmentSetUp($app)
@@ -33,5 +43,18 @@ abstract class AbstractModelsCommand extends TestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+
+        // Load the Models from the Test dir
+        $config->set('ide-helper.model_locations', [
+            dirname((new \ReflectionClass(static::class))->getFileName()) . '/Models',
+        ]);
+
+        // Don't override integer -> int for tests
+        $config->set('ide-helper.type_overrides', []);
+    }
+
+    protected function assertMatchesMockedSnapshot()
+    {
+        $this->assertMatchesSnapshot($this->mockFilesystemOutput, new SnapshotPhpDriver());
     }
 }

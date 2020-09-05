@@ -1,5 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @property $someProp
+ * @method someMethod(string $method)
+ * @mixin IdeHelperPost
+ */
+class Post extends Model
+{
+}
+<?php
+
 // @formatter:off
 /**
  * A helper file for your Eloquent Models

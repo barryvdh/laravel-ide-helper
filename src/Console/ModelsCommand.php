@@ -61,6 +61,7 @@ class ModelsCommand extends Command
     protected $properties = [];
     protected $methods = [];
     protected $write = false;
+    protected $write_mixin = false;
     protected $dirs = [];
     protected $reset;
     protected $keep_text;
@@ -96,6 +97,7 @@ class ModelsCommand extends Command
     {
         $filename = $this->option('filename');
         $this->write = $this->option('write');
+        $this->write_mixin = $this->option('write-mixin');
         $this->dirs = array_merge(
             $this->laravel['config']->get('ide-helper.model_locations', []),
             $this->option('dir')
@@ -111,6 +113,7 @@ class ModelsCommand extends Command
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
 
+        $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
             if (
@@ -128,7 +131,7 @@ class ModelsCommand extends Command
 
         $content = $this->generateDocs($model, $ignore);
 
-        if (!$this->write) {
+        if (!$this->write || $this->write_mixin) {
             $written = $this->files->put($filename, $content);
             if ($written !== false) {
                 $this->info("Model information was written to $filename");
@@ -163,6 +166,9 @@ class ModelsCommand extends Command
           ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
               'The model dir, supports glob patterns', [], ],
           ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
+          ['write-mixin', 'M', InputOption::VALUE_NONE,
+              "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
+          ],
           ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
           ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
           ['smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
@@ -817,17 +823,34 @@ class ModelsCommand extends Command
         }
 
         $serializer = new DocBlockSerializer();
-        $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
 
+        if ($this->write_mixin) {
+            $phpdocMixin = new DocBlock($reflection, new Context($namespace));
+            // remove all mixin tags prefixed with IdeHelper
+            foreach ($phpdocMixin->getTagsByName('mixin') as $tag) {
+                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
+                    $phpdocMixin->deleteTag($tag);
+                }
+            }
+
+            $mixinClassName = "IdeHelper{$classname}";
+            $phpdocMixin->appendTag(Tag::createInstance("@mixin {$mixinClassName}", $phpdocMixin));
+            $mixinDocComment = $serializer->getDocComment($phpdocMixin);
+            // remove blank lines if there's no text
+            if (!$phpdocMixin->getText()) {
+                $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
+            }
+        }
 
         if ($this->write) {
+            $modelDocComment = $this->write_mixin ? $mixinDocComment : $docComment;
             $filename = $reflection->getFileName();
             $contents = $this->files->get($filename);
             if ($originalDoc) {
-                $contents = str_replace($originalDoc, $docComment, $contents);
+                $contents = str_replace($originalDoc, $modelDocComment, $contents);
             } else {
-                $replace = "{$docComment}\n";
+                $replace = "{$modelDocComment}\n";
                 $pos = strpos($contents, "final class {$classname}") ?: strpos($contents, "class {$classname}");
                 if ($pos !== false) {
                     $contents = substr_replace($contents, $replace, $pos, 0);
@@ -838,6 +861,7 @@ class ModelsCommand extends Command
             }
         }
 
+        $classname = $this->write_mixin ? $mixinClassName : $classname;
         $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent ";
 
         if ($interfaceNames) {

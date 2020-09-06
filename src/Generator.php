@@ -13,6 +13,9 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
+use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Generator
@@ -220,7 +223,11 @@ class Generator
      */
     protected function getAliasesByExtendsNamespace()
     {
-        return $this->getValidAliases()->groupBy(function (Alias $alias) {
+        $aliases = $this->getValidAliases();
+
+        $this->addMacroableClasses($aliases);
+
+        return $aliases->groupBy(function (Alias $alias) {
             return $alias->getExtendsNamespace();
         });
     }
@@ -290,5 +297,56 @@ class Generator
         } else {
             echo $string . "\r\n";
         }
+    }
+
+    /**
+     * Add all macroable classes which are not already loaded as an alias and have defined macros.
+     *
+     * @param Collection $aliases
+     */
+    protected function addMacroableClasses(Collection $aliases)
+    {
+        $macroable = $this->getMacroableClasses($aliases);
+
+        foreach ($macroable as $class) {
+            $reflection = new ReflectionClass($class);
+
+            if (!$reflection->getStaticProperties()['macros']) {
+                continue;
+            }
+
+            $aliases[] = new Alias($this->config, $class, $class, [], $this->interfaces);
+        }
+    }
+
+    /**
+     * Get all loaded macroable classes which are not loaded as an alias.
+     *
+     * @param Collection $aliases
+     * @return Collection
+     */
+    protected function getMacroableClasses(Collection $aliases)
+    {
+        return (new Collection(get_declared_classes()))
+            ->filter(function ($class) {
+                $reflection = new ReflectionClass($class);
+
+                // Filter out internal classes and class aliases
+                return !$reflection->isInternal() && $reflection->getName() === $class;
+            })
+            ->filter(function ($class) {
+                $traits = class_uses($class);
+
+                // Filter only classes with the macroable trait
+                return isset($traits[Macroable::class]);
+            })
+            ->filter(function ($class) use ($aliases) {
+                $class = Str::start($class, '\\');
+
+                // Filter out aliases
+                return !$aliases->first(function (Alias $alias) use ($class) {
+                    return $alias->getExtends() === $class;
+                });
+            });
     }
 }

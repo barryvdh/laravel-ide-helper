@@ -31,8 +31,8 @@ class GeneratorTest extends TestCase
     public function testGenerator(): void
     {
         // Feel free to bump this with a major Laravel release!
-        if ((int) Application::VERSION !== 7) {
-            self::markTestSkipped('This test only works with Laravel 7');
+        if ((int) Application::VERSION !== '7.27.0') {
+            self::markTestSkipped('This test only works with Laravel 7.27.0, feel free to bump it and update the snapshot!');
         }
 
         $generator = new Generator(
@@ -41,8 +41,6 @@ class GeneratorTest extends TestCase
         );
 
         $output = $generator->generate();
-
-        $output = preg_replace("/.*Generated for Laravel 7.*\n/", '', $output);
 
         $this->assertMatchesPhpSnapshot($output);
     }

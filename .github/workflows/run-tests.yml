@@ -46,4 +46,4 @@ jobs:
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
 
     - name: Execute Unit Tests
-      run: composer test
+      run: composer test-ci

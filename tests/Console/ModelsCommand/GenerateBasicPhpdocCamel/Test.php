@@ -1,11 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocCamel;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Illuminate\Filesystem\Filesystem;
-use Mockery;
 
 class Test extends AbstractModelsCommand
 {
@@ -13,36 +13,11 @@ class Test extends AbstractModelsCommand
     {
         parent::getEnvironmentSetUp($app);
 
-        $app['config']->set('ide-helper', [
-            'model_locations' => [
-                // This is calculated from the base_path() which points to
-                // vendor/orchestra/testbench-core/laravel
-                '/../../../../tests/Console/ModelsCommand/GenerateBasicPhpdocCamel/Models',
-            ],
-            // Activate the camel_case mode
-            'model_camel_case_properties' => true,
-        ]);
+        $app['config']->set('ide-helper.model_camel_case_properties', true);
     }
 
     public function test(): void
     {
-        $actualContent = null;
-        $mockFilesystem = Mockery::mock(Filesystem::class);
-        $mockFilesystem
-            ->shouldReceive('get')
-            ->andReturn(file_get_contents(__DIR__ . '/Models/Post.php'))
-            ->once();
-        $mockFilesystem
-            ->shouldReceive('put')
-            ->with(
-                Mockery::any(),
-                Mockery::capture($actualContent)
-            )
-            ->andReturn(1) // Simulate we wrote _something_ to the file
-            ->once();
-
-        $this->instance(Filesystem::class, $mockFilesystem);
-
         $command = $this->app->make(ModelsCommand::class);
 
         $tester = $this->runCommand($command, [
@@ -50,7 +25,7 @@ class Test extends AbstractModelsCommand
         ]);
 
         $this->assertSame(0, $tester->getStatusCode());
-        $this->assertEmpty($tester->getDisplay());
-        $this->assertMatchesPhpSnapshot($actualContent);
+        $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
+        $this->assertMatchesMockedSnapshot();
     }
 }

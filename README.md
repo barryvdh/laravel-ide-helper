@@ -39,7 +39,7 @@ If for some reason you want manually control this:
   "extra": {
     "laravel": {
       "dont-discover": [
-        "barryvdh/laravel-ide-helper",
+        "barryvdh/laravel-ide-helper"
       ]
     }
   }
@@ -52,7 +52,7 @@ If for some reason you want manually control this:
   ```php
   public function register()
   {
-      if ($this->app->environment() !== 'production') {
+      if ($this->app->isLocal()) {
           $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
       }
       // ...
@@ -110,6 +110,18 @@ You can use an in-memory SQLite driver by adding the `-M` option.
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
+### Automatic PHPDoc generation for macros and mixins
+
+This package can generate PHPDocs for macros and mixins which will be added to the `_ide_helper.php` file.
+
+But this only works if you use type hinting when declaring a macro.
+
+```php
+Str::macro('concat', function(string $str1, string $str2) : string {
+    return $str1 . $str2;
+});
+```
+
 ### Automatic PHPDocs for models
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
@@ -121,6 +133,10 @@ By default, you are asked to overwrite or write to a separate file (`_ide_helper
 You can write the comments directly to your Model file, using the `--write (-W)` option, or
 force to not write with `--nowrite (-N)`.
 
+Alternatively using the `--write-mixin (-M)` option will only add a mixin tag to your Model file,
+writing the rest in (`_ide_helper_models.php`).
+The class name will be different from the model, avoiding the IDE duplicate annoyance.
+
 > Please make sure to back up your models, before writing the info.
 
 Writing to the models should keep the existing comments and only append new properties/methods.
@@ -128,7 +144,7 @@ The existing PHPDoc is replaced, or added if not found.
 With the `--reset (-R)` option, the existing PHPDocs are ignored, and only the newly found columns/relations are saved as PHPDocs.
 
 ```bash
-php artisan ide-helper:models Post
+php artisan ide-helper:models "App\Models\Post"
 ```
 
 ```php
@@ -151,10 +167,18 @@ php artisan ide-helper:models Post
  */
 ```
 
+With the `--write-mixin (-M)` option
+```php
+/**
+ * …
+ * @mixin IdeHelperPost
+ */
+```
+
 By default, models in `app/models` are scanned. The optional argument tells what models to use (also outside app/models).
 
 ```bash
-php artisan ide-helper:models Post User
+php artisan ide-helper:models "App\Models\Post" "App\Models\User"
 ```
 
 You can also scan a different directory, using the `--dir` option (relative from the base path):
@@ -168,19 +192,17 @@ You can publish the config file (`php artisan vendor:publish`) and set the defau
 Models can be ignored using the `--ignore (-I)` option
 
 ```bash
-php artisan ide-helper:models --ignore="Post,User"
+php artisan ide-helper:models --ignore="App\Models\Post,App\Models\User"
 ```
 
 Or can be ignored by setting the `ignored_models` config
 
 ```php
 'ignored_models' => [
-    Post::class,
+    App\Post::class,
     Api\User::class
 ],
 ```
-
-> Note: With namespaces, wrap your model name in double-quotes (`"`): `php artisan ide-helper:models "API\User"`, or escape the slashes (`Api\\User`).
 
 #### Magic `where*` methods
 

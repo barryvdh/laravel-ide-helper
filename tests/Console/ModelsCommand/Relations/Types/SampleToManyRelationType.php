@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types;
-
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class SampleToManyRelationType extends Relation
 {
-
     public function addConstraints()
     {
         // Fake

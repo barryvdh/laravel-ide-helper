@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types;
 
 use Illuminate\Database\Eloquent\Collection;

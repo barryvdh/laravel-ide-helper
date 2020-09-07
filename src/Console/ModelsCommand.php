@@ -46,7 +46,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ModelsCommand extends Command
 {
-    protected const RELATION_TYPES = array(
+    protected const RELATION_TYPES = [
         'hasMany' => HasMany::class,
         'hasManyThrough' => HasManyThrough::class,
         'hasOneThrough' => HasOneThrough::class,
@@ -58,7 +58,7 @@ class ModelsCommand extends Command
         'morphMany' => MorphMany::class,
         'morphToMany' => MorphToMany::class,
         'morphedByMany' => MorphToMany::class,
-    );
+    ];
 
     /**
      * @var Filesystem $files

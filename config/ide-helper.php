@@ -261,7 +261,7 @@ return [
     |
     | Sometimes it's needed to create custom relation types. The key of the array
     | is the Relationship Method name. The value of the array is the canonical class
-    | name of the Relationship.
+    | name of the Relationship, e.g. `'relationName' => RelationShipClass::class`.
     |
     */
     'additional_relation_types' => [],

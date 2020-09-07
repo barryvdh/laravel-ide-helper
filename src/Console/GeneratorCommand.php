@@ -15,8 +15,8 @@ use Barryvdh\LaravelIdeHelper\Eloquent;
 use Barryvdh\LaravelIdeHelper\Generator;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * A command to generate autocomplete information for your IDE
@@ -25,7 +25,6 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class GeneratorCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -59,7 +58,8 @@ class GeneratorCommand extends Command
      * @param \Illuminate\View\Factory $view
      */
     public function __construct(
-        /*ConfigRepository */ $config,
+        /*ConfigRepository */
+        $config,
         Filesystem $files,
         /* Illuminate\View\Factory */
         $view
@@ -85,46 +85,47 @@ class GeneratorCommand extends Command
             $this->error(
                 'Error generating IDE Helper: first delete your compiled file (php artisan clear-compiled)'
             );
+            return;
+        }
+
+        $filename = $this->argument('filename');
+        $format = $this->option('format');
+
+        // Strip the php extension
+        if (substr($filename, -4, 4) === '.php') {
+            $filename = substr($filename, 0, -4);
+        }
+
+        $filename .= '.' . $format;
+
+        if ($this->option('memory')) {
+            $this->useMemoryDriver();
+        }
+
+
+        $helpers = '';
+        if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {
+            foreach ($this->config->get('ide-helper.helper_files', []) as $helper) {
+                if (file_exists($helper)) {
+                    $helpers .= str_replace(['<?php', '?>'], '', $this->files->get($helper));
+                }
+            }
         } else {
-            $filename = $this->argument('filename');
-            $format = $this->option('format');
-
-            // Strip the php extension
-            if (substr($filename, -4, 4) == '.php') {
-                $filename = substr($filename, 0, -4);
-            }
-
-            $filename .= '.' . $format;
-
-            if ($this->option('memory')) {
-                $this->useMemoryDriver();
-            }
-
-
             $helpers = '';
-            if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {
-                foreach ($this->config->get('ide-helper.helper_files', array()) as $helper) {
-                    if (file_exists($helper)) {
-                        $helpers .= str_replace(array('<?php', '?>'), '', $this->files->get($helper));
-                    }
-                }
-            } else {
-                $helpers = '';
+        }
+
+        $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
+        $content = $generator->generate($format);
+        $written = $this->files->put($filename, $content);
+
+        if ($written !== false) {
+            $this->info("A new helper file was written to $filename");
+
+            if ($this->option('write_mixins')) {
+                Eloquent::writeEloquentModelHelper($this, $this->files);
             }
-
-            $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
-            $content = $generator->generate($format);
-            $written = $this->files->put($filename, $content);
-
-            if ($written !== false) {
-                $this->info("A new helper file was written to $filename");
-
-                if ($this->option('write_mixins')) {
-                    Eloquent::writeEloquentModelHelper($this, $this->files);
-                }
-            } else {
-                $this->error("The helper file could not be created at $filename");
-            }
+        } else {
+            $this->error("The helper file could not be created at $filename");
         }
     }
 
@@ -133,10 +134,10 @@ class GeneratorCommand extends Command
         //Use a sqlite database in memory, to avoid connection errors on Database facades
         $this->config->set(
             'database.connections.sqlite',
-            array(
+            [
                 'driver' => 'sqlite',
                 'database' => ':memory:',
-            )
+            ]
         );
         $this->config->set('database.default', 'sqlite');
     }
@@ -150,11 +151,11 @@ class GeneratorCommand extends Command
     {
         $filename = $this->config->get('ide-helper.filename');
 
-        return array(
-            array(
-                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename
-            ),
-        );
+        return [
+            [
+                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename,
+            ],
+        ];
     }
 
     /**
@@ -167,11 +168,11 @@ class GeneratorCommand extends Command
         $format = $this->config->get('ide-helper.format');
         $writeMixins = $this->config->get('ide-helper.write_eloquent_model_mixins');
 
-        return array(
-            array('format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),
-            array('write_mixins', "W", InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins),
-            array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
-            array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
-        );
+        return [
+            ['format', 'F', InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format],
+            ['write_mixins', 'W', InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins],
+            ['helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'],
+            ['memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'],
+        ];
     }
 }

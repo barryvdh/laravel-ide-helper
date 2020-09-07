@@ -37,12 +37,13 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
-        
+        tools: composer:v2
+
     - name: Install dependencies
       run: |
         composer remove vimeo/psalm --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
-        composer update --${{ matrix.dependency-version }} --prefer-dist --no-suggest --no-progress
+        composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
 
     - name: Execute Unit Tests
       run: composer test

@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.8.1...master)
 --------------
 
+### Added
+- Created a possibility to add custom relation type [\#987 / efinder2](https://github.com/barryvdh/laravel-ide-helper/pull/987)
+
 2020-09-07, 2.8.1
 -----------------
 ### Added

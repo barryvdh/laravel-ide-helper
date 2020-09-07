@@ -2,8 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.8.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.8.1...master)
 --------------
+
+2020-09-07, 2.8.1
+-----------------
 ### Added
 - Support Laravel 8 [\#1022 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1022)
 - Add option to force usage of FQN [\#1031 / edvordo](https://github.com/barryvdh/laravel-ide-helper/pull/1031)

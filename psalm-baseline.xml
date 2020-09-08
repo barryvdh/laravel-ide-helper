@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.15@de6e7f324f44dde540ebe7ebd4eb481b97c86f30">
+  <file src="src/Factories.php">
+    <UndefinedClass occurrences="2">
+      <code>Factory</code>
+      <code>Factory</code>
+    </UndefinedClass>
+  </file>
+  <file src="src/Generator.php">
+    <UndefinedClass occurrences="7">
+      <code>\Auth</code>
+      <code>\DB</code>
+      <code>\Cache</code>
+      <code>\Cache</code>
+      <code>\Queue</code>
+      <code>\SSH</code>
+      <code>\Storage</code>
+    </UndefinedClass>
+  </file>
+  <file src="src/IdeHelperServiceProvider.php">
+    <TooFewArguments occurrences="1">
+      <code>new PhpEngine()</code>
+    </TooFewArguments>
+  </file>
+</files>

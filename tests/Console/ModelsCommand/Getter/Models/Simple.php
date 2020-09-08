@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models;
 
@@ -37,7 +39,7 @@ class Simple extends Model
     }
 
     /**
-     * @return what|ever|we-write/here
+     * @return \what|\ever|\we-write/here
      */
     public function getAttributeTakesPhpdocLiteralAttribute()
     {
@@ -47,11 +49,58 @@ class Simple extends Model
     {
     }
 
-    public function getAttributeReturnsImportedClass(): DateTime
+    public function getAttributeReturnsImportedClassAttribute(): DateTime
     {
     }
 
-    public function getAttributeReturnsFqnClass(): \Illuminate\Support\Facades\Date
+    public function getAttributeReturnsFqnClassAttribute(): \Illuminate\Support\Facades\Date
+    {
+    }
+
+    public function getAttributeReturnsArrayAttribute(): array
+    {
+    }
+
+    public function getAttributeReturnsNullableArrayAttribute(): ?array
+    {
+    }
+
+    public function getAttributeReturnsStdClassAttribute(): \stdClass
+    {
+    }
+
+    public function getAttributeReturnsNullableStdClassAttribute(): ?\stdClass
+    {
+    }
+
+    public function getAttributeReturnsBoolAttribute(): bool
+    {
+    }
+
+    public function getAttributeReturnsNullableBoolAttribute(): ?bool
+    {
+    }
+
+    public function getAttributeReturnsFloatAttribute(): bool
+    {
+    }
+
+    public function getAttributeReturnsNullableFloatAttribute(): ?bool
+    {
+    }
+
+    public function getAttributeReturnsCallableAttribute(): callable
+    {
+    }
+
+    public function getAttributeReturnsNullableCallableAttribute(): ?callable
+    {
+    }
+
+    /**
+     * Doesn't make sense, but…
+     */
+    public function getAttributeReturnsVoidAttribute(): void
     {
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -15,6 +16,7 @@ use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -23,7 +25,6 @@ use Illuminate\View\FileViewFinder;
 
 class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-
     /**
      * Bootstrap the application events.
      *
@@ -79,7 +80,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
 
         $this->app->singleton(
             'command.ide-helper.eloquent',
-            function ($app) use ($localViewFactory) {
+            function ($app) {
                 return new EloquentCommand($app['files']);
             }
         );
@@ -99,7 +100,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function provides()
     {
-        return array('command.ide-helper.generate', 'command.ide-helper.models');
+        return ['command.ide-helper.generate', 'command.ide-helper.models'];
     }
 
     /**
@@ -109,7 +110,11 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     {
         $resolver = new EngineResolver();
         $resolver->register('php', function () {
-            return new PhpEngine();
+            if ((int) Application::VERSION < 8) {
+                return new PhpEngine();
+            }
+
+            return new PhpEngine($this->app['files']);
         });
         $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
         $factory = new Factory($resolver, $finder, $this->app['events']);

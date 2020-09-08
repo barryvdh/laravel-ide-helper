@@ -75,6 +75,7 @@
             "php-cs-fixer fix",
             "php-cs-fixer fix --config=.php_cs.tests.php"
         ],
+        "psalm-set-baseline": "psalm --set-baseline=psalm-baseline.xml",
         "test": "phpunit",
         "test-ci": "phpunit -d --without-creating-snapshots",
         "test-regenerate": "phpunit -d --update-snapshots"

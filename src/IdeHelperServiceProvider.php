@@ -110,7 +110,8 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     {
         $resolver = new EngineResolver();
         $resolver->register('php', function () {
-            if ((int) Application::VERSION < 8) {
+            // version check is Laravel specific and doesn't work in Lumen
+            if (class_exists(Application::class) && (int) Application::VERSION < 8) {
                 return new PhpEngine();
             }
 

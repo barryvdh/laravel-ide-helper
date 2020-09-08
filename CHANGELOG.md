@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Implement DeferrableProvider [\#914 / kon-shou](https://github.com/barryvdh/laravel-ide-helper/pull/914)
 
+### Fixed
+- Compatibility with Lumen [\#1043 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1043)
+
 2020-09-07, 2.8.1
 -----------------
 ### Added

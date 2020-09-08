@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Traits\HasTestRelations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Simple extends Model
 {
+    use HasTestRelations;
+
     // Regular relations
     public function relationHasMany(): HasMany
     {
@@ -83,5 +86,15 @@ class Simple extends Model
     public function relationBelongsToSameNameAsColumn(): BelongsTo
     {
         return $this->belongsTo(AnotherModel::class, __FUNCTION__);
+    }
+
+    public function relationSampleToManyRelationType()
+    {
+        return $this->testToOneRelation(Simple::class);
+    }
+
+    public function relationSampleRelationType()
+    {
+        return $this->testToManyRelation(Simple::class);
     }
 }

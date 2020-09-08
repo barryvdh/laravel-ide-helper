@@ -6,9 +6,22 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToManyRelationType;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToOneRelationType;
+use Illuminate\Support\Facades\Config;
 
 class Test extends AbstractModelsCommand
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::set('ide-helper.additional_relation_types', [
+            'testToOneRelation' => SampleToOneRelationType::class,
+            'testToManyRelation' => SampleToManyRelationType::class,
+        ]);
+    }
+
     public function test(): void
     {
         $command = $this->app->make(ModelsCommand::class);

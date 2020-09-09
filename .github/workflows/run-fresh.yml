@@ -1,0 +1,80 @@
+name: Fresh
+
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - "*"
+    schedule:
+        - cron: '0 0 * * *'
+
+jobs:
+    php-lumen-fresh-run:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        env:
+            COMPOSER_NO_INTERACTION: 1
+        strategy:
+            matrix:
+                php: [7.4, 7.3, 7.2]
+                lumen: [7.*, 6.*]
+        name: P${{ matrix.php }} - Lumen${{ matrix.lumen }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+              with:
+                  path: src
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  coverage: none
+                  tools: composer:v2
+            - name: Install dependencies
+              run: |
+                  composer create-project --prefer-dist laravel/lumen:${{ matrix.lumen }} --no-progress sample && cd sample
+                  composer require "barryvdh/laravel-ide-helper" --dev --no-update --no-progress
+                  composer require "league/flysystem" --no-update --no-progress
+                  composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
+            - name: Overwrite source
+              run: mkdir -p sample/vendor/barryvdh/laravel-ide-helper && cp -a src/. sample/vendor/barryvdh/laravel-ide-helper/ && ls sample/vendor/barryvdh/laravel-ide-helper
+            - name: Dump autoloader
+              run: cd sample && composer dump-autoload
+            - name: Insert service provider
+              run: echo '$app->register(\\Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider::class);' > /tmp/sp && sed -i "97i $(</tmp/sp)" ./sample/bootstrap/app.php
+            - name: Execute generate run
+              run: cd sample && php artisan ide-helper:generate
+    php-laravel-fresh-run:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        env:
+            COMPOSER_NO_INTERACTION: 1
+        strategy:
+            matrix:
+                php: [7.4, 7.3, 7.2]
+                laravel: [8.*, 7.*, 6.*]
+        name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+              with:
+                  path: src
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  coverage: none
+                  tools: composer:v2
+            - name: Install dependencies
+              run: |
+                  composer create-project --prefer-dist laravel/laravel:${{ matrix.lumen }} --no-progress sample && cd sample
+                  composer require "barryvdh/laravel-ide-helper" --dev --no-update --no-progress
+                  composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
+            - name: Inject source
+              run: mkdir -p sample/vendor/barryvdh/laravel-ide-helper && cp -a src/. sample/vendor/barryvdh/laravel-ide-helper/ && ls sample/vendor/barryvdh/laravel-ide-helper
+            - name: Dump autoloader
+              run: cd sample && composer dump-autoload
+            - name: Execute generate run
+              run: cd sample && php artisan ide-helper:generate

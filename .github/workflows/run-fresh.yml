@@ -72,7 +72,7 @@ jobs:
                   composer create-project --prefer-dist laravel/laravel:${{ matrix.lumen }} --no-progress sample && cd sample
                   composer require "barryvdh/laravel-ide-helper" --dev --no-update --no-progress
                   composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
-            - name: Inject source
+            - name: Overwrite source
               run: mkdir -p sample/vendor/barryvdh/laravel-ide-helper && cp -a src/. sample/vendor/barryvdh/laravel-ide-helper/ && ls sample/vendor/barryvdh/laravel-ide-helper
             - name: Dump autoloader
               run: cd sample && composer dump-autoload

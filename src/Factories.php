@@ -12,6 +12,10 @@ class Factories
     {
         $factories = [];
 
+        if (static::isLaravel8()) {
+            return $factories;
+        }
+
         $factory = app(Factory::class);
 
         $definitions = (new ReflectionClass(Factory::class))->getProperty('definitions');
@@ -25,5 +29,10 @@ class Factories
         }
 
         return $factories;
+    }
+
+    protected static function isLaravel8(): bool
+    {
+        return version_compare(app()->version(), '8.0.0', '>=');
     }
 }

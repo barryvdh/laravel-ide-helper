@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Query\Builder|Simple onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId(integer $value)
  * @method static \Illuminate\Database\Query\Builder|Simple withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Simple withoutTrashed()
  * @mixin \Eloquent

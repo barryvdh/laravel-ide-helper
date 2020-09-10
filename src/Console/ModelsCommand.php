@@ -38,6 +38,7 @@ use ReflectionObject;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
  * A command to generate autocomplete information for your IDE
@@ -277,7 +278,7 @@ class ModelsCommand extends Command
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $this->error('Exception: ' . $e->getMessage() .
                         "\nCould not analyze class $name.\n\nTrace:\n" .
                         $e->getTraceAsString());
@@ -601,7 +602,9 @@ class ModelsCommand extends Command
                             $relationObj = Relation::noConstraints(function () use ($model, $method) {
                                 try {
                                     return $model->$method();
-                                } catch (\Throwable $e) {
+                                } catch (Throwable $e) {
+                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $method, $e->getMessage()));
+
                                     return null;
                                 }
                             });

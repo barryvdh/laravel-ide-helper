@@ -18,6 +18,9 @@ All notable changes to this project will be documented in this file.
 - Allow model_locations to have glob patterns [\#1059 / saackearl](https://github.com/barryvdh/laravel-ide-helper/pull/1059)
 - Error when generating helper for macroable classes which are not facades and contain a "fake" method [\#1066 / domkrm] (https://github.com/barryvdh/laravel-ide-helper/pull/1066)
 
+### Removed
+- Removed format and broken generateJsonHelper [\#1053 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1053)
+
 2020-09-07, 2.8.1
 -----------------
 ### Added

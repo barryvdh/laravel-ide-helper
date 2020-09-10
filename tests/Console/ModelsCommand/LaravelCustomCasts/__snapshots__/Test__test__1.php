@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Models;
 
@@ -6,6 +8,7 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Cas
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithDocblockReturnFqn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithNullablePrimitiveReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithoutReturnType;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithParam;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithPrimitiveDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithPrimitiveReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithReturnType;
@@ -21,9 +24,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $casted_property_with_return_primitive_docblock
  * @property array|null $casted_property_with_return_nullable_primitive
  * @property $casted_property_without_return
+ * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_param
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithParam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithReturnDocblock($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithReturnDocblockFqn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithReturnNullablePrimitive($value)
@@ -43,5 +48,6 @@ class CustomCast extends Model
         'casted_property_with_return_primitive_docblock' => CustomCasterWithPrimitiveDocblockReturn::class,
         'casted_property_with_return_nullable_primitive' => CustomCasterWithNullablePrimitiveReturn::class,
         'casted_property_without_return' => CustomCasterWithoutReturnType::class,
+        'casted_property_with_param' => CustomCasterWithParam::class . ':param',
     ];
 }

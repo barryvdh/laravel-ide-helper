@@ -19,6 +19,16 @@ use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -36,6 +46,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ModelsCommand extends Command
 {
+    protected const RELATION_TYPES = [
+        'hasMany' => HasMany::class,
+        'hasManyThrough' => HasManyThrough::class,
+        'hasOneThrough' => HasOneThrough::class,
+        'belongsToMany' => BelongsToMany::class,
+        'hasOne' => HasOne::class,
+        'belongsTo' => BelongsTo::class,
+        'morphOne' => MorphOne::class,
+        'morphTo' => MorphTo::class,
+        'morphMany' => MorphMany::class,
+        'morphToMany' => MorphToMany::class,
+        'morphedByMany' => MorphToMany::class,
+    ];
+
     /**
      * @var Filesystem $files
      */
@@ -58,10 +82,11 @@ class ModelsCommand extends Command
 
     protected $write_model_magic_where;
     protected $write_model_relation_count_properties;
-    protected $properties = array();
-    protected $methods = array();
+    protected $properties = [];
+    protected $methods = [];
     protected $write = false;
-    protected $dirs = array();
+    protected $write_mixin = false;
+    protected $dirs = [];
     protected $reset;
     protected $keep_text;
     protected $phpstorm_noinspections;
@@ -71,7 +96,7 @@ class ModelsCommand extends Command
     protected $nullableColumns = [];
 
     /**
-     * During initializtion we use Laravels Date Facade to
+     * During initialization we use Laravels Date Facade to
      * determine the actual date class and store it here.
      *
      * @var string
@@ -96,8 +121,9 @@ class ModelsCommand extends Command
     {
         $filename = $this->option('filename');
         $this->write = $this->option('write');
+        $this->write_mixin = $this->option('write-mixin');
         $this->dirs = array_merge(
-            $this->laravel['config']->get('ide-helper.model_locations'),
+            $this->laravel['config']->get('ide-helper.model_locations', []),
             $this->option('dir')
         );
         $model = $this->argument('model');
@@ -111,6 +137,7 @@ class ModelsCommand extends Command
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
 
+        $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
         if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
             if (
@@ -128,7 +155,7 @@ class ModelsCommand extends Command
 
         $content = $this->generateDocs($model, $ignore);
 
-        if (!$this->write) {
+        if (!$this->write || $this->write_mixin) {
             $written = $this->files->put($filename, $content);
             if ($written !== false) {
                 $this->info("Model information was written to $filename");
@@ -146,9 +173,9 @@ class ModelsCommand extends Command
      */
     protected function getArguments()
     {
-        return array(
-          array('model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', array()),
-        );
+        return [
+          ['model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', []],
+        ];
     }
 
     /**
@@ -158,20 +185,23 @@ class ModelsCommand extends Command
      */
     protected function getOptions()
     {
-        return array(
-          array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename),
-          array('dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-              'The model dir, supports glob patterns', array()),
-          array('write', 'W', InputOption::VALUE_NONE, 'Write to Model file'),
-          array('nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'),
-          array('reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'),
-          array('smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'),
-          array('phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
+        return [
+          ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename],
+          ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+              'The model dir, supports glob patterns', [], ],
+          ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
+          ['write-mixin', 'M', InputOption::VALUE_NONE,
+              "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
+          ],
+          ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
+          ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
+          ['smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
+          ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
               'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
-              'noinspection tags'
-          ),
-          array('ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''),
-        );
+              'noinspection tags',
+          ],
+          ['ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''],
+        ];
     }
 
     protected function generateDocs($loadModels, $ignore = '')
@@ -195,7 +225,7 @@ class ModelsCommand extends Command
         if (empty($loadModels)) {
             $models = $this->loadModels();
         } else {
-            $models = array();
+            $models = [];
             foreach ($loadModels as $model) {
                 $models = array_merge($models, explode(',', $model));
             }
@@ -203,7 +233,7 @@ class ModelsCommand extends Command
 
         $ignore = array_merge(
             explode(',', $ignore),
-            $this->laravel['config']->get('ide-helper.ignored_models', array())
+            $this->laravel['config']->get('ide-helper.ignored_models', [])
         );
 
         foreach ($models as $name) {
@@ -213,8 +243,8 @@ class ModelsCommand extends Command
                 }
                 continue;
             }
-            $this->properties = array();
-            $this->methods = array();
+            $this->properties = [];
+            $this->methods = [];
             if (class_exists($name)) {
                 try {
                     // handle abstract classes, interfaces, ...
@@ -224,9 +254,7 @@ class ModelsCommand extends Command
                         continue;
                     }
 
-                    if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                        $this->comment("Loading model '$name'");
-                    }
+                    $this->comment("Loading model '$name'", OutputInterface::VERBOSITY_VERBOSE);
 
                     if (!$reflectionClass->IsInstantiable()) {
                         // ignore abstract class or interface
@@ -250,7 +278,7 @@ class ModelsCommand extends Command
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
                 } catch (\Throwable $e) {
-                    $this->error("Exception: " . $e->getMessage() .
+                    $this->error('Exception: ' . $e->getMessage() .
                         "\nCould not analyze class $name.\n\nTrace:\n" .
                         $e->getTraceAsString());
                 }
@@ -270,9 +298,17 @@ class ModelsCommand extends Command
 
     protected function loadModels()
     {
-        $models = array();
+        $models = [];
         foreach ($this->dirs as $dir) {
-            $dir = base_path() . '/' . $dir;
+            if (is_dir(base_path($dir))) {
+                $dir = base_path($dir);
+            }
+
+            if (!is_dir($dir)) {
+                $this->error("Cannot locate directory '{'$dir}'");
+                continue;
+            }
+
             $dirs = glob($dir, GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
                 if (file_exists($dir)) {
@@ -332,35 +368,38 @@ class ModelsCommand extends Command
                     $realType = '\Illuminate\Support\Collection';
                     break;
                 default:
+                    // In case of an optional custom cast parameter , only evaluate
+                    // the `$type` until the `:`
+                    $type = strtok($type, ':');
                     $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
                     break;
             }
 
             if (!isset($this->properties[$name])) {
                 continue;
-            } else {
-                $realType = $this->checkForCustomLaravelCasts($realType);
-                $realType = $this->getTypeOverride($realType);
-                $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
+            }
 
-                if (isset($this->nullableColumns[$name])) {
-                    $this->properties[$name]['type'] .= '|null';
-                }
+            $realType = $this->checkForCustomLaravelCasts($realType);
+            $realType = $this->getTypeOverride($realType);
+            $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
+
+            if (isset($this->nullableColumns[$name])) {
+                $this->properties[$name]['type'] .= '|null';
             }
         }
     }
 
     /**
-     * Returns the overide type for the give type.
+     * Returns the override type for the give type.
      *
      * @param string $type
      * @return string|null
      */
     protected function getTypeOverride($type)
     {
-        $typeOverrides = $this->laravel['config']->get('ide-helper.type_overrides', array());
+        $typeOverrides = $this->laravel['config']->get('ide-helper.type_overrides', []);
 
-        return isset($typeOverrides[$type]) ? $typeOverrides[$type] : $type;
+        return $typeOverrides[$type] ?? $type;
     }
 
     /**
@@ -371,12 +410,12 @@ class ModelsCommand extends Command
     protected function getPropertiesFromTable($model)
     {
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
-        $schema = $model->getConnection()->getDoctrineSchemaManager($table);
+        $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
         $platformName = $databasePlatform->getName();
-        $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", array());
+        $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
@@ -388,70 +427,72 @@ class ModelsCommand extends Command
 
         $columns = $schema->listTableColumns($table, $database);
 
-        if ($columns) {
-            foreach ($columns as $column) {
-                $name = $column->getName();
-                if (in_array($name, $model->getDates())) {
-                    $type = $this->dateClass;
-                } else {
-                    $type = $column->getType()->getName();
-                    switch ($type) {
-                        case 'string':
-                        case 'text':
-                        case 'date':
-                        case 'time':
-                        case 'guid':
-                        case 'datetimetz':
-                        case 'datetime':
-                        case 'decimal':
-                            $type = 'string';
-                            break;
-                        case 'integer':
-                        case 'bigint':
-                        case 'smallint':
-                            $type = 'integer';
-                            break;
-                        case 'boolean':
-                            switch (config('database.default')) {
-                                case 'sqlite':
-                                case 'mysql':
-                                    $type = 'integer';
-                                    break;
-                                default:
-                                    $type = 'boolean';
-                                    break;
-                            }
-                            break;
-                        case 'float':
-                            $type = 'float';
-                            break;
-                        default:
-                            $type = 'mixed';
-                            break;
-                    }
-                }
+        if (!$columns) {
+            return;
+        }
 
-                $comment = $column->getComment();
-                if (!$column->getNotnull()) {
-                    $this->nullableColumns[$name] = true;
+        foreach ($columns as $column) {
+            $name = $column->getName();
+            if (in_array($name, $model->getDates())) {
+                $type = $this->dateClass;
+            } else {
+                $type = $column->getType()->getName();
+                switch ($type) {
+                    case 'string':
+                    case 'text':
+                    case 'date':
+                    case 'time':
+                    case 'guid':
+                    case 'datetimetz':
+                    case 'datetime':
+                    case 'decimal':
+                        $type = 'string';
+                        break;
+                    case 'integer':
+                    case 'bigint':
+                    case 'smallint':
+                        $type = 'integer';
+                        break;
+                    case 'boolean':
+                        switch (config('database.default')) {
+                            case 'sqlite':
+                            case 'mysql':
+                                $type = 'integer';
+                                break;
+                            default:
+                                $type = 'boolean';
+                                break;
+                        }
+                        break;
+                    case 'float':
+                        $type = 'float';
+                        break;
+                    default:
+                        $type = 'mixed';
+                        break;
                 }
-                $this->setProperty(
-                    $name,
-                    $this->getTypeInModel($model, $type),
-                    true,
-                    true,
-                    $comment,
-                    !$column->getNotnull()
+            }
+
+            $comment = $column->getComment();
+            if (!$column->getNotnull()) {
+                $this->nullableColumns[$name] = true;
+            }
+            $this->setProperty(
+                $name,
+                $this->getTypeInModel($model, $type),
+                true,
+                true,
+                $comment,
+                !$column->getNotnull()
+            );
+            if ($this->write_model_magic_where) {
+                $this->setMethod(
+                    Str::camel('where_' . $name),
+                    $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
+                    . '|'
+                    . $this->getClassNameInDestinationFile($model, get_class($model)),
+                    ['$value']
                 );
-                if ($this->write_model_magic_where) {
-                    $this->setMethod(
-                        Str::camel("where_" . $name),
-                        $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
-                        . '|'
-                        . $this->getClassNameInDestinationFile($model, get_class($model)),
-                        array('$value')
-                    );
-                }
             }
         }
     }
@@ -513,7 +554,7 @@ class ModelsCommand extends Command
 
                     $this->setMethod(
                         $method,
-                        $builder . "|" . $this->getClassNameInDestinationFile($model, get_class($model))
+                        $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
@@ -544,19 +585,7 @@ class ModelsCommand extends Command
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
                     foreach (
-                        array(
-                               'hasMany' => '\Illuminate\Database\Eloquent\Relations\HasMany',
-                               'hasManyThrough' => '\Illuminate\Database\Eloquent\Relations\HasManyThrough',
-                               'hasOneThrough' => '\Illuminate\Database\Eloquent\Relations\HasOneThrough',
-                               'belongsToMany' => '\Illuminate\Database\Eloquent\Relations\BelongsToMany',
-                               'hasOne' => '\Illuminate\Database\Eloquent\Relations\HasOne',
-                               'belongsTo' => '\Illuminate\Database\Eloquent\Relations\BelongsTo',
-                               'morphOne' => '\Illuminate\Database\Eloquent\Relations\MorphOne',
-                               'morphTo' => '\Illuminate\Database\Eloquent\Relations\MorphTo',
-                               'morphMany' => '\Illuminate\Database\Eloquent\Relations\MorphMany',
-                               'morphToMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany',
-                               'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
-                             ) as $relation => $impl
+                        $this->getRelationTypes() as $relation => $impl
                     ) {
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
@@ -570,7 +599,11 @@ class ModelsCommand extends Command
                             // can cause errors. Since we don't need constraints we can
                             // disable them when we fetch the relation to avoid errors.
                             $relationObj = Relation::noConstraints(function () use ($model, $method) {
-                                return $model->$method();
+                                try {
+                                    return $model->$method();
+                                } catch (\Throwable $e) {
+                                    return null;
+                                }
                             });
 
                             if ($relationObj instanceof Relation) {
@@ -579,14 +612,6 @@ class ModelsCommand extends Command
                                     get_class($relationObj->getRelated())
                                 );
 
-                                $relations = [
-                                    'hasManyThrough',
-                                    'belongsToMany',
-                                    'hasMany',
-                                    'morphMany',
-                                    'morphToMany',
-                                    'morphedByMany',
-                                ];
                                 if (strpos(get_class($relationObj), 'Many') !== false) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
@@ -609,7 +634,7 @@ class ModelsCommand extends Command
                                             false
                                         );
                                     }
-                                } elseif ($relation === "morphTo") {
+                                } elseif ($relation === 'morphTo') {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
                                         $method,
@@ -676,7 +701,7 @@ class ModelsCommand extends Command
     protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
     {
         if (!isset($this->properties[$name])) {
-            $this->properties[$name] = array();
+            $this->properties[$name] = [];
             $this->properties[$name]['type'] = 'mixed';
             $this->properties[$name]['read'] = false;
             $this->properties[$name]['write'] = false;
@@ -697,12 +722,12 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = array())
+    protected function setMethod($name, $type = '', $arguments = [])
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
         if (!isset($methods[strtolower($name)])) {
-            $this->methods[$name] = array();
+            $this->methods[$name] = [];
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;
         }
@@ -740,13 +765,13 @@ class ModelsCommand extends Command
             $phpdoc->setText($class);
         }
 
-        $properties = array();
-        $methods = array();
+        $properties = [];
+        $methods = [];
         foreach ($phpdoc->getTags() as $tag) {
             $name = $tag->getName();
-            if ($name == "property" || $name == "property-read" || $name == "property-write") {
+            if ($name == 'property' || $name == 'property-read' || $name == 'property-write') {
                 $properties[] = $tag->getVariableName();
-            } elseif ($name == "method") {
+            } elseif ($name == 'method') {
                 $methods[] = $tag->getMethodName();
             }
         }
@@ -785,37 +810,54 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
-        if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
+        if ($this->write && !$phpdoc->getTagsByName('mixin')) {
             $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
-            $phpdoc->appendTag(Tag::createInstance("@mixin " . $eloquentClassNameInModel, $phpdoc));
+            $phpdoc->appendTag(Tag::createInstance('@mixin ' . $eloquentClassNameInModel, $phpdoc));
         }
         if ($this->phpstorm_noinspections) {
             /**
              * Facades, Eloquent API
              * @see https://www.jetbrains.com/help/phpstorm/php-fully-qualified-name-usage.html
              */
-            $phpdoc->appendTag(Tag::createInstance("@noinspection PhpFullyQualifiedNameUsageInspection", $phpdoc));
+            $phpdoc->appendTag(Tag::createInstance('@noinspection PhpFullyQualifiedNameUsageInspection', $phpdoc));
             /**
              * Relations, other models in the same namespace
              * @see https://www.jetbrains.com/help/phpstorm/php-unnecessary-fully-qualified-name.html
              */
             $phpdoc->appendTag(
-                Tag::createInstance("@noinspection PhpUnnecessaryFullyQualifiedNameInspection", $phpdoc)
+                Tag::createInstance('@noinspection PhpUnnecessaryFullyQualifiedNameInspection', $phpdoc)
             );
         }
 
         $serializer = new DocBlockSerializer();
-        $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
 
+        if ($this->write_mixin) {
+            $phpdocMixin = new DocBlock($reflection, new Context($namespace));
+            // remove all mixin tags prefixed with IdeHelper
+            foreach ($phpdocMixin->getTagsByName('mixin') as $tag) {
+                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
+                    $phpdocMixin->deleteTag($tag);
+                }
+            }
+
+            $mixinClassName = "IdeHelper{$classname}";
+            $phpdocMixin->appendTag(Tag::createInstance("@mixin {$mixinClassName}", $phpdocMixin));
+            $mixinDocComment = $serializer->getDocComment($phpdocMixin);
+            // remove blank lines if there's no text
+            if (!$phpdocMixin->getText()) {
+                $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
+            }
+        }
 
         if ($this->write) {
+            $modelDocComment = $this->write_mixin ? $mixinDocComment : $docComment;
             $filename = $reflection->getFileName();
             $contents = $this->files->get($filename);
             if ($originalDoc) {
-                $contents = str_replace($originalDoc, $docComment, $contents);
+                $contents = str_replace($originalDoc, $modelDocComment, $contents);
             } else {
-                $replace = "{$docComment}\n";
+                $replace = "{$modelDocComment}\n";
                 $pos = strpos($contents, "final class {$classname}") ?: strpos($contents, "class {$classname}");
                 if ($pos !== false) {
                     $contents = substr_replace($contents, $replace, $pos, 0);
@@ -826,6 +868,7 @@ class ModelsCommand extends Command
             }
         }
 
+        $classname = $this->write_mixin ? $mixinClassName : $classname;
         $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent ";
 
         if ($interfaceNames) {
@@ -844,14 +887,12 @@ class ModelsCommand extends Command
      */
     public function getParameters($method)
     {
-        //Loop through the default values for paremeters, and make the correct output string
-        $params = array();
-        $paramsWithDefault = array();
+        //Loop through the default values for parameters, and make the correct output string
+        $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
             $paramClass = $param->getClass();
             $paramStr = (!is_null($paramClass) ? '\\' . $paramClass->getName() . ' ' : '') . '$' . $param->getName();
-            $params[] = $paramStr;
             if ($param->isOptional() && $param->isDefaultValueAvailable()) {
                 $default = $param->getDefaultValue();
                 if (is_bool($default)) {
@@ -890,6 +931,15 @@ class ModelsCommand extends Command
         /** @var \Illuminate\Database\Eloquent\Model $model */
         $model = new $className();
         return '\\' . get_class($model->newCollection());
+    }
+
+    /**
+     * Returns the available relation types
+     */
+    protected function getRelationTypes(): array
+    {
+        $configuredRelations = $this->laravel['config']->get('ide-helper.additional_relation_types', []);
+        return array_merge(self::RELATION_TYPES, $configuredRelations);
     }
 
     /**
@@ -1034,11 +1084,6 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    /**
-     * @param object|ReflectionClass  $model
-     * @param string $type
-     * @return string
-     */
     protected function getTypeInModel(object $model, ?string $type): ?string
     {
         if ($type === null) {
@@ -1052,11 +1097,6 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    /**
-     * @param object|ReflectionClass $model
-     * @param string $className
-     * @return string
-     */
     protected function getClassNameInDestinationFile(object $model, string $className): string
     {
         $reflection = $model instanceof ReflectionClass
@@ -1067,8 +1107,9 @@ class ModelsCommand extends Command
         $className = trim($className, '\\');
         $writingToExternalFile = !$this->write;
         $classIsNotInExternalFile = $reflection->getName() !== $className;
+        $forceFQCN = $this->laravel['config']->get('ide-helper.force_fqn', false);
 
-        if ($writingToExternalFile && $classIsNotInExternalFile) {
+        if (($writingToExternalFile && $classIsNotInExternalFile) || $forceFQCN) {
             return '\\' . $className;
         }
 

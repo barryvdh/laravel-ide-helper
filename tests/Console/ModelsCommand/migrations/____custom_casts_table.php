@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,6 +18,7 @@ class CustomCastsTable extends Migration
             $table->string('casted_property_with_return_primitive_docblock');
             $table->string('casted_property_with_return_nullable_primitive');
             $table->string('casted_property_without_return');
+            $table->string('casted_property_with_param');
         });
     }
 }

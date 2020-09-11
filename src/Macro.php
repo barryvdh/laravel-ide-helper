@@ -4,6 +4,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Support\Collection;
 
 class Macro extends Method
 {
@@ -33,6 +34,8 @@ class Macro extends Method
     {
         $this->phpdoc = new DocBlock('/** */');
 
+        $this->addLocationToPhpDoc();
+
         // Add macro parameters
         foreach ($method->getParameters() as $parameter) {
             $type = $parameter->hasType() ? $parameter->getType()->getName() : 'mixed';
@@ -50,6 +53,24 @@ class Macro extends Method
             $type .= $method->getReturnType()->allowsNull() ? '|null' : '';
 
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
+        }
+    }
+
+    protected function addLocationToPhpDoc()
+    {
+        $enclosingClass = $this->method->getClosureScopeClass();
+
+        /** @var \ReflectionMethod $enclosingMethod */
+        $enclosingMethod = Collection::make($enclosingClass->getMethods())
+            ->first(function (\ReflectionMethod $method) {
+                return $method->getStartLine() <= $this->method->getStartLine()
+                    && $method->getEndLine() >= $this->method->getEndLine();
+            });
+
+        if ($enclosingMethod) {
+            $this->phpdoc->appendTag(Tag::createInstance(
+                '@see \\' . $enclosingClass->getName() . '::' . $enclosingMethod->getName() . '()'
+            ));
         }
     }
 

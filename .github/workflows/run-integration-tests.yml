@@ -61,16 +61,9 @@ jobs:
                   php artisan ide-helper:meta
 
             - name: Check file existence
-              id: generated_files
-              uses: andstor/file-existence-action@v1
-              with:
-                files: "sample/_ide-helper.php, sample/.phpstorm.meta.php"
-
-            - name: File exists
-              if: steps.check_files.outputs.generated_files == 'false'
               run: |
-                  echo Not all files exist!
-                  exit 1
+                ls sample/_ide-helper.php
+                ls sample/.phpstorm.meta.php
 
     php-laravel-integration-tests:
         runs-on: ubuntu-latest
@@ -121,13 +114,6 @@ jobs:
                   php artisan ide-helper:meta
 
             - name: Check file existence
-              id: generated_files
-              uses: andstor/file-existence-action@v1
-              with:
-                files: "sample/_ide-helper.php, sample/.phpstorm.meta.php"
-
-            - name: File exists
-              if: steps.check_files.outputs.generated_files == 'false'
               run: |
-                  echo Not all files exist.
-                  exit 1
+                ls sample/_ide_helper.php
+                ls sample/.phpstarm.meta.php

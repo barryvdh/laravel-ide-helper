@@ -36,7 +36,8 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer create-project --prefer-dist laravel/lumen:${{ matrix.lumen }} --no-progress sample && cd sample
+                  composer create-project --prefer-dist laravel/lumen:${{ matrix.lumen }} --no-progress sample
+                  cd sample
                   composer require "league/flysystem" --no-update --no-progress
                   composer update  --prefer-stable --prefer-dist --no-progress
 
@@ -50,10 +51,14 @@ jobs:
               run: sed -e 's|// \$app->register(App\\\Providers\\\EventServiceProvider::class);|&\n$app->register(\\Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider::class);|' -i sample/bootstrap/app.php
 
             - name: Execute generate run
-              run: cd sample && php artisan ide-helper:generate
+              run: |
+                  cd sample
+                  php artisan ide-helper:generate
 
             - name: Execute meta run
-              run: cd sample && php artisan ide-helper:meta
+              run: |
+                  cd sample
+                  php artisan ide-helper:meta
 
             - name: Check file existence
               id: generated_files
@@ -62,8 +67,10 @@ jobs:
                 files: "sample/_ide-helper.php, sample/.phpstorm.meta.php"
 
             - name: File exists
-              if: steps.check_files.outputs.generated_files == 'true'
-              run: echo All files exists!
+              if: steps.check_files.outputs.generated_files == 'false'
+              run: |
+                  echo Not all files exist!
+                  exit 1
 
     php-laravel-integration-tests:
         runs-on: ubuntu-latest
@@ -93,7 +100,8 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --no-progress sample && cd sample
+                  composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --no-progress sample
+                  cd sample
                   composer update --prefer-stable --prefer-dist --no-progress
 
             - name: Add package from source
@@ -103,10 +111,14 @@ jobs:
                   composer require --dev "barryvdh/laravel-ide-helper:*"
 
             - name: Execute generate run
-              run: cd sample && php artisan ide-helper:generate
+              run: |
+                  cd sample
+                  php artisan ide-helper:generate
 
             - name: Execute meta run
-              run: cd sample && php artisan ide-helper:meta
+              run: |
+                  cd sample
+                  php artisan ide-helper:meta
 
             - name: Check file existence
               id: generated_files
@@ -115,5 +127,7 @@ jobs:
                 files: "sample/_ide-helper.php, sample/.phpstorm.meta.php"
 
             - name: File exists
-              if: steps.check_files.outputs.generated_files == 'true'
-              run: echo All files exists!
+              if: steps.check_files.outputs.generated_files == 'false'
+              run: |
+                  echo Not all files exist.
+                  exit 1

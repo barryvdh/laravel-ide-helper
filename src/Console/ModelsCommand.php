@@ -505,7 +505,7 @@ class ModelsCommand extends Command
                     [
                         empty($truePropertyType)
                             ? '$value'
-                            : "{$truePropertyType} \$value",
+                            : "$truePropertyType \$value",
                     ]
                 );
             }
@@ -725,8 +725,7 @@ class ModelsCommand extends Command
             $this->properties[$name]['comment'] = (string) $comment;
         }
         if ($type !== null) {
-            $this->properties[$name]['type'] =
-                $this->getTruePropertyType($type, $nullable);
+            $this->properties[$name]['type'] = $this->getTruePropertyType($type, $nullable);
         }
         if ($read !== null) {
             $this->properties[$name]['read'] = $read;

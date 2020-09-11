@@ -62,7 +62,7 @@ jobs:
 
             - name: Check file existence
               run: |
-                ls sample/_ide-helper.php
+                ls sample/_ide_helper.php
                 ls sample/.phpstorm.meta.php
 
     php-laravel-integration-tests:
@@ -116,4 +116,4 @@ jobs:
             - name: Check file existence
               run: |
                 ls sample/_ide_helper.php
-                ls sample/.phpstarm.meta.php
+                ls sample/.phpstorm.meta.php

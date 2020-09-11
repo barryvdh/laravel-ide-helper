@@ -69,7 +69,7 @@ jobs:
                   tools: composer:v2
             - name: Install dependencies
               run: |
-                  composer create-project --prefer-dist laravel/laravel:${{ matrix.lumen }} --no-progress sample && cd sample
+                  composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --no-progress sample && cd sample
                   composer require "barryvdh/laravel-ide-helper" --dev --no-update --no-progress
                   composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
             - name: Overwrite source

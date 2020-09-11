@@ -71,7 +71,8 @@ class Macro extends Method
         if ($enclosingMethod) {
 
             $this->phpdoc->appendTag(Tag::createInstance(
-                '@see \\' . $enclosingClass->getName() . '::' . $enclosingMethod->getName() . '()'));
+                '@see \\' . $enclosingClass->getName() . '::' . $enclosingMethod->getName() . '()'
+            ));
         }
     }
 

@@ -65,6 +65,10 @@ jobs:
                 ls sample/_ide_helper.php
                 ls sample/.phpstorm.meta.php
 
+            - name: Check file count in logs
+              run: |
+                if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ];then exit 1 ;
+
     php-laravel-integration-tests:
         runs-on: ubuntu-latest
         timeout-minutes: 15
@@ -117,3 +121,7 @@ jobs:
               run: |
                 ls sample/_ide_helper.php
                 ls sample/.phpstorm.meta.php
+
+            - name: Check file count in logs
+              run: |
+                if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ];then exit 1 ;

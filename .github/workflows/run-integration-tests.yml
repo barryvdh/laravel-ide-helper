@@ -1,4 +1,4 @@
-name: Integration tests
+name: Integration Tests
 
 on:
     push:
@@ -26,26 +26,45 @@ jobs:
               uses: actions/checkout@v2
               with:
                   path: src
+
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
                   tools: composer:v2
+
             - name: Install dependencies
               run: |
                   composer create-project --prefer-dist laravel/lumen:${{ matrix.lumen }} --no-progress sample && cd sample
                   composer require "league/flysystem" --no-update --no-progress
                   composer update  --prefer-stable --prefer-dist --no-progress
+
             - name: Add package from source
               run: |
                   cd sample
                   sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
                   composer require --dev "barryvdh/laravel-ide-helper:*"
+
             - name: Insert service provider
               run: sed -e 's|// \$app->register(App\\\Providers\\\EventServiceProvider::class);|&\n$app->register(\\Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider::class);|' -i sample/bootstrap/app.php
+
             - name: Execute generate run
               run: cd sample && php artisan ide-helper:generate
+
+            - name: Execute meta run
+              run: cd sample && php artisan ide-helper:meta
+
+            - name: Check file existence
+              id: generated_files
+              uses: andstor/file-existence-action@v1
+              with:
+                files: "sample/_ide-helper.php, sample/.phpstorm.meta.php"
+
+            - name: File exists
+              if: steps.check_files.outputs.generated_files == 'true'
+              run: echo All files exists!
+
     php-laravel-integration-tests:
         runs-on: ubuntu-latest
         timeout-minutes: 15
@@ -64,20 +83,37 @@ jobs:
               uses: actions/checkout@v2
               with:
                   path: src
+
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
                   tools: composer:v2
+
             - name: Install dependencies
               run: |
                   composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --no-progress sample && cd sample
                   composer update --prefer-stable --prefer-dist --no-progress
+
             - name: Add package from source
               run: |
                   cd sample
                   sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
                   composer require --dev "barryvdh/laravel-ide-helper:*"
+
             - name: Execute generate run
               run: cd sample && php artisan ide-helper:generate
+
+            - name: Execute meta run
+              run: cd sample && php artisan ide-helper:meta
+
+            - name: Check file existence
+              id: generated_files
+              uses: andstor/file-existence-action@v1
+              with:
+                files: "sample/_ide-helper.php, sample/.phpstorm.meta.php"
+
+            - name: File exists
+              if: steps.check_files.outputs.generated_files == 'true'
+              run: echo All files exists!

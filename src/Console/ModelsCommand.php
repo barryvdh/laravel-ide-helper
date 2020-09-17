@@ -305,13 +305,14 @@ class ModelsCommand extends Command
                 $dir = base_path($dir);
             }
 
-            if (!is_dir($dir)) {
-                $this->error("Cannot locate directory '{'$dir}'");
-                continue;
-            }
-
             $dirs = glob($dir, GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
+
+                if (!is_dir($dir)) {
+                    $this->error("Cannot locate directory '{'$dir}'");
+                    continue;
+                }
+
                 if (file_exists($dir)) {
                     $classMap = ClassMapGenerator::createMap($dir);
 

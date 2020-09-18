@@ -12,27 +12,25 @@ class Factories
     {
         $factories = [];
 
-        if (static::isLaravel8()) {
-            return $factories;
-        }
+        if (static::isLaravelSevenOrLower()) {
+            $factory = app(Factory::class);
 
-        $factory = app(Factory::class);
+            $definitions = (new ReflectionClass(Factory::class))->getProperty('definitions');
+            $definitions->setAccessible(true);
 
-        $definitions = (new ReflectionClass(Factory::class))->getProperty('definitions');
-        $definitions->setAccessible(true);
-
-        foreach ($definitions->getValue($factory) as $factory_target => $config) {
-            try {
-                $factories[] = new ReflectionClass($factory_target);
-            } catch (Exception $exception) {
+            foreach ($definitions->getValue($factory) as $factory_target => $config) {
+                try {
+                    $factories[] = new ReflectionClass($factory_target);
+                } catch (Exception $exception) {
+                }
             }
         }
 
         return $factories;
     }
 
-    protected static function isLaravel8(): bool
+    protected static function isLaravelSevenOrLower()
     {
-        return version_compare(app()->version(), '8.0.0', '>=');
+        return class_exists('Illuminate\Database\Eloquent\Factory');
     }
 }

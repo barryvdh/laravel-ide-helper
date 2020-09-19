@@ -9,9 +9,28 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 
 final class Test extends AbstractModelsCommand
 {
+    /** @var string */
+    private $cwd;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->cwd = getcwd();
+    }
+
+    protected function tearDown(): void
+    {
+        chdir($this->cwd);
+
+        parent::tearDown();
+    }
+
     public function test(): void
     {
         $command = $this->app->make(ModelsCommand::class);
+
+        chdir(__DIR__);
 
         $tester = $this->runCommand($command, [
             '--dir' => ['Services/*/Models'],

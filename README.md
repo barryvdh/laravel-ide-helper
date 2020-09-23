@@ -149,6 +149,8 @@ class IdeHelperDoIt extends Command
 
 In `composer.json` you can then add `"@php artisan ide-helper:do-it"` that will gracefully work indepent of `--no-dev` composer installs.
 
+It checks wether `APP_ENV="local"` is in `.env`. You can change that to match your setup.
+
 ### Automatic PHPDoc generation for macros and mixins
 
 This package can generate PHPDocs for macros and mixins which will be added to the `_ide_helper.php` file.

@@ -551,14 +551,14 @@ class ModelsCommand extends Command
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args);
                     }
-                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
+                }/* elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
                     $this->setMethod(
                         $method,
                         $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
-                } elseif (
+                } */elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {

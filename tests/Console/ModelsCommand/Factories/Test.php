@@ -11,6 +11,10 @@ class Test extends AbstractModelsCommand
 {
     public function test(): void
     {
+        if (class_exists('Illuminate\Database\Eloquent\Factory')) {
+            return;
+        }
+
         $command = $this->app->make(ModelsCommand::class);
 
         $tester = $this->runCommand($command, [

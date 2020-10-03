@@ -1036,7 +1036,7 @@ class ModelsCommand extends Command
      */
     protected function getFactoryMethods($model)
     {
-        if(! class_exists(Factory::class)) {
+        if(!class_exists(Factory::class)) {
             return;
         }
 
@@ -1044,7 +1044,7 @@ class ModelsCommand extends Command
         if (in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
             $modelName = get_class($model);
             $factory = get_class($modelName::factory());
-            $factory = '\\'. trim($factory, '\\');
+            $factory = '\\' . trim($factory, '\\');
             if (class_exists($factory)) {
                 $this->setMethod('factory', $factory, []);
             }

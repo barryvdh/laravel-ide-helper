@@ -60,7 +60,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Barryvdh\\LaravelIdeHelper\\Tests\\": "tests"
+            "Barryvdh\\LaravelIdeHelper\\Tests\\": "tests",
+            "Database\\Factories\\": "tests/Console/ModelsCommand/Factories/Factories"
         }
     },
     "minimum-stability": "dev",

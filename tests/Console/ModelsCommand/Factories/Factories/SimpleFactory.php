@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
+namespace Database\Factories;
 
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SimpleFactory extends Factory

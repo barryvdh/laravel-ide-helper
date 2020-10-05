@@ -12,7 +12,9 @@ class Test extends AbstractModelsCommand
     public function test(): void
     {
         if (class_exists('Illuminate\Database\Eloquent\Factory')) {
-            return;
+            $this->markTestSkipped(
+                'This test working only in laravel 8.x'
+            );
         }
 
         $command = $this->app->make(ModelsCommand::class);

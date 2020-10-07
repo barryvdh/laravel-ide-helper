@@ -21,12 +21,11 @@ jobs:
       matrix:
         php: [7.4, 7.3, 7.2]
         laravel: [8.*, 7.*, 6.*]
-        dependency-version: [prefer-lowest, prefer-stable]
         exclude:
           - laravel: 8.*
             php: 7.2
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }}
 
     steps:
     - name: Checkout code
@@ -43,7 +42,7 @@ jobs:
       run: |
         composer remove vimeo/psalm --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
-        composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
+        composer update --prefer-dist --no-progress
 
     - name: Execute Unit Tests
       run: composer test-ci

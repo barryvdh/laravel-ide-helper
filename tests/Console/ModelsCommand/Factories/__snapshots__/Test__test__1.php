@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\Simple
  *
  * @property integer $id
- * @method static \Database\Factories\SimpleFactory factory()
+ * @method static \Database\Factories\SimpleFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()

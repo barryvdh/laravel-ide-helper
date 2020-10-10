@@ -1046,7 +1046,7 @@ class ModelsCommand extends Command
             $factory = get_class($modelName::factory());
             $factory = '\\' . trim($factory, '\\');
             if (class_exists($factory)) {
-                $this->setMethod('factory', $factory, []);
+                $this->setMethod('factory', $factory, ['...$parameters']);
             }
         }
     }

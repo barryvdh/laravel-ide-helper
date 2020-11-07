@@ -91,6 +91,7 @@ class ModelsCommand extends Command
     protected $reset;
     protected $keep_text;
     protected $phpstorm_noinspections;
+    protected $write_model_external_builder_methods;
     /**
      * @var bool[string]
      */
@@ -135,6 +136,7 @@ class ModelsCommand extends Command
             $this->keep_text = $this->reset = true;
         }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
+        $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
 
@@ -559,23 +561,8 @@ class ModelsCommand extends Command
                         $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
 
-                    if ($builder !== '\Illuminate\Database\Eloquent\Builder') {
-                        $newBuilderMethods = get_class_methods($builder);
-                        $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
-
-                        // diff the methods between the new builder and original one
-                        // and create helpers for the ones that are new
-                        $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
-
-                        foreach ($newMethodsFromNewBuilder as $builderMethod) {
-                            $reflection = new \ReflectionMethod($builder, $builderMethod);
-                            $args = $this->getParameters($reflection);
-                            $this->setMethod(
-                                $builderMethod,
-                                $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
-                                $args
-                            );
-                        }
+                    if ($this->write_model_external_builder_methods) {
+                        $this->writeModelExternalBuilderMethods($builder, $model);
                     }
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
@@ -1150,5 +1137,28 @@ class ModelsCommand extends Command
         $namespaceAliases[$reflection->getName()] = $reflection->getShortName();
 
         return $namespaceAliases;
+    }
+
+    protected function writeModelExternalBuilderMethods(string $builder, Model $model): void
+    {
+        if ($builder !== '\Illuminate\Database\Eloquent\Builder') {
+            $newBuilderMethods = get_class_methods($builder);
+            $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
+
+            // diff the methods between the new builder and original one
+            // and create helpers for the ones that are new
+            $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
+
+            foreach ($newMethodsFromNewBuilder as $builderMethod) {
+                $reflection = new \ReflectionMethod($builder, $builderMethod);
+                $args = $this->getParameters($reflection);
+                $this->setMethod(
+                    $builderMethod,
+                    $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                    $args
+                );
+            }
+        }
+
     }
 }

@@ -1141,7 +1141,7 @@ class ModelsCommand extends Command
 
     protected function writeModelExternalBuilderMethods(string $builder, Model $model): void
     {
-        if ($builder !== '\Illuminate\Database\Eloquent\Builder') {
+        if (!in_array($builder, ['\Illuminate\Database\Eloquent\Builder', 'EloquentBuilder'])) {
             $newBuilderMethods = get_class_methods($builder);
             $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
 

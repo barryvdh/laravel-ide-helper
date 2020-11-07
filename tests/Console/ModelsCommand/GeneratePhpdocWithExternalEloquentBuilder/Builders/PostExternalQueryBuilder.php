@@ -40,4 +40,13 @@ class PostExternalQueryBuilder extends Builder
     {
         return $this;
     }
+
+    /**
+     * @param mixed $option
+     * @return $this
+     */
+    public function withMixedOption($option): self
+    {
+        return $this;
+    }
 }

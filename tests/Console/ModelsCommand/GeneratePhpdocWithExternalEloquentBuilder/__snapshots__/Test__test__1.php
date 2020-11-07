@@ -166,6 +166,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUuidNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereYearNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereYearNullable($value)
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post withMixedOption($option)
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post withSomeone($someone)
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post withTheNumber(?int $number)
  */

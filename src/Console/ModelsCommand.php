@@ -1141,24 +1141,25 @@ class ModelsCommand extends Command
 
     protected function writeModelExternalBuilderMethods(string $builder, Model $model): void
     {
-        if (!in_array($builder, ['\Illuminate\Database\Eloquent\Builder', 'EloquentBuilder'])) {
-            $newBuilderMethods = get_class_methods($builder);
-            $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
-
-            // diff the methods between the new builder and original one
-            // and create helpers for the ones that are new
-            $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
-
-            foreach ($newMethodsFromNewBuilder as $builderMethod) {
-                $reflection = new \ReflectionMethod($builder, $builderMethod);
-                $args = $this->getParameters($reflection);
-                $this->setMethod(
-                    $builderMethod,
-                    $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
-                    $args
-                );
-            }
+        if (in_array($builder, ['\Illuminate\Database\Eloquent\Builder', 'EloquentBuilder'])) {
+            return;
         }
 
+        $newBuilderMethods = get_class_methods($builder);
+        $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
+
+        // diff the methods between the new builder and original one
+        // and create helpers for the ones that are new
+        $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
+
+        foreach ($newMethodsFromNewBuilder as $builderMethod) {
+            $reflection = new \ReflectionMethod($builder, $builderMethod);
+            $args = $this->getParameters($reflection);
+            $this->setMethod(
+                $builderMethod,
+                $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                $args
+            );
+        }
     }
 }

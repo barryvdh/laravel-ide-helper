@@ -923,7 +923,7 @@ class ModelsCommand extends Command
             }
 
             if ($withTypeHint && $paramType = $this->getParamType($method, $param)) {
-                $paramStr = $paramType . ' ' .  $paramStr;
+                $paramStr = $paramType . ' ' . $paramStr;
             }
 
             $paramsWithDefault[] = $paramStr;

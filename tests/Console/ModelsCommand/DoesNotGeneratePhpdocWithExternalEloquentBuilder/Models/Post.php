@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder;
+use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {

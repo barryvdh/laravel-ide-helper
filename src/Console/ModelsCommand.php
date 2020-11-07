@@ -543,7 +543,7 @@ class ModelsCommand extends Command
                         array_shift($args);
                         $builder = $this->getClassNameInDestinationFile(
                             $reflection->getDeclaringClass(),
-                            \Illuminate\Database\Eloquent\Builder::class
+                            get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
                             $reflection->getDeclaringClass(),
@@ -558,6 +558,25 @@ class ModelsCommand extends Command
                         $method,
                         $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
+
+                    if ($builder !== '\Illuminate\Database\Eloquent\Builder') {
+                        $newBuilderMethods = get_class_methods($builder);
+                        $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
+
+                        // diff the methods between the new builder and original one
+                        // and create helpers for the ones that are new
+                        $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
+
+                        foreach ($newMethodsFromNewBuilder as $builderMethod) {
+                            $reflection = new \ReflectionMethod($builder, $builderMethod);
+                            $args = $this->getParameters($reflection);
+                            $this->setMethod(
+                                $builderMethod,
+                                $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                                $args
+                            );
+                        }
+                    }
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')

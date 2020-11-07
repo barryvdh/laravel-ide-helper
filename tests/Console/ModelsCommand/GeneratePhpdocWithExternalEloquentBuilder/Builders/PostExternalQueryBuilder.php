@@ -17,4 +17,27 @@ class PostExternalQueryBuilder extends Builder
     {
         return $this;
     }
+
+    public function isLoadingWith(?string $with): self
+    {
+        return $this;
+    }
+
+    /**
+     * @param int|null $number
+     * @return $this
+     */
+    public function withTheNumber($number): self
+    {
+        return $this;
+    }
+
+    /**
+     * @param int|string $someone
+     * @return $this
+     */
+    public function withSomeone($someone): self
+    {
+        return $this;
+    }
 }

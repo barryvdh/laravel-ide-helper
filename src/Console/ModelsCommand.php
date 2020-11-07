@@ -426,7 +426,7 @@ class ModelsCommand extends Command
 
         $database = null;
         if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);
@@ -893,9 +893,11 @@ class ModelsCommand extends Command
      * Get the parameters and format them correctly
      *
      * @param $method
+     * @param bool $withTypeHint
      * @return array
+     * @throws \ReflectionException
      */
-    public function getParameters($method)
+    public function getParameters($method, bool $withTypeHint = false)
     {
         //Loop through the default values for parameters, and make the correct output string
         $paramsWithDefault = [];
@@ -916,8 +918,14 @@ class ModelsCommand extends Command
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
+
                 $paramStr .= " = $default";
             }
+
+            if ($withTypeHint && $paramType = $this->getParamType($method, $param)) {
+                $paramStr = $paramType . ' ' .  $paramStr;
+            }
+
             $paramsWithDefault[] = $paramStr;
         }
         return $paramsWithDefault;
@@ -1154,12 +1162,82 @@ class ModelsCommand extends Command
 
         foreach ($newMethodsFromNewBuilder as $builderMethod) {
             $reflection = new \ReflectionMethod($builder, $builderMethod);
-            $args = $this->getParameters($reflection);
+            $args = $this->getParameters($reflection, true);
+
             $this->setMethod(
                 $builderMethod,
                 $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
                 $args
             );
         }
+    }
+
+    protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
+    {
+        if ($paramType = $parameter->getType()) {
+            if ($paramType->allowsNull()) {
+                return '?' . (string) $paramType;
+            }
+
+            return (string) $paramType;
+        }
+
+        $docComment = $method->getDocComment();
+
+        if (!$docComment) {
+            return null;
+        }
+
+        preg_match(
+            '/@param ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
+            $docComment ?? '',
+            $matches
+        );
+        $type = $matches[1] ?? null;
+
+        if (str_contains($type, '|')) {
+            $types = explode('|', $type);
+
+            // if we have more than 2 types
+            // we return null as we cannot use unions in php yet
+            if (count($types) > 2) {
+                return null;
+            }
+
+            $hasNull = false;
+
+            foreach ($types as $currentType) {
+                if ($currentType === 'null') {
+                    $hasNull = true;
+                    continue;
+                }
+
+                // if we didn't find null assign the current type to the type we want
+                $type = $currentType;
+            }
+
+            // if we haven't found null type set
+            // we return null as we cannot use unions with different types yet
+            if (!$hasNull) {
+                return null;
+            }
+
+            $type = '?' . $type;
+        }
+
+        $typesThatAreNotAllowed = [
+            'null',
+            'mixed',
+            'nullable',
+        ];
+
+        // we replace the ? with an empty string so we can check the actual type
+        if (in_array(str_replace('?', '', $type), $typesThatAreNotAllowed)) {
+            return null;
+        }
+
+        // if we have a match on index 1
+        // then we have found the type of the variable if not we return null
+        return $type;
     }
 }

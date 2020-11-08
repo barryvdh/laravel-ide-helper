@@ -1195,7 +1195,7 @@ class ModelsCommand extends Command
         );
         $type = $matches[1] ?? null;
 
-        if (str_contains($type, '|')) {
+        if (strpos($type, '|') !== false) {
             $types = explode('|', $type);
 
             // if we have more than 2 types

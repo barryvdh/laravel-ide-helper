@@ -1176,10 +1176,10 @@ class ModelsCommand extends Command
     {
         if ($paramType = $parameter->getType()) {
             if ($paramType->allowsNull()) {
-                return '?' . (string) $paramType;
+                return '?' . $paramType->getName();
             }
 
-            return (string) $paramType;
+            return $paramType->getName();
         }
 
         $docComment = $method->getDocComment();

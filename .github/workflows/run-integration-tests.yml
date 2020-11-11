@@ -63,8 +63,8 @@ jobs:
 
             - name: Check file existence
               run: |
-                ls sample/_ide_helper.php
-                ls sample/.phpstorm.meta.php
+                ls sample/.ide_helper/_ide_helper.php
+                ls sample/.ide_helper/.phpstorm.meta.php
 
             - name: Check file count in logs
               run: |
@@ -121,8 +121,8 @@ jobs:
 
             - name: Check file existence
               run: |
-                ls sample/_ide_helper.php
-                ls sample/.phpstorm.meta.php
+                ls sample/.ide_helper/_ide_helper.php
+                ls sample/.ide_helper/.phpstorm.meta.php
 
             - name: Check file count in logs
               run: |

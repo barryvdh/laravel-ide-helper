@@ -65,9 +65,9 @@ If for some reason you want manually control this:
 
 _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
 
-- [`php artisan ide-helper:generate` - PHPDoc generation for Laravel Facades ](#automatic-phpdoc-generation-for-laravel-facades)
-- [`php artisan ide-helper:models` - PHPDocs for models](#automatic-PHPDocs-for-models)
-- [`php artisan ide-helper:meta` - PhpStorm Meta file](#phpstorm-meta-for-container-instances)
+- [`php artisan ide-helper:generate-facades` - PHPDoc generation for Laravel Facades ](#automatic-phpdoc-generation-for-laravel-facades)
+- [`php artisan ide-helper:generate-models` - PHPDocs for models](#automatic-PHPDocs-for-models)
+- [`php artisan ide-helper:generate-phpstorm` - PhpStorm Meta file](#phpstorm-meta-for-container-instances)
 
 
 Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice
@@ -77,7 +77,7 @@ Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/C
 You can now re-generate the docs yourself (for future updates)
 
 ```bash
-php artisan ide-helper:generate
+php artisan ide-helper:generate-facades
 ```
 
 Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating.
@@ -90,8 +90,8 @@ You can configure your `composer.json` to do this each time you update your depe
 "scripts": {
     "post-update-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-        "@php artisan ide-helper:generate",
-        "@php artisan ide-helper:meta"
+        "@php artisan ide-helper:generate-facades",
+        "@php artisan ide-helper:generate-phpstorm"
     ]
 },
 ```
@@ -250,7 +250,7 @@ After publishing vendor, simply change the `include_fluent` line your `config/id
 'include_fluent' => true,
 ```
 
-Then run `php artisan ide-helper:generate`, you will now see all Fluent methods recognized by your IDE.
+Then run `php artisan ide-helper:generate-facades`, you will now see all Fluent methods recognized by your IDE.
 
 ### Auto-completion for factory builders
 
@@ -272,7 +272,7 @@ For example, `events` will return an `Illuminate\Events\Dispatcher` object,
 so with the meta file you can call `app('events')` and it will autocomplete the Dispatcher methods.
 
 ```bash
-php artisan ide-helper:meta
+php artisan ide-helper:generate-phpstorm
 ```
 
 ```php
@@ -351,7 +351,7 @@ return [
 ];
 ```
 
-After you run `php artisan ide-helper:generate`, it's recommended (but not mandatory) to rename `config/app.php` to something else,
+After you run `php artisan ide-helper:generate-facades`, it's recommended (but not mandatory) to rename `config/app.php` to something else,
 until you have to re-generate the docs or after passing to production environment.
 Lumen 5.1+ will read this file for configuration parameters if it is present, and may overlap some configurations if it is completely populated.
 

@@ -53,12 +53,12 @@ jobs:
             - name: Execute generate run
               run: |
                   cd sample
-                  php artisan ide-helper:generate
+                  php artisan ide-helper:generate-facades
 
             - name: Execute meta run
               run: |
                   cd sample
-                  php artisan ide-helper:meta
+                  php artisan ide-helper:generate-phpstorm
 
             - name: Check file existence
               run: |
@@ -110,12 +110,12 @@ jobs:
             - name: Execute generate run
               run: |
                   cd sample
-                  php artisan ide-helper:generate
+                  php artisan ide-helper:generate-facades
 
             - name: Execute meta run
               run: |
                   cd sample
-                  php artisan ide-helper:meta
+                  php artisan ide-helper:generate-phpstorm
 
             - name: Check file existence
               run: |

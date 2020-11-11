@@ -43,7 +43,7 @@ return [
     */
 
     'models_filename' => '.models.meta.php',
-    'models_skip_write_ask' => false,
+    'models_skip_write_ask' => true,
 
     /*
     |--------------------------------------------------------------------------

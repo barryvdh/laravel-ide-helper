@@ -21,14 +21,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
-class MetaCommand extends Command
+class PhpStormCommand extends Command
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'ide-helper:meta';
+    protected $name = 'ide-helper:generate-phpstorm';
 
     /**
      * The console command description.
@@ -37,14 +37,14 @@ class MetaCommand extends Command
      */
     protected $description = 'Generate metadata for PhpStorm';
 
+    /** @var \Illuminate\Contracts\Config\Repository */
+    protected $config;
+
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     protected $files;
 
     /** @var \Illuminate\Contracts\View\Factory */
     protected $view;
-
-    /** @var \Illuminate\Contracts\Config\Repository */
-    protected $config;
 
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
@@ -61,16 +61,15 @@ class MetaCommand extends Command
     ];
 
     /**
-     *
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Illuminate\Contracts\Config\Repository $config
      */
-    public function __construct($files, $view, $config)
+    public function __construct($config, $files, $view)
     {
+        $this->config = $config;
         $this->files = $files;
         $this->view = $view;
-        $this->config = $config;
         parent::__construct();
     }
 
@@ -81,6 +80,10 @@ class MetaCommand extends Command
      */
     public function handle()
     {
+        $directory = $this->config->get('ide-helper.directory');
+        $filename = $this->config->get('ide-helper.models_filename');
+        $filename = $directory . $filename;
+
         // Needs to run before exception handler is registered
         $factories = $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [];
 
@@ -114,7 +117,6 @@ class MetaCommand extends Command
           'factories' => $factories,
         ])->render();
 
-        $filename = $this->option('filename');
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {

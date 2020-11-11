@@ -12,9 +12,9 @@
 namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
-use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
-use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
+use Barryvdh\LaravelIdeHelper\Console\FacadesCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Console\PhpStormCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -60,21 +60,21 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
         $this->app->singleton(
             'command.ide-helper.generate',
             function ($app) use ($localViewFactory) {
-                return new GeneratorCommand($app['config'], $app['files'], $localViewFactory);
+                return new FacadesCommand($app['config'], $app['files'], $localViewFactory);
             }
         );
 
         $this->app->singleton(
             'command.ide-helper.models',
             function ($app) {
-                return new ModelsCommand($app['files']);
+                return new ModelsCommand($app['config'], $app['files']);
             }
         );
 
         $this->app->singleton(
             'command.ide-helper.meta',
             function ($app) use ($localViewFactory) {
-                return new MetaCommand($app['files'], $localViewFactory, $app['config']);
+                return new PhpStormCommand($app['config'], $app['files'], $localViewFactory);
             }
         );
 

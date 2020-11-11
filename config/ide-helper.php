@@ -2,29 +2,48 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Filename & Format
-    |--------------------------------------------------------------------------
-    |
-    | The default filename (without extension) and the format (php or json)
-    |
-    */
-
-    'filename'  => '_ide_helper',
-    'format'    => 'php',
+    'directory' => '.ide_helper/',
+    'format' => 'php',
 
     /*
     |--------------------------------------------------------------------------
-    | Where to write the PhpStorm specific meta file
+    | Ide Helper - Facades
+    |
+    | PHPDoc for Laravel Facades
     |--------------------------------------------------------------------------
     |
-    | PhpStorm also supports the directory `.phpstorm.meta.php/` with arbitrary
-    | files in it, should you need additional files for your project; e.g.
-    | `.phpstorm.meta.php/laravel_ide_Helper.php'.
+    | The default filename
     |
     */
-    'meta_filename' => '.phpstorm.meta.php',
+
+    'facades_filename' => '.facades.meta.php',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ide Helper - PhpStorm
+    |
+    | PHPDocs for Laravel Models
+    |--------------------------------------------------------------------------
+    |
+    | The default filename
+    |
+    */
+
+    'phpstorm_filename' => '.phpstorm.meta.php',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ide Helper - Models
+    |
+    | PHPDocs for Laravel Models
+    |--------------------------------------------------------------------------
+    |
+    | The default filename
+    |
+    */
+
+    'models_filename' => '.models.meta.php',
+    'models_skip_write_ask' => false,
 
     /*
     |--------------------------------------------------------------------------

@@ -23,14 +23,14 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
-class GeneratorCommand extends Command
+class FacadesCommand extends Command
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'ide-helper:generate';
+    protected $name = 'ide-helper:generate-facades';
 
     /**
      * The console command description.
@@ -49,7 +49,6 @@ class GeneratorCommand extends Command
     protected $view;
 
     protected $onlyExtend;
-
 
     /**
      *
@@ -88,20 +87,14 @@ class GeneratorCommand extends Command
             return;
         }
 
-        $filename = $this->argument('filename');
         $format = $this->option('format');
-
-        // Strip the php extension
-        if (substr($filename, -4, 4) === '.php') {
-            $filename = substr($filename, 0, -4);
-        }
-
-        $filename .= '.' . $format;
+        $directory = $this->config->get('ide-helper.directory');
+        $filename = $this->config->get('ide-helper.facades_filename');
+        $filename = $directory . $filename;
 
         if ($this->option('memory')) {
             $this->useMemoryDriver();
         }
-
 
         $helpers = '';
         if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {

@@ -29,7 +29,7 @@ class MetaCommandTest extends TestCase
                 })();
             });
 
-        $this->artisan('ide-helper:meta');
+        $this->artisan('ide-helper:generate-phpstorm');
 
         // We're not testing the whole file, just some basic structure elements
         self::assertStringContainsString("namespace PHPSTORM_META {\n", $this->mockFilesystemOutput);

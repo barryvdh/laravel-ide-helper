@@ -16,6 +16,7 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
+use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
@@ -61,9 +62,10 @@ class ModelsCommand extends Command
         'morphedByMany' => MorphToMany::class,
     ];
 
-    /**
-     * @var Filesystem $files
-     */
+    /** @var Repository */
+    protected $config;
+
+    /** @var Filesystem $files */
     protected $files;
 
     /**
@@ -71,8 +73,7 @@ class ModelsCommand extends Command
      *
      * @var string
      */
-    protected $name = 'ide-helper:models';
-    protected $filename = '_ide_helper_models.php';
+    protected $name = 'ide-helper:generate-models';
 
     /**
      * The console command description.
@@ -81,6 +82,7 @@ class ModelsCommand extends Command
      */
     protected $description = 'Generate autocompletion for models';
 
+    protected $filename;
     protected $write_model_magic_where;
     protected $write_model_relation_count_properties;
     protected $properties = [];
@@ -107,9 +109,10 @@ class ModelsCommand extends Command
     /**
      * @param Filesystem $files
      */
-    public function __construct(Filesystem $files)
+    public function __construct(Repository $config, Filesystem $files)
     {
         parent::__construct();
+        $this->config = $config;
         $this->files = $files;
     }
 
@@ -120,7 +123,12 @@ class ModelsCommand extends Command
      */
     public function handle()
     {
-        $filename = $this->option('filename');
+        $modelsSkipWriteAsk = $this->config->get('ide-helper.models_skip_write_ask');
+        $directory = $this->config->get('ide-helper.directory');
+        $filename = $this->config->get('ide-helper.models_filename');
+        $filename = $directory . $filename;
+        $this->filename = $filename;
+
         $this->write = $this->option('write');
         $this->write_mixin = $this->option('write-mixin');
         $this->dirs = array_merge(
@@ -140,7 +148,9 @@ class ModelsCommand extends Command
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
-        if (!$this->write && $filename === $this->filename && !$this->option('nowrite')) {
+        if($modelsSkipWriteAsk){
+            //skip it
+        }elseif (!$this->write && !$this->option('nowrite')) {
             if (
                 $this->confirm(
                     "Do you want to overwrite the existing model files? Choose no to write to $filename instead"

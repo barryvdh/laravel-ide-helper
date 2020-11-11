@@ -18,7 +18,7 @@ final class Test extends AbstractModelsCommand
         ]);
 
         $this->assertSame(0, $tester->getStatusCode());
-        $this->assertStringContainsString('Model information was written to _ide_helper_models.php', $tester->getDisplay());
+        $this->assertStringContainsString('Model information was written to .ide_helper/.models.meta.php', $tester->getDisplay());
         $this->assertMatchesMockedSnapshot();
     }
 }

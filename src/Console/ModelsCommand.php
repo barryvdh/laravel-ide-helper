@@ -111,9 +111,10 @@ class ModelsCommand extends Command
      */
     public function __construct(Repository $config, Filesystem $files)
     {
-        parent::__construct();
         $this->config = $config;
         $this->files = $files;
+
+        parent::__construct();
     }
 
     /**

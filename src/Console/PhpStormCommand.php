@@ -12,6 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Factories;
+use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -65,11 +66,12 @@ class PhpStormCommand extends Command
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
      */
-    public function __construct($config, $files, $view)
+    public function __construct(Repository $config, $files, $view)
     {
         $this->config = $config;
         $this->files = $files;
         $this->view = $view;
+
         parent::__construct();
     }
 

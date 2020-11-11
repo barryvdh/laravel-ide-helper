@@ -40,6 +40,7 @@ jobs:
                   cd sample
                   composer require "league/flysystem" --no-update --no-progress
                   composer update  --prefer-stable --prefer-dist --no-progress
+                  mkdir .ide-helper
 
             - name: Add package from source
               run: |
@@ -99,6 +100,7 @@ jobs:
               run: |
                   composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --no-progress sample
                   cd sample
+                  mkdir .ide-helper
                   composer update --prefer-stable --prefer-dist --no-progress
 
             - name: Add package from source

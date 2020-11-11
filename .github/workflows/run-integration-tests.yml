@@ -54,6 +54,7 @@ jobs:
             - name: Execute generate run
               run: |
                   cd sample
+                  mkdir .ide-helper
                   php artisan ide-helper:generate-facades
 
             - name: Execute meta run
@@ -112,6 +113,7 @@ jobs:
             - name: Execute generate run
               run: |
                   cd sample
+                  mkdir .ide-helper
                   php artisan ide-helper:generate-facades
 
             - name: Execute meta run

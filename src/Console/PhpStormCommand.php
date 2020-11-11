@@ -81,7 +81,7 @@ class PhpStormCommand extends Command
     public function handle()
     {
         $directory = $this->config->get('ide-helper.directory');
-        $filename = $this->config->get('ide-helper.models_filename');
+        $filename = $this->config->get('ide-helper.phpstorm_filename');
         $filename = $directory . $filename;
 
         // Needs to run before exception handler is registered

@@ -35,7 +35,6 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
-                  tools: composer:v2
 
             - name: Install dependencies
               run: |
@@ -96,7 +95,6 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
-                  tools: composer:v2
 
             - name: Install dependencies
               run: |

@@ -37,6 +37,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
+        extensions: pdo_sqlite
 
     - name: Install dependencies
       run: |

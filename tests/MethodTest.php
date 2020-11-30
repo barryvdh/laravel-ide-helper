@@ -51,7 +51,7 @@ DOC;
         $this->assertSame(['$last', '$first', '...$middle'], $method->getParams(false));
         $this->assertSame('$last, $first = \'Barry\', ...$middle', $method->getParamsWithDefault(true));
         $this->assertSame(['$last', '$first = \'Barry\'', '...$middle'], $method->getParamsWithDefault(false));
-        $this->assertSame(true, $method->shouldReturn());
+        $this->assertTrue($method->shouldReturn());
     }
 
     /**
@@ -85,7 +85,7 @@ DOC;
         $this->assertSame(['$relations', '$callback'], $method->getParams(false));
         $this->assertSame('$relations, $callback = null', $method->getParamsWithDefault(true));
         $this->assertSame(['$relations', '$callback = null'], $method->getParamsWithDefault(false));
-        $this->assertSame(true, $method->shouldReturn());
+        $this->assertTrue($method->shouldReturn());
     }
 
     /**

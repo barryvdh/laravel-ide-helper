@@ -31,6 +31,7 @@
         "phpdocumentor/type-resolver": "^1.1.0"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "friendsofphp/php-cs-fixer": "^2",
         "illuminate/config": "^6 || ^7 || ^8",
         "illuminate/view": "^6 || ^7 || ^8",

@@ -12,7 +12,7 @@ on:
 
 jobs:
     php-lumen-integration-tests:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         timeout-minutes: 15
         env:
             COMPOSER_NO_INTERACTION: 1
@@ -35,13 +35,12 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
-                  tools: composer:v2
 
             - name: Install dependencies
               run: |
                   composer create-project --prefer-dist laravel/lumen:${{ matrix.lumen }} --no-progress sample
                   cd sample
-                  composer require "league/flysystem" --no-update --no-progress
+                  composer require "league/flysystem:^1" --no-update --no-progress
                   composer update  --prefer-stable --prefer-dist --no-progress
 
             - name: Add package from source
@@ -73,7 +72,7 @@ jobs:
                 if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ];then exit 1;fi
 
     php-laravel-integration-tests:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         timeout-minutes: 15
         env:
             COMPOSER_NO_INTERACTION: 1
@@ -96,7 +95,6 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
-                  tools: composer:v2
 
             - name: Install dependencies
               run: |

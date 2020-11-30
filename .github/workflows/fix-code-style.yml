@@ -7,7 +7,7 @@ jobs:
   fix-style:
     name: Fix Code Style
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       COMPOSER_NO_INTERACTION: 1
 
@@ -20,7 +20,6 @@ jobs:
         with:
           php-version: 7.4
           coverage: none
-          tools: composer:v2
 
       - name: Install dependencies
         run: composer update --prefer-dist --no-progress

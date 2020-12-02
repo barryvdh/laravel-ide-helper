@@ -18,7 +18,7 @@ jobs:
             COMPOSER_NO_INTERACTION: 1
         strategy:
             matrix:
-                php: [7.4, 7.3, 7.2]
+                php: [8.0, 7.4, 7.3, 7.2]
                 lumen: [8.*, 7.*, 6.*]
                 exclude:
                   - lumen: 8.*

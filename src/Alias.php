@@ -17,6 +17,7 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Support\Facades\Facade;
 use ReflectionClass;
 
 class Alias
@@ -80,10 +81,7 @@ class Alias
             $this->namespaceUses = new NamespaceUses($this->root);
 
             //Create a DocBlock and serializer instance
-            $this->phpdoc = new DocBlock(
-                new ReflectionClass($alias),
-                new Context($this->namespace, $this->namespaceUses->classAliases)
-            );
+            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace, $this->namespaceUses->classAliases));
         }
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
@@ -207,6 +205,10 @@ class Alias
     {
         $facade = $this->facade;
 
+        if (!is_subclass_of($facade, Facade::class)) {
+            return;
+        }
+
         if (!method_exists($facade, 'fake')) {
             return;
         }
@@ -329,14 +331,7 @@ class Alias
 
             if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
-                    $this->methods[] = new Method(
-                        $method,
-                        $this->alias,
-                        $class,
-                        $magic,
-                        $this->interfaces,
-                        $this->namespaceUses
-                    );
+                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces, $this->namespaceUses);
                 }
                 $this->usedMethods[] = $magic;
             }

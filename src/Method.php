@@ -48,14 +48,7 @@ class Method
      * @param array $interfaces
      * @param NamespaceUses $namespaceUses
      */
-    public function __construct(
-        $method,
-        $alias,
-        $class,
-        $methodName = null,
-        $interfaces = [],
-        NamespaceUses $namespaceUses = null
-    ) {
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], NamespaceUses $namespaceUses = null) {
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->namespaceUses = $namespaceUses;
@@ -89,13 +82,7 @@ class Method
      */
     protected function initPhpDoc($method)
     {
-        $this->phpdoc = new DocBlock(
-            $method,
-            new Context(
-                $this->namespace,
-                $this->namespaceUses->classAliases ?? []
-            )
-        );
+        $this->phpdoc = new DocBlock($method, new Context($this->namespace, $this->namespaceUses->classAliases ?? []));
     }
 
     /**
@@ -378,13 +365,7 @@ class Method
         }
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
-            $phpdoc = new DocBlock(
-                $method,
-                new Context(
-                    $namespace,
-                    $this->namespaceUses->classAliases ?? []
-                )
-            );
+            $phpdoc = new DocBlock($method, new Context($namespace, $this->namespaceUses->classAliases ?? []));
 
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..

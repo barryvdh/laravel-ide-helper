@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
-use Database\Factories\SimpleFactory;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\SimpleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

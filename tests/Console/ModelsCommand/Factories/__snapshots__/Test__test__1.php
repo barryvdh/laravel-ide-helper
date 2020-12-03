@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
-use Database\Factories\SimpleFactory;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\SimpleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\Simple
  *
  * @property integer $id
- * @method static \Database\Factories\SimpleFactory factory(...$parameters)
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\SimpleFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()

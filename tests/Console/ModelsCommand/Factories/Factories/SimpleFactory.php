@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories;
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple;
 use Illuminate\Database\Eloquent\Factories\Factory;

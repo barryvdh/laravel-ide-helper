@@ -25,6 +25,8 @@ jobs:
         exclude:
           - laravel: 8.*
             php: 7.2
+          - php: 8.0
+            dependency-version: prefer-lowest
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 

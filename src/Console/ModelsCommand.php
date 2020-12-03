@@ -424,7 +424,7 @@ class ModelsCommand extends Command
 
         $database = null;
         if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);
@@ -895,8 +895,18 @@ class ModelsCommand extends Command
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
-            $paramClass = $param->getClass();
-            $paramStr = (!is_null($paramClass) ? '\\' . $paramClass->getName() . ' ' : '') . '$' . $param->getName();
+            $paramType = $param->getType();
+
+            $paramStr = '$' . $param->getName();
+            if ($paramType) {
+                $paramTypeStr = $paramType->getName();
+                if (!$paramType->isBuiltin()) {
+                    $paramTypeStr = '\\' . $paramTypeStr;
+                }
+
+                $paramStr = $paramTypeStr . ' ' . $paramStr;
+            }
+
             if ($param->isOptional() && $param->isDefaultValueAvailable()) {
                 $default = $param->getDefaultValue();
                 if (is_bool($default)) {

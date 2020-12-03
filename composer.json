@@ -23,7 +23,7 @@
         "php": ">=7.2",
         "ext-json": "*",
         "barryvdh/reflection-docblock": "^2.0.6",
-        "composer/composer": "^1.6 || ^2.0@dev",
+        "composer/composer": "^1.6 || ^2",
         "doctrine/dbal": "~2.3",
         "illuminate/console": "^6 || ^7 || ^8",
         "illuminate/filesystem": "^6 || ^7 || ^8",

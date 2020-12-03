@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories;
 
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Foundation\Application;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 
@@ -31,10 +31,6 @@ class Test extends AbstractModelsCommand
 
     private function isLaravel8Point2OrUpper()
     {
-        Artisan::call('list', ['-V']);
-
-        $version = str_replace(['Laravel Framework ', "\n"], '', Artisan::output());
-
-        return $version >= '8.2';
+        return version_compare(Application::VERSION, '8.2', '>=');
     }
 }

@@ -110,7 +110,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     {
         $resolver = new EngineResolver();
         $resolver->register('php', function () {
-            if ((int) Application::VERSION < 8) {
+            if (Helpers::isLaravel() && (int) Application::VERSION < 8) {
                 return new PhpEngine();
             }
 

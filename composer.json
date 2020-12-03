@@ -1,5 +1,5 @@
 {
-    "name": "savks/laravel-ide-helper",
+    "name": "barryvdh/laravel-ide-helper",
     "description": "Laravel IDE Helper, generates correct PHPDocs for all Facade classes, to improve auto-completion.",
     "keywords": [
         "laravel",
@@ -28,10 +28,10 @@
         "illuminate/console": "^6 || ^7 || ^8",
         "illuminate/filesystem": "^6 || ^7 || ^8",
         "illuminate/support": "^6 || ^7 || ^8",
-        "phpdocumentor/type-resolver": "^1.1.0",
-        "nikic/php-parser": "^4.7"
+        "phpdocumentor/type-resolver": "^1.1.0"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "friendsofphp/php-cs-fixer": "^2",
         "illuminate/config": "^6 || ^7 || ^8",
         "illuminate/view": "^6 || ^7 || ^8",

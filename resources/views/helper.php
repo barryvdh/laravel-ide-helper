@@ -35,7 +35,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
             //Method inherited from <?= $method->getDeclaringClass() ?>
          <?php endif; ?>
 
-            <?php if ($method->isInstanceCall()) :?>
+            <?php if ($method->isInstanceCall()) : ?>
             /** @var <?=$method->getRoot()?> $instance */
             <?php endif?>
             <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;
@@ -58,7 +58,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
                 //Method inherited from <?= $method->getDeclaringClass() ?>
              <?php endif; ?>
 
-                <?php if ($method->isInstanceCall()) :?>
+                <?php if ($method->isInstanceCall()) : ?>
                 /** @var <?=$method->getRoot()?> $instance */
                 <?php endif?>
                 <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;

@@ -256,6 +256,7 @@ Then run `php artisan ide-helper:generate`, you will now see all Fluent methods 
 
 If you would like the `factory()->create()` and `factory()->make()` methods to return the correct model class,
 you can enable custom factory builders with the `include_factory_builders` line your `config/ide-helper.php` file.
+Deprecated for Laravel 8 or latest.
 
 ```php
 'include_factory_builders' => true,

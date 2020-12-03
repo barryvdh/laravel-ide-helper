@@ -12,7 +12,7 @@ class Test extends AbstractModelsCommand
 {
     public function test(): void
     {
-        if (! $this->isLaravel8Point2OrUpper()) {
+        if (! version_compare(Application::VERSION, '8.2', '>=')) {
             $this->markTestSkipped(
                 'This test only works in Laravel >= 8.2'
             );
@@ -27,10 +27,5 @@ class Test extends AbstractModelsCommand
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
         $this->assertMatchesMockedSnapshot();
-    }
-
-    private function isLaravel8Point2OrUpper()
-    {
-        return version_compare(Application::VERSION, '8.2', '>=');
     }
 }

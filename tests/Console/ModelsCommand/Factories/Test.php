@@ -14,7 +14,7 @@ class Test extends AbstractModelsCommand
     {
         if (! $this->isLaravel8Point2OrUpper()) {
             $this->markTestSkipped(
-                'This test working only in laravel 8.x'
+                'This test only works in Laravel >= 8.2'
             );
         }
 

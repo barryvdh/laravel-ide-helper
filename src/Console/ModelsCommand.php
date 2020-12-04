@@ -1089,13 +1089,17 @@ class ModelsCommand extends Command
 
         $methodReflection = new \ReflectionMethod($type, 'get');
 
-        $type = $this->getReturnTypeFromReflection($methodReflection);
+        $reflectionType = $this->getReturnTypeFromReflection($methodReflection);
 
-        if ($type === null) {
-            $type = $this->getReturnTypeFromDocBlock($methodReflection);
+        if ($reflectionType === null) {
+            $reflectionType = $this->getReturnTypeFromDocBlock($methodReflection);
+        }
+        
+        if($reflectionType === 'static' || $reflectionType === '$this') {
+            $reflectionType = $type;
         }
 
-        return $type;
+        return $reflectionType;
     }
 
     protected function getTypeInModel(object $model, ?string $type): ?string

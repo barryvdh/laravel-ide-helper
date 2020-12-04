@@ -61,7 +61,16 @@ class PostExternalQueryBuilder extends Builder
         return $this;
     }
 
-    public function withNullAndAssignementTestCommand(?ModelsCommand $testCommand = null): self
+    public function withNullAndAssignmentTestCommand(?ModelsCommand $testCommand = null): self
+    {
+        return $this;
+    }
+
+    /**
+     * @param ModelsCommand $testCommand
+     * @return $this
+     */
+    public function withNullTestCommandInDocBlock($testCommand): self
     {
         return $this;
     }

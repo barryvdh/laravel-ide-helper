@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilder\Builders;
 
-use Illuminate\Database\Eloquent\Builder;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Illuminate\Database\Eloquent\Builder;
 
 class PostExternalQueryBuilder extends Builder
 {

@@ -424,7 +424,7 @@ class ModelsCommand extends Command
 
         $database = null;
         if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);
@@ -479,21 +479,35 @@ class ModelsCommand extends Command
             if (!$column->getNotnull()) {
                 $this->nullableColumns[$name] = true;
             }
+
+            $propertyType = $this->getTypeInModel($model, $type);
+            $nullable = !$column->getNotnull();
+
             $this->setProperty(
                 $name,
-                $this->getTypeInModel($model, $type),
+                $propertyType,
                 true,
                 true,
                 $comment,
-                !$column->getNotnull()
+                $nullable
             );
+
             if ($this->write_model_magic_where) {
+                $truePropertyType = $this->getTruePropertyType(
+                    $propertyType,
+                    $nullable
+                );
+
                 $this->setMethod(
                     Str::camel('where_' . $name),
                     $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
                     . '|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
-                    ['$value']
+                    [
+                        empty($truePropertyType)
+                            ? '$value'
+                            : "$truePropertyType \$value",
+                    ]
                 );
             }
         }
@@ -712,11 +726,7 @@ class ModelsCommand extends Command
             $this->properties[$name]['comment'] = (string) $comment;
         }
         if ($type !== null) {
-            $newType = $this->getTypeOverride($type);
-            if ($nullable) {
-                $newType .= '|null';
-            }
-            $this->properties[$name]['type'] = $newType;
+            $this->properties[$name]['type'] = $this->getTruePropertyType($type, $nullable);
         }
         if ($read !== null) {
             $this->properties[$name]['read'] = $read;
@@ -724,6 +734,18 @@ class ModelsCommand extends Command
         if ($write !== null) {
             $this->properties[$name]['write'] = $write;
         }
+    }
+
+    protected function getTruePropertyType(string $type, bool $nullable): string
+    {
+        /** @var string $trueType */
+        $trueType = $this->getTypeOverride($type);
+
+        if ($nullable) {
+            $trueType .= '|null';
+        }
+
+        return $trueType;
     }
 
     protected function setMethod($name, $type = '', $arguments = [])

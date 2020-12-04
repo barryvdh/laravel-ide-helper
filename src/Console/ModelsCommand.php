@@ -893,26 +893,18 @@ class ModelsCommand extends Command
      * Get the parameters and format them correctly
      *
      * @param $method
-     * @param bool $withTypeHint
      * @return array
      * @throws \ReflectionException
      */
-    public function getParameters($method, bool $withTypeHint = false)
+    public function getParameters($method)
     {
         //Loop through the default values for parameters, and make the correct output string
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
-            $paramType = $param->getType();
-
             $paramStr = '$' . $param->getName();
-            if ($paramType) {
-                $paramTypeStr = $paramType->getName();
-                if (!$paramType->isBuiltin()) {
-                    $paramTypeStr = '\\' . $paramTypeStr;
-                }
-
-                $paramStr = $paramTypeStr . ' ' . $paramStr;
+            if ($paramType = $this->getParamType($method, $param)) {
+                $paramStr = $paramType . ' ' . $paramStr;
             }
 
             if ($param->isOptional() && $param->isDefaultValueAvailable()) {
@@ -930,10 +922,6 @@ class ModelsCommand extends Command
                 }
 
                 $paramStr .= " = $default";
-            }
-
-            if ($withTypeHint && $paramType = $this->getParamType($method, $param)) {
-                $paramStr = $paramType . ' ' . $paramStr;
             }
 
             $paramsWithDefault[] = $paramStr;
@@ -1176,7 +1164,7 @@ class ModelsCommand extends Command
 
         foreach ($newMethodsFromNewBuilder as $builderMethod) {
             $reflection = new \ReflectionMethod($builder, $builderMethod);
-            $args = $this->getParameters($reflection, true);
+            $args = $this->getParameters($reflection);
 
             $this->setMethod(
                 $builderMethod,
@@ -1189,11 +1177,17 @@ class ModelsCommand extends Command
     protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
     {
         if ($paramType = $parameter->getType()) {
-            if ($paramType->allowsNull()) {
-                return '?' . $paramType->getName();
+            $parameterName = $paramType->getName();
+
+            if (!$paramType->isBuiltin()) {
+                $parameterName = '\\' . $parameterName;
             }
 
-            return $paramType->getName();
+            if ($paramType->allowsNull()) {
+                return '?' . $parameterName;
+            }
+
+            return $parameterName;
         }
 
         $docComment = $method->getDocComment();
@@ -1239,14 +1233,18 @@ class ModelsCommand extends Command
             $type = '?' . $type;
         }
 
-        $typesThatAreNotAllowed = [
-            'null',
-            'mixed',
-            'nullable',
+        // convert to proper type hint types in php
+        $type = str_replace(['boolean', 'integer'], ['bool', 'int'], $type);
+
+        $allowedTypes = [
+            'int',
+            'bool',
+            'string',
+            'float',
         ];
 
         // we replace the ? with an empty string so we can check the actual type
-        if (in_array(str_replace('?', '', $type), $typesThatAreNotAllowed)) {
+        if (!in_array(str_replace('?', '', $type), $allowedTypes)) {
             return null;
         }
 

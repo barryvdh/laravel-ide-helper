@@ -64,6 +64,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Write Model External Eloquent Builder methods
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable write external eloquent builder methods
+    |
+    */
+
+    'write_model_external_builder_methods' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Write Model relation count properties
     |--------------------------------------------------------------------------
     |

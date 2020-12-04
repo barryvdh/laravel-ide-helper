@@ -91,6 +91,7 @@ class ModelsCommand extends Command
     protected $reset;
     protected $keep_text;
     protected $phpstorm_noinspections;
+    protected $write_model_external_builder_methods;
     /**
      * @var bool[string]
      */
@@ -135,6 +136,7 @@ class ModelsCommand extends Command
             $this->keep_text = $this->reset = true;
         }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
+        $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
 
@@ -543,7 +545,7 @@ class ModelsCommand extends Command
                         array_shift($args);
                         $builder = $this->getClassNameInDestinationFile(
                             $reflection->getDeclaringClass(),
-                            \Illuminate\Database\Eloquent\Builder::class
+                            get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
                             $reflection->getDeclaringClass(),
@@ -558,6 +560,10 @@ class ModelsCommand extends Command
                         $method,
                         $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
+
+                    if ($this->write_model_external_builder_methods) {
+                        $this->writeModelExternalBuilderMethods($builder, $model);
+                    }
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
@@ -887,9 +893,11 @@ class ModelsCommand extends Command
      * Get the parameters and format them correctly
      *
      * @param $method
+     * @param bool $withTypeHint
      * @return array
+     * @throws \ReflectionException
      */
-    public function getParameters($method)
+    public function getParameters($method, bool $withTypeHint = false)
     {
         //Loop through the default values for parameters, and make the correct output string
         $paramsWithDefault = [];
@@ -920,8 +928,14 @@ class ModelsCommand extends Command
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
+
                 $paramStr .= " = $default";
             }
+
+            if ($withTypeHint && $paramType = $this->getParamType($method, $param)) {
+                $paramStr = $paramType . ' ' . $paramStr;
+            }
+
             $paramsWithDefault[] = $paramStr;
         }
         return $paramsWithDefault;
@@ -1145,5 +1159,99 @@ class ModelsCommand extends Command
         $namespaceAliases[$reflection->getName()] = $reflection->getShortName();
 
         return $namespaceAliases;
+    }
+
+    protected function writeModelExternalBuilderMethods(string $builder, Model $model): void
+    {
+        if (in_array($builder, ['\Illuminate\Database\Eloquent\Builder', 'EloquentBuilder'])) {
+            return;
+        }
+
+        $newBuilderMethods = get_class_methods($builder);
+        $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
+
+        // diff the methods between the new builder and original one
+        // and create helpers for the ones that are new
+        $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
+
+        foreach ($newMethodsFromNewBuilder as $builderMethod) {
+            $reflection = new \ReflectionMethod($builder, $builderMethod);
+            $args = $this->getParameters($reflection, true);
+
+            $this->setMethod(
+                $builderMethod,
+                $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                $args
+            );
+        }
+    }
+
+    protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
+    {
+        if ($paramType = $parameter->getType()) {
+            if ($paramType->allowsNull()) {
+                return '?' . $paramType->getName();
+            }
+
+            return $paramType->getName();
+        }
+
+        $docComment = $method->getDocComment();
+
+        if (!$docComment) {
+            return null;
+        }
+
+        preg_match(
+            '/@param ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
+            $docComment ?? '',
+            $matches
+        );
+        $type = $matches[1] ?? null;
+
+        if (strpos($type, '|') !== false) {
+            $types = explode('|', $type);
+
+            // if we have more than 2 types
+            // we return null as we cannot use unions in php yet
+            if (count($types) > 2) {
+                return null;
+            }
+
+            $hasNull = false;
+
+            foreach ($types as $currentType) {
+                if ($currentType === 'null') {
+                    $hasNull = true;
+                    continue;
+                }
+
+                // if we didn't find null assign the current type to the type we want
+                $type = $currentType;
+            }
+
+            // if we haven't found null type set
+            // we return null as we cannot use unions with different types yet
+            if (!$hasNull) {
+                return null;
+            }
+
+            $type = '?' . $type;
+        }
+
+        $typesThatAreNotAllowed = [
+            'null',
+            'mixed',
+            'nullable',
+        ];
+
+        // we replace the ? with an empty string so we can check the actual type
+        if (in_array(str_replace('?', '', $type), $typesThatAreNotAllowed)) {
+            return null;
+        }
+
+        // if we have a match on index 1
+        // then we have found the type of the variable if not we return null
+        return $type;
     }
 }

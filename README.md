@@ -216,6 +216,13 @@ You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relatio
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
 
+#### Dedicated Eloquent Builder methods
+
+A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can 
+add support for creating a new dedicated class instead of using local scopes in the model itself.
+
+If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_external_builder_methods` and setting it to `false`.
+
 #### Unsupported or custom database types
 
 Common column types (e.g. varchar, integer) are correctly mapped to PHP types (`string`, `int`).

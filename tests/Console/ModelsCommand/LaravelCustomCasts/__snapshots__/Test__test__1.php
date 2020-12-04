@@ -67,6 +67,6 @@ class CustomCast extends Model
         'casted_property_with_this_return_docblock' => SelfCastingCasterWithThisDocblockReturn::class,
         'extended_casted_property_with_static_return_docblock' => ExtendedSelfCastingCasterWithStaticDocblockReturn::class,
         'extended_casted_property_with_this_return_docblock' => ExtendedSelfCastingCasterWithThisDocblockReturn::class,
-        'casted_property_with_static_return_docblock_and_param' => SelfCastingCasterWithStaticDocblockReturn::class .':param',
+        'casted_property_with_static_return_docblock_and_param' => SelfCastingCasterWithStaticDocblockReturn::class . ':param',
     ];
 }

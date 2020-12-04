@@ -7,12 +7,11 @@ return [
     | Filename & Format
     |--------------------------------------------------------------------------
     |
-    | The default filename (without extension) and the format (php or json)
+    | The default filename
     |
     */
 
-    'filename'  => '_ide_helper',
-    'format'    => 'php',
+    'filename'  => '_ide_helper.php',
 
     /*
     |--------------------------------------------------------------------------

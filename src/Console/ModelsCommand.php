@@ -150,9 +150,7 @@ class ModelsCommand extends Command
             }
         }
 
-        $this->dateClass = class_exists(\Illuminate\Support\Facades\Date::class)
-            ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
-            : '\Illuminate\Support\Carbon';
+        $this->buildDateClass();
 
         $content = $this->generateDocs($model, $ignore);
 
@@ -166,6 +164,27 @@ class ModelsCommand extends Command
         }
     }
 
+    protected function buildDateClass(): void
+    {
+        $dateClass = class_exists(\Illuminate\Support\Facades\Date::class)
+            ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
+            : '\Illuminate\Support\Carbon';
+
+        $types = array_map(
+            [$this, 'getTypeOverride'],
+            [
+                $dateClass,
+                '\Carbon\CarbonInterface',
+                '\DateTimeInterface',
+                'integer',
+                'string',
+            ]
+        );
+
+        sort($types);
+
+        $this->dateClass = implode('|', array_unique($types));
+    }
 
     /**
      * Get the console command arguments.
@@ -424,7 +443,7 @@ class ModelsCommand extends Command
 
         $database = null;
         if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
+            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);

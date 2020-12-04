@@ -82,8 +82,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $ipaddress_not_nullable
  * @property string|null $macaddress_nullable
  * @property string $macaddress_not_nullable
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonInterface|\DateTimeInterface|\Illuminate\Support\Carbon|integer|string|null $created_at
+ * @property \Carbon\CarbonInterface|\DateTimeInterface|\Illuminate\Support\Carbon|integer|string|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post[] $posts
  * @property-read int|null $posts_count
  * @method static \Illuminate\Database\Eloquent\Builder|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post newModelQuery()

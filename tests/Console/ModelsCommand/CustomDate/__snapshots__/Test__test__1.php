@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\CustomDate\Models\CustomDate
  *
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property \Carbon\CarbonImmutable|\Carbon\CarbonInterface|\DateTimeInterface|integer|string|null $created_at
+ * @property \Carbon\CarbonImmutable|\Carbon\CarbonInterface|\DateTimeInterface|integer|string|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|CustomDate newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomDate newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomDate query()

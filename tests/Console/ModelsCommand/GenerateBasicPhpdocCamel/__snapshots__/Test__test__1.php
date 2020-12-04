@@ -80,8 +80,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $ipaddressNotNullable
  * @property string|null $macaddressNullable
  * @property string $macaddressNotNullable
- * @property \Illuminate\Support\Carbon|null $createdAt
- * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property \Carbon\CarbonInterface|\DateTimeInterface|\Illuminate\Support\Carbon|integer|string|null $createdAt
+ * @property \Carbon\CarbonInterface|\DateTimeInterface|\Illuminate\Support\Carbon|integer|string|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post query()

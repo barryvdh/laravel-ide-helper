@@ -88,8 +88,8 @@ use Illuminate\Support\Carbon;
  * @property string $ipaddress_not_nullable
  * @property string|null $macaddress_nullable
  * @property string $macaddress_not_nullable
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property \Carbon\CarbonInterface|\DateTimeInterface|\Illuminate\Support\Carbon|integer|string|null $created_at
+ * @property \Carbon\CarbonInterface|\DateTimeInterface|\Illuminate\Support\Carbon|integer|string|null $updated_at
  * @property-read Collection|Post[] $posts
  * @property-read int|null $posts_count
  * @method static EloquentBuilder|Post newModelQuery()

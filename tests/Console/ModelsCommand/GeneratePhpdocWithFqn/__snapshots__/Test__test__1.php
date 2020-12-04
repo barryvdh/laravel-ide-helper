@@ -94,7 +94,7 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $posts_count
  * @method static EloquentBuilder|Post newModelQuery()
  * @method static EloquentBuilder|Post newQuery()
- * @method static EloquentBuilder|Post null($unusedParam)
+ * @method static EloquentBuilder|Post null(string $unusedParam)
  * @method static QueryBuilder|Post onlyTrashed()
  * @method static EloquentBuilder|Post query()
  * @method static EloquentBuilder|Post whereBigIntegerNotNullable($value)

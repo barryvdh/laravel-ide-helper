@@ -34,6 +34,38 @@ class PostExternalQueryBuilder extends Builder
     }
 
     /**
+     * @param integer|null $number
+     * @return $this
+     */
+    public function withTheNumberDifferently($number): self
+    {
+        return $this;
+    }
+
+    /**
+     * @param bool|null $number
+     * @return $this
+     */
+    public function withBool($booleanVar): self
+    {
+        return $this;
+    }
+
+    /**
+     * @param bool|null $number
+     * @return $this
+     */
+    public function withBoolDifferently($booleanVar): self
+    {
+        return $this;
+    }
+
+    public function withBoolTypeHinted(bool $booleanVar): self
+    {
+        return $this;
+    }
+
+    /**
      * @param int|string $someone
      * @return $this
      */

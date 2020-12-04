@@ -1233,14 +1233,19 @@ class ModelsCommand extends Command
             $type = '?' . $type;
         }
 
-        $typesThatAreNotAllowed = [
-            'null',
-            'mixed',
-            'nullable',
+        // convert to proper type hint types in php
+        $type = str_replace('boolean', 'bool', $type);
+        $type = str_replace('integer', 'int', $type);
+
+        $allowedTypes = [
+            'int',
+            'bool',
+            'string',
+            'float',
         ];
 
         // we replace the ? with an empty string so we can check the actual type
-        if (in_array(str_replace('?', '', $type), $typesThatAreNotAllowed)) {
+        if (!in_array(str_replace('?', '', $type), $allowedTypes)) {
             return null;
         }
 

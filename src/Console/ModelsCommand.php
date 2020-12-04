@@ -1234,8 +1234,7 @@ class ModelsCommand extends Command
         }
 
         // convert to proper type hint types in php
-        $type = str_replace('boolean', 'bool', $type);
-        $type = str_replace('integer', 'int', $type);
+        $type = str_replace(['boolean', 'integer'], ['bool', 'int'], $type);
 
         $allowedTypes = [
             'int',

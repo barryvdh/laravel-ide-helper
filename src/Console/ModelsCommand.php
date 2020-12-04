@@ -903,7 +903,7 @@ class ModelsCommand extends Command
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
             $paramStr = '$' . $param->getName();
-            if ($paramType = $this->getParamType($param)) {
+            if ($paramType = $this->getParamType($method, $param)) {
                 $paramStr = $paramType . ' ' . $paramStr;
             }
 
@@ -1174,22 +1174,78 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function getParamType(\ReflectionParameter $parameter): ?string
+    protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
     {
-        if (!$paramType = $parameter->getType()) {
+        if ($paramType = $parameter->getType()) {
+            $parameterName = $paramType->getName();
+
+            if (!$paramType->isBuiltin()) {
+                $parameterName = '\\' . $parameterName;
+            }
+
+            if ($paramType->allowsNull()) {
+                return '?' . $parameterName;
+            }
+
+            return $parameterName;
+        }
+
+        $docComment = $method->getDocComment();
+
+        if (!$docComment) {
             return null;
         }
 
-        $parameterName = $paramType->getName();
+        preg_match(
+            '/@param ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
+            $docComment ?? '',
+            $matches
+        );
+        $type = $matches[1] ?? null;
 
-        if (!$paramType->isBuiltin()) {
-            $parameterName = '\\' . $parameterName;
+        if (strpos($type, '|') !== false) {
+            $types = explode('|', $type);
+
+            // if we have more than 2 types
+            // we return null as we cannot use unions in php yet
+            if (count($types) > 2) {
+                return null;
+            }
+
+            $hasNull = false;
+
+            foreach ($types as $currentType) {
+                if ($currentType === 'null') {
+                    $hasNull = true;
+                    continue;
+                }
+
+                // if we didn't find null assign the current type to the type we want
+                $type = $currentType;
+            }
+
+            // if we haven't found null type set
+            // we return null as we cannot use unions with different types yet
+            if (!$hasNull) {
+                return null;
+            }
+
+            $type = '?' . $type;
         }
 
-        if ($paramType->allowsNull()) {
-            return '?' . $parameterName;
+        $typesThatAreNotAllowed = [
+            'null',
+            'mixed',
+            'nullable',
+        ];
+
+        // we replace the ? with an empty string so we can check the actual type
+        if (in_array(str_replace('?', '', $type), $typesThatAreNotAllowed)) {
+            return null;
         }
 
-        return $parameterName;
+        // if we have a match on index 1
+        // then we have found the type of the variable if not we return null
+        return $type;
     }
 }

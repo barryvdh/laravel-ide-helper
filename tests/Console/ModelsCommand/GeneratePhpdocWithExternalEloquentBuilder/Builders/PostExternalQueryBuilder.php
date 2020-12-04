@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilder\Builders;
 
 use Illuminate\Database\Eloquent\Builder;
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 
 class PostExternalQueryBuilder extends Builder
 {
@@ -46,6 +47,21 @@ class PostExternalQueryBuilder extends Builder
      * @return $this
      */
     public function withMixedOption($option): self
+    {
+        return $this;
+    }
+
+    public function withTestCommand(ModelsCommand $testCommand): self
+    {
+        return $this;
+    }
+
+    public function withNullTestCommand(?ModelsCommand $testCommand): self
+    {
+        return $this;
+    }
+
+    public function withNullAndAssignementTestCommand(?ModelsCommand $testCommand = null): self
     {
         return $this;
     }

@@ -1108,7 +1108,7 @@ class ModelsCommand extends Command
         if ($reflectionType === null) {
             $reflectionType = $this->getReturnTypeFromDocBlock($methodReflection);
         }
-        
+
         if($reflectionType === 'static' || $reflectionType === '$this') {
             $reflectionType = $type;
         }

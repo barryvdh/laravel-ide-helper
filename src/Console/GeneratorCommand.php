@@ -127,7 +127,7 @@ class GeneratorCommand extends Command
         }
     }
 
-    protected function useMemoryDriver()
+    protected function useMemoryDriver(): void
     {
         //Use a sqlite database in memory, to avoid connection errors on Database facades
         $this->config->set(

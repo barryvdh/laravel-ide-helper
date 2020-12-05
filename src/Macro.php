@@ -30,6 +30,8 @@ class Macro extends Method
 
     /**
      * @param \ReflectionFunctionAbstract $method
+     *
+     * @return void
      */
     protected function initPhpDoc($method)
     {
@@ -63,7 +65,7 @@ class Macro extends Method
         }
     }
 
-    protected function addLocationToPhpDoc()
+    protected function addLocationToPhpDoc(): void
     {
         if ($this->method->name === '__invoke') {
             $enclosingClass = $this->method->getDeclaringClass();
@@ -88,6 +90,8 @@ class Macro extends Method
     /**
      * @param \ReflectionFunctionAbstract $method
      * @param \ReflectionClass $class
+     *
+     * @return void
      */
     protected function initClassDefinedProperties($method, \ReflectionClass $class)
     {

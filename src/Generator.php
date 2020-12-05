@@ -67,9 +67,9 @@ class Generator
     /**
      * Generate the helper file contents;
      *
-     * @return string;
+     * @return string
      */
-    public function generate()
+    public function generate(): string
     {
         $app = app();
         return $this->view->make('helper')
@@ -82,7 +82,7 @@ class Generator
             ->render();
     }
 
-    protected function detectDrivers()
+    protected function detectDrivers(): void
     {
         $defaultUserModel = config('auth.providers.users.model', config('auth.model', 'App\User'));
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
@@ -205,7 +205,7 @@ class Generator
         });
     }
 
-    protected function getAliases()
+    protected function getAliases(): array
     {
         // For Laravel, use the AliasLoader
         if (class_exists('Illuminate\Foundation\AliasLoader')) {
@@ -264,8 +264,10 @@ class Generator
      * Add all macroable classes which are not already loaded as an alias and have defined macros.
      *
      * @param Collection $aliases
+     *
+     * @return void
      */
-    protected function addMacroableClasses(Collection $aliases)
+    protected function addMacroableClasses(Collection $aliases): void
     {
         $macroable = $this->getMacroableClasses($aliases);
 

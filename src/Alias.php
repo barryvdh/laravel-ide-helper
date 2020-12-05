@@ -92,8 +92,10 @@ class Alias
      * Add one or more classes to analyze
      *
      * @param array|string $classes
+     *
+     * @return void
      */
-    public function addClass($classes)
+    public function addClass($classes): void
     {
         $classes = (array)$classes;
         foreach ($classes as $class) {
@@ -199,6 +201,8 @@ class Alias
 
     /**
      * Detect class returned by ::fake()
+     *
+     * @return void
      */
     protected function detectFake()
     {
@@ -227,8 +231,10 @@ class Alias
 
     /**
      * Detect the namespace
+     *
+     * @return void
      */
-    protected function detectNamespace()
+    protected function detectNamespace(): void
     {
         if (strpos($this->alias, '\\')) {
             $nsParts = explode('\\', $this->alias);
@@ -241,8 +247,10 @@ class Alias
 
     /**
      * Detect the extends namespace
+     *
+     * @return void
      */
-    protected function detectExtendsNamespace()
+    protected function detectExtendsNamespace(): void
     {
         if (strpos($this->extends, '\\') !== false) {
             $nsParts = explode('\\', $this->extends);
@@ -253,8 +261,10 @@ class Alias
 
     /**
      * Detect the class type
+     *
+     * @return void
      */
-    protected function detectClassType()
+    protected function detectClassType(): void
     {
         //Some classes extend the facade
         if (interface_exists($this->facade)) {
@@ -271,9 +281,9 @@ class Alias
     /**
      * Get the real root of a facade
      *
-     * @return bool|string
+     * @return void
      */
-    protected function detectRoot()
+    protected function detectRoot(): void
     {
         $facade = $this->facade;
 
@@ -307,9 +317,9 @@ class Alias
     /**
      * Detect if this class is a trait or not.
      *
-     * @return bool
+     * @return bool|null
      */
-    protected function isTrait()
+    protected function isTrait(): ?bool
     {
         // Check if the facade is not a Trait
         return trait_exists($this->facade);
@@ -317,8 +327,10 @@ class Alias
 
     /**
      * Add magic methods, as defined in the configuration files
+     *
+     * @return void
      */
-    protected function addMagicMethods()
+    protected function addMagicMethods(): void
     {
         foreach ($this->magicMethods as $magic => $real) {
             list($className, $name) = explode('::', $real);
@@ -340,9 +352,9 @@ class Alias
     /**
      * Get the methods for one or multiple classes.
      *
-     * @return string
+     * @return void
      */
-    protected function detectMethods()
+    protected function detectMethods(): void
     {
 
         foreach ($this->classes as $class) {
@@ -416,7 +428,7 @@ class Alias
      * @param string $prefix
      * @return mixed
      */
-    public function getDocComment($prefix = "\t\t")
+    public function getDocComment($prefix = "\t\t"): string
     {
         $serializer = new DocBlockSerializer(1, $prefix);
 

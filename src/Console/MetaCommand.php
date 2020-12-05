@@ -143,8 +143,10 @@ class MetaCommand extends Command
 
     /**
      * Register an autoloader the throws exceptions when a class is not found.
+     *
+     * @return void
      */
-    protected function registerClassAutoloadExceptions()
+    protected function registerClassAutoloadExceptions(): void
     {
         spl_autoload_register(function ($class) {
             throw new \ReflectionException("Class '$class' not found.");
@@ -167,8 +169,10 @@ class MetaCommand extends Command
 
     /**
      * Remove our custom autoloader that we pushed onto the autoload stack
+     *
+     * @return void
      */
-    private function unregisterClassAutoloadExceptions()
+    private function unregisterClassAutoloadExceptions(): void
     {
         $autoloadFunctions = spl_autoload_functions();
         $ourAutoloader = array_pop($autoloadFunctions);

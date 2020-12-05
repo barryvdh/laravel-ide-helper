@@ -77,6 +77,8 @@ class Method
 
     /**
      * @param \ReflectionMethod $method
+     *
+     * @return void
      */
     protected function initPhpDoc($method)
     {
@@ -86,6 +88,8 @@ class Method
     /**
      * @param \ReflectionMethod $method
      * @param \ReflectionClass $class
+     *
+     * @return void
      */
     protected function initClassDefinedProperties($method, \ReflectionClass $class)
     {
@@ -192,8 +196,10 @@ class Method
      * Get the description and get the inherited docs.
      *
      * @param DocBlock $phpdoc
+     *
+     * @return void
      */
-    protected function normalizeDescription(DocBlock $phpdoc)
+    protected function normalizeDescription(DocBlock $phpdoc): void
     {
         //Get the short + long description from the DocBlock
         $description = $phpdoc->getText();
@@ -225,8 +231,10 @@ class Method
      * Normalize the parameters
      *
      * @param DocBlock $phpdoc
+     *
+     * @return void
      */
-    protected function normalizeParams(DocBlock $phpdoc)
+    protected function normalizeParams(DocBlock $phpdoc): void
     {
         //Get the return type and adjust them for beter autocomplete
         $paramTags = $phpdoc->getTagsByName('param');
@@ -248,6 +256,8 @@ class Method
      * Normalize the return tag (make full namespace, replace interfaces)
      *
      * @param DocBlock $phpdoc
+     *
+     * @return void
      */
     protected function normalizeReturn(DocBlock $phpdoc)
     {
@@ -349,9 +359,10 @@ class Method
 
     /**
      * @param \ReflectionMethod $reflectionMethod
-     * @return DocBlock
+     *
+     * @return DocBlock|null
      */
-    protected function getInheritDoc($reflectionMethod)
+    protected function getInheritDoc($reflectionMethod): ?DocBlock
     {
         $parentClass = $reflectionMethod->getDeclaringClass()->getParentClass();
 

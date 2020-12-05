@@ -8,7 +8,12 @@ use ReflectionClass;
 
 class Factories
 {
-    public static function all()
+    /**
+     * @return ReflectionClass[]
+     *
+     * @psalm-return list<ReflectionClass<mixed>>
+     */
+    public static function all(): array
     {
         $factories = [];
 
@@ -29,7 +34,7 @@ class Factories
         return $factories;
     }
 
-    protected static function isLaravelSevenOrLower()
+    protected static function isLaravelSevenOrLower(): bool
     {
         return class_exists('Illuminate\Database\Eloquent\Factory');
     }

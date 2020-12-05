@@ -490,9 +490,13 @@ class ModelsCommand extends Command
                 !$column->getNotnull()
             );
             if ($this->write_model_magic_where) {
+                $builderClass = $this->write_model_external_builder_methods
+                    ? get_class($model->newModelQuery())
+                    : '\Illuminate\Database\Eloquent\Builder';
+
                 $this->setMethod(
                     Str::camel('where_' . $name),
-                    $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()))
+                    $this->getClassNameInDestinationFile($model, $builderClass)
                     . '|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
                     ['$value']

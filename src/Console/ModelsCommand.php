@@ -1151,8 +1151,8 @@ class ModelsCommand extends Command
 
     protected function writeModelExternalBuilderMethods(Model $model): void
     {
-        $builder = '\\' . get_class($model->newModelQuery());
-        $newBuilderMethods = get_class_methods($builder);
+        $fullBuilderClass = '\\' . get_class($model->newModelQuery());
+        $newBuilderMethods = get_class_methods($fullBuilderClass);
         $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
 
         // diff the methods between the new builder and original one
@@ -1163,13 +1163,17 @@ class ModelsCommand extends Command
             return;
         }
 
+        // after we have retrieved the builder's methods
+        // get the class of the builder based on the FQCN option
+        $builderClassBasedOnFQCNOption = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+
         foreach ($newMethodsFromNewBuilder as $builderMethod) {
-            $reflection = new \ReflectionMethod($builder, $builderMethod);
+            $reflection = new \ReflectionMethod($fullBuilderClass, $builderMethod);
             $args = $this->getParameters($reflection);
 
             $this->setMethod(
                 $builderMethod,
-                $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                $builderClassBasedOnFQCNOption . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
                 $args
             );
         }

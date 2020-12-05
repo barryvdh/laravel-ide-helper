@@ -554,7 +554,7 @@ class ModelsCommand extends Command
                         $this->setMethod($name, $builder . '|' . $modelName, $args);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $builder = $this->getClassNameInDestinationFile($model, $fullBuilderClass = get_class($model->newModelQuery()));
+                    $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
                     $this->setMethod(
                         $method,
@@ -562,7 +562,7 @@ class ModelsCommand extends Command
                     );
 
                     if ($this->write_model_external_builder_methods) {
-                        $this->writeModelExternalBuilderMethods('\\' . $fullBuilderClass, $model);
+                        $this->writeModelExternalBuilderMethods($model);
                     }
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
@@ -1149,8 +1149,9 @@ class ModelsCommand extends Command
         return $namespaceAliases;
     }
 
-    protected function writeModelExternalBuilderMethods(string $builder, Model $model): void
+    protected function writeModelExternalBuilderMethods(Model $model): void
     {
+        $builder = '\\' . get_class($model->newModelQuery());
         $newBuilderMethods = get_class_methods($builder);
         $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
 

@@ -554,7 +554,7 @@ class ModelsCommand extends Command
                         $this->setMethod($name, $builder . '|' . $modelName, $args);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+                    $builder = $this->getClassNameInDestinationFile($model, $fullBuilderClass = get_class($model->newModelQuery()));
 
                     $this->setMethod(
                         $method,
@@ -562,7 +562,7 @@ class ModelsCommand extends Command
                     );
 
                     if ($this->write_model_external_builder_methods) {
-                        $this->writeModelExternalBuilderMethods($builder, $model);
+                        $this->writeModelExternalBuilderMethods('\\' . $fullBuilderClass, $model);
                     }
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
@@ -1151,16 +1151,16 @@ class ModelsCommand extends Command
 
     protected function writeModelExternalBuilderMethods(string $builder, Model $model): void
     {
-        if (in_array($builder, ['\Illuminate\Database\Eloquent\Builder', 'EloquentBuilder'])) {
-            return;
-        }
-
         $newBuilderMethods = get_class_methods($builder);
         $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
 
         // diff the methods between the new builder and original one
         // and create helpers for the ones that are new
         $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
+
+        if (!$newMethodsFromNewBuilder) {
+            return;
+        }
 
         foreach ($newMethodsFromNewBuilder as $builderMethod) {
             $reflection = new \ReflectionMethod($builder, $builderMethod);

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.8.1...master)
 --------------
+### Changed
+- Dropped support for Laravel 6 and Laravel 7, as well as support for PHP 7.2 [\# / mfn]()
 
 ### Added
 - Fix phpdoc generate for custom cast with parameter [\#986 / artelkr](https://github.com/barryvdh/laravel-ide-helper/pull/986)

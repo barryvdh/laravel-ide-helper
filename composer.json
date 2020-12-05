@@ -39,7 +39,7 @@
         "orchestra/testbench": "^6",
         "phpunit/phpunit": "^8.5 || ^9",
         "spatie/phpunit-snapshot-assertions": "^3 || ^4",
-        "vimeo/psalm": "^3.12"
+        "vimeo/psalm": "^4"
     },
     "config": {
         "sort-packages": true

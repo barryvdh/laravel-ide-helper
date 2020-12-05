@@ -492,7 +492,7 @@ class ModelsCommand extends Command
             if ($this->write_model_magic_where) {
                 $this->setMethod(
                     Str::camel('where_' . $name),
-                    $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
+                    $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()))
                     . '|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
                     ['$value']

@@ -490,9 +490,13 @@ class ModelsCommand extends Command
                 !$column->getNotnull()
             );
             if ($this->write_model_magic_where) {
+                $builderClass = $this->write_model_external_builder_methods
+                    ? get_class($model->newModelQuery())
+                    : '\Illuminate\Database\Eloquent\Builder';
+
                 $this->setMethod(
                     Str::camel('where_' . $name),
-                    $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class)
+                    $this->getClassNameInDestinationFile($model, $builderClass)
                     . '|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
                     ['$value']
@@ -562,7 +566,7 @@ class ModelsCommand extends Command
                     );
 
                     if ($this->write_model_external_builder_methods) {
-                        $this->writeModelExternalBuilderMethods($builder, $model);
+                        $this->writeModelExternalBuilderMethods($model);
                     }
                 } elseif (
                     !method_exists('Illuminate\Database\Eloquent\Model', $method)
@@ -1149,26 +1153,31 @@ class ModelsCommand extends Command
         return $namespaceAliases;
     }
 
-    protected function writeModelExternalBuilderMethods(string $builder, Model $model): void
+    protected function writeModelExternalBuilderMethods(Model $model): void
     {
-        if (in_array($builder, ['\Illuminate\Database\Eloquent\Builder', 'EloquentBuilder'])) {
-            return;
-        }
-
-        $newBuilderMethods = get_class_methods($builder);
+        $fullBuilderClass = '\\' . get_class($model->newModelQuery());
+        $newBuilderMethods = get_class_methods($fullBuilderClass);
         $originalBuilderMethods = get_class_methods('\Illuminate\Database\Eloquent\Builder');
 
         // diff the methods between the new builder and original one
         // and create helpers for the ones that are new
         $newMethodsFromNewBuilder = array_diff($newBuilderMethods, $originalBuilderMethods);
 
+        if (!$newMethodsFromNewBuilder) {
+            return;
+        }
+
+        // after we have retrieved the builder's methods
+        // get the class of the builder based on the FQCN option
+        $builderClassBasedOnFQCNOption = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+
         foreach ($newMethodsFromNewBuilder as $builderMethod) {
-            $reflection = new \ReflectionMethod($builder, $builderMethod);
+            $reflection = new \ReflectionMethod($fullBuilderClass, $builderMethod);
             $args = $this->getParameters($reflection);
 
             $this->setMethod(
                 $builderMethod,
-                $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                $builderClassBasedOnFQCNOption . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
                 $args
             );
         }

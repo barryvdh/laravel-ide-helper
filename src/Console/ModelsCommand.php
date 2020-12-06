@@ -1041,14 +1041,19 @@ class ModelsCommand extends Command
         }
 
         $traits = class_uses(get_class($model), true);
-        if (in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
-            $modelName = get_class($model);
-            $factory = get_class($modelName::factory());
-            $factory = '\\' . trim($factory, '\\');
-            if (class_exists($factory)) {
-                $this->setMethod('factory', $factory, ['...$parameters']);
-            }
+        if (! in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
+            return;
         }
+
+        $modelName = get_class($model);
+        $factory = get_class($modelName::factory());
+        $factory = '\\' . trim($factory, '\\');
+
+        if (! class_exists($factory)) {
+            return;
+        }
+
+        $this->setMethod('factory', $factory, ['...$parameters']);
     }
 
     /**

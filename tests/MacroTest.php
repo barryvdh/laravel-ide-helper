@@ -23,6 +23,32 @@ use const PHP_EOL;
  */
 class MacroTest extends TestCase
 {
+    private $macro = null;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->macro = new class() extends Macro {
+            public function __construct()
+            {
+                // no need to call parent
+            }
+
+            public function getPhpDoc(ReflectionFunctionAbstract $method): DocBlock
+            {
+                return (new Macro($method, '', $method->getClosureScopeClass()))->phpdoc;
+            }
+        };
+    }
+
+    public function tearDown(): void
+    {
+        $this->macro = null;
+
+        parent::tearDown();
+    }
+
     /**
      * @covers ::initPhpDoc
      * @throws \ReflectionException
@@ -44,6 +70,126 @@ class MacroTest extends TestCase
             '@return \Illuminate\Database\Eloquent\Builder|static',
             $this->tagsToString($phpdoc, 'return')
         );
+    }
+
+    /**
+     * @covers ::initPhpDoc
+     * @throws \ReflectionException
+     */
+    public function testInitPhpDocClosureWithArgsAndReturnType(): void
+    {
+        $phpdoc = $this->macro->getPhpDoc(
+            new ReflectionFunction(
+            /**
+             * Test docblock.
+             */
+                function (int $a = null): int {
+                    return 0;
+                }
+            )
+        );
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock', $phpdoc->getText());
+        $this->assertEquals('@param int|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@return int', $this->tagsToString($phpdoc, 'return'));
+        $this->assertTrue($phpdoc->hasTag('see'));
+    }
+
+    /**
+     * @covers ::initPhpDoc
+     * @throws \ReflectionException
+     */
+    public function testInitPhpDocClosureWithArgs(): void
+    {
+        $phpdoc = $this->macro->getPhpDoc(
+            new ReflectionFunction(
+            /**
+             * Test docblock.
+             */
+                function (int $a = null) {
+                    return 0;
+                }
+            )
+        );
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock', $phpdoc->getText());
+        $this->assertEquals('@param int|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertFalse($phpdoc->hasTag('return'));
+        $this->assertTrue($phpdoc->hasTag('see'));
+    }
+
+    /**
+     * @covers ::initPhpDoc
+     * @throws \ReflectionException
+     */
+    public function testInitPhpDocClosureWithReturnType(): void
+    {
+        $phpdoc = $this->macro->getPhpDoc(
+            new ReflectionFunction(
+            /**
+             * Test docblock.
+             */
+                function (): int {
+                    return 0;
+                }
+            )
+        );
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock', $phpdoc->getText());
+        $this->assertFalse($phpdoc->hasTag('param'));
+        $this->assertEquals('@return int', $this->tagsToString($phpdoc, 'return'));
+        $this->assertTrue($phpdoc->hasTag('see'));
+    }
+
+    /**
+     * @covers ::initPhpDoc
+     */
+    public function testInitPhpDocParamsAddedOnlyNotPresent(): void
+    {
+        $phpdoc = $this->macro->getPhpDoc(
+            new ReflectionFunction(
+            /**
+             * Test docblock.
+             *
+             * @param \stdClass|null $a aaaaa
+             */
+                function ($a = null): int {
+                    return 0;
+                }
+            )
+        );
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock', $phpdoc->getText());
+        $this->assertEquals('@param \stdClass|null $a aaaaa', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@return int', $this->tagsToString($phpdoc, 'return'));
+    }
+
+    /**
+     * @covers ::initPhpDoc
+     */
+    public function testInitPhpDocReturnAddedOnlyNotPresent(): void
+    {
+        $phpdoc = $this->macro->getPhpDoc(
+            new ReflectionFunction(
+            /**
+             * Test docblock.
+             *
+             * @return \stdClass|null rrrrrrr
+             */
+                function ($a = null): int {
+                    return 0;
+                }
+            )
+        );
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock', $phpdoc->getText());
+        $this->assertEquals('@param mixed $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@return \stdClass|null rrrrrrr', $this->tagsToString($phpdoc, 'return'));
     }
 
     protected function tagsToString(DocBlock $docBlock, string $name)

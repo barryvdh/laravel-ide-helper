@@ -67,21 +67,9 @@ class Generator
     /**
      * Generate the helper file contents;
      *
-     * @param  string  $format  The format to generate the helper in (php/json)
      * @return string;
      */
-    public function generate($format = 'php')
-    {
-        // Check if the generator for this format exists
-        $method = 'generate' . ucfirst($format) . 'Helper';
-        if (method_exists($this, $method)) {
-            return $this->$method();
-        }
-
-        return $this->generatePhpHelper();
-    }
-
-    public function generatePhpHelper()
+    public function generate()
     {
         $app = app();
         return $this->view->make('helper')
@@ -92,33 +80,6 @@ class Generator
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
             ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
-    }
-
-    public function generateJsonHelper()
-    {
-        $classes = [];
-        foreach ($this->getValidAliases() as $aliases) {
-            foreach ($aliases as $alias) {
-                $functions = [];
-                foreach ($alias->getMethods() as $method) {
-                    $functions[$method->getName()] = '(' . $method->getParamsWithDefault() . ')';
-                }
-                $classes[$alias->getAlias()] = [
-                    'functions' => $functions,
-                ];
-            }
-        }
-
-        $flags = JSON_FORCE_OBJECT;
-        if (defined('JSON_PRETTY_PRINT')) {
-            $flags |= JSON_PRETTY_PRINT;
-        }
-
-        return json_encode([
-            'php' => [
-                'classes' => $classes,
-            ],
-        ], $flags);
     }
 
     protected function detectDrivers()

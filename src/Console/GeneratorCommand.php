@@ -89,14 +89,12 @@ class GeneratorCommand extends Command
         }
 
         $filename = $this->argument('filename');
-        $format = $this->option('format');
 
-        // Strip the php extension
-        if (substr($filename, -4, 4) === '.php') {
-            $filename = substr($filename, 0, -4);
+        // Add the php extension if missing
+        // This is a backwards-compatible shim and can be removed in the future
+        if (substr($filename, -4, 4) !== '.php') {
+            $filename .= '.php';
         }
-
-        $filename .= '.' . $format;
 
         if ($this->option('memory')) {
             $this->useMemoryDriver();
@@ -115,7 +113,7 @@ class GeneratorCommand extends Command
         }
 
         $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
-        $content = $generator->generate($format);
+        $content = $generator->generate();
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {
@@ -165,11 +163,9 @@ class GeneratorCommand extends Command
      */
     protected function getOptions()
     {
-        $format = $this->config->get('ide-helper.format');
         $writeMixins = $this->config->get('ide-helper.write_eloquent_model_mixins');
 
         return [
-            ['format', 'F', InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format],
             ['write_mixins', 'W', InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins],
             ['helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'],
             ['memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'],

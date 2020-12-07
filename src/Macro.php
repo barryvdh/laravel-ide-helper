@@ -4,6 +4,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
 
 class Macro extends Method
@@ -49,8 +50,12 @@ class Macro extends Method
 
         // Add macro return type
         if ($method->hasReturnType()) {
-            $type = $method->getReturnType()->getName();
-            $type .= $method->getReturnType()->allowsNull() ? '|null' : '';
+            $builder = EloquentBuilder::class;
+            $return = $method->getReturnType();
+
+            $type = $return->getName();
+            $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
+            $type .= $return->allowsNull() ? '|null' : '';
 
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
         }

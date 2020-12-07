@@ -3,7 +3,6 @@
 namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;

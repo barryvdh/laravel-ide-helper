@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Fix phpdoc generate for custom cast with parameter [\#986 / artelkr](https://github.com/barryvdh/laravel-ide-helper/pull/986)
 - Created a possibility to add custom relation type [\#987 / efinder2](https://github.com/barryvdh/laravel-ide-helper/pull/987)
 - Added `@see` with macro/mixin definition location to PhpDoc [\#1054 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1054)
+- Initial compatibility for PHP8 [\#1106 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1106)
 
 ### Changed
 - Implement DeferrableProvider [\#914 / kon-shou](https://github.com/barryvdh/laravel-ide-helper/pull/914)
@@ -17,6 +18,10 @@ All notable changes to this project will be documented in this file.
 - Compatibility with Lumen [\#1043 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1043)
 - Allow model_locations to have glob patterns [\#1059 / saackearl](https://github.com/barryvdh/laravel-ide-helper/pull/1059)
 - Error when generating helper for macroable classes which are not facades and contain a "fake" method [\#1066 / domkrm] (https://github.com/barryvdh/laravel-ide-helper/pull/1066)
+- Casts with a return type of `static` or `$this` now resolve to an instance of the cast [\#1103 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1103)
+
+### Removed
+- Removed format and broken generateJsonHelper [\#1053 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1053)
 
 2020-09-07, 2.8.1
 -----------------

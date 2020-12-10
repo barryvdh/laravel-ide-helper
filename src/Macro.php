@@ -61,11 +61,11 @@ class Macro extends Method
         $enclosingClass = $this->method->getClosureScopeClass();
 
         /** @var \ReflectionMethod $enclosingMethod */
-        $enclosingMethod = Collection::make($enclosingClass->getMethods())
+        $enclosingMethod = $enclosingClass ? Collection::make($enclosingClass->getMethods())
             ->first(function (\ReflectionMethod $method) {
                 return $method->getStartLine() <= $this->method->getStartLine()
                     && $method->getEndLine() >= $this->method->getEndLine();
-            });
+            }) : null;
 
         if ($enclosingMethod) {
             $this->phpdoc->appendTag(Tag::createInstance(

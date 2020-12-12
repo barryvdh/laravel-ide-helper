@@ -23,31 +23,6 @@ use const PHP_EOL;
  */
 class MacroTest extends TestCase
 {
-    private $macro = null;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->macro = new class() extends Macro {
-            public function __construct()
-            {
-                // no need to call parent
-            }
-
-            public function getPhpDoc(ReflectionFunctionAbstract $method): DocBlock
-            {
-                return (new Macro($method, '', $method->getClosureScopeClass()))->phpdoc;
-            }
-        };
-    }
-
-    public function tearDown(): void
-    {
-        $this->macro = null;
-
-        parent::tearDown();
-    }
 
     /**
      * @covers ::initPhpDoc
@@ -78,7 +53,7 @@ class MacroTest extends TestCase
      */
     public function testInitPhpDocClosureWithoutDocBlock(): void
     {
-        $phpdoc = $this->macro->getPhpDoc(
+        $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
                 function (int $a = null): int {
                     return 0;
@@ -99,11 +74,11 @@ class MacroTest extends TestCase
      */
     public function testInitPhpDocClosureWithArgsAndReturnType(): void
     {
-        $phpdoc = $this->macro->getPhpDoc(
+        $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
-            /**
-             * Test docblock.
-             */
+                /**
+                 * Test docblock.
+                 */
                 function (int $a = null): int {
                     return 0;
                 }
@@ -123,11 +98,11 @@ class MacroTest extends TestCase
      */
     public function testInitPhpDocClosureWithArgs(): void
     {
-        $phpdoc = $this->macro->getPhpDoc(
+        $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
-            /**
-             * Test docblock.
-             */
+                /**
+                 * Test docblock.
+                 */
                 function (int $a = null) {
                     return 0;
                 }
@@ -147,11 +122,11 @@ class MacroTest extends TestCase
      */
     public function testInitPhpDocClosureWithReturnType(): void
     {
-        $phpdoc = $this->macro->getPhpDoc(
+        $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
-            /**
-             * Test docblock.
-             */
+                /**
+                 * Test docblock.
+                 */
                 function (): int {
                     return 0;
                 }
@@ -170,13 +145,13 @@ class MacroTest extends TestCase
      */
     public function testInitPhpDocParamsAddedOnlyNotPresent(): void
     {
-        $phpdoc = $this->macro->getPhpDoc(
+        $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
-            /**
-             * Test docblock.
-             *
-             * @param \stdClass|null $a aaaaa
-             */
+                /**
+                 * Test docblock.
+                 *
+                 * @param \stdClass|null $a aaaaa
+                 */
                 function ($a = null): int {
                     return 0;
                 }
@@ -194,13 +169,13 @@ class MacroTest extends TestCase
      */
     public function testInitPhpDocReturnAddedOnlyNotPresent(): void
     {
-        $phpdoc = $this->macro->getPhpDoc(
+        $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
-            /**
-             * Test docblock.
-             *
-             * @return \stdClass|null rrrrrrr
-             */
+                /**
+                 * Test docblock.
+                 *
+                 * @return \stdClass|null rrrrrrr
+                 */
                 function ($a = null): int {
                     return 0;
                 }

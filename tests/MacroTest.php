@@ -23,40 +23,14 @@ use const PHP_EOL;
  */
 class MacroTest extends TestCase
 {
-    private $macro = null;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->macro = new class() extends Macro {
-            public function __construct()
-            {
-                // no need to call parent
-            }
-
-            public function getPhpDoc(ReflectionFunctionAbstract $method, ReflectionClass $class = null): DocBlock
-            {
-                return (new Macro($method, '', $class ?? $method->getClosureScopeClass()))->phpdoc;
-            }
-        };
-    }
-
-    public function tearDown(): void
-    {
-        $this->macro = null;
-
-        parent::tearDown();
-    }
-
     /**
      * @covers ::initPhpDoc
      * @throws \ReflectionException
      */
     public function testInitPhpDocEloquentBuilderHasStaticInReturnType(): void
     {
-        $class  = new ReflectionClass(EloquentBuilder::class);
-        $phpdoc = $this->macro->getPhpDoc(
+        $class = new ReflectionClass(EloquentBuilder::class);
+        $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
                 function (): EloquentBuilder {
                     return $this;
@@ -66,7 +40,10 @@ class MacroTest extends TestCase
         );
 
         $this->assertNotNull($phpdoc);
-        $this->assertEquals('@return \Illuminate\Database\Eloquent\Builder|static', $this->tagsToString($phpdoc, 'return'));
+        $this->assertEquals(
+            '@return \Illuminate\Database\Eloquent\Builder|static',
+            $this->tagsToString($phpdoc, 'return')
+        );
     }
 
     protected function tagsToString(DocBlock $docBlock, string $name)
@@ -81,5 +58,22 @@ class MacroTest extends TestCase
         $tags = implode(PHP_EOL, $tags);
 
         return $tags;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class MacroMock extends Macro
+{
+    public function __construct()
+    {
+        // no need to call parent
+    }
+
+    public function getPhpDoc(ReflectionFunctionAbstract $method, ReflectionClass $class = null): DocBlock
+    {
+        return (new Macro($method, '', $class ?? $method->getClosureScopeClass()))->phpdoc;
     }
 }

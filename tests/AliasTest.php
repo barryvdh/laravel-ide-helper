@@ -23,7 +23,7 @@ class AliasTest extends TestCase
     {
         // Mock
         $macro = __FUNCTION__;
-        $alias = new AliasDetectMethods;
+        $alias = new AliasMock();
 
         // Macros
         Builder::macro(
@@ -48,7 +48,7 @@ class AliasTest extends TestCase
     {
         // Mock
         $macro = __FUNCTION__;
-        $alias = new AliasDetectMethods;
+        $alias = new AliasMock();
 
         // Macros
         EloquentBuilder::macro(
@@ -83,7 +83,7 @@ class AliasTest extends TestCase
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class AliasDetectMethods extends Alias
+class AliasMock extends Alias
 {
     public function __construct()
     {

@@ -1015,10 +1015,10 @@ class ModelsCommand extends Command
 
         $types = $this->extractReflectionTypes($returnType);
 
-        $type = implode("|", $types);
+        $type = implode('|', $types);
 
         if($returnType->allowsNull()){
-            $type .="|null";
+            $type .='|null';
         }
 
         return $type;
@@ -1186,13 +1186,13 @@ class ModelsCommand extends Command
         if ($paramType = $parameter->getType()) {
             $types = $this->extractReflectionTypes($paramType);
 
-            $type = implode("|", $types);
+            $type = implode('|', $types);
 
             if($paramType->allowsNull()){
                 if(count($types)==1){
-                    $type = "?" . $type;
+                    $type = '?' . $type;
                 }else{
-                    $type .="|null";
+                    $type .='|null';
                 }
             }
 

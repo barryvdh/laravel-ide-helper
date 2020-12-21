@@ -1263,6 +1263,7 @@ class ModelsCommand extends Command
         if($reflection_type instanceof ReflectionNamedType){
             $types[] = $this->getReflectionNamedType($reflection_type);
         }else{
+            $types = [];
             foreach ($reflection_type->getTypes() as $named_type){
                 if($named_type->getName()==='null'){
                     continue;

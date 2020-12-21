@@ -44,7 +44,7 @@ class Macro extends Method
                 $type .= $parameter->hasType() && $parameter->getType()->allowsNull() ? '|null' : '';
 
                 $name = $parameter->isVariadic() ? '...' : '';
-                $name .= '$'.$parameter->getName();
+                $name .= '$' . $parameter->getName();
 
                 $this->phpdoc->appendTag(Tag::createInstance("@param {$type} {$name}"));
             }

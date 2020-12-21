@@ -23,7 +23,6 @@ use const PHP_EOL;
  */
 class MacroTest extends TestCase
 {
-
     /**
      * @covers ::initPhpDoc
      * @throws \ReflectionException

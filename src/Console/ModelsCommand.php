@@ -36,7 +36,7 @@ use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionObject;
-use ReflectionUnionType;
+use ReflectionType;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -1258,9 +1258,11 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    protected function extractReflectionTypes(\ReflectionType $reflection_type)
+    protected function extractReflectionTypes(ReflectionType $reflection_type)
     {
-        if(PHP_VERSION_ID>= 80000 && $reflection_type instanceof ReflectionUnionType){
+        if($reflection_type instanceof ReflectionNamedType){
+            $types[] = $this->getReflectionNamedType($reflection_type);
+        }else{
             foreach ($reflection_type->getTypes() as $named_type){
                 if($named_type->getName()==='null'){
                     continue;
@@ -1268,8 +1270,6 @@ class ModelsCommand extends Command
 
                 $types[] = $this->getReflectionNamedType($named_type);
             }
-        }else{
-            $types[] = $this->getReflectionNamedType($reflection_type);
         }
 
         return $types;

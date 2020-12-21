@@ -1018,11 +1018,7 @@ class ModelsCommand extends Command
         $type = implode("|", $types);
 
         if($returnType->allowsNull()){
-            if(count($types)==1){
-                $type = "?" . $type;
-            }else{
-                $type .="|null";
-            }
+            $type .="|null";
         }
 
         return $type;

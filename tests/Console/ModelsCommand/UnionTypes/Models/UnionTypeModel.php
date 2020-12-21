@@ -15,8 +15,18 @@ class UnionTypeModel extends Model
         return $query->where('foo', $bar);
     }
 
+    public function scopeWithNullableUnionTypeParameter(Builder $query, null|string|int $bar): Builder
+    {
+        return $query->where('foo', $bar);
+    }
+
     public function withUnionTypeReturn(): HasMany|UnionTypeModel
     {
         return $this->hasMany(UnionTypeModel::class);
+    }
+
+    public function getFooAttribute(): string|int|null
+    {
+        return $this->getAttribute('foo');
     }
 }

@@ -1018,7 +1018,11 @@ class ModelsCommand extends Command
         $type = implode("|", $types);
 
         if($returnType->allowsNull()){
-            $type .="|null";
+            if(count($types)==1){
+                $type = "?" . $type;
+            }else{
+                $type .="|null";
+            }
         }
 
         return $type;
@@ -1189,7 +1193,11 @@ class ModelsCommand extends Command
             $type = implode("|", $types);
 
             if($paramType->allowsNull()){
-                $type .="|null";
+                if(count($types)==1){
+                    $type = "?" . $type;
+                }else{
+                    $type .="|null";
+                }
             }
 
             return $type;

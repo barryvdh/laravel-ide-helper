@@ -34,7 +34,9 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionObject;
+use ReflectionUnionType;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -576,7 +578,7 @@ class ModelsCommand extends Command
                     $reflection = new \ReflectionMethod($model, $method);
 
                     if ($returnType = $reflection->getReturnType()) {
-                        $type = $returnType instanceof \ReflectionNamedType
+                        $type = $returnType instanceof ReflectionNamedType
                             ? $returnType->getName()
                             : (string)$returnType;
                     } else {
@@ -1011,16 +1013,12 @@ class ModelsCommand extends Command
             return null;
         }
 
-        $type = $returnType instanceof \ReflectionNamedType
-            ? $returnType->getName()
-            : (string)$returnType;
+        $types = $this->extractReflectionTypes($returnType);
 
-        if (!$returnType->isBuiltin()) {
-            $type = '\\' . $type;
-        }
+        $type = implode("|", $types);
 
-        if ($returnType->allowsNull()) {
-            $type .= '|null';
+        if($returnType->allowsNull()){
+            $type .="|null";
         }
 
         return $type;
@@ -1186,17 +1184,15 @@ class ModelsCommand extends Command
     protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
     {
         if ($paramType = $parameter->getType()) {
-            $parameterName = $paramType->getName();
+            $types = $this->extractReflectionTypes($paramType);
 
-            if (!$paramType->isBuiltin()) {
-                $parameterName = '\\' . $parameterName;
+            $type = implode("|", $types);
+
+            if($paramType->allowsNull()){
+                $type .="|null";
             }
 
-            if ($paramType->allowsNull()) {
-                return '?' . $parameterName;
-            }
-
-            return $parameterName;
+            return $type;
         }
 
         $docComment = $method->getDocComment();
@@ -1260,5 +1256,32 @@ class ModelsCommand extends Command
         // if we have a match on index 1
         // then we have found the type of the variable if not we return null
         return $type;
+    }
+
+    protected function extractReflectionTypes(\ReflectionType $reflection_type)
+    {
+        if($reflection_type instanceof ReflectionUnionType){
+            foreach ($reflection_type->getTypes() as $named_type){
+                if($named_type->getName()==='null'){
+                    continue;
+                }
+
+                $types[] = $this->getReflectionNamedType($named_type);
+            }
+        }else{
+            $types[] = $this->getReflectionNamedType($reflection_type);
+        }
+
+        return $types;
+    }
+
+    protected function getReflectionNamedType(ReflectionNamedType $paramType): string
+    {
+        $parameterName = $paramType->getName();
+        if (!$paramType->isBuiltin()) {
+            $parameterName = '\\' . $parameterName;
+        }
+
+        return $parameterName;
     }
 }

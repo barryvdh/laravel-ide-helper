@@ -1260,7 +1260,7 @@ class ModelsCommand extends Command
 
     protected function extractReflectionTypes(\ReflectionType $reflection_type)
     {
-        if($reflection_type instanceof ReflectionUnionType){
+        if(PHP_VERSION_ID>= 80000 && $reflection_type instanceof ReflectionUnionType){
             foreach ($reflection_type->getTypes() as $named_type){
                 if($named_type->getName()==='null'){
                     continue;

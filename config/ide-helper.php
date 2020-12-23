@@ -7,12 +7,11 @@ return [
     | Filename & Format
     |--------------------------------------------------------------------------
     |
-    | The default filename (without extension) and the format (php or json)
+    | The default filename
     |
     */
 
-    'filename'  => '_ide_helper',
-    'format'    => 'php',
+    'filename'  => '_ide_helper.php',
 
     /*
     |--------------------------------------------------------------------------
@@ -61,6 +60,17 @@ return [
     */
 
     'write_model_magic_where' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write Model External Eloquent Builder methods
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable write external eloquent builder methods
+    |
+    */
+
+    'write_model_external_builder_methods' => true,
 
     /*
     |--------------------------------------------------------------------------

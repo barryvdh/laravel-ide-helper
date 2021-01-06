@@ -18,6 +18,7 @@ use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -277,6 +278,7 @@ class ModelsCommand extends Command
                     $this->getPropertiesFromMethods($model);
                     $this->getSoftDeleteMethods($model);
                     $this->getCollectionMethods($model);
+                    $this->getFactoryMethods($model);
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
@@ -1041,6 +1043,33 @@ class ModelsCommand extends Command
             $this->setMethod('withoutTrashed', $builder . '|' . $modelName, []);
             $this->setMethod('onlyTrashed', $builder . '|' . $modelName, []);
         }
+    }
+
+    /**
+     * Generate factory method from "HasFactory" trait.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
+    protected function getFactoryMethods($model)
+    {
+        if(!class_exists(Factory::class)) {
+            return;
+        }
+
+        $traits = class_uses(get_class($model), true);
+        if (! in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
+            return;
+        }
+
+        $modelName = get_class($model);
+        $factory = get_class($modelName::factory());
+        $factory = '\\' . trim($factory, '\\');
+
+        if (! class_exists($factory)) {
+            return;
+        }
+
+        $this->setMethod('factory', $factory, ['...$parameters']);
     }
 
     /**

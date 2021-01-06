@@ -1057,7 +1057,7 @@ class ModelsCommand extends Command
         }
 
         $traits = class_uses(get_class($model), true);
-        if (! in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
+        if (!in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
             return;
         }
 
@@ -1065,7 +1065,7 @@ class ModelsCommand extends Command
         $factory = get_class($modelName::factory());
         $factory = '\\' . trim($factory, '\\');
 
-        if (! class_exists($factory)) {
+        if (!class_exists($factory)) {
             return;
         }
 

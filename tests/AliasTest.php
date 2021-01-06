@@ -98,7 +98,7 @@ class AliasMock extends Alias
         $this->classes = $classes;
     }
 
-    public function detectMethods()
+    public function detectMethods(): void
     {
         parent::detectMethods();
     }

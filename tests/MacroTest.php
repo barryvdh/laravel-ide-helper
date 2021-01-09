@@ -8,6 +8,7 @@ use Barryvdh\LaravelIdeHelper\Macro;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Routing\UrlGenerator;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -200,6 +201,47 @@ class MacroTest extends TestCase
 
         return $tags;
     }
+    /**
+     * Test that we can actually instantiate the class
+     */
+    public function testCanInstantiate()
+    {
+        $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
+
+        $macro = new Macro($reflectionMethod, UrlGenerator::class, new \ReflectionClass(UrlGenerator::class), 'macroName');
+
+        $this->assertInstanceOf(Macro::class, $macro);
+    }
+
+    /**
+     * Test the output of a class
+     */
+    public function testOutput()
+    {
+        $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
+
+        $macro = new Macro($reflectionMethod, 'URL', new \ReflectionClass(UrlGenerator::class), 'macroName');
+        $output = <<<'DOC'
+/**
+ * 
+ *
+ * @see \Barryvdh\LaravelIdeHelper\Tests\UrlGeneratorMacroClass::__invoke()
+ * @param string $foo
+ * @param int $bar
+ * @return string 
+ * @static 
+ */
+DOC;
+        $this->assertSame($output, $macro->getDocComment(''));
+        $this->assertSame('__invoke', $macro->getRealName());
+        $this->assertSame('\\' . UrlGenerator::class, $macro->getDeclaringClass());
+        $this->assertSame('$foo, $bar', $macro->getParams(true));
+        $this->assertSame(['$foo', '$bar'], $macro->getParams(false));
+        $this->assertSame('$foo, $bar = 0', $macro->getParamsWithDefault(true));
+        $this->assertSame(['$foo', '$bar = 0'], $macro->getParamsWithDefault(false));
+        $this->assertTrue($macro->shouldReturn());
+        $this->assertSame('$instance->__invoke($foo, $bar)', $macro->getRootMethodCall());
+    }
 }
 
 /**
@@ -216,5 +258,21 @@ class MacroMock extends Macro
     public function getPhpDoc(ReflectionFunctionAbstract $method, ReflectionClass $class = null): DocBlock
     {
         return (new Macro($method, '', $class ?? $method->getClosureScopeClass()))->phpdoc;
+    }
+}
+
+/**
+ * Example of an invokable class to be used as a macro.
+ */
+class UrlGeneratorMacroClass
+{
+    /**
+     * @param  string  $foo
+     * @param  int  $bar
+     * @return string
+     */
+    public function __invoke(string $foo, int $bar = 0): string
+    {
+        return '';
     }
 }

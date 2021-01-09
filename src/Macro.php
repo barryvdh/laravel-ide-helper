@@ -65,7 +65,11 @@ class Macro extends Method
 
     protected function addLocationToPhpDoc()
     {
-        $enclosingClass = $this->method->getClosureScopeClass();
+        if ($this->method->name === '__invoke') {
+            $enclosingClass = $this->method->getDeclaringClass();
+        } else {
+            $enclosingClass = $this->method->getClosureScopeClass();
+        }
 
         /** @var \ReflectionMethod $enclosingMethod */
         $enclosingMethod = Collection::make($enclosingClass->getMethods())

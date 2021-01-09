@@ -55,7 +55,7 @@ class Method
         $this->initClassDefinedProperties($method, $class);
 
         //Reference the 'real' function in the declaring class
-        $this->root = '\\' . ltrim($class->getName(), '\\');
+        $this->root = '\\' . ltrim($method->name === '__invoke' ? $method->getDeclaringClass()->getName() : $class->getName(), '\\');
 
         //Create a DocBlock and serializer instance
         $this->initPhpDoc($method);

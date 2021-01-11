@@ -225,10 +225,10 @@ class MacroTest extends TestCase
 /**
  * 
  *
- * @see \Barryvdh\LaravelIdeHelper\Tests\UrlGeneratorMacroClass::__invoke()
  * @param string $foo
  * @param int $bar
  * @return string 
+ * @see \Barryvdh\LaravelIdeHelper\Tests\UrlGeneratorMacroClass::__invoke()
  * @static 
  */
 DOC;

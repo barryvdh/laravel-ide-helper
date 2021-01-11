@@ -35,7 +35,7 @@ All notable changes to this project will be documented in this file.
 - Allow model_locations to have glob patterns [\#1059 / saackearl](https://github.com/barryvdh/laravel-ide-helper/pull/1059)
 - Error when generating helper for macroable classes which are not facades and contain a "fake" method [\#1066 / domkrm] (https://github.com/barryvdh/laravel-ide-helper/pull/1066)
 - Casts with a return type of `static` or `$this` now resolve to an instance of the cast [\#1103 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1103)
-
+- Broken ReflectionUnionTypes [\#1132 / def-studio](https://github.com/barryvdh/laravel-ide-helper/pull/1132)
 ### Removed
 - Removed format and broken generateJsonHelper [\#1053 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1053)
 

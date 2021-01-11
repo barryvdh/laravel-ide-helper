@@ -6,7 +6,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\UnionTypes;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Illuminate\Foundation\Application;
 
 class Test extends AbstractModelsCommand
 {

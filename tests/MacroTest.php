@@ -199,8 +199,8 @@ class MacroTest extends TestCase
                 /**
                  * Test docblock.
                  */
-                function (\Stringable|string $a = null): int {
-                    return 0;
+                function (\Stringable|string $a = null): \Stringable|string|null {
+                    return $a;
                 }
             )
         );
@@ -208,6 +208,7 @@ class MacroTest extends TestCase
         $this->assertNotNull($phpdoc);
         $this->assertStringContainsString('Test docblock', $phpdoc->getText());
         $this->assertEquals('@param \Stringable|string|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@return \Stringable|string|null', $this->tagsToString($phpdoc, 'return'));
     }
 
     protected function tagsToString(DocBlock $docBlock, string $name)

@@ -69,9 +69,19 @@ class Macro extends Method
             $builder = EloquentBuilder::class;
             $return = $method->getReturnType();
 
-            $type = $return->getName();
-            $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
-            $type .= $return->allowsNull() ? '|null' : '';
+            $returnTypes = $return instanceof \ReflectionUnionType
+                ? $return->getTypes()
+                : [$return];
+
+            $type = Collection::make($returnTypes)
+                ->filter()
+                ->map->getName()
+                ->implode('|');
+
+            if (! $return instanceof \ReflectionUnionType) {
+                $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
+                $type .= $return->allowsNull() ? '|null' : '';
+            }
 
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
         }

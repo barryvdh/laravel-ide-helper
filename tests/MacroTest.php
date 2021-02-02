@@ -196,14 +196,7 @@ class MacroTest extends TestCase
         }
 
         $phpdoc = (new MacroMock())->getPhpDoc(
-            new ReflectionFunction(
-                /**
-                 * Test docblock.
-                 */
-                function (\Stringable|string $a = null): \Stringable|string|null {
-                    return $a;
-                }
-            )
+            new ReflectionFunction(\Closure::fromCallable([new Php8Macro(), 'macro']))
         );
 
         $this->assertNotNull($phpdoc);

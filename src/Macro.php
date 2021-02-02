@@ -44,6 +44,7 @@ class Macro extends Method
 
                 $type = $this->concatReflectionTypes($reflectionType);
 
+                /** @psalm-suppress UndefinedClass */
                 if ($reflectionType && !$reflectionType instanceof \ReflectionUnionType && $reflectionType->allowsNull()) {
                     $type .= '|null';
                 }
@@ -64,6 +65,7 @@ class Macro extends Method
 
             $type = $this->concatReflectionTypes($return);
 
+            /** @psalm-suppress UndefinedClass */
             if (!$return instanceof \ReflectionUnionType) {
                 $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
                 $type .= $return->allowsNull() ? '|null' : '';
@@ -75,6 +77,7 @@ class Macro extends Method
 
     protected function concatReflectionTypes(?\ReflectionType $type): string
     {
+        /** @psalm-suppress UndefinedClass */
         $returnTypes = $type instanceof \ReflectionUnionType
             ? $type->getTypes()
             : [$type];

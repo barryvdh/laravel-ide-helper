@@ -55,7 +55,7 @@ class Macro extends Method
                     $type .= '|null';
                 }
 
-                $type = $type ?? 'mixed';
+                $type = $type ?: 'mixed';
 
                 $name = $parameter->isVariadic() ? '...' : '';
                 $name .= '$' . $parameter->getName();

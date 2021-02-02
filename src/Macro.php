@@ -40,8 +40,22 @@ class Macro extends Method
         // Add macro parameters if they are missed in original docblock
         if (!$this->phpdoc->hasTag('param')) {
             foreach ($method->getParameters() as $parameter) {
-                $type = $parameter->hasType() ? $parameter->getType()->getName() : 'mixed';
-                $type .= $parameter->hasType() && $parameter->getType()->allowsNull() ? '|null' : '';
+                $reflectionType = $parameter->getType();
+
+                $reflectionTypes = $reflectionType instanceof \ReflectionUnionType
+                    ? $reflectionType->getTypes()
+                    : [$reflectionType];
+
+                $type = Collection::make($reflectionTypes)
+                    ->filter()
+                    ->map->getName()
+                    ->implode('|');
+
+                if ($reflectionType && ! $reflectionType instanceof \ReflectionUnionType && $reflectionType->allowsNull()) {
+                    $type .= '|null';
+                }
+
+                $type = $type ?? 'mixed';
 
                 $name = $parameter->isVariadic() ? '...' : '';
                 $name .= '$' . $parameter->getName();

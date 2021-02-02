@@ -188,6 +188,28 @@ class MacroTest extends TestCase
         $this->assertEquals('@return \stdClass|null rrrrrrr', $this->tagsToString($phpdoc, 'return'));
     }
 
+    public function testInitPhpDocParamsWithUnionTypes(): void
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('This test requires PHP 8.0 or higher');
+        }
+
+        $phpdoc = (new MacroMock())->getPhpDoc(
+            new ReflectionFunction(
+                /**
+                 * Test docblock.
+                 */
+                function (\Stringable|string $a = null): int {
+                    return 0;
+                }
+            )
+        );
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock', $phpdoc->getText());
+        $this->assertEquals('@param \Stringable|string|null $a', $this->tagsToString($phpdoc, 'param'));
+    }
+
     protected function tagsToString(DocBlock $docBlock, string $name)
     {
         $tags = $docBlock->getTagsByName($name);

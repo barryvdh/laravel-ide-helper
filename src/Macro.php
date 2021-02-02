@@ -42,14 +42,7 @@ class Macro extends Method
             foreach ($method->getParameters() as $parameter) {
                 $reflectionType = $parameter->getType();
 
-                $reflectionTypes = $reflectionType instanceof \ReflectionUnionType
-                    ? $reflectionType->getTypes()
-                    : [$reflectionType];
-
-                $type = Collection::make($reflectionTypes)
-                    ->filter()
-                    ->map->getName()
-                    ->implode('|');
+                $type = $this->concatReflectionTypes($reflectionType);
 
                 if ($reflectionType && ! $reflectionType instanceof \ReflectionUnionType && $reflectionType->allowsNull()) {
                     $type .= '|null';
@@ -69,14 +62,7 @@ class Macro extends Method
             $builder = EloquentBuilder::class;
             $return = $method->getReturnType();
 
-            $returnTypes = $return instanceof \ReflectionUnionType
-                ? $return->getTypes()
-                : [$return];
-
-            $type = Collection::make($returnTypes)
-                ->filter()
-                ->map->getName()
-                ->implode('|');
+            $type = $this->concatReflectionTypes($return);
 
             if (! $return instanceof \ReflectionUnionType) {
                 $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
@@ -85,6 +71,18 @@ class Macro extends Method
 
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
         }
+    }
+
+    protected function concatReflectionTypes(?\ReflectionType $type): string
+    {
+        $returnTypes = $type instanceof \ReflectionUnionType
+            ? $type->getTypes()
+            : [$type];
+
+        return Collection::make($returnTypes)
+            ->filter()
+            ->map->getName()
+            ->implode('|');
     }
 
     protected function addLocationToPhpDoc()

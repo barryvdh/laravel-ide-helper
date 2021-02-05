@@ -344,7 +344,6 @@ class Alias
      */
     protected function detectMethods()
     {
-
         foreach ($this->classes as $class) {
             $reflection = new \ReflectionClass($class);
 

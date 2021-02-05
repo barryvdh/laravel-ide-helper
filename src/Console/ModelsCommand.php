@@ -212,8 +212,6 @@ class ModelsCommand extends Command
 
     protected function generateDocs($loadModels, $ignore = '')
     {
-
-
         $output = "<?php
 
 // @formatter:off
@@ -313,7 +311,6 @@ class ModelsCommand extends Command
 
             $dirs = glob($dir, GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
-
                 if (!is_dir($dir)) {
                     $this->error("Cannot locate directory '{'$dir}'");
                     continue;
@@ -757,7 +754,6 @@ class ModelsCommand extends Command
      */
     protected function createPhpDocs($class)
     {
-
         $reflection = new ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
         $classname = $reflection->getShortName();
@@ -1019,7 +1015,7 @@ class ModelsCommand extends Command
 
         $type = implode('|', $types);
 
-        if($returnType->allowsNull()){
+        if ($returnType->allowsNull()) {
             $type .='|null';
         }
 
@@ -1050,7 +1046,7 @@ class ModelsCommand extends Command
      */
     protected function getFactoryMethods($model)
     {
-        if(!class_exists(Factory::class)) {
+        if (!class_exists(Factory::class)) {
             return;
         }
 
@@ -1128,7 +1124,7 @@ class ModelsCommand extends Command
             $reflectionType = $this->getReturnTypeFromDocBlock($methodReflection);
         }
 
-        if($reflectionType === 'static' || $reflectionType === '$this') {
+        if ($reflectionType === 'static' || $reflectionType === '$this') {
             $reflectionType = $type;
         }
 
@@ -1217,10 +1213,10 @@ class ModelsCommand extends Command
 
             $type = implode('|', $types);
 
-            if($paramType->allowsNull()){
-                if(count($types)==1){
+            if ($paramType->allowsNull()) {
+                if (count($types)==1) {
                     $type = '?' . $type;
-                }else{
+                } else {
                     $type .='|null';
                 }
             }
@@ -1293,12 +1289,12 @@ class ModelsCommand extends Command
 
     protected function extractReflectionTypes(ReflectionType $reflection_type)
     {
-        if($reflection_type instanceof ReflectionNamedType){
+        if ($reflection_type instanceof ReflectionNamedType) {
             $types[] = $this->getReflectionNamedType($reflection_type);
-        }else{
+        } else {
             $types = [];
-            foreach ($reflection_type->getTypes() as $named_type){
-                if($named_type->getName()==='null'){
+            foreach ($reflection_type->getTypes() as $named_type) {
+                if ($named_type->getName()==='null') {
                     continue;
                 }
 

@@ -48,7 +48,8 @@ class Method
      * @param array $interfaces
      * @param array $classAliases
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = []) {
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [])
+    {
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->classAliases = $classAliases;

@@ -16,7 +16,7 @@ class Macro extends Method
      * @param \ReflectionClass    $class
      * @param null                $methodName
      * @param array               $interfaces
-     * @param NamespaceUses       $namespaceUses
+     * @param array               $classAliases
      */
     public function __construct(
         $method,
@@ -24,9 +24,9 @@ class Macro extends Method
         $class,
         $methodName = null,
         $interfaces = [],
-        $namespaceUses = null
+        $classAliases = []
     ) {
-        parent::__construct($method, $alias, $class, $methodName, $interfaces, $namespaceUses);
+        parent::__construct($method, $alias, $class, $methodName, $interfaces, $classAliases);
     }
 
     /**

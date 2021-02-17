@@ -2,12 +2,10 @@
 
 // Share common rules between non-test and test files
 return [
-    // PSR12 from https://github.com/FriendsOfPHP/PHP-CS-Fixer/pull/4943
-    '@PSR2' => true,
+    '@PSR12' => true,
     'blank_line_after_opening_tag' => true,
     'braces' => [
-        // Not-yet-implemented
-        // 'allow_single_line_anonymous_class_with_empty_body' => true,
+        'allow_single_line_anonymous_class_with_empty_body' => true,
     ],
     'compact_nullable_typehint' => true,
     'declare_equal_normalize' => true,

@@ -4,6 +4,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
 
 class Macro extends Method
@@ -16,7 +17,7 @@ class Macro extends Method
      * @param \ReflectionClass    $class
      * @param null                $methodName
      * @param array               $interfaces
-     * @param NamespaceUses       $namespaceUses
+     * @param array               $classAliases
      */
     public function __construct(
         $method,
@@ -24,9 +25,9 @@ class Macro extends Method
         $class,
         $methodName = null,
         $interfaces = [],
-        $namespaceUses = null
+        $classAliases = []
     ) {
-        parent::__construct($method, $alias, $class, $methodName, $interfaces, $namespaceUses);
+        parent::__construct($method, $alias, $class, $methodName, $interfaces, $classAliases);
     }
 
     /**
@@ -34,25 +35,31 @@ class Macro extends Method
      */
     protected function initPhpDoc($method)
     {
-        $this->phpdoc = new DocBlock('/** */');
+        $this->phpdoc = new DocBlock($method);
 
         $this->addLocationToPhpDoc();
 
-        // Add macro parameters
-        foreach ($method->getParameters() as $parameter) {
-            $type = $parameter->hasType() ? $parameter->getType()->getName() : 'mixed';
-            $type .= $parameter->hasType() && $parameter->getType()->allowsNull() ? '|null' : '';
+        // Add macro parameters if they are missed in original docblock
+        if (!$this->phpdoc->hasTag('param')) {
+            foreach ($method->getParameters() as $parameter) {
+                $type = $parameter->hasType() ? $parameter->getType()->getName() : 'mixed';
+                $type .= $parameter->hasType() && $parameter->getType()->allowsNull() ? '|null' : '';
 
-            $name = $parameter->isVariadic() ? '...' : '';
-            $name .= '$' . $parameter->getName();
+                $name = $parameter->isVariadic() ? '...' : '';
+                $name .= '$' . $parameter->getName();
 
-            $this->phpdoc->appendTag(Tag::createInstance("@param {$type} {$name}"));
+                $this->phpdoc->appendTag(Tag::createInstance("@param {$type} {$name}"));
+            }
         }
 
-        // Add macro return type
-        if ($method->hasReturnType()) {
-            $type = $method->getReturnType()->getName();
-            $type .= $method->getReturnType()->allowsNull() ? '|null' : '';
+        // Add macro return type if it missed in original docblock
+        if ($method->hasReturnType() && !$this->phpdoc->hasTag('return')) {
+            $builder = EloquentBuilder::class;
+            $return = $method->getReturnType();
+
+            $type = $return->getName();
+            $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
+            $type .= $return->allowsNull() ? '|null' : '';
 
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
         }
@@ -60,7 +67,11 @@ class Macro extends Method
 
     protected function addLocationToPhpDoc()
     {
-        $enclosingClass = $this->method->getClosureScopeClass();
+        if ($this->method->name === '__invoke') {
+            $enclosingClass = $this->method->getDeclaringClass();
+        } else {
+            $enclosingClass = $this->method->getClosureScopeClass();
+        }
 
         /** @var \ReflectionMethod $enclosingMethod */
         $enclosingMethod = Collection::make($enclosingClass->getMethods())

@@ -6,7 +6,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Application;
 use PHPUnit\Framework\TestCase;
 
 class MethodTest extends TestCase
@@ -59,10 +58,6 @@ DOC;
      */
     public function testEloquentBuilderOutput()
     {
-        if ((int) Application::VERSION < 8) {
-            $this->markTestSkipped('This test requires Laravel 8.0 or higher');
-        }
-
         $reflectionClass = new \ReflectionClass(Builder::class);
         $reflectionMethod = $reflectionClass->getMethod('with');
 
@@ -102,6 +97,37 @@ DOC;
         $this->assertSame('$chars = \'$\\\'\\\\\'', $method->getParamsWithDefault(true));
         $this->assertSame(['$chars = \'$\\\'\\\\\''], $method->getParamsWithDefault(false));
     }
+
+    /**
+     * Test the output of a class when using class aliases for it
+     */
+    public function testClassAliases()
+    {
+        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionMethod = $reflectionClass->getMethod('getApplication');
+
+        $method = new Method($reflectionMethod, 'Example', $reflectionClass, null, [], [
+            'Application' => '\\Illuminate\\Foundation\\Application',
+        ]);
+
+        $output = <<<'DOC'
+/**
+ * 
+ *
+ * @return \Illuminate\Foundation\Application 
+ * @static 
+ */
+DOC;
+
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('getApplication', $method->getName());
+        $this->assertSame('\\' . ExampleClass::class, $method->getDeclaringClass());
+        $this->assertSame('', $method->getParams(true));
+        $this->assertSame([], $method->getParams(false));
+        $this->assertSame('', $method->getParamsWithDefault(true));
+        $this->assertSame([], $method->getParamsWithDefault(false));
+        $this->assertTrue($method->shouldReturn());
+    }
 }
 
 class ExampleClass
@@ -117,6 +143,14 @@ class ExampleClass
     }
 
     public function setSpecialChars($chars = "\$'\\")
+    {
+        return;
+    }
+
+    /**
+     * @return Application
+     */
+    public function getApplication()
     {
         return;
     }

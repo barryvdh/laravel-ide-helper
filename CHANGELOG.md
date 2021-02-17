@@ -2,9 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.8.1...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.1...master)
 --------------
+### Added
+- Generate PHPDoc for Laravel 8.x factories [\#1074 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1074)
 
+### Fixed
+- Error when generating helper for invokable classes [\#1124 / standaniels](https://github.com/barryvdh/laravel-ide-helper/pull/1124)
+- Fix broken ReflectionUnionTypes [\#1132 / def-studio](https://github.com/barryvdh/laravel-ide-helper/pull/1132)
+
+2020-12-30, 2.9.0
+-----------------
+### Changed
+- Dropped support for Laravel 6 and Laravel 7, as well as support for PHP 7.2 and added support for doctrine/dbal:^3 [\#1114 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1114)
+
+### Fixed
+- `Macro::initPhpDoc()` will save original docblock if present [\#1116 / LastDragon-ru](https://github.com/barryvdh/laravel-ide-helper/pull/1116)
+- `Alias` will grab macros from `\Illuminate\Database\Eloquent\Builder` too [\#1118 / LastDragon-ru](https://github.com/barryvdh/laravel-ide-helper/pull/1118)
+
+2020-12-08, 2.8.2
+-----------------
 ### Added
 - Fix phpdoc generate for custom cast with parameter [\#986 / artelkr](https://github.com/barryvdh/laravel-ide-helper/pull/986)
 - Created a possibility to add custom relation type [\#987 / efinder2](https://github.com/barryvdh/laravel-ide-helper/pull/987)

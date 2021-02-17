@@ -6,7 +6,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Application;
 use PHPUnit\Framework\TestCase;
 
 class MethodTest extends TestCase
@@ -59,10 +58,6 @@ DOC;
      */
     public function testEloquentBuilderOutput()
     {
-        if ((int) Application::VERSION < 8) {
-            $this->markTestSkipped('This test requires Laravel 8.0 or higher');
-        }
-
         $reflectionClass = new \ReflectionClass(Builder::class);
         $reflectionMethod = $reflectionClass->getMethod('with');
 

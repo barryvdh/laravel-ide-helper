@@ -17,6 +17,7 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\Facade;
 use ReflectionClass;
 
@@ -347,7 +348,6 @@ class Alias
      */
     protected function detectMethods()
     {
-
         foreach ($this->classes as $class) {
             $reflection = new \ReflectionClass($class);
 
@@ -373,8 +373,9 @@ class Alias
             }
 
             // Check if the class is macroable
+            // (Eloquent\Builder is also macroable but doesn't use Macroable trait)
             $traits = collect($reflection->getTraitNames());
-            if ($traits->contains('Illuminate\Support\Traits\Macroable')) {
+            if ($traits->contains('Illuminate\Support\Traits\Macroable') || $class === EloquentBuilder::class) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {

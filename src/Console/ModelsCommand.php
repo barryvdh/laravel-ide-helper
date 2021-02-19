@@ -312,7 +312,7 @@ class ModelsCommand extends Command
             $dirs = glob($dir, GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
                 if (!is_dir($dir)) {
-                    $this->error("Cannot locate directory '{'$dir}'");
+                    $this->error("Cannot locate directory '{$dir}'");
                     continue;
                 }
 

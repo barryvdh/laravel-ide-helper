@@ -275,6 +275,7 @@ class ModelsCommand extends Command
                         $this->castPropertiesType($model);
                     }
 
+                    $this->getPropertiesFromExtensions($model);
                     $this->getPropertiesFromMethods($model);
                     $this->getSoftDeleteMethods($model);
                     $this->getCollectionMethods($model);
@@ -509,6 +510,17 @@ class ModelsCommand extends Command
     /**
      * @param \Illuminate\Database\Eloquent\Model $model
      */
+    protected function getPropertiesFromExtensions($model)
+    {
+        foreach ($this->laravel['config']->get('ide-helper.model_extensions', []) as $extension) {
+            $plugin = $this->laravel->make($extension);
+            $plugin($model, $this);
+        }
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Model $model
+     */
     protected function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
@@ -713,7 +725,7 @@ class ModelsCommand extends Command
      * @param string|null $comment
      * @param bool        $nullable
      */
-    protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
+    public function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
     {
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = [];

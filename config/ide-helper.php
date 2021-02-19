@@ -278,4 +278,14 @@ return [
     */
     'additional_relation_types' => [],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Model extensions
+    |--------------------------------------------------------------------------
+    |
+    | Add ability to write invokable extensions for model DocBlocks.
+    |
+    */
+    'model_extensions' => [],
+
 ];

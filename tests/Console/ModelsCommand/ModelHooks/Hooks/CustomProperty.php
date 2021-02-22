@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;

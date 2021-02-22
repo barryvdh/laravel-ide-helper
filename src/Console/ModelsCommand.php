@@ -1363,12 +1363,12 @@ class ModelsCommand extends Command
      */
     protected function runModelHooks($model): void
     {
-        $hooks = $this->laravel['config']->get('ide-helper.model_hooks', array());
+        $hooks = $this->laravel['config']->get('ide-helper.model_hooks', []);
 
         foreach ($hooks as $hook) {
             $hookInstance = $this->laravel->make($hook);
 
-            if (! $hookInstance instanceof ModelHookInterface) {
+            if (!$hookInstance instanceof ModelHookInterface) {
                 throw new \RuntimeException(
                     'Your IDE helper model hook must implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface'
                 );

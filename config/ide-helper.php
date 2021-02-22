@@ -155,9 +155,9 @@ return [
     |
     */
 
-    'model_hooks' => array(
+    'model_hooks' => [
         // App\Support\IdeHelper\MyModelHook::class
-    ),
+    ],
 
     /*
     |--------------------------------------------------------------------------

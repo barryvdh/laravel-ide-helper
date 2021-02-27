@@ -278,4 +278,16 @@ return [
     */
     'additional_relation_types' => [],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Generate model helpers after migrations
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable running ide-helper:models after a successful
+    | migration command or specify the parameters in either string or array form.
+    | e.g, specifying `--nowrite` will execute `php artisan ide-helper:models --nowrite`
+    |
+    */
+    'post_migrate' => false,
 ];

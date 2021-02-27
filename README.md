@@ -206,7 +206,7 @@ Or can be ignored by setting the `ignored_models` config
 
 #### Magic `where*` methods
 
-Eloquent allows calling `where<Attribute>` on your modes, e.g. `Post::whereTitle(…)` and automatically translates this to e.g. `Post::where('title', '=', '…')`.
+Eloquent allows calling `where<Attribute>` on your models, e.g. `Post::whereTitle(…)` and automatically translates this to e.g. `Post::where('title', '=', '…')`.
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_magic_where` and setting it to `false`.
 

@@ -278,7 +278,6 @@ return [
     */
     'additional_relation_types' => [],
 
-
     /*
     |--------------------------------------------------------------------------
     | Generate model helpers after migrations
@@ -290,4 +289,5 @@ return [
     |
     */
     'post_migrate' => false,
+
 ];

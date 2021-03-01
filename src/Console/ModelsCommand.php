@@ -491,6 +491,20 @@ class ModelsCommand extends Command
                 !$column->getNotnull()
             );
             if ($this->write_model_magic_where) {
+                if ($this->hasCamelCaseModelProperties()) {
+                    // Laravel does not support magic where for 2+ word camel cased properties. Check the name...
+
+                    if (strpos($name, '_') !== false) {
+                        // Underscore in the name. That's two words. Do not generate the magic where for this.
+                        continue;
+                    }
+
+                    if (strtolower(substr($name, 1)) !== substr($name, 1) && strtoupper($name) !== $name) {
+                        // There are capitals in the name, and not all letters are capitals. This indicates 2+ words.
+                        continue;
+                    }
+                }
+
                 $builderClass = $this->write_model_external_builder_methods
                     ? get_class($model->newModelQuery())
                     : '\Illuminate\Database\Eloquent\Builder';

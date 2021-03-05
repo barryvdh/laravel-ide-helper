@@ -233,7 +233,7 @@ class Users extends Model
     }
 }
 
-// => will become after generate models
+// => after generate models
 
 /**
  * App\Models\Users

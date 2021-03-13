@@ -8,7 +8,12 @@ use Illuminate\Contracts\Console\Kernel as Artisan;
 
 class GenerateModelHelper
 {
-    /** @var bool */
+    /**
+     * Tracks whether we should run the models command on the CommandFinished event or not.
+     * Set to true by the MigrationsEnded event, needs to be cleared before artisan call to prevent infinite loop.
+     *
+     * @var bool
+     */
     public static $shouldRun = false;
 
     /** @var \Illuminate\Contracts\Console\Kernel */

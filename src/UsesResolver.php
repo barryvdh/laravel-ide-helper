@@ -11,7 +11,6 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Support\Arr;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
@@ -79,15 +78,20 @@ class UsesResolver
         );
 
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $namespaceData = null;
+
+        foreach ($parser->parse($code) as $node) {
+            if ($node instanceof Namespace_ && $node->name->toCodeString() === $namespace) {
+                $namespaceData = $node;
+                break;
+            }
+        }
+
+        if ($namespaceData === null) {
+            return $this;
+        }
 
         /** @var Namespace_ $namespaceData */
-        $namespaceData = Arr::first(
-            $parser->parse($code),
-            function ($node) use ($namespace) {
-                return $node instanceof Namespace_
-                    && $node->name->toCodeString() === $namespace;
-            }
-        );
 
         foreach ($namespaceData->stmts as $stmt) {
             if ($stmt instanceof Use_) {

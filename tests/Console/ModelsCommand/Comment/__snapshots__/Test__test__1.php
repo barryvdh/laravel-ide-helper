@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Comment\Models\Simple
  *
  * @property integer $id
+ * @property string $both_same_name I'm a getter
+ * @property string $both_without_getter_comment
  * @property-read string $faker_comment
  * @property-read string $format_comment There is format comment, success.
  * @property-read string $format_comment_line_two There is format comment, success.
@@ -125,5 +127,34 @@ class Simple extends Model
     public function relationHasOne(): HasOne
     {
         return $this->hasOne(Simple::class);
+    }
+
+    /**
+     * @comment I'm a setter
+     */
+    public function setBothSameNameAttribute(): void
+    {
+    }
+
+    /**
+     * @comment I'm a getter
+     * @return string
+     */
+    public function getBothSameNameAttribute(): string
+    {
+    }
+
+    /**
+     * @comment I'm a setter
+     */
+    public function setBothWithoutGetterCommentAttribute(): void
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function getBothWithoutGetterCommentAttribute(): string
+    {
     }
 }

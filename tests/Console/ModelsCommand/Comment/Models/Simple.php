@@ -104,4 +104,33 @@ class Simple extends Model
     {
         return $this->hasOne(Simple::class);
     }
+
+    /**
+     * @comment I'm a setter
+     */
+    public function setBothSameNameAttribute(): void
+    {
+    }
+
+    /**
+     * @comment I'm a getter
+     * @return string
+     */
+    public function getBothSameNameAttribute(): string
+    {
+    }
+
+    /**
+     * @comment I'm a setter
+     */
+    public function setBothWithoutGetterCommentAttribute(): void
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function getBothWithoutGetterCommentAttribute(): string
+    {
+    }
 }

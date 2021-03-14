@@ -218,7 +218,7 @@ By default, these attributes are generated in the phpdoc. You can turn them off 
 
 #### Support `@comment` based on DocBlock
 
-In order to better support ide, relations and getters/setters can also add comments like table columns. Only based on DocBlock, use `@comment`. example:
+In order to better support IDEs, relations and getters/setters can also add a comment to a property like table columns. Therefore a custom docblock `@comment` is used:
 ```php
 class Users extends Model
 {

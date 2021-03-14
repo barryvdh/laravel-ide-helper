@@ -29,12 +29,13 @@ class UsesResolverTest extends TestCase
 }
 DOC;
 
-        $usesResolver->loadFromCode('Barryvdh\\LaravelIdeHelper\\Tests\\UsesResolverTest', $code);
-
-        $this->assertEquals($usesResolver->getClassAliases(), [
-            'MyUsesResolver' => '\\Barryvdh\\LaravelIdeHelper\\UsesResolver',
-            'TestCase' => '\\PHPUnit\Framework\TestCase',
-        ]);
+        $this->assertEquals(
+            $usesResolver->loadFromCode('Barryvdh\\LaravelIdeHelper\\Tests\\UsesResolverTest', $code),
+            [
+                'MyUsesResolver' => '\\Barryvdh\\LaravelIdeHelper\\UsesResolver',
+                'TestCase' => '\\PHPUnit\Framework\TestCase',
+            ]
+        );
     }
 
     /**
@@ -44,11 +45,12 @@ DOC;
     {
         $usesResolver = new UsesResolver();
 
-        $usesResolver->loadFromClass(self::class);
-
-        $this->assertEquals($usesResolver->getClassAliases(), [
-            'UsesResolver' => '\\Barryvdh\\LaravelIdeHelper\\UsesResolver',
-            'TestCase' => '\\PHPUnit\Framework\TestCase',
-        ]);
+        $this->assertEquals(
+            $usesResolver->loadFromClass(self::class),
+            [
+                'UsesResolver' => '\\Barryvdh\\LaravelIdeHelper\\UsesResolver',
+                'TestCase' => '\\PHPUnit\Framework\TestCase',
+            ]
+        );
     }
 }

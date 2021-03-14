@@ -119,6 +119,6 @@ class UsesResolver
      */
     protected static function classBasename(string $classFQN): string
     {
-        return \preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $classFQN);
+        return preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $classFQN);
     }
 }

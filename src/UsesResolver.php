@@ -20,23 +20,10 @@ use PhpParser\ParserFactory;
 class UsesResolver
 {
     /**
-     * @var array
-     */
-    protected $classAliases = [];
-
-    /**
+     * @param string $classFQN
      * @return array
      */
-    public function getClassAliases()
-    {
-        return $this->classAliases;
-    }
-
-    /**
-     * @param string $classFQN
-     * @return $this
-     */
-    public function loadFromClass(string $classFQN)
+    public function loadFromClass(string $classFQN): array
     {
         return $this->loadFromFile(
             $classFQN,
@@ -47,9 +34,9 @@ class UsesResolver
     /**
      * @param string $classFQN
      * @param string $filename
-     * @return $this
+     * @return array
      */
-    public function loadFromFile(string $classFQN, string $filename)
+    public function loadFromFile(string $classFQN, string $filename): array
     {
         return $this->loadFromCode(
             $classFQN,
@@ -62,9 +49,9 @@ class UsesResolver
     /**
      * @param string $classFQN
      * @param string $code
-     * @return $this
+     * @return array
      */
-    public function loadFromCode(string $classFQN, string $code)
+    public function loadFromCode(string $classFQN, string $code): array
     {
         $classFQN = ltrim($classFQN, '\\');
 
@@ -88,10 +75,12 @@ class UsesResolver
         }
 
         if ($namespaceData === null) {
-            return $this;
+            return [];
         }
 
         /** @var Namespace_ $namespaceData */
+
+        $aliases = [];
 
         foreach ($namespaceData->stmts as $stmt) {
             if ($stmt instanceof Use_) {
@@ -102,37 +91,34 @@ class UsesResolver
                 foreach ($stmt->uses as $use) {
                     /** @var UseUse $use */
 
-                    $this->addClassAlias(
-                        '\\' . $use->name->toCodeString(),
-                        $use->alias ? $use->alias->name : null
-                    );
+                    $alias = $use->alias ?
+                        $use->alias->name :
+                        self::classBasename($use->name->toCodeString());
+
+                    $aliases[$alias] = '\\' . $use->name->toCodeString();
                 }
             } elseif ($stmt instanceof GroupUse) {
                 foreach ($stmt->uses as $use) {
                     /** @var UseUse $use */
 
-                    $this->addClassAlias(
-                        '\\' . $stmt->prefix->toCodeString() . '\\' . $use->name->toCodeString(),
-                        $use->alias ? $use->alias->name : null
-                    );
+                    $alias = $use->alias ?
+                        $use->alias->name :
+                        self::classBasename($use->name->toCodeString());
+
+                    $aliases[$alias] = '\\' . $stmt->prefix->toCodeString() . '\\' . $use->name->toCodeString();
                 }
             }
         }
 
-        return $this;
+        return $aliases;
     }
 
     /**
      * @param string $classFQN
-     * @param string|null $alias
-     * @return void
+     * @return string
      */
-    protected function addClassAlias(string $classFQN, string $alias = null)
+    protected static function classBasename(string $classFQN): string
     {
-        if ($alias === null) {
-            $alias = class_basename($classFQN);
-        }
-
-        $this->classAliases[$alias] = $classFQN;
+        return \preg_replace('/^.*\\\\([^\\\\]+)$/', '$1', $classFQN);
     }
 }

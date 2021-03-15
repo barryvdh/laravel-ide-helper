@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Error when generating helper for invokable classes [\#1124 / standaniels](https://github.com/barryvdh/laravel-ide-helper/pull/1124)
 - Fix broken ReflectionUnionTypes [\#1132 / def-studio](https://github.com/barryvdh/laravel-ide-helper/pull/1132)
+- Relative class names are not converted to fully-qualified class names [\#1005 / SavKS](https://github.com/barryvdh/laravel-ide-helper/pull/1005)
 
 2020-12-30, 2.9.0
 -----------------

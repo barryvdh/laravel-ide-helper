@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 --------------
 ### Added
 - Generate PHPDoc for Laravel 8.x factories [\#1074 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1074)
+- Add a comment to a property like table columns [\#1168 / biiiiiigmonster](https://github.com/barryvdh/laravel-ide-helper/pull/1168)
 
 ### Fixed
 - Error when generating helper for invokable classes [\#1124 / standaniels](https://github.com/barryvdh/laravel-ide-helper/pull/1124)

@@ -216,6 +216,33 @@ You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relatio
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
 
+#### Support `@comment` based on DocBlock
+
+In order to better support IDEs, relations and getters/setters can also add a comment to a property like table columns. Therefore a custom docblock `@comment` is used:
+```php
+class Users extends Model
+{
+    /**
+     * @comment Get User's full name
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name . ' ' .$this->last_name ;
+    }
+}
+
+// => after generate models
+
+/**
+ * App\Models\Users
+ * 
+ * @property-read string $full_name Get User's full name
+ * …
+ */
+```
+
 #### Dedicated Eloquent Builder methods
 
 A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can 

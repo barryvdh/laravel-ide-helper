@@ -5,6 +5,7 @@ namespace Barryvdh\LaravelIdeHelper\Listeners;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Console\Kernel as Artisan;
+use Illuminate\Support\Arr;
 
 class GenerateModelHelper
 {
@@ -45,11 +46,10 @@ class GenerateModelHelper
 
         self::$shouldRun = false;
 
-        $parameters = $this->config->get('ide-helper.post_migrate');
-        $this->artisan->call(
-            is_array($parameters) ? 'ide-helper:models' : 'ide-helper:models ' . $parameters,
-            is_array($parameters) ? $parameters : [],
-            $event->output,
-        );
+        $commands = $this->config->get('ide-helper.post_migrate');
+
+        foreach (Arr::wrap($commands) as $command) {
+            $this->artisan->call($command, [], $event->output);
+        }
     }
 }

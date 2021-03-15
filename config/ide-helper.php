@@ -280,12 +280,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Generate model helpers after migrations
+    | Run artisan command(s) after migrations to generate model helpers
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable running ide-helper:models after a successful
-    | migration command or specify the parameters in either string or array form.
-    | e.g, specifying `--nowrite` will execute `php artisan ide-helper:models --nowrite`
+    | Set to false to disable this feature or specify the command(s).
+    | E.g. `ide-helper:models --nowrite`.
+    | If an array is provided each element will be executed in order.
     |
     */
     'post_migrate' => false,

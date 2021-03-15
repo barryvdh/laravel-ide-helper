@@ -35,7 +35,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
-        if ($this->app['config']->get('ide-helper.post_migrate', false)) {
+        if ($this->app['config']->get('ide-helper.post_migrate', [])) {
             $this->app['events']->listen(CommandFinished::class, GenerateModelHelper::class);
             $this->app['events']->listen(MigrationsEnded::class, function () {
                 GenerateModelHelper::$shouldRun = true;

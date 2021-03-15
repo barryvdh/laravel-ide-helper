@@ -278,4 +278,16 @@ return [
     */
     'additional_relation_types' => [],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Run artisan commands after migrations to generate model helpers
+    |--------------------------------------------------------------------------
+    |
+    | The specified commands should run after migrations are finished running.
+    |
+    */
+    'post_migrate' => [
+        // 'ide-helper:models --nowrite',
+    ],
+
 ];

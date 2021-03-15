@@ -42,6 +42,9 @@
         "spatie/phpunit-snapshot-assertions": "^3 || ^4",
         "vimeo/psalm": "^3.12"
     },
+    "suggest": {
+        "illuminate/events": "Required for automatic helper generation (^6|^7|^8)."
+    },
     "config": {
         "sort-packages": true
     },

@@ -15,7 +15,10 @@ use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Listeners\GenerateModelHelper;
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
@@ -32,6 +35,13 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
+        if ($this->app['config']->get('ide-helper.post_migrate', [])) {
+            $this->app['events']->listen(CommandFinished::class, GenerateModelHelper::class);
+            $this->app['events']->listen(MigrationsEnded::class, function () {
+                GenerateModelHelper::$shouldRun = true;
+            });
+        }
+
         if ($this->app->has('view')) {
             $viewPath = __DIR__ . '/../resources/views';
             $this->loadViewsFrom($viewPath, 'ide-helper');

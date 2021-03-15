@@ -40,6 +40,7 @@ class Alias
     protected $magicMethods = [];
     protected $interfaces = [];
     protected $phpdoc = null;
+    protected $classAliases = [];
 
     /** @var ConfigRepository  */
     protected $config;
@@ -78,10 +79,11 @@ class Alias
         $this->detectExtendsNamespace();
 
         if (!empty($this->namespace)) {
-            //Create a DocBlock and serializer instance
-            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace));
-        }
+            $this->classAliases = (new UsesResolver())->loadFromClass($this->root);
 
+            //Create a DocBlock and serializer instance
+            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace, $this->classAliases));
+        }
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
             $this->usedMethods = ['decrement', 'increment'];
@@ -330,7 +332,7 @@ class Alias
 
             if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
-                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
+                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces, $this->classAliases);
                 }
                 $this->usedMethods[] = $magic;
             }
@@ -359,7 +361,8 @@ class Alias
                                 $this->alias,
                                 $reflection,
                                 $method->name,
-                                $this->interfaces
+                                $this->interfaces,
+                                $this->classAliases
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -381,7 +384,8 @@ class Alias
                             $this->alias,
                             $reflection,
                             $macro_name,
-                            $this->interfaces
+                            $this->interfaces,
+                            $this->classAliases
                         );
                         $this->usedMethods[] = $macro_name;
                     }

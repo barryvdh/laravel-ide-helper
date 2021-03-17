@@ -4,6 +4,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Exception;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Support\Facades\App;
 use ReflectionClass;
 
 class Factories
@@ -12,7 +13,7 @@ class Factories
     {
         $factories = [];
 
-        if (static::isLaravelSevenOrLower()) {
+        if (static::factoriesSupported()) {
             $factory = app(Factory::class);
 
             $definitions = (new ReflectionClass(Factory::class))->getProperty('definitions');
@@ -29,8 +30,8 @@ class Factories
         return $factories;
     }
 
-    protected static function isLaravelSevenOrLower()
+    protected static function factoriesSupported()
     {
-        return class_exists('Illuminate\Database\Eloquent\Factory');
+        return App::has(Factory::class);
     }
 }

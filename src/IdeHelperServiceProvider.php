@@ -120,10 +120,6 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     {
         $resolver = new EngineResolver();
         $resolver->register('php', function () {
-            if (Helpers::isLaravel() && (int) Application::VERSION < 8) {
-                return new PhpEngine();
-            }
-
             return new PhpEngine($this->app['files']);
         });
         $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);

@@ -15,7 +15,6 @@ Generation is done based on the files in your project, so they are always up-to-
   - [Automatic PHPDoc generation for Laravel Facades](#automatic-phpdoc-generation-for-laravel-facades)
   - [Automatic PHPDocs for models](#automatic-phpdocs-for-models)
   - [Automatic PHPDocs generation for Laravel Fluent methods](#automatic-phpdocs-generation-for-laravel-fluent-methods)
-  - [Auto-completion for factory builders](#auto-completion-for-factory-builders)
   - [PhpStorm Meta for Container instances](#phpstorm-meta-for-container-instances)
 - [Usage with Lumen](#usage-with-lumen)
   - [Enabling Facades](#enabling-facades)
@@ -237,7 +236,7 @@ class Users extends Model
 
 /**
  * App\Models\Users
- * 
+ *
  * @property-read string $full_name Get User's full name
  * …
  */
@@ -245,7 +244,7 @@ class Users extends Model
 
 #### Dedicated Eloquent Builder methods
 
-A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can 
+A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can
 add support for creating a new dedicated class instead of using local scopes in the model itself.
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_external_builder_methods` and setting it to `false`.
@@ -285,18 +284,6 @@ After publishing vendor, simply change the `include_fluent` line your `config/id
 ```
 
 Then run `php artisan ide-helper:generate`, you will now see all Fluent methods recognized by your IDE.
-
-### Auto-completion for factory builders
-
-If you would like the `factory()->create()` and `factory()->make()` methods to return the correct model class,
-you can enable custom factory builders with the `include_factory_builders` line your `config/ide-helper.php` file.
-Deprecated for Laravel 8 or latest.
-
-```php
-'include_factory_builders' => true,
-```
-
-For this to work, you must also publish the PhpStorm Meta file (see below).
 
 ## PhpStorm Meta for Container instances
 

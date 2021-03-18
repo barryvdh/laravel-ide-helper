@@ -1093,7 +1093,11 @@ class ModelsCommand extends Command
         }
 
         $modelName = get_class($model);
-        $factory = get_class($modelName::factory());
+        try {
+            $factory = get_class($modelName::factory());
+        } catch (\Error $error) {
+            return;
+        }
         $factory = '\\' . trim($factory, '\\');
 
         if (!class_exists($factory)) {

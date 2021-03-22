@@ -19,7 +19,6 @@ use Barryvdh\LaravelIdeHelper\Listeners\GenerateModelHelper;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Database\Events\MigrationsEnded;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;

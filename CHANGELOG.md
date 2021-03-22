@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.2...master)
 --------------
+### Fixed
+- Array_merge error when config is cached prior to package install [\#1184 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1184)
 
 2021-03-15, 2.9.1
 -----------------

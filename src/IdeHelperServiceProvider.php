@@ -19,7 +19,6 @@ use Barryvdh\LaravelIdeHelper\Listeners\GenerateModelHelper;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Database\Events\MigrationsEnded;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -35,7 +34,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
-        if ($this->app['config']->get('ide-helper.post_migrate', [])) {
+        if (!$this->app->runningUnitTests() && $this->app['config']->get('ide-helper.post_migrate', [])) {
             $this->app['events']->listen(CommandFinished::class, GenerateModelHelper::class);
             $this->app['events']->listen(MigrationsEnded::class, function () {
                 GenerateModelHelper::$shouldRun = true;

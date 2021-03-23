@@ -17,9 +17,4 @@
       <code>\Storage</code>
     </UndefinedClass>
   </file>
-  <file src="src/IdeHelperServiceProvider.php">
-    <TooFewArguments occurrences="1">
-      <code>new PhpEngine()</code>
-    </TooFewArguments>
-  </file>
 </files>

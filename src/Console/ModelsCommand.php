@@ -1097,7 +1097,14 @@ class ModelsCommand extends Command
         }
 
         $modelName = get_class($model);
-        $factory = get_class($modelName::factory());
+        $modelBaseName = class_basename($modelName);
+
+        $factory = "\Database\Factories\\{$modelBaseName}Factory";
+
+        if ($modelName::newFactory()) {
+            $factory = get_class($modelName::newFactory());
+        }
+
         $factory = '\\' . trim($factory, '\\');
 
         if (!class_exists($factory)) {

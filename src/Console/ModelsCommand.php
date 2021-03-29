@@ -11,6 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -279,6 +280,9 @@ class ModelsCommand extends Command
                     $this->getSoftDeleteMethods($model);
                     $this->getCollectionMethods($model);
                     $this->getFactoryMethods($model);
+
+                    $this->runModelHooks($model);
+
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
@@ -336,7 +340,7 @@ class ModelsCommand extends Command
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      */
-    protected function castPropertiesType($model)
+    public function castPropertiesType($model)
     {
         $casts = $model->getCasts();
         foreach ($casts as $name => $type) {
@@ -412,7 +416,7 @@ class ModelsCommand extends Command
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      */
-    protected function getPropertiesFromTable($model)
+    public function getPropertiesFromTable($model)
     {
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
@@ -509,7 +513,7 @@ class ModelsCommand extends Command
     /**
      * @param \Illuminate\Database\Eloquent\Model $model
      */
-    protected function getPropertiesFromMethods($model)
+    public function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
         if ($methods) {
@@ -721,7 +725,7 @@ class ModelsCommand extends Command
      * @param string|null $comment
      * @param bool        $nullable
      */
-    protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
+    public function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
     {
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = [];
@@ -1350,5 +1354,27 @@ class ModelsCommand extends Command
         }
 
         return $parameterName;
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \RuntimeException
+     */
+    protected function runModelHooks($model): void
+    {
+        $hooks = $this->laravel['config']->get('ide-helper.model_hooks', []);
+
+        foreach ($hooks as $hook) {
+            $hookInstance = $this->laravel->make($hook);
+
+            if (!$hookInstance instanceof ModelHookInterface) {
+                throw new \RuntimeException(
+                    'Your IDE helper model hook must implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface'
+                );
+            }
+
+            $hookInstance->run($this, $model);
+        }
     }
 }

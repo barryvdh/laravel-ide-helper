@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.2...master)
 --------------
+### Added
+- Model hooks for adding custom information from external sources to model classes through the ModelsCommand [\#945 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/945)
+
 ### Fixed
 - Running tests triggering post_migrate hooks [\#1193 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1193)
 - Array_merge error when config is cached prior to package install [\#1184 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1184)

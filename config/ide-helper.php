@@ -146,6 +146,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Models hooks
+    |--------------------------------------------------------------------------
+    |
+    | Define which hook classes you want to run for models to add custom information
+    |
+    | Hooks should implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface.
+    |
+    */
+
+    'model_hooks' => [
+        // App\Support\IdeHelper\MyModelHook::class
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Extra classes
     |--------------------------------------------------------------------------
     |

@@ -1095,7 +1095,9 @@ class ModelsCommand extends Command
         $modelName = get_class($model);
         try {
             $factory = get_class($modelName::factory());
-        } catch (\Error $error) {
+        } catch (\Throwable $t) {
+            $this->warn(sprintf('Error resolving factory from model %s: %s', $modelName, $t->getMessage()));
+
             return;
         }
         $factory = '\\' . trim($factory, '\\');

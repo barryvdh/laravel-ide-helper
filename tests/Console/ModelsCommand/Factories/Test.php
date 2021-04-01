@@ -26,6 +26,7 @@ class Test extends AbstractModelsCommand
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
+        $this->assertStringNotContainsString('not found', $tester->getDisplay());
         $this->assertMatchesMockedSnapshot();
     }
 }

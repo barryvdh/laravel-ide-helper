@@ -4,6 +4,27 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithoutFactory
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory query()
+ * @mixin \Eloquent
+ */
+class ModelWithoutFactory extends Model
+{
+    use HasFactory;
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
+
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\SimpleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

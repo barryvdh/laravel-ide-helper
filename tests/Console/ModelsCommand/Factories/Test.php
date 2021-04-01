@@ -26,24 +26,6 @@ class Test extends AbstractModelsCommand
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
-        $this->assertMatchesMockedSnapshot();
-    }
-
-    /** @test */
-    public function it_doesnt_generate_phpdoc_for_model_doesnt_have_factory()
-    {
-        if (!version_compare(Application::VERSION, '8.2', '>=')) {
-            $this->markTestSkipped(
-                'This test only works in Laravel >= 8.2'
-            );
-        }
-
-        $command = $this->app->make(ModelsCommand::class);
-
-        $tester = $this->runCommand($command, [
-            '--write' => true,
-        ]);
-
         $this->assertStringNotContainsString('not found', $tester->getDisplay());
         $this->assertMatchesMockedSnapshot();
     }

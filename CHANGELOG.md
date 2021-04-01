@@ -2,8 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.2...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.3...master)
 --------------
+
+2021-04-01, 2.9.2
+-----------------
 ### Added
 - Model hooks for adding custom information from external sources to model classes through the ModelsCommand [\#945 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/945)
 

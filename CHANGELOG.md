@@ -62,6 +62,7 @@ All notable changes to this project will be documented in this file.
 -----------------
 ### Added
 - Model hooks for adding custom information from external sources to model classes through the ModelsCommand [\#945 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/945)
+- Added `post_discover` hook to run commands after package discovery [\#1185 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1185)
 
 ### Fixed
 - Fix ide-helper:models exception if model doesn't have factory [\#1196 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1196)

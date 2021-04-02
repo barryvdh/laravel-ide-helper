@@ -4,6 +4,61 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\CustomSpace\ModelWithCustomNamespaceFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithCustomNamespace
+ *
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\CustomSpace\ModelWithCustomNamespaceFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace query()
+ * @mixin \Eloquent
+ */
+class ModelWithCustomNamespace extends Model
+{
+    use HasFactory;
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return ModelWithCustomNamespaceFactory::new();
+    }
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithFactory
+ *
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithFactoryFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory query()
+ * @mixin \Eloquent
+ */
+class ModelWithFactory extends Model
+{
+    use HasFactory;
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,39 +73,4 @@ use Illuminate\Database\Eloquent\Model;
 class ModelWithoutFactory extends Model
 {
     use HasFactory;
-}
-<?php
-
-declare(strict_types=1);
-
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
-
-use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\SimpleFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\Simple
- *
- * @property integer $id
- * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\SimpleFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
- * @mixin \Eloquent
- */
-class Simple extends Model
-{
-    use HasFactory;
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    protected static function newFactory()
-    {
-        return SimpleFactory::new();
-    }
 }

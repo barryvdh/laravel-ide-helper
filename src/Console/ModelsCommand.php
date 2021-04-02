@@ -761,11 +761,13 @@ class ModelsCommand extends Command
         }
     }
 
-    public function unsetMethod($name) {
+    public function unsetMethod($name)
+    {
         unset($this->methods[strtolower($name)]);
     }
 
-    public function getMethodType(Model $model, string $classType) {
+    public function getMethodType(Model $model, string $classType)
+    {
         $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
         $builder = $this->getClassNameInDestinationFile($model, $classType);
         return $builder . '|' . $modelName;

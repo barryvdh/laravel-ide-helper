@@ -6,8 +6,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\CustomProperty;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\CustomMethod;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\CustomProperty;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\UnsetMethod;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
@@ -27,7 +27,7 @@ class Test extends AbstractModelsCommand
             'model_hooks' => [
                 CustomProperty::class,
                 CustomMethod::class,
-                UnsetMethod::class
+                UnsetMethod::class,
             ],
         ]);
     }

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.3...master)
 --------------
 
+2021-04-02, 2.9.3
+-----------------
+
+### Fixed
+- Support both customized namespace factories as well as default resolvable ones [\#1201 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1201)
+
 2021-04-01, 2.9.2
 -----------------
 ### Added

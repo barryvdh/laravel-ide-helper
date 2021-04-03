@@ -20,6 +20,7 @@ use Composer\Autoload\ClassMapGenerator;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -73,6 +74,11 @@ class ModelsCommand extends Command
     protected $files;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * The console command name.
      *
      * @var string
@@ -119,13 +125,12 @@ class ModelsCommand extends Command
      */
     protected $dateClass;
 
-    /**
-     * @param Filesystem $files
-     */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, Config $config)
     {
+        $this->files  = $files;
+        $this->config = $config;
+
         parent::__construct();
-        $this->files = $files;
     }
 
     /**
@@ -140,7 +145,7 @@ class ModelsCommand extends Command
         $this->write = $this->option('write');
         $this->write_mixin = $this->option('write-mixin');
         $this->dirs = array_merge(
-            $this->laravel['config']->get('ide-helper.model_locations', []),
+            $this->config->get('ide-helper.model_locations', []),
             $this->option('dir')
         );
         $model = $this->argument('model');
@@ -150,10 +155,10 @@ class ModelsCommand extends Command
         if ($this->option('smart-reset')) {
             $this->keep_text = $this->reset = true;
         }
-        $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
-        $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
+        $this->write_model_magic_where = $this->config->get('ide-helper.write_model_magic_where', true);
+        $this->write_model_external_builder_methods = $this->config->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
-            $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
+            $this->config->get('ide-helper.write_model_relation_count_properties', true);
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
@@ -249,7 +254,7 @@ class ModelsCommand extends Command
 
         $ignore = array_merge(
             explode(',', $ignore),
-            $this->laravel['config']->get('ide-helper.ignored_models', [])
+            $this->config->get('ide-helper.ignored_models', [])
         );
 
         foreach ($models as $name) {
@@ -417,7 +422,7 @@ class ModelsCommand extends Command
      */
     protected function getTypeOverride($type)
     {
-        $typeOverrides = $this->laravel['config']->get('ide-helper.type_overrides', []);
+        $typeOverrides = $this->config->get('ide-helper.type_overrides', []);
 
         return $typeOverrides[$type] ?? $type;
     }
@@ -437,7 +442,7 @@ class ModelsCommand extends Command
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
         $platformName = $databasePlatform->getName();
-        $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);
+        $customTypes = $this->config->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             try {
                 if (!Type::hasType($yourTypeName)) {
@@ -1015,7 +1020,7 @@ class ModelsCommand extends Command
      */
     protected function getRelationTypes(): array
     {
-        $configuredRelations = $this->laravel['config']->get('ide-helper.additional_relation_types', []);
+        $configuredRelations = $this->config->get('ide-helper.additional_relation_types', []);
         return array_merge(self::RELATION_TYPES, $configuredRelations);
     }
 
@@ -1024,7 +1029,7 @@ class ModelsCommand extends Command
      */
     protected function hasCamelCaseModelProperties()
     {
-        return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
+        return $this->config->get('ide-helper.model_camel_case_properties', false);
     }
 
     protected function getReturnType(\ReflectionMethod $reflection): ?string
@@ -1242,7 +1247,7 @@ class ModelsCommand extends Command
         $className = trim($className, '\\');
         $writingToExternalFile = !$this->write || $this->write_mixin;
         $classIsNotInExternalFile = $reflection->getName() !== $className;
-        $forceFQCN = $this->laravel['config']->get('ide-helper.force_fqn', false);
+        $forceFQCN = $this->config->get('ide-helper.force_fqn', false);
 
         if (($writingToExternalFile && $classIsNotInExternalFile) || $forceFQCN) {
             return '\\' . $className;
@@ -1410,7 +1415,7 @@ class ModelsCommand extends Command
      */
     protected function runModelHooks($model): void
     {
-        $hooks = $this->laravel['config']->get('ide-helper.model_hooks', []);
+        $hooks = $this->config->get('ide-helper.model_hooks', []);
 
         foreach ($hooks as $hook) {
             $hookInstance = $this->laravel->make($hook);

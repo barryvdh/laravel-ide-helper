@@ -301,6 +301,8 @@ class MyCustomHook implements ModelHookInterface
         }
 
         $command->setProperty('custom', 'string', true, false, 'My custom property');
+        $command->unsetMethod('method');
+        $command->setMethod('method', $command->getMethodType($model, '\Some\Class'), ['$param']);
     }
 }
 ```

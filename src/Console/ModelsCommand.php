@@ -749,7 +749,7 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = [], $comment = '')
+    public function setMethod($name, $type = '', $arguments = [], $comment = '')
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
@@ -759,6 +759,18 @@ class ModelsCommand extends Command
             $this->methods[$name]['arguments'] = $arguments;
             $this->methods[$name]['comment'] = $comment;
         }
+    }
+
+    public function unsetMethod($name)
+    {
+        unset($this->methods[strtolower($name)]);
+    }
+
+    public function getMethodType(Model $model, string $classType)
+    {
+        $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
+        $builder = $this->getClassNameInDestinationFile($model, $classType);
+        return $builder . '|' . $modelName;
     }
 
     /**

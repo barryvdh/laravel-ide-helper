@@ -49,8 +49,11 @@ class EloquentCommandTest extends TestCase
             ';Unexpected no document on Illuminate\\\Database\\\Eloquent\\\Model;',
             $display
         );
+        $modelClassFilePath = preg_quote(
+            str_replace('/', DIRECTORY_SEPARATOR, '/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php')
+        );
         $this->assertRegExp(
-            ';Wrote expected docblock to .*/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php;',
+            ';Wrote expected docblock to .*' . $modelClassFilePath . ';',
             $display
         );
     }

@@ -31,7 +31,7 @@ jobs:
 
     steps:
     - name: Set git to use LF
-      if: matrix.os == windows-2019
+      if: ${{ matrix.os == 'windows-2019' }}
       run: |
         git config --global core.autocrlf false
         git config --global core.eol lf

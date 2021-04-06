@@ -27,7 +27,7 @@ jobs:
           - php: 8.0
             dependency-version: prefer-lowest
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+    name: ${{ matrix.os }} - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
     steps:
     - name: Set git to use LF

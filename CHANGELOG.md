@@ -2,9 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.3...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.10.0...master)
 --------------
 
+2021-04-09, 2.10.0
+------------------
 ### Added
 - Allowing Methods to be set or unset in ModelHooks [\#1198 / jenga201](https://github.com/barryvdh/laravel-ide-helper/pull/1198)\
   Note: the visibility of `\Barryvdh\LaravelIdeHelper\Console\ModelsCommand::setMethod` has been changed to **public**!
@@ -14,7 +16,6 @@ All notable changes to this project will be documented in this file.
 
 2021-04-02, 2.9.3
 -----------------
-
 ### Fixed
 - Support both customized namespace factories as well as default resolvable ones [\#1201 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1201)
 

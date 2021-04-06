@@ -26,6 +26,10 @@ jobs:
         exclude:
           - php: 8.0
             dependency-version: prefer-lowest
+          - os: windows-2019
+            php: 7.4
+          - os: windows-2019
+            php: 7.3
 
     name: ${{ matrix.os }} - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 

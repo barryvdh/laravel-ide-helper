@@ -637,6 +637,17 @@ class ModelsCommand extends Command
                                 );
 
                                 if (strpos(get_class($relationObj), 'Many') !== false) {
+                                    if ($relationObj instanceof BelongsToMany) {
+                                        $pivot = get_class($relationObj->newPivot());
+                                        if ($pivot != 'Illuminate\Database\Eloquent\Relations\Pivot') {
+                                            $this->setProperty(
+                                                $relationObj->getPivotAccessor(),
+                                                $pivot,
+                                                true,
+                                                false
+                                            );
+                                        }
+                                    }
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);

@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 - Allowing Methods to be set or unset in ModelHooks [\#1198 / jenga201](https://github.com/barryvdh/laravel-ide-helper/pull/1198)\
   Note: the visibility of `\Barryvdh\LaravelIdeHelper\Console\ModelsCommand::setMethod` has been changed to **public**!
 
+### Fixed
+- Fixing issue where incorrect autoloader unregistered [\#1210 / tezhm](https://github.com/barryvdh/laravel-ide-helper/pull/1210)
+
 2021-04-02, 2.9.3
 -----------------
 

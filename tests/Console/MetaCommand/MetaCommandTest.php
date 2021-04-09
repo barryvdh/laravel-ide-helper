@@ -41,10 +41,10 @@ class MetaCommandTest extends TestCase
     public function testUnregisterAutoloader(): void
     {
         $current = spl_autoload_functions();
-        $appended = function () { };
+        $appended = function () {
+        };
 
-        $this->app->bind('registers-autoloader', function () use ($appended)
-        {
+        $this->app->bind('registers-autoloader', function () use ($appended) {
             spl_autoload_register($appended);
             return new stdClass();
         });

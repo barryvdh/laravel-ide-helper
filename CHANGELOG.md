@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.10.0...master)
 --------------
 
+### Fixed
+- Use platformName to determine db type when casting boolean types [\#1212 / stockalexander](https://github.com/barryvdh/laravel-ide-helper/pull/1212)
+
 2021-04-09, 2.10.0
 ------------------
 ### Added

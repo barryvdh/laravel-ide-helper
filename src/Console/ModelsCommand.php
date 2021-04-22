@@ -440,8 +440,7 @@ class ModelsCommand extends Command
             return;
         }
 
-        foreach ($columns as $column) {
-            $name = $column->getName();
+        foreach ($columns as $name => $column) {
             if (in_array($name, $model->getDates())) {
                 $type = $this->dateClass;
             } else {

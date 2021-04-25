@@ -151,7 +151,9 @@ return [
     |
     */
 
-    'ignored_models' => [],
+    'ignored_models' => [
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -194,7 +196,9 @@ return [
     |
     */
 
-    'interfaces' => [],
+    'interfaces' => [
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -222,7 +226,9 @@ return [
     |  ),
     |
     */
-    'custom_db_types' => [],
+    'custom_db_types' => [
+
+    ],
 
     /*
      |--------------------------------------------------------------------------
@@ -230,7 +236,7 @@ return [
      |--------------------------------------------------------------------------
      | Some databases, like Oracle return the column names in upper case
      |
-     | For example, normally you would see this:
+     | For example, with Oracle normally you would see this:
      |
      |  * @property \Illuminate\Support\Carbon $CREATED_AT
      |  * @property \Illuminate\Support\Carbon $UPDATED_AT
@@ -243,7 +249,7 @@ return [
      | Note, it is currently an all-or-nothing option.
      |
      */
-    'model_lower_case_properties' => true,
+    'model_lower_case_properties' => false,
 
     /*
      |--------------------------------------------------------------------------

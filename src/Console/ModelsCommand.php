@@ -203,7 +203,7 @@ class ModelsCommand extends Command
           ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename],
           ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
               'The model dir, supports glob patterns', [], ],
-          ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file', null],
+          ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
           ['write-mixin', 'M', InputOption::VALUE_NONE,
               "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
           ],

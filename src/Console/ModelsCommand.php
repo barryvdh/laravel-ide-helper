@@ -130,8 +130,7 @@ class ModelsCommand extends Command
         // If neither write or write_mixin are set to true, fall back to config
         if ($this->option('write') || $this->write_mixin) {
             $this->write = $this->option('write');
-        }
-        else {
+        } else {
             $this->write = $this->laravel['config']->get('ide-helper.always_overwrite_model_files', false);
         }
         $this->dirs = array_merge(

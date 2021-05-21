@@ -74,6 +74,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Always Overwrite Model Files
+    |--------------------------------------------------------------------------
+    |
+    | Set to true to force 'yes' as an answer to 'Do you want to overwrite the existing model files?'
+    |
+    */
+    'always_overwrite_model_files' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Write Model relation count properties
     |--------------------------------------------------------------------------
     |

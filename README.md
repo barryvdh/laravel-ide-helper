@@ -140,6 +140,13 @@ Alternatively using the `--write-mixin (-M)` option will only add a mixin tag to
 writing the rest in (`_ide_helper_models.php`).
 The class name will be different from the model, avoiding the IDE duplicate annoyance.
 
+Alternately, you can set the `always_overwrite_model_files` flag to true, which is identical to using `--write` above
+
+```php
+'always_overwrite_model_files' => true,
+```
+Setting this to `false` has no effect
+
 > Please make sure to back up your models, before writing the info.
 
 Writing to the models should keep the existing comments and only append new properties/methods.

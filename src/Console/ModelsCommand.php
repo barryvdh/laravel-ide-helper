@@ -344,45 +344,26 @@ class ModelsCommand extends Command
     {
         $casts = $model->getCasts();
         foreach ($casts as $name => $type) {
-            switch ($type) {
-                case 'boolean':
-                case 'bool':
-                    $realType = 'boolean';
-                    break;
-                case 'string':
-                    $realType = 'string';
-                    break;
-                case 'array':
-                case 'json':
-                    $realType = 'array';
-                    break;
-                case 'object':
-                    $realType = 'object';
-                    break;
-                case 'int':
-                case 'integer':
-                case 'timestamp':
-                    $realType = 'integer';
-                    break;
-                case 'real':
-                case 'double':
-                case 'float':
-                    $realType = 'float';
-                    break;
-                case 'date':
-                case 'datetime':
-                    $realType = $this->dateClass;
-                    break;
-                case 'collection':
-                    $realType = '\Illuminate\Support\Collection';
-                    break;
-                default:
-                    // In case of an optional custom cast parameter , only evaluate
-                    // the `$type` until the `:`
-                    $type = strtok($type, ':');
-                    $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
-                    break;
-            }
+
+            $types = [
+               'boolean' =>  'boolean' ,
+               'bool'    =>  'boolean' ,
+               'string'  =>  'string' ,
+               'array'   =>  'array' ,
+               'json'    => 'array' ,
+               'object'  =>  'object' ,
+               'int'     =>  'integer' ,
+               'integer' => 'integer'  ,
+               'timestamp' => 'integer'  ,
+               'real'      => 'float',
+               'double'    => 'float'  ,
+               'float'     => 'float',
+               'date'  => $this->dateClass,
+               'datetime'  => $this->dateClass ,
+               'collection'  =>  '\Illuminate\Support\Collection' ,
+            ];
+
+            $realType = $types[$type] ?? (class_exists(strtok($type, ':')) ? ('\\' . strtok($type, ':')) : 'mixed') ;
 
             if (!isset($this->properties[$name])) {
                 continue;
@@ -446,40 +427,24 @@ class ModelsCommand extends Command
                 $type = $this->dateClass;
             } else {
                 $type = $column->getType()->getName();
-                switch ($type) {
-                    case 'string':
-                    case 'text':
-                    case 'date':
-                    case 'time':
-                    case 'guid':
-                    case 'datetimetz':
-                    case 'datetime':
-                    case 'decimal':
-                        $type = 'string';
-                        break;
-                    case 'integer':
-                    case 'bigint':
-                    case 'smallint':
-                        $type = 'integer';
-                        break;
-                    case 'boolean':
-                        switch (config('database.default')) {
-                            case 'sqlite':
-                            case 'mysql':
-                                $type = 'integer';
-                                break;
-                            default:
-                                $type = 'boolean';
-                                break;
-                        }
-                        break;
-                    case 'float':
-                        $type = 'float';
-                        break;
-                    default:
-                        $type = 'mixed';
-                        break;
-                }
+
+                $types = [
+                    'string' => 'string',
+                    'text'   => 'string',
+                    'date'   => 'string',
+                    'time'   => 'string',
+                    'guid'   => 'string',
+                    'datetimetz' => 'string',
+                    'datetime'   => 'string',
+                    'decimal'    => 'string',
+                    'integer'    => 'integer' ,
+                    'bigint'     => 'integer' ,
+                    'smallint'   => 'integer' ,
+                    'boolean'    => in_array(config('database.default') , ['sqlite' , 'mysql']) ?  'integer' : 'boolean' ,
+                    'float'      => 'float',
+                ];
+
+                $type = $types[$type] ?? 'mixed';
             }
 
             $comment = $column->getComment();

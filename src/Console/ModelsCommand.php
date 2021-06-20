@@ -463,7 +463,7 @@ class ModelsCommand extends Command
                         $type = 'integer';
                         break;
                     case 'boolean':
-                        switch (config('database.default')) {
+                        switch ($platformName) {
                             case 'sqlite':
                             case 'mysql':
                                 $type = 'integer';

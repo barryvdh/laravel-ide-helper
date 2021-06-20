@@ -59,6 +59,24 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithNestedFactory
+ *
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithNestedFactoryFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory query()
+ * @mixin \Eloquent
+ */
+class ModelWithNestedFactory extends ModelWithFactory
+{
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

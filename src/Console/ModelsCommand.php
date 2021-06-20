@@ -1082,7 +1082,7 @@ class ModelsCommand extends Command
      */
     protected function getSoftDeleteMethods($model)
     {
-        $traits = class_uses(get_class($model), true);
+        $traits = class_uses_recursive($model);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Query\Builder::class);
@@ -1105,7 +1105,8 @@ class ModelsCommand extends Command
 
         $modelName = get_class($model);
 
-        $traits = class_uses($modelName, true);
+
+        $traits = class_uses_recursive($modelName);
         if (!in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
             return;
         }

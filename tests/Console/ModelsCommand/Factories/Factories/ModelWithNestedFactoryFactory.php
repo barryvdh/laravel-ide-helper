@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories;
 
-use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithNestedFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SimpleFactory extends Factory
+class ModelWithNestedFactoryFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Simple::class;
+    protected $model = ModelWithNestedFactory::class;
 
     /**
      * Define the model's default state.

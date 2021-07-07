@@ -11,6 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -212,8 +213,6 @@ class ModelsCommand extends Command
 
     protected function generateDocs($loadModels, $ignore = '')
     {
-
-
         $output = "<?php
 
 // @formatter:off
@@ -281,6 +280,9 @@ class ModelsCommand extends Command
                     $this->getSoftDeleteMethods($model);
                     $this->getCollectionMethods($model);
                     $this->getFactoryMethods($model);
+
+                    $this->runModelHooks($model);
+
                     $output                .= $this->createPhpDocs($name);
                     $ignore[]              = $name;
                     $this->nullableColumns = [];
@@ -313,9 +315,8 @@ class ModelsCommand extends Command
 
             $dirs = glob($dir, GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
-
                 if (!is_dir($dir)) {
-                    $this->error("Cannot locate directory '{'$dir}'");
+                    $this->error("Cannot locate directory '{$dir}'");
                     continue;
                 }
 
@@ -339,7 +340,7 @@ class ModelsCommand extends Command
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      */
-    protected function castPropertiesType($model)
+    public function castPropertiesType($model)
     {
         $casts = $model->getCasts();
         foreach ($casts as $name => $type) {
@@ -415,7 +416,7 @@ class ModelsCommand extends Command
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      */
-    protected function getPropertiesFromTable($model)
+    public function getPropertiesFromTable($model)
     {
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
@@ -462,7 +463,7 @@ class ModelsCommand extends Command
                         $type = 'integer';
                         break;
                     case 'boolean':
-                        switch (config('database.default')) {
+                        switch ($platformName) {
                             case 'sqlite':
                             case 'mysql':
                                 $type = 'integer';
@@ -512,7 +513,7 @@ class ModelsCommand extends Command
     /**
      * @param \Illuminate\Database\Eloquent\Model $model
      */
-    protected function getPropertiesFromMethods($model)
+    public function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
         if ($methods) {
@@ -530,7 +531,8 @@ class ModelsCommand extends Command
                         $reflection = new \ReflectionMethod($model, $method);
                         $type = $this->getReturnType($reflection);
                         $type = $this->getTypeInModel($model, $type);
-                        $this->setProperty($name, $type, true, null);
+                        $comment = $this->getCommentFromDocBlock($reflection);
+                        $this->setProperty($name, $type, true, null, $comment);
                     }
                 } elseif (
                     Str::startsWith($method, 'set') && Str::endsWith(
@@ -541,13 +543,16 @@ class ModelsCommand extends Command
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
-                        $this->setProperty($name, null, null, true);
+                        $reflection = new \ReflectionMethod($model, $method);
+                        $comment = $this->getCommentFromDocBlock($reflection);
+                        $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
                     //Magic set<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (!empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
+                        $comment = $this->getCommentFromDocBlock($reflection);
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
@@ -559,7 +564,7 @@ class ModelsCommand extends Command
                             $reflection->getDeclaringClass(),
                             $reflection->getDeclaringClass()->getName()
                         );
-                        $this->setMethod($name, $builder . '|' . $modelName, $args);
+                        $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
@@ -611,6 +616,7 @@ class ModelsCommand extends Command
                                 continue;
                             }
 
+                            $comment = $this->getCommentFromDocBlock($reflection);
                             // Adding constraints requires reading model properties which
                             // can cause errors. Since we don't need constraints we can
                             // disable them when we fetch the relation to avoid errors.
@@ -642,7 +648,8 @@ class ModelsCommand extends Command
                                         $method,
                                         $collectionClassNameInModel . '|' . $relatedModel . '[]',
                                         true,
-                                        null
+                                        null,
+                                        $comment
                                     );
                                     if ($this->write_model_relation_count_properties) {
                                         $this->setProperty(
@@ -650,6 +657,7 @@ class ModelsCommand extends Command
                                             'int|null',
                                             true,
                                             false
+                                        // What kind of comments should be added to the relation count here?
                                         );
                                     }
                                 } elseif ($relation === 'morphTo') {
@@ -658,7 +666,8 @@ class ModelsCommand extends Command
                                         $method,
                                         $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
                                         true,
-                                        null
+                                        null,
+                                        $comment
                                     );
                                 } else {
                                     //Single model is returned
@@ -667,7 +676,7 @@ class ModelsCommand extends Command
                                         $relatedModel,
                                         true,
                                         null,
-                                        '',
+                                        $comment,
                                         $this->isRelationNullable($relation, $relationObj)
                                     );
                                 }
@@ -716,7 +725,7 @@ class ModelsCommand extends Command
      * @param string|null $comment
      * @param bool        $nullable
      */
-    protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
+    public function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
     {
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = [];
@@ -740,7 +749,7 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = [])
+    public function setMethod($name, $type = '', $arguments = [], $comment = '')
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
@@ -748,7 +757,20 @@ class ModelsCommand extends Command
             $this->methods[$name] = [];
             $this->methods[$name]['type'] = $type;
             $this->methods[$name]['arguments'] = $arguments;
+            $this->methods[$name]['comment'] = $comment;
         }
+    }
+
+    public function unsetMethod($name)
+    {
+        unset($this->methods[strtolower($name)]);
+    }
+
+    public function getMethodType(Model $model, string $classType)
+    {
+        $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
+        $builder = $this->getClassNameInDestinationFile($model, $classType);
+        return $builder . '|' . $modelName;
     }
 
     /**
@@ -757,7 +779,6 @@ class ModelsCommand extends Command
      */
     protected function createPhpDocs($class)
     {
-
         $reflection = new ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
         $classname = $reflection->getShortName();
@@ -824,7 +845,11 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tag = Tag::createInstance("@method static {$method['type']} {$name}({$arguments})", $phpdoc);
+            $tagLine = "@method static {$method['type']} {$name}({$arguments})";
+            if ($method['comment'] !== '') {
+                $tagLine .= " {$method['comment']}";
+            }
+            $tag = Tag::createInstance($tagLine, $phpdoc);
             $phpdoc->appendTag($tag);
         }
 
@@ -985,6 +1010,30 @@ class ModelsCommand extends Command
     }
 
     /**
+     * Get method comment based on it DocBlock comment
+     *
+     * @param \ReflectionMethod $reflection
+     *
+     * @return null|string
+     */
+    protected function getCommentFromDocBlock(\ReflectionMethod $reflection)
+    {
+        $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
+        $context = new Context(
+            $phpDocContext->getNamespace(),
+            $phpDocContext->getNamespaceAliases()
+        );
+        $comment = '';
+        $phpdoc = new DocBlock($reflection, $context);
+
+        if ($phpdoc->hasTag('comment')) {
+            $comment = $phpdoc->getTagsByName('comment')[0]->getContent();
+        }
+
+        return $comment;
+    }
+
+    /**
      * Get method return type based on it DocBlock comment
      *
      * @param \ReflectionMethod $reflection
@@ -1019,7 +1068,7 @@ class ModelsCommand extends Command
 
         $type = implode('|', $types);
 
-        if($returnType->allowsNull()){
+        if ($returnType->allowsNull()) {
             $type .='|null';
         }
 
@@ -1033,7 +1082,7 @@ class ModelsCommand extends Command
      */
     protected function getSoftDeleteMethods($model)
     {
-        $traits = class_uses(get_class($model), true);
+        $traits = class_uses_recursive($model);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Query\Builder::class);
@@ -1050,17 +1099,24 @@ class ModelsCommand extends Command
      */
     protected function getFactoryMethods($model)
     {
-        if(!class_exists(Factory::class)) {
-            return;
-        }
-
-        $traits = class_uses(get_class($model), true);
-        if (!in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
+        if (!class_exists(Factory::class)) {
             return;
         }
 
         $modelName = get_class($model);
-        $factory = get_class($modelName::factory());
+
+
+        $traits = class_uses_recursive($modelName);
+        if (!in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
+            return;
+        }
+
+        if ($modelName::newFactory()) {
+            $factory = get_class($modelName::newFactory());
+        } else {
+            $factory = Factory::resolveFactoryName($modelName);
+        }
+
         $factory = '\\' . trim($factory, '\\');
 
         if (!class_exists($factory)) {
@@ -1128,7 +1184,7 @@ class ModelsCommand extends Command
             $reflectionType = $this->getReturnTypeFromDocBlock($methodReflection);
         }
 
-        if($reflectionType === 'static' || $reflectionType === '$this') {
+        if ($reflectionType === 'static' || $reflectionType === '$this') {
             $reflectionType = $type;
         }
 
@@ -1217,10 +1273,10 @@ class ModelsCommand extends Command
 
             $type = implode('|', $types);
 
-            if($paramType->allowsNull()){
-                if(count($types)==1){
+            if ($paramType->allowsNull()) {
+                if (count($types)==1) {
                     $type = '?' . $type;
-                }else{
+                } else {
                     $type .='|null';
                 }
             }
@@ -1293,12 +1349,12 @@ class ModelsCommand extends Command
 
     protected function extractReflectionTypes(ReflectionType $reflection_type)
     {
-        if($reflection_type instanceof ReflectionNamedType){
+        if ($reflection_type instanceof ReflectionNamedType) {
             $types[] = $this->getReflectionNamedType($reflection_type);
-        }else{
+        } else {
             $types = [];
-            foreach ($reflection_type->getTypes() as $named_type){
-                if($named_type->getName()==='null'){
+            foreach ($reflection_type->getTypes() as $named_type) {
+                if ($named_type->getName()==='null') {
                     continue;
                 }
 
@@ -1317,5 +1373,27 @@ class ModelsCommand extends Command
         }
 
         return $parameterName;
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \RuntimeException
+     */
+    protected function runModelHooks($model): void
+    {
+        $hooks = $this->laravel['config']->get('ide-helper.model_hooks', []);
+
+        foreach ($hooks as $hook) {
+            $hookInstance = $this->laravel->make($hook);
+
+            if (!$hookInstance instanceof ModelHookInterface) {
+                throw new \RuntimeException(
+                    'Your IDE helper model hook must implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface'
+                );
+            }
+
+            $hookInstance->run($this, $model);
+        }
     }
 }

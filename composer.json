@@ -23,11 +23,12 @@
         "php": "^7.3 || ^8.0",
         "ext-json": "*",
         "barryvdh/reflection-docblock": "^2.0.6",
-        "composer/composer": "^1.6 || ^2",
+        "composer/composer": "^1.6 || ^2.0.13",
         "doctrine/dbal": "^2.6 || ^3",
         "illuminate/console": "^8",
         "illuminate/filesystem": "^8",
         "illuminate/support": "^8",
+        "nikic/php-parser": "^4.7",
         "phpdocumentor/type-resolver": "^1.1.0"
     },
     "require-dev": {
@@ -40,6 +41,9 @@
         "phpunit/phpunit": "^8.5 || ^9",
         "spatie/phpunit-snapshot-assertions": "^3 || ^4",
         "vimeo/psalm": "^3.12"
+    },
+    "suggest": {
+        "illuminate/events": "Required for automatic helper generation (^6|^7|^8)."
     },
     "config": {
         "sort-packages": true

@@ -15,8 +15,10 @@ use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Listeners\GenerateModelHelper;
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Support\DeferrableProvider;
-use Illuminate\Foundation\Application;
+use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -32,6 +34,13 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
+        if (!$this->app->runningUnitTests() && $this->app['config']->get('ide-helper.post_migrate', [])) {
+            $this->app['events']->listen(CommandFinished::class, GenerateModelHelper::class);
+            $this->app['events']->listen(MigrationsEnded::class, function () {
+                GenerateModelHelper::$shouldRun = true;
+            });
+        }
+
         if ($this->app->has('view')) {
             $viewPath = __DIR__ . '/../resources/views';
             $this->loadViewsFrom($viewPath, 'ide-helper');
@@ -110,10 +119,6 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     {
         $resolver = new EngineResolver();
         $resolver->register('php', function () {
-            if (Helpers::isLaravel() && (int) Application::VERSION < 8) {
-                return new PhpEngine();
-            }
-
             return new PhpEngine($this->app['files']);
         });
         $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);

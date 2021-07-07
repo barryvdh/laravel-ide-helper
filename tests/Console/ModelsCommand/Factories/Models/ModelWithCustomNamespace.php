@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
-use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\SimpleFactory;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\CustomSpace\ModelWithCustomNamespaceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Simple extends Model
+class ModelWithCustomNamespace extends Model
 {
     use HasFactory;
 
@@ -19,6 +19,6 @@ class Simple extends Model
      */
     protected static function newFactory()
     {
-        return SimpleFactory::new();
+        return ModelWithCustomNamespaceFactory::new();
     }
 }

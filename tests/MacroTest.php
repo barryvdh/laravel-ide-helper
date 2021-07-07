@@ -192,7 +192,6 @@ class MacroTest extends TestCase
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped('This test requires PHP 8.0 or higher');
-            return;
         }
 
         $phpdoc = (new MacroMock())->getPhpDoc(eval(<<<'PHP'

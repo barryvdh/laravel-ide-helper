@@ -42,8 +42,16 @@ class Macro extends Method
         // Add macro parameters if they are missed in original docblock
         if (!$this->phpdoc->hasTag('param')) {
             foreach ($method->getParameters() as $parameter) {
-                $type = $parameter->hasType() ? $parameter->getType()->getName() : 'mixed';
-                $type .= $parameter->hasType() && $parameter->getType()->allowsNull() ? '|null' : '';
+                $reflectionType = $parameter->getType();
+
+                $type = $this->concatReflectionTypes($reflectionType);
+
+                /** @psalm-suppress UndefinedClass */
+                if ($reflectionType && !$reflectionType instanceof \ReflectionUnionType && $reflectionType->allowsNull()) {
+                    $type .= '|null';
+                }
+
+                $type = $type ?: 'mixed';
 
                 $name = $parameter->isVariadic() ? '...' : '';
                 $name .= '$' . $parameter->getName();
@@ -57,12 +65,29 @@ class Macro extends Method
             $builder = EloquentBuilder::class;
             $return = $method->getReturnType();
 
-            $type = $return->getName();
-            $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
-            $type .= $return->allowsNull() ? '|null' : '';
+            $type = $this->concatReflectionTypes($return);
+
+            /** @psalm-suppress UndefinedClass */
+            if (!$return instanceof \ReflectionUnionType) {
+                $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
+                $type .= $return->allowsNull() ? '|null' : '';
+            }
 
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
         }
+    }
+
+    protected function concatReflectionTypes(?\ReflectionType $type): string
+    {
+        /** @psalm-suppress UndefinedClass */
+        $returnTypes = $type instanceof \ReflectionUnionType
+            ? $type->getTypes()
+            : [$type];
+
+        return Collection::make($returnTypes)
+            ->filter()
+            ->map->getName()
+            ->implode('|');
     }
 
     protected function addLocationToPhpDoc()

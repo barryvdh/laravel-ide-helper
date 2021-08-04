@@ -1225,7 +1225,7 @@ class ModelsCommand extends Command
         ;
 
         $className = trim($className, '\\');
-        $writingToExternalFile = !$this->write;
+        $writingToExternalFile = !$this->write || $this->write_mixin;
         $classIsNotInExternalFile = $reflection->getName() !== $className;
         $forceFQCN = $this->laravel['config']->get('ide-helper.force_fqn', false);
 

@@ -946,7 +946,8 @@ class ModelsCommand extends Command
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
-            $paramStr = '$' . $param->getName();
+            $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
+
             if ($paramType = $this->getParamType($method, $param)) {
                 $paramStr = $paramType . ' ' . $paramStr;
             }

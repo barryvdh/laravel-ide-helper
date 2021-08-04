@@ -12,19 +12,31 @@ on:
 
 jobs:
   php-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     env:
       COMPOSER_NO_INTERACTION: 1
 
     strategy:
       matrix:
+        os: [ubuntu-20.04, windows-2019]
         php: [8.0, 7.4, 7.3]
         laravel: [8.*]
-
-    name: P${{ matrix.php }} - L${{ matrix.laravel }}
-
+        dependency-version: [prefer-lowest, prefer-stable]
+        exclude:
+          - php: 8.0
+            dependency-version: prefer-lowest
+          - os: windows-2019
+            php: 7.4
+          - os: windows-2019
+            php: 7.3
     steps:
+    - name: Set git to use LF
+      if: ${{ matrix.os == 'windows-2019' }}
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -33,7 +45,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
-        extensions: pdo_sqlite
+        extensions: pdo_sqlite, fileinfo
 
     - name: Install dependencies
       run: |

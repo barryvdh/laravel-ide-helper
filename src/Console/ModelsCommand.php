@@ -431,7 +431,7 @@ class ModelsCommand extends Command
         $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             try {
-                if(!Type::hasType($yourTypeName)) {
+                if (!Type::hasType($yourTypeName)) {
                     Type::addType($yourTypeName, get_class(Type::getType($doctrineTypeName)));
                 }
             } catch (DBALException $exception) {

@@ -17,6 +17,8 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -415,6 +417,8 @@ class ModelsCommand extends Command
      * Load the properties from the database table.
      *
      * @param \Illuminate\Database\Eloquent\Model $model
+     *
+     * @throws DBALException If custom field failed to register
      */
     public function getPropertiesFromTable($model)
     {
@@ -426,6 +430,14 @@ class ModelsCommand extends Command
         $platformName = $databasePlatform->getName();
         $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
+            try {
+                if(!Type::hasType($yourTypeName)) {
+                    Type::addType($yourTypeName, get_class(Type::getType($doctrineTypeName)));
+                }
+            } catch (DBALException $exception) {
+                $this->error("Failed registering custom db type \"$yourTypeName\" as \"$doctrineTypeName\"");
+                throw $exception;
+            }
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
 
@@ -463,7 +475,7 @@ class ModelsCommand extends Command
                         $type = 'integer';
                         break;
                     case 'boolean':
-                        switch (config('database.default')) {
+                        switch ($platformName) {
                             case 'sqlite':
                             case 'mysql':
                                 $type = 'integer';
@@ -749,7 +761,7 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = [], $comment = '')
+    public function setMethod($name, $type = '', $arguments = [], $comment = '')
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
@@ -759,6 +771,18 @@ class ModelsCommand extends Command
             $this->methods[$name]['arguments'] = $arguments;
             $this->methods[$name]['comment'] = $comment;
         }
+    }
+
+    public function unsetMethod($name)
+    {
+        unset($this->methods[strtolower($name)]);
+    }
+
+    public function getMethodType(Model $model, string $classType)
+    {
+        $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
+        $builder = $this->getClassNameInDestinationFile($model, $classType);
+        return $builder . '|' . $modelName;
     }
 
     /**
@@ -923,7 +947,8 @@ class ModelsCommand extends Command
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
-            $paramStr = '$' . $param->getName();
+            $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
+
             if ($paramType = $this->getParamType($method, $param)) {
                 $paramStr = $paramType . ' ' . $paramStr;
             }
@@ -1070,7 +1095,7 @@ class ModelsCommand extends Command
      */
     protected function getSoftDeleteMethods($model)
     {
-        $traits = class_uses(get_class($model), true);
+        $traits = class_uses_recursive($model);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Query\Builder::class);
@@ -1093,7 +1118,8 @@ class ModelsCommand extends Command
 
         $modelName = get_class($model);
 
-        $traits = class_uses($modelName, true);
+
+        $traits = class_uses_recursive($modelName);
         if (!in_array('Illuminate\\Database\\Eloquent\\Factories\\HasFactory', $traits)) {
             return;
         }

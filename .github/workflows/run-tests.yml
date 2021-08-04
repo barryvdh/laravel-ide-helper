@@ -30,9 +30,6 @@ jobs:
             php: 7.4
           - os: windows-2019
             php: 7.3
-
-    name: ${{ matrix.os }} - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
-
     steps:
     - name: Set git to use LF
       if: ${{ matrix.os == 'windows-2019' }}
@@ -55,7 +52,7 @@ jobs:
         composer remove vimeo/psalm --no-update --dev
         composer remove friendsofphp/php-cs-fixer --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
-        composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
+        composer update --prefer-dist --no-progress
 
     - name: Execute Unit Tests
       run: composer test-ci

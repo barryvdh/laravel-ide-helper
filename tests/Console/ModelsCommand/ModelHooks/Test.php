@@ -6,7 +6,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\CustomMethod;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\CustomProperty;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\UnsetMethod;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
 
@@ -24,6 +26,8 @@ class Test extends AbstractModelsCommand
             ],
             'model_hooks' => [
                 CustomProperty::class,
+                CustomMethod::class,
+                UnsetMethod::class,
             ],
         ]);
     }
@@ -71,9 +75,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property-read string $custom
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple custom($custom)
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
  * @mixin \Eloquent
  */

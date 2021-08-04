@@ -2,12 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.9.3...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.10.0...master)
 --------------
+### Fixed
+- Fix recursively searching for `HasFactory` and `Macroable` traits [\#1216 / daniel-de-wit](https://github.com/barryvdh/laravel-ide-helper/pull/1216)
+
+### Fixed
+- Use platformName to determine db type when casting boolean types [\#1212 / stockalexander](https://github.com/barryvdh/laravel-ide-helper/pull/1212)
+
+### Added
+- Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
+
+2021-06-18, 2.10.1
+------------------
+### Added
+- Added Type registration according to [Custom Mapping Types documentation](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types)
+
+### Fixed
+- Fixing issue where configured custom_db_types could cause a DBAL exception to be thrown while running `ide-helper:models`
+
+2021-04-09, 2.10.0
+------------------
+### Added
+- Allowing Methods to be set or unset in ModelHooks [\#1198 / jenga201](https://github.com/barryvdh/laravel-ide-helper/pull/1198)\
+  Note: the visibility of `\Barryvdh\LaravelIdeHelper\Console\ModelsCommand::setMethod` has been changed to **public**!
+
+### Fixed
+- Fixing issue where incorrect autoloader unregistered [\#1210 / tezhm](https://github.com/barryvdh/laravel-ide-helper/pull/1210)
 
 2021-04-02, 2.9.3
 -----------------
-
 ### Fixed
 - Support both customized namespace factories as well as default resolvable ones [\#1201 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1201)
 
@@ -27,6 +51,7 @@ All notable changes to this project will be documented in this file.
 - Generate PHPDoc for Laravel 8.x factories [\#1074 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1074)
 - Add a comment to a property like table columns [\#1168 / biiiiiigmonster](https://github.com/barryvdh/laravel-ide-helper/pull/1168)
 - Added `post_migrate` hook to run commands after a migration [\#1163 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1163)
+- Allow for PhpDoc for macros with union types [\#1148 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1148)
 
 ### Fixed
 - Error when generating helper for invokable classes [\#1124 / standaniels](https://github.com/barryvdh/laravel-ide-helper/pull/1124)

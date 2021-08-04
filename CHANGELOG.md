@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.10.0...master)
+### Added
+- New configuration option `always_overwrite_model_files` to default to writing the PHP doc bloc comment (unless overridden with a switch)
+  Note: If set to false, or omitted, the previous BC functionality occurs
 --------------
 ### Fixed
 - Fix recursively searching for `HasFactory` and `Macroable` traits [\#1216 / daniel-de-wit](https://github.com/barryvdh/laravel-ide-helper/pull/1216)

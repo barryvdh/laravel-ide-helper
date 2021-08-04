@@ -128,8 +128,13 @@ class ModelsCommand extends Command
     public function handle()
     {
         $filename = $this->option('filename');
-        $this->write = $this->option('write');
         $this->write_mixin = $this->option('write-mixin');
+        // If neither write or write_mixin are set to true, fall back to config
+        if ($this->option('write') || $this->write_mixin) {
+            $this->write = $this->option('write');
+        } else {
+            $this->write = $this->laravel['config']->get('ide-helper.always_overwrite_model_files', false);
+        }
         $this->dirs = array_merge(
             $this->laravel['config']->get('ide-helper.model_locations', []),
             $this->option('dir')
@@ -145,6 +150,7 @@ class ModelsCommand extends Command
         $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
+
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do

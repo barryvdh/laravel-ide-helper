@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Use platformName to determine db type when casting boolean types [\#1212 / stockalexander](https://github.com/barryvdh/laravel-ide-helper/pull/1212)
 
+### Added
+- Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
+
 2021-04-09, 2.10.0
 ------------------
 ### Added

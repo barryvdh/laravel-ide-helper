@@ -17,6 +17,8 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -419,7 +421,8 @@ class ModelsCommand extends Command
      * Load the properties from the database table.
      *
      * @param \Illuminate\Database\Eloquent\Model $model
-     * @throws \Doctrine\DBAL\Exception
+     *
+     * @throws DBALException If custom field failed to register
      */
     public function getPropertiesFromTable($model)
     {
@@ -431,6 +434,14 @@ class ModelsCommand extends Command
         $platformName = $databasePlatform->getName();
         $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
+            try {
+                if (!Type::hasType($yourTypeName)) {
+                    Type::addType($yourTypeName, get_class(Type::getType($doctrineTypeName)));
+                }
+            } catch (DBALException $exception) {
+                $this->error("Failed registering custom db type \"$yourTypeName\" as \"$doctrineTypeName\"");
+                throw $exception;
+            }
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
 
@@ -946,7 +957,8 @@ class ModelsCommand extends Command
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
-            $paramStr = '$' . $param->getName();
+            $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
+
             if ($paramType = $this->getParamType($method, $param)) {
                 $paramStr = $paramType . ' ' . $paramStr;
             }
@@ -1223,7 +1235,7 @@ class ModelsCommand extends Command
         ;
 
         $className = trim($className, '\\');
-        $writingToExternalFile = !$this->write;
+        $writingToExternalFile = !$this->write || $this->write_mixin;
         $classIsNotInExternalFile = $reflection->getName() !== $className;
         $forceFQCN = $this->laravel['config']->get('ide-helper.force_fqn', false);
 
@@ -1411,7 +1423,7 @@ class ModelsCommand extends Command
     /**
      * @param \Doctrine\DBAL\Schema\AbstractSchemaManager $schema
      * @param string $table
-     * @throws \Doctrine\DBAL\Exception
+     * @throws DBALException
      */
     protected function setForeignKeys($schema, $table)
     {

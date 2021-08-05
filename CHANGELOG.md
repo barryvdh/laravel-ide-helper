@@ -10,6 +10,17 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Use platformName to determine db type when casting boolean types [\#1212 / stockalexander](https://github.com/barryvdh/laravel-ide-helper/pull/1212)
 
+### Added
+- Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
+
+2021-06-18, 2.10.1
+------------------
+### Added
+- Added Type registration according to [Custom Mapping Types documentation](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types)
+
+### Fixed
+- Fixing issue where configured custom_db_types could cause a DBAL exception to be thrown while running `ide-helper:models`
+
 2021-04-09, 2.10.0
 ------------------
 ### Added
@@ -40,6 +51,7 @@ All notable changes to this project will be documented in this file.
 - Generate PHPDoc for Laravel 8.x factories [\#1074 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1074)
 - Add a comment to a property like table columns [\#1168 / biiiiiigmonster](https://github.com/barryvdh/laravel-ide-helper/pull/1168)
 - Added `post_migrate` hook to run commands after a migration [\#1163 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1163)
+- Allow for PhpDoc for macros with union types [\#1148 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1148)
 
 ### Fixed
 - Error when generating helper for invokable classes [\#1124 / standaniels](https://github.com/barryvdh/laravel-ide-helper/pull/1124)

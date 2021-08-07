@@ -102,6 +102,10 @@ class ModelsCommand extends Command
      * @var bool[string]
      */
     protected $nullableColumns = [];
+    /**
+     * @var string[]
+     */
+    protected $foreignKeyConstraintsColumns = [];
 
     /**
      * During initialization we use Laravels Date Facade to
@@ -452,6 +456,7 @@ class ModelsCommand extends Command
             return;
         }
 
+        $this->setForeignKeys($schema, $table);
         foreach ($columns as $column) {
             $name = $column->getName();
             if (in_array($name, $model->getDates())) {
@@ -725,6 +730,11 @@ class ModelsCommand extends Command
 
         $fkProp = $reflectionObj->getProperty('foreignKey');
         $fkProp->setAccessible(true);
+
+        if ($relation === 'belongsTo') {
+            return isset($this->nullableColumns[$fkProp->getValue($relationObj)]) ||
+                !in_array($fkProp->getValue($relationObj), $this->foreignKeyConstraintsColumns, true);
+        }
 
         return isset($this->nullableColumns[$fkProp->getValue($relationObj)]);
     }
@@ -1407,6 +1417,20 @@ class ModelsCommand extends Command
             }
 
             $hookInstance->run($this, $model);
+        }
+    }
+
+    /**
+     * @param \Doctrine\DBAL\Schema\AbstractSchemaManager $schema
+     * @param string $table
+     * @throws DBALException
+     */
+    protected function setForeignKeys($schema, $table)
+    {
+        foreach ($schema->listTableForeignKeys($table) as $foreignKeyConstraint) {
+            foreach ($foreignKeyConstraint->getLocalColumns() as $columnName) {
+                $this->foreignKeyConstraintsColumns[] = $columnName;
+            }
         }
     }
 }

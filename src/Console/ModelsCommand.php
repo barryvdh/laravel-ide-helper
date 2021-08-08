@@ -20,6 +20,7 @@ use Composer\Autoload\ClassMapGenerator;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -135,7 +136,7 @@ class ModelsCommand extends Command
      */
     public function handle()
     {
-        $this->filename = $this->laravel['config']->get('ide-helper.models_filename');
+        $this->filename = $this->laravel['config']->get('ide-helper.models_filename', '_ide_helper_models.php');
         $filename = $this->option('filename') ?? $this->filename;
         $this->write = $this->option('write');
         $this->write_mixin = $this->option('write-mixin');

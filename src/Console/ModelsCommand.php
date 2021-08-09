@@ -20,7 +20,6 @@ use Composer\Autoload\ClassMapGenerator;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;

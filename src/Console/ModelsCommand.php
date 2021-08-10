@@ -78,7 +78,11 @@ class ModelsCommand extends Command
      * @var string
      */
     protected $name = 'ide-helper:models';
-    protected $filename = '_ide_helper_models.php';
+
+    /**
+     * @var string
+     */
+    protected $filename;
 
     /**
      * The console command description.
@@ -131,7 +135,8 @@ class ModelsCommand extends Command
      */
     public function handle()
     {
-        $filename = $this->option('filename');
+        $this->filename = $this->laravel['config']->get('ide-helper.models_filename', '_ide_helper_models.php');
+        $filename = $this->option('filename') ?? $this->filename;
         $this->write = $this->option('write');
         $this->write_mixin = $this->option('write-mixin');
         $this->dirs = array_merge(
@@ -199,7 +204,7 @@ class ModelsCommand extends Command
     protected function getOptions()
     {
         return [
-          ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file', $this->filename],
+          ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file'],
           ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
               'The model dir, supports glob patterns', [], ],
           ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],

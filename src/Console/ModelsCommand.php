@@ -639,7 +639,7 @@ class ModelsCommand extends Command
                                 if (strpos(get_class($relationObj), 'Many') !== false) {
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
-                                        if ($pivot != 'Illuminate\Database\Eloquent\Relations\Pivot') {
+                                        if ($pivot !== Illuminate\Database\Eloquent\Relations\Pivot::class) {
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
                                                 $pivot,

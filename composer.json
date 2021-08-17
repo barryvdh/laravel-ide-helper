@@ -43,7 +43,7 @@
         "vimeo/psalm": "^3.12"
     },
     "suggest": {
-        "illuminate/events": "Required for automatic helper generation (^6|^7|^8)."
+        "illuminate/events": "Required for automatic helper generation (^8)."
     },
     "config": {
         "sort-packages": true

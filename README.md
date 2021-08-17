@@ -87,16 +87,13 @@ Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clea
 
 This will generate the file `_ide_helper.php` which is expected to be additionally parsed by your IDE for autocomplete. You can use the config `filename` to change its name.
 
-You can configure your `composer.json` to do this each time you update your dependencies:
+You can use the `post_discover` config to run any artisan commands after installing/update packages:
 
-```js
-"scripts": {
-    "post-update-cmd": [
-        "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-        "@php artisan ide-helper:generate",
-        "@php artisan ide-helper:meta"
-    ]
-},
+```php
+'post_discover' => [
+    'ide-helper:generate',
+    'ide-helper:meta',
+],
 ```
 
 You can also publish the config file to change implementations (ie. interface to specific class) or set defaults for `--helpers`.

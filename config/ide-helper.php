@@ -306,6 +306,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Run artisan commands after package discovery
+    |--------------------------------------------------------------------------
+    |
+    | The specified commands should run after `package:discover` run. This command
+    | is executed by default after every composer install, update or dump-autoload.
+    |
+    */
+    'post_discover' => [
+        // 'ide-helper:generate',
+        // 'ide-helper:meta',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Run artisan commands after migrations to generate model helpers
     |--------------------------------------------------------------------------
     |

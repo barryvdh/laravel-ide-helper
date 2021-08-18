@@ -17,11 +17,8 @@ use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Listeners\GenerateModelHelper;
 use Illuminate\Console\Events\CommandFinished;
-use Illuminate\Contracts\Config\Repository as Config;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Database\Events\MigrationsEnded;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -76,15 +73,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             }
         );
 
-        $this->app->singleton(
-            'command.ide-helper.models',
-            function (Container $app): ModelsCommand {
-                return new ModelsCommand(
-                    $app->make(Filesystem::class),
-                    $app->make(Config::class)
-                );
-            }
-        );
+        $this->app->singleton('command.ide-helper.models', ModelsCommand::class);
 
         $this->app->singleton(
             'command.ide-helper.meta',

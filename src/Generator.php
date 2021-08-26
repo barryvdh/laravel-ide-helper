@@ -13,6 +13,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
@@ -184,7 +185,9 @@ class Generator
      */
     protected function getAliasesByExtendsNamespace()
     {
-        $aliases = $this->getValidAliases();
+        $aliases = $this->getValidAliases()->filter(static function (Alias $alias) {
+            return is_subclass_of($alias->getExtends(), Facade::class);
+        });
 
         $this->addMacroableClasses($aliases);
 

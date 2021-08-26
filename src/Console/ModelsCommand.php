@@ -464,6 +464,11 @@ class ModelsCommand extends Command
         $this->setForeignKeys($schema, $table);
         foreach ($columns as $column) {
             $name = $column->getName();
+
+            if ($this->hasLowerCaseProperties()) {
+                $name = Str::lower($name);
+            }
+
             if (in_array($name, $model->getDates())) {
                 $type = $this->dateClass;
             } else {

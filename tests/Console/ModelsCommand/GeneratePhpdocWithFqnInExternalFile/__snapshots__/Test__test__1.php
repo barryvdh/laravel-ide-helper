@@ -12,8 +12,21 @@
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Models{
 /**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Models\AnotherModelSameNamespace
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace query()
+ */
+	class AnotherModelSameNamespace extends \Eloquent {}
+}
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Models{
+/**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Models\Post
  *
+ * @package Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Models
+ * @property AnotherModelSameNamespace $someProp
  * @property integer $id
  * @property string|null $char_nullable
  * @property string $char_not_nullable

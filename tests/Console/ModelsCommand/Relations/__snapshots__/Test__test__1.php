@@ -5,6 +5,25 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\AnotherModelSameNamespace
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace query()
+ * @mixin \Eloquent
+ */
+class AnotherModelSameNamespace extends Model
+{
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
+
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -75,6 +94,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property integer $id
  * @property-read Simple|null $relationBelongsTo
  * @property-read AnotherModel|null $relationBelongsToInAnotherNamespace
+ * @property-read AnotherModelSameNamespace|null $relationBelongsToInTheSameNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToManyWithSub
@@ -162,6 +182,11 @@ class Simple extends Model
     }
 
     // Custom relations
+
+    public function relationBelongsToInTheSameNamespace(): BelongsTo
+    {
+        return $this->belongsTo(AnotherModelSameNamespace::class);
+    }
 
     public function relationBelongsToInAnotherNamespace(): BelongsTo
     {

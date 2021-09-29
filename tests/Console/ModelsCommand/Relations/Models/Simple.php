@@ -78,6 +78,11 @@ class Simple extends Model
 
     // Custom relations
 
+    public function relationBelongsToInTheSameNamespace(): BelongsTo
+    {
+        return $this->belongsTo(AnotherModelSameNamespace::class);
+    }
+
     public function relationBelongsToInAnotherNamespace(): BelongsTo
     {
         return $this->belongsTo(AnotherModel::class);

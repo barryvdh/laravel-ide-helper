@@ -4,6 +4,25 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqn\Models;
 
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqn\Models\AnotherModelSameNamespace
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AnotherModelSameNamespace query()
+ * @mixin \Eloquent
+ */
+class AnotherModelSameNamespace extends Model
+{
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqn\Models;
+
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqn\Casts\CastType;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -90,6 +109,8 @@ use Illuminate\Support\Carbon;
  * @property string $macaddress_not_nullable
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Collection|AnotherModelSameNamespace[] $anotherModels
+ * @property-read int|null $another_models_count
  * @property-read Collection|Post[] $posts
  * @property-read int|null $posts_count
  * @method static EloquentBuilder|Post newModelQuery()
@@ -197,6 +218,11 @@ class Post extends Model
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function anotherModels(): HasMany
+    {
+        return $this->hasMany(AnotherModelSameNamespace::class);
     }
 
     public function scopeNull($query, string $unusedParam)

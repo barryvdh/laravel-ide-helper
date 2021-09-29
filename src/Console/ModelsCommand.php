@@ -1248,8 +1248,22 @@ class ModelsCommand extends Command
             return '\\' . $className;
         }
 
+        $namespace = $this->getNamespace($model);
+        $classIsInGlobalNamespace = strcasecmp($namespace, '') === 0;
+        $classIsInTheSameNamespace = strpos($className, $namespace) === 0;
+        if (!$classIsInGlobalNamespace && $classIsNotInExternalFile && $classIsInTheSameNamespace) {
+            $path = explode('\\', $className);
+            return array_pop($path);
+        }
+
         $usedClassNames = $this->getUsedClassNames($reflection);
         return $usedClassNames[$className] ?? ('\\' . $className);
+    }
+
+    protected function getNamespace(object $model): string {
+        $class = get_class($model);
+        $pos = strrpos($class, '\\');
+        return substr($class, 0, $pos);
     }
 
     /**

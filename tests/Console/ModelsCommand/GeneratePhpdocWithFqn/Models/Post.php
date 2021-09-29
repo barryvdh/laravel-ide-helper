@@ -39,6 +39,11 @@ class Post extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function anotherModels(): HasMany
+    {
+        return $this->hasMany(AnotherModelSameNamespace::class);
+    }
+
     public function scopeNull($query, string $unusedParam)
     {
         return $query;

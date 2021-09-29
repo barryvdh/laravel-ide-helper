@@ -1260,7 +1260,8 @@ class ModelsCommand extends Command
         return $usedClassNames[$className] ?? ('\\' . $className);
     }
 
-    protected function getNamespace(object $model): string {
+    protected function getNamespace(object $model): string
+    {
         $class = get_class($model);
         $pos = strrpos($class, '\\');
         return substr($class, 0, $pos);

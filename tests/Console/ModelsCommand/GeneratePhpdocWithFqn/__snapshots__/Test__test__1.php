@@ -95,6 +95,8 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|Post newModelQuery()
  * @method static EloquentBuilder|Post newQuery()
  * @method static EloquentBuilder|Post null(string $unusedParam)
+ * @method static EloquentBuilder|Post on($connection = null)
+ * @method static EloquentBuilder|Post onWriteConnection()
  * @method static QueryBuilder|Post onlyTrashed()
  * @method static EloquentBuilder|Post query()
  * @method static EloquentBuilder|Post whereBigIntegerNotNullable($value)
@@ -170,6 +172,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|Post whereUuidNullable($value)
  * @method static EloquentBuilder|Post whereYearNotNullable($value)
  * @method static EloquentBuilder|Post whereYearNullable($value)
+ * @method static EloquentBuilder|Post with($relations)
  * @method static QueryBuilder|Post withTrashed()
  * @method static QueryBuilder|Post withoutTrashed()
  * @mixin Eloquent

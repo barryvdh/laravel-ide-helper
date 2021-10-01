@@ -78,7 +78,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Simple custom($custom)
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple with($relations)
  * @mixin \Eloquent
  */
 class Simple extends Model

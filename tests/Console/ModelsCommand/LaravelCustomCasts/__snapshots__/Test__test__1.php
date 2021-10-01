@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property SelfCastingCasterWithStaticDocblockReturn $casted_property_with_static_return_docblock_and_param
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CustomCast on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|CustomCast onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast query()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithParam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithReturnDocblock($value)
@@ -50,6 +52,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithoutReturn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereExtendedCastedPropertyWithStaticReturnDocblock($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereExtendedCastedPropertyWithThisReturnDocblock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CustomCast with($relations)
  * @mixin \Eloquent
  */
 class CustomCast extends Model

@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Use platformName to determine db type when casting boolean types [\#1212 / stockalexander](https://github.com/barryvdh/laravel-ide-helper/pull/1212)
 
 ### Added
+- Add `on`, `onWriteConnection` and `with` to models [\#1260 / douglasdc3](https://github.com/barryvdh/laravel-ide-helper/pull/1260)
 - Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
 
 ### Changed

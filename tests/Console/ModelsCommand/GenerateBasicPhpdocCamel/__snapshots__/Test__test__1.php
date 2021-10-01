@@ -84,6 +84,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Post on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Post onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|Post query()
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNullable($value)
@@ -158,6 +160,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUuidNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereYearNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereYearNullable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Post with($relations)
  * @mixin \Eloquent
  */
 class Post extends Model

@@ -403,7 +403,7 @@ class ModelsCommand extends Command
             $realType = $this->getTypeOverride($realType);
             $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
 
-            if (isset($this->nullableColumns[$name])) {
+            if (isset($this->nullableColumns[$name]) && $this->properties[$name]['type']) {
                 $this->properties[$name]['type'] .= '|null';
             }
         }

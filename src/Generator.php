@@ -84,7 +84,14 @@ class Generator
 
     protected function detectDrivers()
     {
-        $defaultUserModel = config('auth.providers.users.model', config('auth.model', 'App\User'));
+        $providers = config('auth.providers');
+        if (is_array($providers)) {
+            $models = array_column($providers, 'model');
+            $defaultUserModel = implode('|', $models);
+        }
+        if (empty($defaultUserModel)) {
+            $defaultUserModel = config('auth.model', 'App\User');
+        }
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
 
         try {

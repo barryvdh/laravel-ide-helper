@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.10.0...master)
 --------------
+### Added
+- Add support for multiple authentication guards [#1263 / miken32](https://github.com/barryvdh/laravel-ide-helper/pull/1263)
+
 ### Fixed
 - Fix recursively searching for `HasFactory` and `Macroable` traits [\#1216 / daniel-de-wit](https://github.com/barryvdh/laravel-ide-helper/pull/1216)
 

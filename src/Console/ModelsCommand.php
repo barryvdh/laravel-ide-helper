@@ -392,6 +392,7 @@ class ModelsCommand extends Command
                     // the `$type` until the `:`
                     $type = strtok($type, ':');
                     $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
+                    $this->setProperty($name, null, true, true);
                     break;
             }
 

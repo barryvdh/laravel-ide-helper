@@ -918,6 +918,13 @@ class ModelsCommand extends Command
             if (!$phpdocMixin->getText()) {
                 $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
             }
+
+            foreach ($phpdoc->getTagsByName('mixin') as $tag) {
+                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
+                    $phpdoc->deleteTag($tag);
+                }
+            }
+            $docComment = $serializer->getDocComment($phpdoc);
         }
 
         if ($this->write) {
@@ -939,11 +946,15 @@ class ModelsCommand extends Command
         }
 
         $classname = $this->write_mixin ? $mixinClassName : $classname;
-        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent ";
+        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} ";
 
-        if ($interfaceNames) {
-            $interfaces = implode(', \\', $interfaceNames);
-            $output .= "implements \\{$interfaces} ";
+        if (!$this->write_mixin) {
+            $output .= "extends \Eloquent ";
+
+            if ($interfaceNames) {
+                $interfaces = implode(', \\', $interfaceNames);
+                $output .= "implements \\{$interfaces} ";
+            }
         }
 
         return $output . "{}\n}\n\n";

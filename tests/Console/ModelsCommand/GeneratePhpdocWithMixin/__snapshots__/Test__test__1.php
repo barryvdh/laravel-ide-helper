@@ -183,6 +183,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereYearNullable($value)
  * @mixin \Eloquent
  */
-	class IdeHelperPost extends \Eloquent {}
+	class IdeHelperPost {}
 }
 

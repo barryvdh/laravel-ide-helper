@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property ExtendedSelfCastingCasterWithStaticDocblockReturn $extended_casted_property_with_static_return_docblock
  * @property ExtendedSelfCastingCasterWithThisDocblockReturn $extended_casted_property_with_this_return_docblock
  * @property SelfCastingCasterWithStaticDocblockReturn $casted_property_with_static_return_docblock_and_param
+ * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $cast_without_property
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast query()
@@ -68,5 +69,6 @@ class CustomCast extends Model
         'extended_casted_property_with_static_return_docblock' => ExtendedSelfCastingCasterWithStaticDocblockReturn::class,
         'extended_casted_property_with_this_return_docblock' => ExtendedSelfCastingCasterWithThisDocblockReturn::class,
         'casted_property_with_static_return_docblock_and_param' => SelfCastingCasterWithStaticDocblockReturn::class . ':param',
+        'cast_without_property' => CustomCasterWithReturnType::class,
     ];
 }

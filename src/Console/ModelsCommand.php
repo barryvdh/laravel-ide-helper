@@ -1346,7 +1346,7 @@ class ModelsCommand extends Command
             $docComment ?? '',
             $matches
         );
-        $type = $matches[1] ?? null;
+        $type = $matches[1] ?? '';
 
         if (strpos($type, '|') !== false) {
             $types = explode('|', $type);

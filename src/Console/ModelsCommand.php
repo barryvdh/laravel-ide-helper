@@ -355,11 +355,24 @@ class ModelsCommand extends Command
     {
         $casts = $model->getCasts();
         foreach ($casts as $name => $type) {
+            if (Str::startsWith($type, 'decimal:')) {
+                $type = 'decimal';
+            } elseif (Str::startsWith($type, 'custom_datetime:')) {
+                $type = 'date';
+            } elseif (Str::startsWith($type, 'immutable_custom_datetime:')) {
+                $type = 'immutable_date';
+            } elseif (Str::startsWith($type, 'encrypted:')) {
+                $type = Str::after($type, ':');
+            }
             switch ($type) {
+                case 'encrypted':
+                    $realType = 'mixed';
+                    break;
                 case 'boolean':
                 case 'bool':
                     $realType = 'boolean';
                     break;
+                case 'decimal':
                 case 'string':
                     $realType = 'string';
                     break;
@@ -383,6 +396,10 @@ class ModelsCommand extends Command
                 case 'date':
                 case 'datetime':
                     $realType = $this->dateClass;
+                    break;
+                case 'immutable_date':
+                case 'immutable_datetime':
+                    $realType = '\Carbon\CarbonImmutable';
                     break;
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';

@@ -87,10 +87,13 @@ class Generator
         $providers = config('auth.providers');
         if (is_array($providers)) {
             $models = array_column($providers, 'model');
+            foreach ($models as &$model) {
+                $model = '\\' . ltrim($model, '\\');
+            }
             $defaultUserModel = implode('|', $models);
         }
         if (empty($defaultUserModel)) {
-            $defaultUserModel = config('auth.model', 'App\User');
+            $defaultUserModel = config('auth.model', '\App\User');
         }
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
 

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 --------------
 ### Added
 - Add support for multiple authentication guards [#1263 / miken32](https://github.com/barryvdh/laravel-ide-helper/pull/1263)
+- Add support for cast types `decimal:*`, `encrypted:*`, `immutable_date`, `immutable_datetime`, `custom_datetime`, and `immutable_custom_datetime` [#1262 / miken32](https://github.com/barryvdh/laravel-ide-helper/pull/1262)
 
 ### Fixed
 - Fix recursively searching for `HasFactory` and `Macroable` traits [\#1216 / daniel-de-wit](https://github.com/barryvdh/laravel-ide-helper/pull/1216)
@@ -15,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
+- Add support of custom casts without properties [\#1267 / sparclex](https://github.com/barryvdh/laravel-ide-helper/pull/1267)
 
 ### Changed
 - Move default models helper filename to config [\#1241 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)

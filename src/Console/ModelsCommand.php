@@ -355,11 +355,24 @@ class ModelsCommand extends Command
     {
         $casts = $model->getCasts();
         foreach ($casts as $name => $type) {
+            if (Str::startsWith($type, 'decimal:')) {
+                $type = 'decimal';
+            } elseif (Str::startsWith($type, 'custom_datetime:')) {
+                $type = 'date';
+            } elseif (Str::startsWith($type, 'immutable_custom_datetime:')) {
+                $type = 'immutable_date';
+            } elseif (Str::startsWith($type, 'encrypted:')) {
+                $type = Str::after($type, ':');
+            }
             switch ($type) {
+                case 'encrypted':
+                    $realType = 'mixed';
+                    break;
                 case 'boolean':
                 case 'bool':
                     $realType = 'boolean';
                     break;
+                case 'decimal':
                 case 'string':
                     $realType = 'string';
                     break;
@@ -384,6 +397,10 @@ class ModelsCommand extends Command
                 case 'datetime':
                     $realType = $this->dateClass;
                     break;
+                case 'immutable_date':
+                case 'immutable_datetime':
+                    $realType = '\Carbon\CarbonImmutable';
+                    break;
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
                     break;
@@ -392,6 +409,7 @@ class ModelsCommand extends Command
                     // the `$type` until the `:`
                     $type = strtok($type, ':');
                     $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
+                    $this->setProperty($name, null, true, true);
                     break;
             }
 
@@ -918,6 +936,13 @@ class ModelsCommand extends Command
             if (!$phpdocMixin->getText()) {
                 $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
             }
+
+            foreach ($phpdoc->getTagsByName('mixin') as $tag) {
+                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
+                    $phpdoc->deleteTag($tag);
+                }
+            }
+            $docComment = $serializer->getDocComment($phpdoc);
         }
 
         if ($this->write) {
@@ -939,11 +964,15 @@ class ModelsCommand extends Command
         }
 
         $classname = $this->write_mixin ? $mixinClassName : $classname;
-        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \Eloquent ";
+        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} ";
 
-        if ($interfaceNames) {
-            $interfaces = implode(', \\', $interfaceNames);
-            $output .= "implements \\{$interfaces} ";
+        if (!$this->write_mixin) {
+            $output .= "extends \Eloquent ";
+
+            if ($interfaceNames) {
+                $interfaces = implode(', \\', $interfaceNames);
+                $output .= "implements \\{$interfaces} ";
+            }
         }
 
         return $output . "{}\n}\n\n";
@@ -1323,7 +1352,7 @@ class ModelsCommand extends Command
             $docComment ?? '',
             $matches
         );
-        $type = $matches[1] ?? null;
+        $type = $matches[1] ?? '';
 
         if (strpos($type, '|') !== false) {
             $types = explode('|', $type);

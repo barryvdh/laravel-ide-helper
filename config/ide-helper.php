@@ -151,9 +151,7 @@ return [
     |
     */
 
-    'ignored_models' => [
-
-    ],
+    'ignored_models' => [],
 
     /*
     |--------------------------------------------------------------------------
@@ -196,9 +194,7 @@ return [
     |
     */
 
-    'interfaces' => [
-
-    ],
+    'interfaces' => [],
 
     /*
     |--------------------------------------------------------------------------
@@ -226,9 +222,28 @@ return [
     |  ),
     |
     */
-    'custom_db_types' => [
+    'custom_db_types' => [],
 
-    ],
+    /*
+     |--------------------------------------------------------------------------
+     | Set the column name to lower case
+     |--------------------------------------------------------------------------
+     | Some databases, like Oracle return the column names in upper case
+     |
+     | For example, normally you would see this:
+     |
+     |  * @property \Illuminate\Support\Carbon $CREATED_AT
+     |  * @property \Illuminate\Support\Carbon $UPDATED_AT
+     |
+     | With this enabled, the properties will be this:
+     |
+     |  * @property \Illuminate\Support\Carbon $created_at
+     |  * @property \Illuminate\Support\Carbon $updated_at
+     |
+     | Note, it is currently an all-or-nothing option.
+     |
+     */
+    'model_lower_case_properties' => true,
 
     /*
      |--------------------------------------------------------------------------

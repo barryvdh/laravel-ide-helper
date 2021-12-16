@@ -469,7 +469,7 @@ class ModelsCommand extends Command
         }
         
         $connectionName = $model->getConnection()->getName();
-        $database = config("ide-helper.db_mapping.$connectionName");
+        $database = $this->laravel['config']->get("ide-helper.db_mapping.$connectionName");
         if (strpos($table, '.')) {
             [$database, $table] = explode('.', $table);
         }

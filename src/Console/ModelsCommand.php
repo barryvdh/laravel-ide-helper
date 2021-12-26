@@ -20,6 +20,7 @@ use Composer\Autoload\ClassMapGenerator;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -366,6 +367,9 @@ class ModelsCommand extends Command
             } elseif (Str::startsWith($type, 'encrypted:')) {
                 $type = Str::after($type, ':');
             }
+
+            $params = [];
+
             switch ($type) {
                 case 'encrypted':
                     $realType = 'mixed';
@@ -412,6 +416,9 @@ class ModelsCommand extends Command
                     $type = strtok($type, ':');
                     $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
                     $this->setProperty($name, null, true, true);
+
+                    $params = strtok(':');
+                    $params = $params ? explode(',', $params) : [];
                     break;
             }
 
@@ -419,6 +426,7 @@ class ModelsCommand extends Command
                 continue;
             }
 
+            $realType = $this->checkForCastableCasts($realType, $params);
             $realType = $this->checkForCustomLaravelCasts($realType);
             $realType = $this->getTypeOverride($realType);
             $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
@@ -1141,9 +1149,9 @@ class ModelsCommand extends Command
      *
      * @return null|string
      */
-    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection)
+    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, \Reflector $reflectorForContext = null)
     {
-        $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
+        $phpDocContext = (new ContextFactory())->createFromReflector($reflectorForContext ?? $reflection);
         $context = new Context(
             $phpDocContext->getNamespace(),
             $phpDocContext->getNamespaceAliases()
@@ -1258,6 +1266,32 @@ class ModelsCommand extends Command
         }
 
         return $keyword;
+    }
+
+    protected function checkForCastableCasts(string $type, array $params = []): string
+    {
+        if (!class_exists($type) || !interface_exists(Castable::class)) {
+            return $type;
+        }
+
+        $reflection = new \ReflectionClass($type);
+
+        if (!$reflection->implementsInterface(Castable::class)) {
+            return $type;
+        }
+
+        $cast = call_user_func([$type, 'castUsing'], $params);
+
+        if (is_string($cast) && !is_object($cast)) {
+            return $cast;
+        }
+
+        $castReflection = new ReflectionObject($cast);
+
+        $methodReflection = $castReflection->getMethod('get');
+
+        return $this->getReturnTypeFromReflection($methodReflection) ??
+            $this->getReturnTypeFromDocBlock($methodReflection, $reflection);
     }
 
     /**

@@ -563,7 +563,7 @@ class ModelsCommand extends Command
             foreach ($methods as $method) {
                 $reflection = new \ReflectionMethod($model, $method);
                 $type = $this->getReturnType($reflection);
-                $isAttribute = is_a($type,  '\Illuminate\Database\Eloquent\Casts\Attribute', true);
+                $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith(
                         $method,
@@ -582,13 +582,13 @@ class ModelsCommand extends Command
                     $name = Str::snake($method);
                     $types = $this->getAttributeReturnType($model, $method);
 
-                    if($types->has('get')) {
+                    if ($types->has('get')) {
                         $type = $this->getTypeInModel($model, $types['get']);
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null, $comment);
                     }
 
-                    if($types->has('set')) {
+                    if ($types->has('set')) {
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
@@ -1081,16 +1081,15 @@ class ModelsCommand extends Command
         ])
             ->filter()
             ->map(function ($type) {
-                if($type instanceof \ReflectionUnionType) {
+                if ($type instanceof \ReflectionUnionType) {
                     $types =collect($type->getTypes())
-                        ->map(fn(ReflectionType $reflectionType) => collect($this->extractReflectionTypes($reflectionType)))
+                        ->map(fn (ReflectionType $reflectionType) => collect($this->extractReflectionTypes($reflectionType)))
                         ->flatten();
-                }
-                else {
+                } else {
                     $types = collect($this->extractReflectionTypes($type));
                 }
 
-                if($type->allowsNull()) {
+                if ($type->allowsNull()) {
                     $types->push('null');
                 }
 

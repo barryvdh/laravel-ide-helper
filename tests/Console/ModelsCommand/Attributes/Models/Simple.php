@@ -12,10 +12,10 @@ class Simple extends Model
     public function name(): Attribute
     {
         return new Attribute(
-            get: function(?string $name): ?string {
+            get: function (?string $name): ?string {
                 return $name;
             },
-            set: function(?string $name): ?string {
+            set: function (?string $name): ?string {
                 return $name === null ? null : ucfirst($name);
             }
         );

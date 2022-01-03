@@ -1083,7 +1083,10 @@ class ModelsCommand extends Command
             ->map(function ($type) {
                 if ($type instanceof \ReflectionUnionType) {
                     $types =collect($type->getTypes())
-                        ->map(fn (ReflectionType $reflectionType) => collect($this->extractReflectionTypes($reflectionType)))
+                        /** @var ReflectionType $reflectionType */
+                        ->map(function ($reflectionType) {
+                            return collect($this->extractReflectionTypes($reflectionType));
+                        })
                         ->flatten();
                 } else {
                     $types = collect($this->extractReflectionTypes($type));

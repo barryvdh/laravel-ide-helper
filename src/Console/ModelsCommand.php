@@ -562,7 +562,7 @@ class ModelsCommand extends Command
             sort($methods);
             foreach ($methods as $method) {
                 $reflection = new \ReflectionMethod($model, $method);
-                $type = $this->getReturnType($reflection);
+                $type = $this->getReturnTypeFromReflection($reflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith(

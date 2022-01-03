@@ -89,6 +89,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGenerateP
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post newModelQuery()
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post newQuery()
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post on($connection = null)
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post onWriteConnection()
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post query()
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNullable($value)
@@ -163,6 +165,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGenerateP
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUuidNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereYearNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereYearNullable($value)
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post with($relations)
  */
 	class Post extends \Eloquent {}
 }

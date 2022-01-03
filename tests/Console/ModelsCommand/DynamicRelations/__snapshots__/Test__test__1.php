@@ -16,7 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $regular_has_many_count
  * @method static \Illuminate\Database\Eloquent\Builder|Dynamic newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Dynamic newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Dynamic on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Dynamic onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|Dynamic query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Dynamic with($relations)
  * @mixin \Eloquent
  */
 class Dynamic extends Model

@@ -16,7 +16,10 @@ use Illuminate\Database\Query\Builder;
  * @property-read int|null $with_union_type_return_count
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel with($relations)
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel withNullableUnionTypeParameter(string|int|null $bar)
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel withUnionTypeParameter(string|int $bar)
  * @mixin \Eloquent

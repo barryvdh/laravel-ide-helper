@@ -14,7 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\CustomSpace\ModelWithCustomNamespaceFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace with($relations)
  * @mixin \Eloquent
  */
 class ModelWithCustomNamespace extends Model
@@ -46,7 +49,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithFactoryFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory with($relations)
  * @mixin \Eloquent
  */
 class ModelWithFactory extends Model
@@ -65,7 +71,10 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithNestedFactoryFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory with($relations)
  * @mixin \Eloquent
  */
 class ModelWithNestedFactory extends ModelWithFactory
@@ -85,7 +94,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory with($relations)
  * @mixin \Eloquent
  */
 class ModelWithoutFactory extends Model

@@ -622,12 +622,15 @@ class ModelsCommand extends Command
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }
-                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
+                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery', 'on', 'onWriteConnection', 'with'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+
+                    $reflection = new \ReflectionMethod($model, $method);
 
                     $this->setMethod(
                         $method,
-                        $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
+                        $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                        $this->getParameters($reflection)
                     );
 
                     if ($this->write_model_external_builder_methods) {

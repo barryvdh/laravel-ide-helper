@@ -13,10 +13,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $id
  * @method static Builder|Simple newModelQuery()
  * @method static Builder|Simple newQuery()
+ * @method static Builder|Simple on($connection = null)
+ * @method static Builder|Simple onWriteConnection()
  * @method static Builder|Simple query()
  * @method static Builder|Simple whereId($value)
  * @method static Builder|Simple whereTypedVariadic(int ...$values)
  * @method static Builder|Simple whereVariadic(...$values)
+ * @method static Builder|Simple with($relations)
  * @mixin \Eloquent
  */
 class Simple extends Model

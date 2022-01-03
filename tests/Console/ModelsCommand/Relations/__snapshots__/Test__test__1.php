@@ -21,12 +21,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read BelongsToVariation|null $nullableColumnWithNoForeignKeyConstraint
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation query()
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNotNullColumnWithForeignKeyConstraint($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNotNullColumnWithNoForeignKeyConstraint($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNullableColumnWithForeignKeyConstraint($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNullableColumnWithNoForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation with($relations)
  * @mixin \Eloquent
  */
 class BelongsToVariation extends Model
@@ -97,8 +100,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read Simple $relationSampleToManyRelationType
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple with($relations)
  * @mixin \Eloquent
  */
 class Simple extends Model

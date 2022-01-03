@@ -33,8 +33,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $attribute_without_type
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple on($connection = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple onWriteConnection()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple with($relations)
  * @mixin \Eloquent
  */
 class Simple extends Model

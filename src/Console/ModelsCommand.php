@@ -21,6 +21,7 @@ use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
@@ -559,6 +561,9 @@ class ModelsCommand extends Command
         if ($methods) {
             sort($methods);
             foreach ($methods as $method) {
+                $reflection = new \ReflectionMethod($model, $method);
+                $type = $this->getReturnType($reflection);
+                $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith(
                         $method,
@@ -568,11 +573,24 @@ class ModelsCommand extends Command
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
                         $type = $this->getReturnType($reflection);
                         $type = $this->getTypeInModel($model, $type);
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null, $comment);
+                    }
+                } elseif ($isAttribute) {
+                    $name = Str::snake($method);
+                    $types = $this->getAttributeReturnType($model, $method);
+
+                    if ($types->has('get')) {
+                        $type = $this->getTypeInModel($model, $types['get']);
+                        $comment = $this->getCommentFromDocBlock($reflection);
+                        $this->setProperty($name, $type, true, null, $comment);
+                    }
+
+                    if ($types->has('set')) {
+                        $comment = $this->getCommentFromDocBlock($reflection);
+                        $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (
                     Str::startsWith($method, 'set') && Str::endsWith(
@@ -583,7 +601,6 @@ class ModelsCommand extends Command
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
@@ -591,7 +608,6 @@ class ModelsCommand extends Command
                     //Magic set<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (!empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
@@ -622,8 +638,6 @@ class ModelsCommand extends Command
                     && !Str::startsWith($method, 'get')
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
-                    $reflection = new \ReflectionMethod($model, $method);
-
                     if ($returnType = $reflection->getReturnType()) {
                         $type = $returnType instanceof ReflectionNamedType
                             ? $returnType->getName()
@@ -1054,6 +1068,36 @@ class ModelsCommand extends Command
     protected function hasCamelCaseModelProperties()
     {
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
+    }
+
+    protected function getAttributeReturnType(Model $model, string $method): Collection
+    {
+        /** @var Attribute $attribute */
+        $attribute = $model->{$method}();
+
+        return collect([
+            'get' => $attribute->get ? optional(new \ReflectionFunction($attribute->get))->getReturnType() : null,
+            'set' => $attribute->set ? optional(new \ReflectionFunction($attribute->set))->getReturnType() : null,
+        ])
+            ->filter()
+            ->map(function ($type) {
+                if ($type instanceof \ReflectionUnionType) {
+                    $types =collect($type->getTypes())
+                        /** @var ReflectionType $reflectionType */
+                        ->map(function ($reflectionType) {
+                            return collect($this->extractReflectionTypes($reflectionType));
+                        })
+                        ->flatten();
+                } else {
+                    $types = collect($this->extractReflectionTypes($type));
+                }
+
+                if ($type->allowsNull()) {
+                    $types->push('null');
+                }
+
+                return $types->join('|');
+            });
     }
 
     protected function getReturnType(\ReflectionMethod $reflection): ?string

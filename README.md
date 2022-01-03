@@ -68,9 +68,9 @@ If for some reason you want manually control this:
 
 _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
 
-- [`php artisan ide-helper:generate` - PHPDoc generation for Laravel Facades ](#automatic-phpdoc-generation-for-laravel-facades)
-- [`php artisan ide-helper:models` - PHPDocs for models](#automatic-PHPDocs-for-models)
-- [`php artisan ide-helper:meta` - PhpStorm Meta file](#phpstorm-meta-for-container-instances)
+- `php artisan ide-helper:generate` - [PHPDoc generation for Laravel Facades ](#automatic-phpdoc-generation-for-laravel-facades)
+- `php artisan ide-helper:models` - [PHPDocs for models](#automatic-PHPDocs-for-models)
+- `php artisan ide-helper:meta` - [PhpStorm Meta file](#phpstorm-meta-for-container-instances)
 
 
 Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice

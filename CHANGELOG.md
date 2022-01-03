@@ -23,6 +23,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Move default models helper filename to config [\#1241 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)
 
+### Changed
+- Use dependency injection for configuration class in `ModelsCommand` [\#1242 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1242)
+
 2021-06-18, 2.10.1
 ------------------
 ### Added

@@ -73,12 +73,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             }
         );
 
-        $this->app->singleton(
-            'command.ide-helper.models',
-            function ($app) {
-                return new ModelsCommand($app['files']);
-            }
-        );
+        $this->app->singleton('command.ide-helper.models', ModelsCommand::class);
 
         $this->app->singleton(
             'command.ide-helper.meta',

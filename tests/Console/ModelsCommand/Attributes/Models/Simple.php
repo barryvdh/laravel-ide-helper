@@ -20,4 +20,24 @@ class Simple extends Model
             }
         );
     }
+
+    /**
+     * ide-helper does not recognize this method being an Attribute
+     * because the method has no actual return type;
+     * phpdoc is ignored here deliberately due to performance reasons and also
+     * isn't supported by Laravel itself.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    public function notAnAttribute()
+    {
+        return new Attribute(
+            function (?string $value): ?string {
+                return $value;
+            },
+            function (?string $value): ?string {
+                return $value;
+            }
+        );
+    }
 }

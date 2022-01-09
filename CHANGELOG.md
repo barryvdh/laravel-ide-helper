@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add support for cast types `decimal:*`, `encrypted:*`, `immutable_date`, `immutable_datetime`, `custom_datetime`, and `immutable_custom_datetime` [#1262 / miken32](https://github.com/barryvdh/laravel-ide-helper/pull/1262)
+- Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
 
 ### Fixed
 - Fix recursively searching for `HasFactory` and `Macroable` traits [\#1216 / daniel-de-wit](https://github.com/barryvdh/laravel-ide-helper/pull/1216)

@@ -25,25 +25,25 @@
         "barryvdh/reflection-docblock": "^2.0.6",
         "composer/composer": "^1.10.23 || ^2.1.9",
         "doctrine/dbal": "^2.6 || ^3",
-        "illuminate/console": "^8",
-        "illuminate/filesystem": "^8",
-        "illuminate/support": "^8",
+        "illuminate/console": "^8|^9",
+        "illuminate/filesystem": "^8|^9",
+        "illuminate/support": "^8|^9",
         "nikic/php-parser": "^4.7",
         "phpdocumentor/type-resolver": "^1.1.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "friendsofphp/php-cs-fixer": "^2",
-        "illuminate/config": "^8",
-        "illuminate/view": "^8",
+        "illuminate/config": "^8|^9",
+        "illuminate/view": "^8|^9",
         "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^6",
+        "orchestra/testbench": "^6|^7",
         "phpunit/phpunit": "^8.5 || ^9",
         "spatie/phpunit-snapshot-assertions": "^3 || ^4",
         "vimeo/psalm": "^3.12"
     },
     "suggest": {
-        "illuminate/events": "Required for automatic helper generation (^6|^7|^8)."
+        "illuminate/events": "Required for automatic helper generation (^6|^7|^8|^9)."
     },
     "config": {
         "sort-packages": true

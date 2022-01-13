@@ -26,12 +26,14 @@ jobs:
         exclude:
           - php: 8.0
             dependency-version: prefer-lowest
+          - php: 7.4
+            laravel: 9.*
+          - php: 7.3
+            laravel: 9.*
           - os: windows-2019
             php: 7.4
           - os: windows-2019
             php: 7.3
-          - php: [7.4, 7.3]
-            laravel: 9.*
     steps:
     - name: Set git to use LF
       if: ${{ matrix.os == 'windows-2019' }}

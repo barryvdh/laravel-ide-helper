@@ -37,7 +37,7 @@
         "illuminate/config": "^8|^9",
         "illuminate/view": "^8|^9",
         "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^6",
+        "orchestra/testbench": "^6|^7",
         "phpunit/phpunit": "^8.5 || ^9",
         "spatie/phpunit-snapshot-assertions": "^3 || ^4",
         "vimeo/psalm": "^3.12"

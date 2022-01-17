@@ -224,6 +224,12 @@ You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relatio
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
 
+#### Generics annotations
+
+PhpStorm 2021.3 and Laravel 9 collections support the use of generics syntax within DocBlocks, e.g. `Collection<User>` instead of `Collection|User[]`.
+
+You can enable them by setting the config `use_generics_annotations` to `true`.
+
 #### Support `@comment` based on DocBlock
 
 In order to better support IDEs, relations and getters/setters can also add a comment to a property like table columns. Therefore a custom docblock `@comment` is used:

@@ -1073,7 +1073,7 @@ class ModelsCommand extends Command
     {
         $useGenericsSyntax = $this->laravel['config']->get('ide-helper.use_generics_annotations', false);
         if ($useGenericsSyntax) {
-            return $collectionClassNameInModel . '<' . $relatedModel . '>';
+            return $collectionClassNameInModel . '<int, ' . $relatedModel . '>';
         } else {
             return $collectionClassNameInModel . '|' . $relatedModel . '[]';
         }

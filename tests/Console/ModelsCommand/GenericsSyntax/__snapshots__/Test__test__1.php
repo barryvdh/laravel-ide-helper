@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenericsSyntax\Models\Simple
  *
  * @property integer $id
- * @property-read \Illuminate\Database\Eloquent\Collection<Simple> $regularBelongsToMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $regularBelongsToMany
  * @property-read int|null $regular_belongs_to_many_count
- * @property-read \Illuminate\Database\Eloquent\Collection<Simple> $regularHasMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $regularHasMany
  * @property-read int|null $regular_has_many_count
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()

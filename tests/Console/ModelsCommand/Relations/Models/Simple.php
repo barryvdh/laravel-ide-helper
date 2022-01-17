@@ -97,4 +97,9 @@ class Simple extends Model
     {
         return $this->testToManyRelation(Simple::class);
     }
+
+    public function relationSampleToAnyRelationType()
+    {
+        return $this->testToAnyRelation(Simple::class);
+    }
 }

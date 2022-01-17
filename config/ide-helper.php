@@ -301,7 +301,7 @@ return [
     | e.g. `Collection<User>` instead of `Collection|User[]`.
     |
     */
-    'use_generics_syntax' => false,
+    'use_generics_annotations' => false,
 
     /*
     |--------------------------------------------------------------------------

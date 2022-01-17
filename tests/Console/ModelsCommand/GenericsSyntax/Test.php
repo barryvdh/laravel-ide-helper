@@ -13,7 +13,7 @@ class Test extends AbstractModelsCommand
     {
         parent::getEnvironmentSetUp($app);
 
-        $app['config']->set('ide-helper.use_generics_syntax', [
+        $app['config']->set('ide-helper.use_generics_annotations', [
             true,
         ]);
     }

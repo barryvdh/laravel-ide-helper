@@ -706,10 +706,10 @@ class ModelsCommand extends Command
                                         $model,
                                         $collectionClass
                                     );
-                                    $collectionType = $this->getCollectionTypeHint($collectionClassNameInModel, $relatedModel);
+                                    $collectionTypeHint = $this->getCollectionTypeHint($collectionClassNameInModel, $relatedModel);
                                     $this->setProperty(
                                         $method,
-                                        $collectionType,
+                                        $collectionTypeHint,
                                         true,
                                         null,
                                         $comment
@@ -1071,7 +1071,7 @@ class ModelsCommand extends Command
      */
     protected function getCollectionTypeHint(string $collectionClassNameInModel, string $relatedModel): string
     {
-        $useGenericsSyntax = $this->laravel['config']->get('ide-helper.use_generics_syntax', version_compare($this->laravel['version'], '9', '>='));
+        $useGenericsSyntax = $this->laravel['config']->get('ide-helper.use_generics_annotations', version_compare($this->laravel['version'], '9', '>='));
         if ($useGenericsSyntax) {
             return $collectionClassNameInModel . '<' . $relatedModel . '>';
         } else {
@@ -1264,9 +1264,9 @@ class ModelsCommand extends Command
         if ($collectionClass !== '\\' . \Illuminate\Database\Eloquent\Collection::class) {
             $collectionClassInModel = $this->getClassNameInDestinationFile($model, $collectionClass);
 
-            $type = $this->getCollectionTypeHint($collectionClassInModel, 'static');
-            $this->setMethod('get', $type, ['$columns = [\'*\']']);
-            $this->setMethod('all', $type, ['$columns = [\'*\']']);
+            $collectionTypeHint = $this->getCollectionTypeHint($collectionClassInModel, 'static');
+            $this->setMethod('get', $collectionTypeHint, ['$columns = [\'*\']']);
+            $this->setMethod('all', $collectionTypeHint, ['$columns = [\'*\']']);
         }
     }
 

@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
 - Added Laravel 9 support [#1297 / rcerljenko](https://github.com/barryvdh/laravel-ide-helper/pull/1297)
-- Add option `use_generics_annotations` for collection type hints, default to yes in laravel >=9 [#1298 / tanerkay](https://github.com/barryvdh/laravel-ide-helper/pull/1298)
+- Add option `use_generics_annotations` for collection type hints [#1298 / tanerkay](https://github.com/barryvdh/laravel-ide-helper/pull/1298)
 
 2022-01-03, 2.11.0
 ------------------

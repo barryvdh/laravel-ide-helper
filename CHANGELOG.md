@@ -2,8 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.11.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.0...master)
 --------------
+
+2022-01-23, 2.12.0
+------------------
 ### Added
 - Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
 - Added Laravel 9 support [#1297 / rcerljenko](https://github.com/barryvdh/laravel-ide-helper/pull/1297)

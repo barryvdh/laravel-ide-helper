@@ -1302,7 +1302,8 @@ class ModelsCommand extends Command
         $methodReflection = $castReflection->getMethod('get');
 
         return $this->getReturnTypeFromReflection($methodReflection) ??
-            $this->getReturnTypeFromDocBlock($methodReflection, $reflection);
+            $this->getReturnTypeFromDocBlock($methodReflection, $reflection) ??
+            'mixed';
     }
 
     /**

@@ -2,8 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.1...master)
 --------------
+
+2022-01-24, 2.12.1
+------------------
 ### Fixed
 - Properly handle `Castable`s without return type. [#1306 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1306)
 

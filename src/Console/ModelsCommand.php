@@ -816,6 +816,13 @@ class ModelsCommand extends Command
         }
     }
 
+    public function unsetProperty($name)
+    {
+        unset($this->properties[$name]);
+
+        $this->unsetMethod(Str::camel('where_' . $name));
+    }
+
     public function setMethod($name, $type = '', $arguments = [], $comment = '')
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
@@ -830,7 +837,7 @@ class ModelsCommand extends Command
 
     public function unsetMethod($name)
     {
-        unset($this->methods[strtolower($name)]);
+        unset($this->methods[$name]);
     }
 
     public function getMethodType(Model $model, string $classType)

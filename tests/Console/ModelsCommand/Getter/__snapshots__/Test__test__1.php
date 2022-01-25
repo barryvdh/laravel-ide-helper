@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple
  *
  * @property integer $id
+ * @property string $unset
  * @property-read int|null $attribute_return_type_int_or_null
  * @property-read array $attribute_returns_array
  * @property-read bool $attribute_returns_bool
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple whereUnset($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

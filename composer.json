@@ -58,10 +58,10 @@
         }
     },
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
             "composer/package-versions-deprecated": true
-        }
+        },
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {

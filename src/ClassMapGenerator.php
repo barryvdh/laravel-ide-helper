@@ -29,6 +29,12 @@ use Symfony\Component\Finder\Finder;
  */
 class ClassMapGenerator
 {
+    /** @var array<array{name: string, length: int, pattern: non-empty-string}> */
+    private static $typeConfig;
+
+    /** @var non-empty-string */
+    private static $restPattern;
+
     /**
      * Generate a class map file
      *
@@ -380,9 +386,30 @@ class ClassMapGenerator
                 $extraTypes .= '|enum';
             }
 
-            PhpFileCleaner::setTypeConfig(array_merge(['class', 'interface', 'trait'], array_filter(explode('|', $extraTypes))));
+            self::setTypeConfig(array_merge(['class', 'interface', 'trait'], array_filter(explode('|', $extraTypes))));
         }
 
         return $extraTypes;
+    }
+
+    /**
+     * @param string[] $types
+     * @return void
+     *
+     * @see \Composer\Autoload\PhpFileCleaner
+     * @author Jordi Boggiano <j.boggiano@seld.be>
+     * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+     */
+    private static function setTypeConfig($types)
+    {
+        foreach ($types as $type) {
+            self::$typeConfig[$type[0]] = array(
+                'name' => $type,
+                'length' => \strlen($type),
+                'pattern' => '{.\b(?<![\$:>])'.$type.'\s++[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+}Ais',
+            );
+        }
+
+        self::$restPattern = '{[^?"\'</'.implode('', array_keys(self::$typeConfig)).']+}A';
     }
 }

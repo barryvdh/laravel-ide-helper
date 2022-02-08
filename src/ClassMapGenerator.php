@@ -309,7 +309,7 @@ class ClassMapGenerator
         if (substr($contents, 0, 2) !== '<?') {
             $contents = preg_replace('{^.+?<\?}s', '<?', $contents, 1, $replacements);
             if ($replacements === 0) {
-                return array();
+                return [];
             }
         }
         // strip non-php blocks in the file

@@ -403,13 +403,13 @@ class ClassMapGenerator
     private static function setTypeConfig($types)
     {
         foreach ($types as $type) {
-            self::$typeConfig[$type[0]] = array(
+            self::$typeConfig[$type[0]] = [
                 'name' => $type,
-                'length' => \strlen($type),
-                'pattern' => '{.\b(?<![\$:>])'.$type.'\s++[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+}Ais',
-            );
+                'length' => strlen($type),
+                'pattern' => '{.\b(?<![\$:>])' . $type . '\s++[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+}Ais',
+            ];
         }
 
-        self::$restPattern = '{[^?"\'</'.implode('', array_keys(self::$typeConfig)).']+}A';
+        self::$restPattern = '{[^?"\'</' . implode('', array_keys(self::$typeConfig)) . ']+}A';
     }
 }

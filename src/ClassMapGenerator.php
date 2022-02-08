@@ -38,7 +38,7 @@ class ClassMapGenerator
      */
     public static function dump($dirs, $file)
     {
-        $maps = array();
+        $maps = [];
 
         foreach ($dirs as $dir) {
             $maps = array_merge($maps, static::createMap($dir));
@@ -75,7 +75,7 @@ class ClassMapGenerator
      */
     public static function normalizePath($path)
     {
-        $parts = array();
+        $parts = [];
         $path = strtr($path, '\\', '/');
         $prefix = '';
         $absolute = false;
@@ -102,7 +102,7 @@ class ClassMapGenerator
             }
         }
 
-        return $prefix.($absolute ? '/' : '').implode('/', $parts);
+        return $prefix . ($absolute ? '/' : '') . implode('/', $parts);
     }
 
     /**
@@ -117,17 +117,17 @@ class ClassMapGenerator
      * @return array<class-string, string> A class map array
      * @throws \RuntimeException When the path is neither an existing file nor directory
      */
-    public static function createMap($path, $excluded = null, $io = null, $namespace = null, $autoloadType = null, &$scannedFiles = array())
+    public static function createMap($path, $excluded = null, $io = null, $namespace = null, $autoloadType = null, &$scannedFiles = [])
     {
         $basePath = $path;
         if (is_string($path)) {
             if (is_file($path)) {
-                $path = array(new \SplFileInfo($path));
+                $path = [new \SplFileInfo($path)];
             } elseif (is_dir($path) || strpos($path, '*') !== false) {
                 $path = Finder::create()->files()->followLinks()->name('/\.(php|inc|hh)$/')->in($path);
             } else {
                 throw new \RuntimeException(
-                    'Could not scan for classes inside "'.$path.
+                    'Could not scan for classes inside "' . $path .
                     '" which does not appear to be a file nor a folder'
                 );
             }
@@ -135,12 +135,12 @@ class ClassMapGenerator
             throw new \RuntimeException('Path must be a string when specifying an autoload type');
         }
 
-        $map = array();
+        $map = [];
         $cwd = realpath(getcwd());
 
         foreach ($path as $file) {
             $filePath = $file->getPathname();
-            if (!in_array(pathinfo($filePath, PATHINFO_EXTENSION), array('php', 'inc', 'hh'))) {
+            if (!in_array(pathinfo($filePath, PATHINFO_EXTENSION), ['php', 'inc', 'hh'])) {
                 continue;
             }
 
@@ -189,10 +189,10 @@ class ClassMapGenerator
 
                 if (!isset($map[$class])) {
                     $map[$class] = $filePath;
-                } elseif ($io && $map[$class] !== $filePath && !Preg::isMatch('{/(test|fixture|example|stub)s?/}i', strtr($map[$class].' '.$filePath, '\\', '/'))) {
+                } elseif ($io && $map[$class] !== $filePath && !Preg::isMatch('{/(test|fixture|example|stub)s?/}i', strtr($map[$class] . ' ' . $filePath, '\\', '/'))) {
                     $io->writeError(
-                        '<warning>Warning: Ambiguous class resolution, "'.$class.'"'.
-                        ' was found in both "'.$map[$class].'" and "'.$filePath.'", the first will be used.</warning>'
+                        '<warning>Warning: Ambiguous class resolution, "' . $class . '"' .
+                        ' was found in both "' . $map[$class] . '" and "' . $filePath . '", the first will be used.</warning>'
                     );
                 }
             }
@@ -214,8 +214,8 @@ class ClassMapGenerator
      */
     private static function filterByNamespace($classes, $filePath, $baseNamespace, $namespaceType, $basePath, $io)
     {
-        $validClasses = array();
-        $rejectedClasses = array();
+        $validClasses = [];
+        $rejectedClasses = [];
 
         $realSubPath = substr($filePath, strlen($basePath) + 1);
         $dotPosition = strrpos($realSubPath, '.');
@@ -253,11 +253,11 @@ class ClassMapGenerator
         if (empty($validClasses)) {
             foreach ($rejectedClasses as $class) {
                 if ($io) {
-                    $io->writeError("<warning>Class $class located in ".Preg::replace('{^'.preg_quote(getcwd()).'}', '.', $filePath, 1)." does not comply with $namespaceType autoloading standard. Skipping.</warning>");
+                    $io->writeError("<warning>Class $class located in " . Preg::replace('{^' . preg_quote(getcwd()) . '}', '.', $filePath, 1) . " does not comply with $namespaceType autoloading standard. Skipping.</warning>");
                 }
             }
 
-            return array();
+            return [];
         }
 
         return $validClasses;
@@ -284,7 +284,7 @@ class ClassMapGenerator
                 $message = 'File at "%s" is not readable, check its permissions';
             } elseif ('' === trim((string) file_get_contents($path))) {
                 // The input file was really empty and thus contains no classes
-                return array();
+                return [];
             } else {
                 $message = 'File at "%s" could not be parsed as PHP, it may be binary or corrupted';
             }
@@ -296,9 +296,9 @@ class ClassMapGenerator
         }
 
         // return early if there is no chance of matching anything in this file
-        Preg::matchAll('{\b(?:class|interface|trait'.$extraTypes.')\s}i', $contents, $matches);
+        Preg::matchAll('{\b(?:class|interface|trait' . $extraTypes . ')\s}i', $contents, $matches);
         if (!$matches) {
-            return array();
+            return [];
         }
 
         // strip heredocs/nowdocs
@@ -326,17 +326,17 @@ class ClassMapGenerator
 
         Preg::matchAll('{
             (?:
-                 \b(?<![\$:>])(?P<type>class|interface|trait'.$extraTypes.') \s++ (?P<name>[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+)
+                 \b(?<![\$:>])(?P<type>class|interface|trait' . $extraTypes . ') \s++ (?P<name>[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+)
                | \b(?<![\$:>])(?P<ns>namespace) (?P<nsname>\s++[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\s*+\\\\\s*+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+)? \s*+ [\{;]
             )
         }ix', $contents, $matches);
 
-        $classes = array();
+        $classes = [];
         $namespace = '';
 
         for ($i = 0, $len = count($matches['type']); $i < $len; $i++) {
             if (!empty($matches['ns'][$i])) {
-                $namespace = str_replace(array(' ', "\t", "\r", "\n"), '', $matches['nsname'][$i]) . '\\';
+                $namespace = str_replace([' ', "\t", "\r", "\n"], '', $matches['nsname'][$i]) . '\\';
             } else {
                 $name = $matches['name'][$i];
                 // skip anon classes extending/implementing
@@ -345,7 +345,7 @@ class ClassMapGenerator
                 }
                 if ($name[0] === ':') {
                     // This is an XHP class, https://github.com/facebook/xhp
-                    $name = 'xhp'.substr(str_replace(array('-', ':'), array('_', '__'), $name), 1);
+                    $name = 'xhp' . substr(str_replace(['-', ':'], ['_', '__'], $name), 1);
                 } elseif ($matches['type'][$i] === 'enum') {
                     // something like:
                     //   enum Foo: int { HERP = '123'; }

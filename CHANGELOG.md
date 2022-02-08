@@ -2,8 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.1...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.2...master)
 --------------
+
+2022-02-08, 2.12.2
+------------------
+### Fixed
+- Remove composer dependecy, use copy of ClassMapGenerator [#1313 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1313)
 
 2022-01-24, 2.12.1
 ------------------

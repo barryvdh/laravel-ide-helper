@@ -301,9 +301,28 @@ class ClassMapGenerator
             return array();
         }
 
-        $p = new PhpFileCleaner($contents, count($matches[0]));
-        $contents = $p->clean();
-        unset($p);
+        // strip heredocs/nowdocs
+        $contents = preg_replace('{<<<[ \t]*([\'"]?)(\w+)\\1(?:\r\n|\n|\r)(?:.*?)(?:\r\n|\n|\r)(?:\s*)\\2(?=\s+|[;,.)])}s', 'null', $contents);
+        // strip strings
+        $contents = preg_replace('{"[^"\\\\]*+(\\\\.[^"\\\\]*+)*+"|\'[^\'\\\\]*+(\\\\.[^\'\\\\]*+)*+\'}s', 'null', $contents);
+        // strip leading non-php code if needed
+        if (substr($contents, 0, 2) !== '<?') {
+            $contents = preg_replace('{^.+?<\?}s', '<?', $contents, 1, $replacements);
+            if ($replacements === 0) {
+                return array();
+            }
+        }
+        // strip non-php blocks in the file
+        $contents = preg_replace('{\?>(?:[^<]++|<(?!\?))*+<\?}s', '?><?', $contents);
+        // strip trailing non-php code if needed
+        $pos = strrpos($contents, '?>');
+        if (false !== $pos && false === strpos(substr($contents, $pos), '<?')) {
+            $contents = substr($contents, 0, $pos);
+        }
+        // strip comments if short open tags are in the file
+        if (preg_match('{(<\?)(?!(php|hh))}i', $contents)) {
+            $contents = preg_replace('{//.* | /\*(?:[^*]++|\*(?!/))*\*/}x', '', $contents);
+        }
 
         Preg::matchAll('{
             (?:

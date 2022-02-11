@@ -22,11 +22,25 @@
  */
 
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
+<?php $count_namespace_class = 0; ?>
     <?php if ($namespace == '\Illuminate\Database\Eloquent') :
         continue;
     endif; ?>
+<?php foreach ($aliases as $alias) : ?>
+<?php if (1 > count($alias->getMethods())) :
+$count_namespace_class++;
+continue;
+endif; ?>
+<?php endforeach; ?>
+<?php if ($count_namespace_class === count($aliases)):
+continue;
+endif; ?>
+<?php unset($alias); reset($aliases); ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> { 
     <?php foreach ($aliases as $alias) : ?>
+<?php if (1 > count($alias->getMethods())) :
+    continue;
+endif; ?>
         <?= trim($alias->getDocComment('    ')) ?> 
         <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach ($alias->getMethods() as $method) : ?>

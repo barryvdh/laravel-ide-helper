@@ -1029,6 +1029,8 @@ class ModelsCommand extends Command
                     $default = 'null';
                 } elseif (is_int($default)) {
                     //$default = $default;
+                } elseif (\PHP_VERSION_ID >= 80100 && enum_exists($enumClass = get_class($default))) {
+                    $default = '\\' . $enumClass . '::' . $default->name;
                 } else {
                     $default = "'" . trim($default) . "'";
                 }

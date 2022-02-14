@@ -222,6 +222,8 @@ class Alias
             if ($fake !== $real) {
                 $this->addClass(get_class($fake));
             }
+        } catch (\Exception $e) {
+            //
         } finally {
             $facade::swap($real);
         }

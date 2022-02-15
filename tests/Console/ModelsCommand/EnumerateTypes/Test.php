@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\EnumerateTypes;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
@@ -28,5 +30,4 @@ class Test extends AbstractModelsCommand
             $this->markTestSkipped('This test requires PHP 8.1 or higher');
         }
     }
-
 }

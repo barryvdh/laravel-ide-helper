@@ -24,6 +24,8 @@ class SimpleCast extends Model
         'cast_to_collection' => 'collection',
         'cast_to_date' => 'date',
         'cast_to_datetime' => 'datetime',
+        'cast_to_date_serialization' => 'date:Y-m-d',
+        'cast_to_datetime_serialization' => 'datetime:Y-m-d H:i:s',
         'cast_to_custom_datetime' => 'custom_datetime:Y-m-d H:i:s',
         'cast_to_immutable_date' => 'immutable_date',
         'cast_to_immutable_custom_datetime' => 'immutable_custom_datetime:Y-m-d H:i:s',

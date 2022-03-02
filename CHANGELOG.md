@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.2...master)
 --------------
+- Added `post_discover` hook to run commands after package discovery [\#1185 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1185)
 
 2022-02-08, 2.12.2
 ------------------
@@ -62,7 +63,6 @@ All notable changes to this project will be documented in this file.
 -----------------
 ### Added
 - Model hooks for adding custom information from external sources to model classes through the ModelsCommand [\#945 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/945)
-- Added `post_discover` hook to run commands after package discovery [\#1185 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1185)
 
 ### Fixed
 - Fix ide-helper:models exception if model doesn't have factory [\#1196 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1196)

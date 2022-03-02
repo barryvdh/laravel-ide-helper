@@ -40,6 +40,15 @@ class GenerateHelperAndMeta
         }
     }
 
+    /**
+     * Decides whether the helper generation should be skipped or not.
+     * 
+     * It should be skipped if the executed command failed, was not
+     * `package:discover`, or a no-op parameter is present.
+     *
+     * @param CommandFinished $event
+     * @return bool
+     */
     protected function shouldntRun(CommandFinished $event): bool
     {
         return $event->exitCode != 0 ||

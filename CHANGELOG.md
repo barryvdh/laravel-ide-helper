@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.2...master)
 --------------
 
+### Fixed
+- Fix date and datetime handling for attributes that set a serialization format option for the Carbon instance [#1324 / FLeudts](https://github.com/barryvdh/laravel-ide-helper/pull/1324)
+
 2022-02-08, 2.12.2
 ------------------
 ### Fixed

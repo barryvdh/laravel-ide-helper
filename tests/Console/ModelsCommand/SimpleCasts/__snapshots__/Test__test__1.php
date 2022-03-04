@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Collection $cast_to_collection
  * @property \Illuminate\Support\Carbon $cast_to_date
  * @property \Illuminate\Support\Carbon $cast_to_datetime
+ * @property \Illuminate\Support\Carbon $cast_to_date_serialization
+ * @property \Illuminate\Support\Carbon $cast_to_datetime_serialization
  * @property \Illuminate\Support\Carbon $cast_to_custom_datetime
  * @property \Carbon\CarbonImmutable $cast_to_immutable_date
  * @property \Carbon\CarbonImmutable $cast_to_immutable_custom_datetime
@@ -43,7 +45,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToCollection($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToCustomDatetime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToDateSerialization($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToDatetimeSerialization($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToDecimal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToDouble($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToEncrypted($value)
@@ -82,6 +86,8 @@ class SimpleCast extends Model
         'cast_to_collection' => 'collection',
         'cast_to_date' => 'date',
         'cast_to_datetime' => 'datetime',
+        'cast_to_date_serialization' => 'date:Y-m-d',
+        'cast_to_datetime_serialization' => 'datetime:Y-m-d H:i:s',
         'cast_to_custom_datetime' => 'custom_datetime:Y-m-d H:i:s',
         'cast_to_immutable_date' => 'immutable_date',
         'cast_to_immutable_custom_datetime' => 'immutable_custom_datetime:Y-m-d H:i:s',

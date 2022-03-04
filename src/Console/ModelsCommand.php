@@ -569,13 +569,24 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromMethods($model)
     {
-        $methods = get_class_methods($model);
+        $methods = (new ReflectionClass($model))->getMethods();
+        $methods = array_map(function (\ReflectionMethod $method) {
+            return $method->getName();
+        }, array_filter($methods, function (\ReflectionMethod $method) {
+            // private methods should not be documented because they are inaccessible outside the class
+            return !$method->isPrivate();
+        }));
         if ($methods) {
             sort($methods);
             foreach ($methods as $method) {
                 $reflection = new \ReflectionMethod($model, $method);
                 $type = $this->getReturnTypeFromReflection($reflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
+                if ($reflection->isProtected() && !$isAttribute) {
+                    // only the accessors/mutators protected methods should be documented
+                    // without this condition, we will unintentionally include laravel protected methods like setClassCastableAttribute()
+                    continue;
+                }
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith(
                         $method,
@@ -592,7 +603,7 @@ class ModelsCommand extends Command
                     }
                 } elseif ($isAttribute) {
                     $name = Str::snake($method);
-                    $types = $this->getAttributeReturnType($model, $method);
+                    $types = $this->getAttributeReturnType($model, $reflection);
 
                     if ($types->has('get')) {
                         $type = $this->getTypeInModel($model, $types['get']);
@@ -1082,10 +1093,11 @@ class ModelsCommand extends Command
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
     }
 
-    protected function getAttributeReturnType(Model $model, string $method): Collection
+    protected function getAttributeReturnType(Model $model, \ReflectionMethod $method): Collection
     {
+        $method->setAccessible(true);
         /** @var Attribute $attribute */
-        $attribute = $model->{$method}();
+        $attribute = $method->invoke($model);
 
         return collect([
             'get' => $attribute->get ? optional(new \ReflectionFunction($attribute->get))->getReturnType() : null,

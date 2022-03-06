@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.2...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.3...master)
 --------------
+
+2022-03-06, 2.12.3
+------------------
 
 ### Fixed
 - Fix date and datetime handling for attributes that set a serialization format option for the Carbon instance [#1324 / FLeudts](https://github.com/barryvdh/laravel-ide-helper/pull/1324)
+- Fix composer conflict with composer/pcre version 2/3. [#1327 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1327)
 
 2022-02-08, 2.12.2
 ------------------

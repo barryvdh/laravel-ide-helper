@@ -442,7 +442,7 @@ class ModelsCommand extends Command
 
     protected function applyNullability(?string $type, bool $isNullable): ?string
     {
-        if (! $type) {
+        if (!$type) {
             return null;
         }
 
@@ -460,7 +460,7 @@ class ModelsCommand extends Command
         // Return the current type string if:
         // A) the type can be null and the type contains a null instance
         // B) the type can not be null and the type does not contain a null instance
-        if (! ($isNullable xor $nullString)) {
+        if (!($isNullable xor $nullString)) {
             return $type;
         }
 

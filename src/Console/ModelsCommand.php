@@ -733,7 +733,8 @@ class ModelsCommand extends Command
                                         $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
                                         true,
                                         null,
-                                        $comment
+                                        $comment,
+                                        $this->isRelationNullable($relation, $relationObj)
                                     );
                                 } else {
                                     //Single model is returned

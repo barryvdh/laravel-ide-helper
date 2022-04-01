@@ -637,10 +637,7 @@ class ModelsCommand extends Command
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
-                    $this->setMethod(
-                        $method,
-                        $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
-                    );
+                    $this->setMethod($method, $builder);
 
                     if ($this->write_model_external_builder_methods) {
                         $this->writeModelExternalBuilderMethods($model);

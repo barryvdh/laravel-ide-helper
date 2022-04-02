@@ -163,9 +163,9 @@ php artisan ide-helper:models "App\Models\Post"
  * @property \Illuminate\Support\Carbon $updated_at
  * @property-read \User $author
  * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post forAuthors(\User ...$authors)
  * …
@@ -246,7 +246,7 @@ class Users extends Model
 
 /**
  * App\Models\Users
- * 
+ *
  * @property-read string $full_name Get User's full name
  * …
  */
@@ -254,7 +254,7 @@ class Users extends Model
 
 #### Dedicated Eloquent Builder methods
 
-A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can 
+A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can
 add support for creating a new dedicated class instead of using local scopes in the model itself.
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_external_builder_methods` and setting it to `false`.
@@ -284,7 +284,7 @@ For those special cases, you can map them via the config `custom_db_types`. Exam
 If you need additional information on your model from sources that are not handled by default, you can hook in to the
  generation process with model hooks to add extra information on the fly.
  Simply create a class that implements `ModelHookInterface` and add it to the `model_hooks` array in the config:
- 
+
  ```php
 'model_hooks' => [
     MyCustomHook::class,

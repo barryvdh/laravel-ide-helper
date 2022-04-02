@@ -82,9 +82,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $macaddress_not_nullable
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Post query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBinaryNotNullable($value)

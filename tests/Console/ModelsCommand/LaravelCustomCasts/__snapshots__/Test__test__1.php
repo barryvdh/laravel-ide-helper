@@ -41,9 +41,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_anonymous_cast
  * @property mixed $casted_property_without_return_type
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $cast_without_property
- * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomCast query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithParam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithReturnDocblock($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast whereCastedPropertyWithReturnDocblockFqn($value)

@@ -31,9 +31,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int $attribute_with_int_return_type_and_phpdoc
  * @property-read int $attribute_with_int_return_type
  * @property-read mixed $attribute_without_type
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
  * @mixin \Eloquent
  */

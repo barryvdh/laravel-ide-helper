@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomDate whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomDate whereUpdatedAt($value)
  * @mixin \Eloquent

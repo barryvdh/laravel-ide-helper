@@ -87,9 +87,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGenerateP
  * @property string $macaddress_not_nullable
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post newModelQuery()
- * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post newQuery()
- * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder|Post query()
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder newModelQuery()
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder newQuery()
+ * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DoesNotGeneratePhpdocWithExternalEloquentBuilder\Builders\PostExternalQueryBuilder query()
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBigIntegerNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBinaryNotNullable($value)

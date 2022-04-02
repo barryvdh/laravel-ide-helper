@@ -92,11 +92,11 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection|Post[] $posts
  * @property-read int|null $posts_count
- * @method static EloquentBuilder|Post newModelQuery()
- * @method static EloquentBuilder|Post newQuery()
+ * @method static EloquentBuilder newModelQuery()
+ * @method static EloquentBuilder newQuery()
  * @method static EloquentBuilder|Post null(string $unusedParam)
  * @method static QueryBuilder|Post onlyTrashed()
- * @method static EloquentBuilder|Post query()
+ * @method static EloquentBuilder query()
  * @method static EloquentBuilder|Post whereBigIntegerNotNullable($value)
  * @method static EloquentBuilder|Post whereBigIntegerNullable($value)
  * @method static EloquentBuilder|Post whereBinaryNotNullable($value)

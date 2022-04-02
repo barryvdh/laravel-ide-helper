@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $relation_has_many_count
  * @method static SimpleCollection|static[] all($columns = ['*'])
  * @method static SimpleCollection|static[] get($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
  * @mixin \Eloquent
  */

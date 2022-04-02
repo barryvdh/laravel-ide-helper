@@ -14,9 +14,9 @@ use Illuminate\Database\Query\Builder;
  * @property-read string|int|null $foo
  * @property-read \Illuminate\Database\Eloquent\Collection|UnionTypeModel[] $withUnionTypeReturn
  * @property-read int|null $with_union_type_return_count
- * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel withNullableUnionTypeParameter(string|int|null $bar)
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel withUnionTypeParameter(string|int $bar)
  * @mixin \Eloquent

@@ -36,9 +36,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Collection $cast_to_encrypted_collection
  * @property array $cast_to_encrypted_json
  * @property object $cast_to_encrypted_object
- * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast query()
+ * @method static \Illuminate\Database\Eloquent\Builder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToArray($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToBool($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToBoolean($value)

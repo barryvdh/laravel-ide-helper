@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Variadic\Models\Simple
  *
  * @property integer $id
- * @method static Builder|Simple newModelQuery()
- * @method static Builder|Simple newQuery()
- * @method static Builder|Simple query()
+ * @method static Builder newModelQuery()
+ * @method static Builder newQuery()
+ * @method static Builder query()
  * @method static Builder|Simple whereId($value)
  * @method static Builder|Simple whereTypedVariadic(int ...$values)
  * @method static Builder|Simple whereVariadic(...$values)

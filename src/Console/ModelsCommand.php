@@ -1361,6 +1361,16 @@ class ModelsCommand extends Command
         }
 
         $usedClassNames = $this->getUsedClassNames($reflection);
+        $allowSubNamespace = $this->laravel['config']->get('ide-helper.allow_sub_namespace', false);
+
+        if (!isset($usedClassNames[$className]) && $classIsNotInExternalFile && $allowSubNamespace) {
+            $modelNamespace = Str::beforeLast($reflection->getName(), '\\');
+
+            if (Str::startsWith($className, $modelNamespace)) {
+                return trim(Str::after($className, $modelNamespace), '\\');
+            }
+        }
+
         return $usedClassNames[$className] ?? ('\\' . $className);
     }
 

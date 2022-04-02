@@ -294,6 +294,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Allow sub namespace usage
+    |--------------------------------------------------------------------------
+    |
+    | Priority below force_fqn.
+    |
+    | e.g.
+    | namespace App\Models;
+    |
+    | class User extend ...
+    |
+    | // when false
+    | * @property \App\Models\Roles $roles
+    | * @property \App\Models\Child\Address $roles
+    |
+    | // when true
+    | * @property Roles $roles
+    | * @property Child\Address $roles
+    |
+    */
+    'allow_sub_namespace' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Additional relation types
     |--------------------------------------------------------------------------
     |

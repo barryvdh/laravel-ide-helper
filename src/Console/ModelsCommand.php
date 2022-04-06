@@ -574,7 +574,10 @@ class ModelsCommand extends Command
         if ($methodReflections) {
             $methodReflections = array_filter($methodReflections, function ($methodReflection) {
                 return !$methodReflection->isPrivate() && !(
-                    $methodReflection->getDeclaringClass()->getName() === \Illuminate\Database\Eloquent\Model::class && (
+                    in_array(
+                        \Illuminate\Database\Eloquent\Concerns\HasAttributes::class,
+                        $methodReflection->getDeclaringClass()->getTraitNames()
+                    ) && (
                         $methodReflection->getName() === 'setClassCastableAttribute' ||
                         $methodReflection->getName() === 'setEnumCastableAttribute'
                     )

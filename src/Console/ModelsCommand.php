@@ -1142,7 +1142,7 @@ class ModelsCommand extends Command
             ->filter()
             ->map(function ($type) {
                 if ($type instanceof \ReflectionUnionType) {
-                    $types =collect($type->getTypes())
+                    $types = collect($type->getTypes())
                         /** @var ReflectionType $reflectionType */
                         ->map(function ($reflectionType) {
                             return collect($this->extractReflectionTypes($reflectionType));
@@ -1230,7 +1230,7 @@ class ModelsCommand extends Command
         $type = implode('|', $types);
 
         if ($returnType->allowsNull()) {
-            $type .='|null';
+            $type .= '|null';
         }
 
         return $type;
@@ -1472,10 +1472,10 @@ class ModelsCommand extends Command
             $type = implode('|', $types);
 
             if ($paramType->allowsNull()) {
-                if (count($types)==1) {
+                if (count($types) == 1) {
                     $type = '?' . $type;
                 } else {
-                    $type .='|null';
+                    $type .= '|null';
                 }
             }
 
@@ -1552,7 +1552,7 @@ class ModelsCommand extends Command
         } else {
             $types = [];
             foreach ($reflection_type->getTypes() as $named_type) {
-                if ($named_type->getName()==='null') {
+                if ($named_type->getName() === 'null') {
                     continue;
                 }
 

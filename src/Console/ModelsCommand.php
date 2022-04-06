@@ -612,10 +612,7 @@ class ModelsCommand extends Command
             // methods that resemble mutators but aren't.
             $reflections = array_filter($reflections, function (\ReflectionMethod $methodReflection) {
                 return !$methodReflection->isPrivate() && !(
-                    in_array(
-                        \Illuminate\Database\Eloquent\Concerns\HasAttributes::class,
-                        $methodReflection->getDeclaringClass()->getTraitNames()
-                    ) && (
+                    $methodReflection->getDeclaringClass()->getName() === \Illuminate\Database\Eloquent\Model::class && (
                         $methodReflection->getName() === 'setClassCastableAttribute' ||
                         $methodReflection->getName() === 'setEnumCastableAttribute'
                     )
@@ -641,18 +638,15 @@ class ModelsCommand extends Command
                         $this->setProperty($name, $type, true, null, $comment);
                     }
                 } elseif ($isAttribute) {
-                    $name = Str::snake($method);
-                    $types = $this->getAttributeReturnType($model, $reflection);
-                    $comment = $this->getCommentFromDocBlock($reflection);
-
-                    if ($types->has('get')) {
-                        $type = $this->getTypeInModel($model, $types['get']);
-                        $this->setProperty($name, $type, true, null, $comment);
-                    }
-
-                    if ($types->has('set')) {
-                        $this->setProperty($name, null, null, true, $comment);
-                    }
+                    $types = $this->getAttributeTypes($model, $reflection);
+                    $type = $this->getTypeInModel($model, $types->get('get') ?: $types->get('set')) ?: null;
+                    $this->setProperty(
+                        Str::snake($method),
+                        $type,
+                        $types->has('get'),
+                        $types->has('set'),
+                        $this->getCommentFromDocBlock($reflection)
+                    );
                 } elseif (
                     Str::startsWith($method, 'set') && Str::endsWith(
                         $method,
@@ -1172,7 +1166,7 @@ class ModelsCommand extends Command
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
     }
 
-    protected function getAttributeReturnType(Model $model, \ReflectionMethod $reflectionMethod): Collection
+    protected function getAttributeTypes(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
         // Private/protected ReflectionMethods require setAccessible prior to PHP 8.1
         $reflectionMethod->setAccessible(true);
@@ -1180,13 +1174,25 @@ class ModelsCommand extends Command
         /** @var Attribute $attribute */
         $attribute = $reflectionMethod->invoke($model);
 
-        return collect([
-            'get' => $attribute->get ? optional(new \ReflectionFunction($attribute->get))->getReturnType() : null,
-            'set' => $attribute->set ? optional(new \ReflectionFunction($attribute->set))->getReturnType() : null,
-        ])
-            ->filter()
+        $methods = new Collection();
+
+        if ($attribute->get) {
+            $methods['get'] = optional(new \ReflectionFunction($attribute->get))->getReturnType();
+        }
+        if ($attribute->set) {
+            $function = optional(new \ReflectionFunction($attribute->set));
+            if ($function->getNumberOfParameters() === 0) {
+                $methods['set'] = null;
+            } else {
+                $methods['set'] = $function->getParameters()[0]->getType();
+            }
+        }
+
+        return $methods
             ->map(function ($type) {
-                if ($type instanceof \ReflectionUnionType) {
+                if ($type === null) {
+                    $types = collect([]);
+                } elseif ($type instanceof \ReflectionUnionType) {
                     $types = collect($type->getTypes())
                         /** @var ReflectionType $reflectionType */
                         ->map(function ($reflectionType) {
@@ -1197,7 +1203,7 @@ class ModelsCommand extends Command
                     $types = collect($this->extractReflectionTypes($type));
                 }
 
-                if ($type->allowsNull()) {
+                if ($type && $type->allowsNull()) {
                     $types->push('null');
                 }
 
@@ -1451,8 +1457,7 @@ class ModelsCommand extends Command
     {
         $reflection = $model instanceof ReflectionClass
             ? $model
-            : new ReflectionObject($model)
-        ;
+            : new ReflectionObject($model);
 
         $className = trim($className, '\\');
         $writingToExternalFile = !$this->write || $this->write_mixin;

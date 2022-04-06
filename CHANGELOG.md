@@ -5,12 +5,10 @@ All notable changes to this project will be documented in this file.
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.13.0...master)
 --------------
 
-
-### Fixed
-- Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
-
 ### Added
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
+- Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
+- Add support for attribute accessors with no backing field or type hinting [#1315 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1338).
 
 ### Changed
 - Refactor resolving of null information for custom casted attribute types [#1330 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1330)

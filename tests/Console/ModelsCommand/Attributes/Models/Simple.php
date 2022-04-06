@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Simple extends Model
 {
-    public function name(): Attribute
+    protected function name(): Attribute
     {
         return new Attribute(
             function (?string $name): ?string {
@@ -29,7 +29,7 @@ class Simple extends Model
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    public function notAnAttribute()
+    protected function notAnAttribute()
     {
         return new Attribute(
             function (?string $value): ?string {

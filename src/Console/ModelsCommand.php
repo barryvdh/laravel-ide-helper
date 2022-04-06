@@ -569,76 +569,83 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromMethods($model)
     {
-        $methods = get_class_methods($model);
-        if ($methods) {
-            sort($methods);
-            foreach ($methods as $method) {
-                $reflection = new \ReflectionMethod($model, $method);
-                $type = $this->getReturnTypeFromReflection($reflection);
+        $reflectionClass = new ReflectionClass($model);
+        $methodReflections = $reflectionClass->getMethods();
+        if ($methodReflections) {
+            $methodReflections = array_filter($methodReflections, function ($methodReflection) {
+                return !(
+                    $methodReflection->getDeclaringClass()->getName() === \Illuminate\Database\Eloquent\Model::class && (
+                        $methodReflection->getName() === 'setClassCastableAttribute' ||
+                        $methodReflection->getName() === 'setEnumCastableAttribute'
+                    )
+                );
+            });
+            sort($methodReflections);
+            foreach ($methodReflections as $methodReflection) {
+                $type = $this->getReturnTypeFromReflection($methodReflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
                 if (
-                    Str::startsWith($method, 'get') && Str::endsWith(
-                        $method,
+                    Str::startsWith($methodReflection->getName(), 'get') && Str::endsWith(
+                        $methodReflection->getName(),
                         'Attribute'
-                    ) && $method !== 'getAttribute'
+                    ) && $methodReflection->getName() !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
+                    $name = Str::snake(substr($methodReflection->getName(), 3, -9));
                     if (!empty($name)) {
-                        $type = $this->getReturnType($reflection);
+                        $type = $this->getReturnType($methodReflection);
                         $type = $this->getTypeInModel($model, $type);
-                        $comment = $this->getCommentFromDocBlock($reflection);
+                        $comment = $this->getCommentFromDocBlock($methodReflection);
                         $this->setProperty($name, $type, true, null, $comment);
                     }
                 } elseif ($isAttribute) {
-                    $name = Str::snake($method);
-                    $types = $this->getAttributeReturnType($model, $method);
+                    $name = Str::snake($methodReflection->getName());
+                    $types = $this->getAttributeReturnType($model, $methodReflection);
+                    $comment = $this->getCommentFromDocBlock($methodReflection);
 
                     if ($types->has('get')) {
                         $type = $this->getTypeInModel($model, $types['get']);
-                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null, $comment);
                     }
 
                     if ($types->has('set')) {
-                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (
-                    Str::startsWith($method, 'set') && Str::endsWith(
-                        $method,
+                    Str::startsWith($methodReflection->getName(), 'set') && Str::endsWith(
+                        $methodReflection->getName(),
                         'Attribute'
-                    ) && $method !== 'setAttribute'
+                    ) && $methodReflection->getName() !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
-                    $name = Str::snake(substr($method, 3, -9));
+                    $name = Str::snake(substr($methodReflection->getName(), 3, -9));
                     if (!empty($name)) {
-                        $comment = $this->getCommentFromDocBlock($reflection);
+                        $comment = $this->getCommentFromDocBlock($methodReflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
-                } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
+                } elseif (Str::startsWith($methodReflection->getName(), 'scope') && $methodReflection->getName() !== 'scopeQuery') {
                     //Magic set<name>Attribute
-                    $name = Str::camel(substr($method, 5));
+                    $name = Str::camel(substr($methodReflection->getName(), 5));
                     if (!empty($name)) {
-                        $comment = $this->getCommentFromDocBlock($reflection);
-                        $args = $this->getParameters($reflection);
+                        $comment = $this->getCommentFromDocBlock($methodReflection);
+                        $args = $this->getParameters($methodReflection);
                         //Remove the first ($query) argument
                         array_shift($args);
                         $builder = $this->getClassNameInDestinationFile(
-                            $reflection->getDeclaringClass(),
+                            $methodReflection->getDeclaringClass(),
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
-                            $reflection->getDeclaringClass(),
-                            $reflection->getDeclaringClass()->getName()
+                            $methodReflection->getDeclaringClass(),
+                            $methodReflection->getDeclaringClass()->getName()
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }
-                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
+                } elseif (in_array($methodReflection->getName(), ['query', 'newQuery', 'newModelQuery'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
                     $this->setMethod(
-                        $method,
+                        $methodReflection->getName(),
                         $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
 
@@ -646,24 +653,24 @@ class ModelsCommand extends Command
                         $this->writeModelExternalBuilderMethods($model);
                     }
                 } elseif (
-                    !method_exists('Illuminate\Database\Eloquent\Model', $method)
-                    && !Str::startsWith($method, 'get')
+                    !method_exists('Illuminate\Database\Eloquent\Model', $methodReflection->getName())
+                    && !Str::startsWith($methodReflection->getName(), 'get')
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
-                    if ($returnType = $reflection->getReturnType()) {
+                    if ($returnType = $methodReflection->getReturnType()) {
                         $type = $returnType instanceof ReflectionNamedType
                             ? $returnType->getName()
                             : (string)$returnType;
                     } else {
                         // php 7.x type or fallback to docblock
-                        $type = (string)$this->getReturnTypeFromDocBlock($reflection);
+                        $type = (string)$this->getReturnTypeFromDocBlock($methodReflection);
                     }
 
-                    $file = new \SplFileObject($reflection->getFileName());
-                    $file->seek($reflection->getStartLine() - 1);
+                    $file = new \SplFileObject($methodReflection->getFileName());
+                    $file->seek($methodReflection->getStartLine() - 1);
 
                     $code = '';
-                    while ($file->key() < $reflection->getEndLine()) {
+                    while ($file->key() < $methodReflection->getEndLine()) {
                         $code .= $file->current();
                         $file->next();
                     }
@@ -677,20 +684,20 @@ class ModelsCommand extends Command
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
                             //Resolve the relation's model to a Relation object.
-                            $methodReflection = new \ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {
                                 continue;
                             }
 
-                            $comment = $this->getCommentFromDocBlock($reflection);
+                            $comment = $this->getCommentFromDocBlock($methodReflection);
                             // Adding constraints requires reading model properties which
                             // can cause errors. Since we don't need constraints we can
                             // disable them when we fetch the relation to avoid errors.
-                            $relationObj = Relation::noConstraints(function () use ($model, $method) {
+                            $relationObj = Relation::noConstraints(function () use ($model, $methodReflection) {
                                 try {
-                                    return $model->$method();
+                                    $methodName = $methodReflection->getName();
+                                    return $model->$methodName();
                                 } catch (Throwable $e) {
-                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $method, $e->getMessage()));
+                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $methodReflection->getName(), $e->getMessage()));
 
                                     return null;
                                 }
@@ -715,7 +722,7 @@ class ModelsCommand extends Command
                                     );
                                     $collectionTypeHint = $this->getCollectionTypeHint($collectionClassNameInModel, $relatedModel);
                                     $this->setProperty(
-                                        $method,
+                                        $methodReflection->getName(),
                                         $collectionTypeHint,
                                         true,
                                         null,
@@ -723,7 +730,7 @@ class ModelsCommand extends Command
                                     );
                                     if ($this->write_model_relation_count_properties) {
                                         $this->setProperty(
-                                            Str::snake($method) . '_count',
+                                            Str::snake($methodReflection->getName()) . '_count',
                                             'int|null',
                                             true,
                                             false
@@ -736,7 +743,7 @@ class ModelsCommand extends Command
                                 ) {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
-                                        $method,
+                                        $methodReflection->getName(),
                                         $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
                                         true,
                                         null,
@@ -745,7 +752,7 @@ class ModelsCommand extends Command
                                 } else {
                                     //Single model is returned
                                     $this->setProperty(
-                                        $method,
+                                        $methodReflection->getName(),
                                         $relatedModel,
                                         true,
                                         null,
@@ -1123,10 +1130,10 @@ class ModelsCommand extends Command
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
     }
 
-    protected function getAttributeReturnType(Model $model, string $method): Collection
+    protected function getAttributeReturnType(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
         /** @var Attribute $attribute */
-        $attribute = $model->{$method}();
+        $attribute = $reflectionMethod->invoke($model);
 
         return collect([
             'get' => $attribute->get ? optional(new \ReflectionFunction($attribute->get))->getReturnType() : null,

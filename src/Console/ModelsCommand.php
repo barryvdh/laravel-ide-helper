@@ -572,7 +572,9 @@ class ModelsCommand extends Command
         $reflectionClass = new ReflectionClass($model);
         $methodReflections = $reflectionClass->getMethods();
         if ($methodReflections) {
-            $methodReflections = array_filter($methodReflections, function ($methodReflection) {
+            // Filter out private methods because they can't be used to generate magic properties and HasAttributes'
+            // methods that resemble mutators but aren't.
+            $methodReflections = array_filter($methodReflections, function (\ReflectionMethod $methodReflection) {
                 return !$methodReflection->isPrivate() && !(
                     in_array(
                         \Illuminate\Database\Eloquent\Concerns\HasAttributes::class,

@@ -1137,6 +1137,9 @@ class ModelsCommand extends Command
 
     protected function getAttributeReturnType(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
+        // Private/protected ReflectionMethods require setAccessible prior to PHP 8.1
+        $reflectionMethod->setAccessible(true);
+
         /** @var Attribute $attribute */
         $attribute = $reflectionMethod->invoke($model);
 

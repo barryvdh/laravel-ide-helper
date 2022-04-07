@@ -9,7 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Simple extends Model
 {
-    public function name(): Attribute
+    /**
+     * The method should be protected as per laravel documentation.
+     * Generally, public works too, but it is not the correct way per laravel documentation and thus intentionally skipped during tests.
+     * Private Methods are not supported by laravel and will also not be documented by ide-helper.
+     *
+     * @return Attribute
+     */
+    protected function name(): Attribute
     {
         return new Attribute(
             function (?string $name): ?string {

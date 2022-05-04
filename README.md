@@ -11,6 +11,8 @@
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
 
+It supports Laravel 8+ and PHP 7.3+
+
 - [Installation](#installation)
 - [Usage](#usage)
   - [Automatic PHPDoc generation for Laravel Facades](#automatic-phpdoc-generation-for-laravel-facades)

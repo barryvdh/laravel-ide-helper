@@ -484,7 +484,7 @@ class ModelsCommand extends Command
 
         $database = null;
         if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
+            [$database, $table] = explode('.', $table, 2);
         }
 
         $columns = $schema->listTableColumns($table, $database);

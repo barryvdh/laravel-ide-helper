@@ -21,10 +21,12 @@ class Test extends AbstractModelsCommand
             'testToOneRelation' => SampleToOneRelationType::class,
             'testToManyRelation' => SampleToManyRelationType::class,
             'testToAnyRelation' => SampleToAnyRelationType::class,
+            'testToAnyMorphedRelation' => SampleToAnyMorphedRelationType::class,
         ]);
 
         Config::set('ide-helper.additional_relation_return_types', [
             'testToAnyRelation' => 'many',
+            'testToAnyMorphedRelation' => 'morphTo',
         ]);
     }
 

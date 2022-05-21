@@ -102,4 +102,9 @@ class Simple extends Model
     {
         return $this->testToAnyRelation(Simple::class);
     }
+
+    public function relationSampleToAnyMorphedRelationType()
+    {
+        return $this->testToAnyMorphedRelation(Simple::class);
+    }
 }

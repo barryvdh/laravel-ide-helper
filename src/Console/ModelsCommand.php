@@ -700,7 +700,7 @@ class ModelsCommand extends Command
 
                                 if (
                                     strpos(get_class($relationObj), 'Many') !== false ||
-                                    ($this->getRelationReturnTypes()[$relation] ?? '') == 'many'
+                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'many'
                                 ) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
@@ -727,7 +727,7 @@ class ModelsCommand extends Command
                                     }
                                 } elseif (
                                     $relation === 'morphTo' ||
-                                    ($this->getRelationReturnTypes()[$relation] ?? '') == 'morphTo'
+                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'morphTo'
                                 ) {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(

@@ -57,7 +57,7 @@ jobs:
             - name: Execute meta run
               run: |
                   cd sample
-                  php artisan ide-helper:meta
+                  php artisan ide-helper:meta -v
 
             - name: Check file existence
               run: |
@@ -121,7 +121,7 @@ jobs:
             - name: Execute meta run
               run: |
                   cd sample
-                  php artisan ide-helper:meta
+                  php artisan ide-helper:meta -v
 
             - name: Check file existence
               run: |

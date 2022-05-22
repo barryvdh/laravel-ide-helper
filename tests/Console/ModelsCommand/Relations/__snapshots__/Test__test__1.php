@@ -94,6 +94,9 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read int|null $relation_morphed_by_many_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationSampleRelationType
  * @property-read int|null $relation_sample_relation_type_count
+ * @property-read Model|\Eloquent $relationSampleToAnyMorphedRelationType
+ * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationSampleToAnyRelationType
+ * @property-read int|null $relation_sample_to_any_relation_type_count
  * @property-read Simple $relationSampleToManyRelationType
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
@@ -181,5 +184,15 @@ class Simple extends Model
     public function relationSampleRelationType()
     {
         return $this->testToManyRelation(Simple::class);
+    }
+
+    public function relationSampleToAnyRelationType()
+    {
+        return $this->testToAnyRelation(Simple::class);
+    }
+
+    public function relationSampleToAnyMorphedRelationType()
+    {
+        return $this->testToAnyMorphedRelation(Simple::class);
     }
 }

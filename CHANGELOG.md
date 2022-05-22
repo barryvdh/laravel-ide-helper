@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
 - Added Laravel 9 support [#1297 / rcerljenko](https://github.com/barryvdh/laravel-ide-helper/pull/1297)
+- Added option `additional_relation_return_types` for custom relations that don't fit the typical naming scheme
 
 2022-01-03, 2.11.0
 ------------------

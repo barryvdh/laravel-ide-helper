@@ -281,6 +281,26 @@ For those special cases, you can map them via the config `custom_db_types`. Exam
 ],
 ```
 
+#### Custom Relationship Types
+
+If you are using relationships not built into Laravel you will need to specify the name and returning class in the config to get proper generation.
+
+```php
+'additional_relation_types' => [
+    'externalHasMany' => \My\Package\externalHasMany::class
+],
+```
+
+Found relationships will typically generate a return value based on the name of the relationship.
+
+If your custom relationships don't follow this traditional naming scheme you can define its return type manually. The available options are `many` and `morphTo`.
+
+```php
+'additional_relation_return_types' => [
+    'externalHasMultiple' => 'many'
+],
+```
+
 #### Model Hooks
 
 If you need additional information on your model from sources that are not handled by default, you can hook in to the

@@ -702,7 +702,10 @@ class ModelsCommand extends Command
                                     get_class($relationObj->getRelated())
                                 );
 
-                                if (strpos(get_class($relationObj), 'Many') !== false) {
+                                if (
+                                    strpos(get_class($relationObj), 'Many') !== false ||
+                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'many'
+                                ) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);
@@ -726,7 +729,10 @@ class ModelsCommand extends Command
                                         // What kind of comments should be added to the relation count here?
                                         );
                                     }
-                                } elseif ($relation === 'morphTo') {
+                                } elseif (
+                                    $relation === 'morphTo' ||
+                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'morphTo'
+                                ) {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
                                         $method,
@@ -1072,6 +1078,14 @@ class ModelsCommand extends Command
     {
         $configuredRelations = $this->laravel['config']->get('ide-helper.additional_relation_types', []);
         return array_merge(self::RELATION_TYPES, $configuredRelations);
+    }
+
+    /**
+     * Returns the return types of relations
+     */
+    protected function getRelationReturnTypes(): array
+    {
+        return $this->laravel['config']->get('ide-helper.additional_relation_return_types', []);
     }
 
     /**

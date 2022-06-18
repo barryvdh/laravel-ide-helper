@@ -5,8 +5,9 @@ All notable changes to this project will be documented in this file.
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.3...master)
 --------------
 
-### Fixed
+### Fixes
 - Fix return type of methods provided by `SoftDeletes` [#1345 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1345)
+- Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
 
 2022-03-06, 2.12.3
 ------------------
@@ -30,6 +31,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
 - Added Laravel 9 support [#1297 / rcerljenko](https://github.com/barryvdh/laravel-ide-helper/pull/1297)
+- Added option `additional_relation_return_types` for custom relations that don't fit the typical naming scheme
 
 2022-01-03, 2.11.0
 ------------------

@@ -11,6 +11,8 @@
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
 
+It supports Laravel 8+ and PHP 7.3+
+
 - [Installation](#installation)
 - [Usage](#usage)
   - [Automatic PHPDoc generation for Laravel Facades](#automatic-phpdoc-generation-for-laravel-facades)
@@ -276,6 +278,26 @@ For those special cases, you can map them via the config `custom_db_types`. Exam
         'jsonb' => 'string',
         '_int4' => 'array',
     ],
+],
+```
+
+#### Custom Relationship Types
+
+If you are using relationships not built into Laravel you will need to specify the name and returning class in the config to get proper generation.
+
+```php
+'additional_relation_types' => [
+    'externalHasMany' => \My\Package\externalHasMany::class
+],
+```
+
+Found relationships will typically generate a return value based on the name of the relationship.
+
+If your custom relationships don't follow this traditional naming scheme you can define its return type manually. The available options are `many` and `morphTo`.
+
+```php
+'additional_relation_return_types' => [
+    'externalHasMultiple' => 'many'
 ],
 ```
 

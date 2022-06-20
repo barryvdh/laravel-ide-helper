@@ -11,7 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\LaravelIdeHelper\ClassMapGenerator;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;

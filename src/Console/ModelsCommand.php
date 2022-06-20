@@ -11,12 +11,12 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\LaravelIdeHelper\ClassMapGenerator;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;

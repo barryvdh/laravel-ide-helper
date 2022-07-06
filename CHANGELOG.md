@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixes
 - Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
+- Fix model factory method arguments for Laravel >= 9 [#1361 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1361)
 
 2022-03-06, 2.12.3
 ------------------

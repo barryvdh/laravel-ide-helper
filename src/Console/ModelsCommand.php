@@ -481,8 +481,9 @@ class ModelsCommand extends Command
             }
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
-
-        $database = null;
+        
+        $connectionName = $model->getConnection()->getName();
+        $database = $this->laravel['config']->get("ide-helper.db_mapping.$connectionName");
         if (strpos($table, '.')) {
             [$database, $table] = explode('.', $table);
         }

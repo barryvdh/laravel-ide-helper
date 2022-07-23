@@ -329,4 +329,26 @@ return [
         // 'ide-helper:models --nowrite',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Allow discovery in multiple active databases
+    |--------------------------------------------------------------------------
+    |
+    | When running IDE helper in a multi-tenant context, you would need to 
+    | indicate the database to match the different connections used by your 
+    | models.
+    |
+    | This is required if your application has models dispatched both in a common
+    | database (called landlord or system depending on the libraries) and in a 
+    | tenant specific database (one which will contain data which can vary between 
+    | tenants)
+    |
+    | In other cases (single database or no common database), you can leave 
+    | this commented.
+    */
+//     'db_mapping'=> [
+//         // laravel connection name => real database name
+//         'landlord' => 'homestead',
+//         'tenant' => 'test_tenant',
+//     ],
 ];

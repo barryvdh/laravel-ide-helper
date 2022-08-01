@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Comment\Models\Simple
  *
  * @property integer $id
+ * @property string $unset
  * @property string $both_same_name I'm a getter
  * @property string $both_without_getter_comment
  * @property-read string $faker_comment
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple whereUnset($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

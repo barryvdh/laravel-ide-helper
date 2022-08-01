@@ -12,6 +12,7 @@ class SimpleTable extends Migration
     {
         Schema::create('simples', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('unset');
         });
     }
 }

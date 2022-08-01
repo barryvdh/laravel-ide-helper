@@ -73,6 +73,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple
  *
  * @property integer $id
+ * @property string $unset
  * @property-read Simple|null $relationBelongsTo
  * @property-read AnotherModel|null $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToMany
@@ -102,6 +103,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple whereUnset($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

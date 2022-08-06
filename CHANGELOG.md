@@ -2,16 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.10.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.3...master)
 --------------
+
+### Fixes
+- Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
+
+2022-03-06, 2.12.3
+------------------
+
+### Fixed
+- Fix date and datetime handling for attributes that set a serialization format option for the Carbon instance [#1324 / FLeudts](https://github.com/barryvdh/laravel-ide-helper/pull/1324)
+- Fix composer conflict with composer/pcre version 2/3. [#1327 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1327)
+
+2022-02-08, 2.12.2
+------------------
+### Fixed
+- Remove composer dependecy, use copy of ClassMapGenerator [#1313 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1313)
+
+2022-01-24, 2.12.1
+------------------
+### Fixed
+- Properly handle `Castable`s without return type. [#1306 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1306)
+
+2022-01-23, 2.12.0
+------------------
+### Added
+- Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
+- Added Laravel 9 support [#1297 / rcerljenko](https://github.com/barryvdh/laravel-ide-helper/pull/1297)
+- Added option `additional_relation_return_types` for custom relations that don't fit the typical naming scheme
+
+2022-01-03, 2.11.0
+------------------
+### Added
+- Add support for Laravel 8.77 Attributes [\#1289 / SimonJnsson](https://github.com/barryvdh/laravel-ide-helper/pull/1289)
+- Add support for cast types `decimal:*`, `encrypted:*`, `immutable_date`, `immutable_datetime`, `custom_datetime`, and `immutable_custom_datetime` [#1262 / miken32](https://github.com/barryvdh/laravel-ide-helper/pull/1262)
+- Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
+- Add support of custom casts without properties [\#1267 / sparclex](https://github.com/barryvdh/laravel-ide-helper/pull/1267)
+
 ### Fixed
 - Fix recursively searching for `HasFactory` and `Macroable` traits [\#1216 / daniel-de-wit](https://github.com/barryvdh/laravel-ide-helper/pull/1216)
-
-### Fixed
 - Use platformName to determine db type when casting boolean types [\#1212 / stockalexander](https://github.com/barryvdh/laravel-ide-helper/pull/1212)
-
-### Added
-- Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
 
 ### Changed
 - Move default models helper filename to config [\#1241 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)
@@ -19,10 +50,10 @@ All notable changes to this project will be documented in this file.
 2021-06-18, 2.10.1
 ------------------
 ### Added
-- Added Type registration according to [Custom Mapping Types documentation](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types)
+- Added Type registration according to [Custom Mapping Types documentation](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types) [\#1228 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)
 
 ### Fixed
-- Fixing issue where configured custom_db_types could cause a DBAL exception to be thrown while running `ide-helper:models`
+- Fixing issue where configured custom_db_types could cause a DBAL exception to be thrown while running `ide-helper:models` [\#1228 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)
 
 2021-04-09, 2.10.0
 ------------------

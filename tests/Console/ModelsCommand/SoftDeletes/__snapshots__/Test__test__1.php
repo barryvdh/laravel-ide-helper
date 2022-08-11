@@ -13,11 +13,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property integer $id
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Query\Builder|Simple onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
- * @method static \Illuminate\Database\Query\Builder|Simple withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Simple withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple withoutTrashed()
  * @mixin \Eloquent
  */
 class Simple extends Model

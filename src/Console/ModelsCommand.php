@@ -463,6 +463,7 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromTable($model)
     {
+        $database = $model->getConnection()->getName();
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();
@@ -480,11 +481,6 @@ class ModelsCommand extends Command
                 throw $exception;
             }
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
-        }
-
-        $database = null;
-        if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);

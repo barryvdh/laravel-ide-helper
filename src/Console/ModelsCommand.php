@@ -1250,7 +1250,11 @@ class ModelsCommand extends Command
             return;
         }
 
-        $this->setMethod('factory', $factory, ['...$parameters']);
+        if (version_compare($this->laravel->version(), '9', '>=')) {
+            $this->setMethod('factory', $factory, ['$count = null, $state = []']);
+        } else {
+            $this->setMethod('factory', $factory, ['...$parameters']);
+        }
     }
 
     /**

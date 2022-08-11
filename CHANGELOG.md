@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 --------------
 
 ### Fixes
+- Fix return type of methods provided by `SoftDeletes` [#1345 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1345)
 - Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
 - Fix model factory method arguments for Laravel >= 9 [#1361 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1361)
 

@@ -11,12 +11,12 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\LaravelIdeHelper\ClassMapGenerator;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
@@ -463,6 +463,7 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromTable($model)
     {
+        $database = $model->getConnection()->getName();
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();
@@ -480,11 +481,6 @@ class ModelsCommand extends Command
                 throw $exception;
             }
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
-        }
-
-        $database = null;
-        if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);
@@ -1221,7 +1217,7 @@ class ModelsCommand extends Command
         $traits = class_uses_recursive($model);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
-            $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Query\Builder::class);
+            $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class);
             $this->setMethod('withTrashed', $builder . '|' . $modelName, []);
             $this->setMethod('withoutTrashed', $builder . '|' . $modelName, []);
             $this->setMethod('onlyTrashed', $builder . '|' . $modelName, []);
@@ -1259,7 +1255,11 @@ class ModelsCommand extends Command
             return;
         }
 
-        $this->setMethod('factory', $factory, ['...$parameters']);
+        if (version_compare($this->laravel->version(), '9', '>=')) {
+            $this->setMethod('factory', $factory, ['$count = null, $state = []']);
+        } else {
+            $this->setMethod('factory', $factory, ['...$parameters']);
+        }
     }
 
     /**

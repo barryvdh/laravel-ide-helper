@@ -463,7 +463,7 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromTable($model)
     {
-        $database = $model->getConnection()->getName();
+        $database = $model->getConnection()->getDatabaseName();
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();

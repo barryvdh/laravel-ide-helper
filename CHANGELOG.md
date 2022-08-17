@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 --------------
 
 ### Fixed
+- Fix return value of query scopes from parent class [#1366 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1366)
 
 ### Changed
 

@@ -347,7 +347,7 @@ If you need PHPDocs support for Fluent methods in migration, for example
 $table->string("somestring")->nullable()->index();
 ```
 
-After publishing vendor, simply change the `include_fluent` line your `config/ide-helper.php` file into:
+After publishing vendor, simply change the `include_fluent` line in your `config/ide-helper.php` file into:
 
 ```php
 'include_fluent' => true,
@@ -358,7 +358,7 @@ Then run `php artisan ide-helper:generate`, you will now see all Fluent methods 
 ### Auto-completion for factory builders
 
 If you would like the `factory()->create()` and `factory()->make()` methods to return the correct model class,
-you can enable custom factory builders with the `include_factory_builders` line your `config/ide-helper.php` file.
+you can enable custom factory builders with the `include_factory_builders` line in your `config/ide-helper.php` file.
 Deprecated for Laravel 8 or latest.
 
 ```php
@@ -396,7 +396,7 @@ app(App\SomeClass::class);
 > Note: When you receive a FatalException: class not found, check your config
 > (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
 
-You can change the generated filename via the config `meta_filename`. This can be useful for cases you want to take advantage the PhpStorm also supports the _directory_ `.phpstorm.meta.php/` which would parse any file places there, should your want provide additional files to PhpStorm.
+You can change the generated filename via the config `meta_filename`. This can be useful for cases you want to take advantage of the PhpStorm also supports the _directory_ `.phpstorm.meta.php/` which would parse any file places there, should you want to provide additional files to PhpStorm.
 
 ## Usage with Lumen
 

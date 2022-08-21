@@ -396,7 +396,7 @@ app(App\SomeClass::class);
 > Note: When you receive a FatalException: class not found, check your config
 > (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
 
-You can change the generated filename via the config `meta_filename`. This can be useful for cases you want to take advantage of the PhpStorm also supports the _directory_ `.phpstorm.meta.php/` which would parse any file places there, should you want to provide additional files to PhpStorm.
+You can change the generated filename via the config `meta_filename`. This can be useful for cases where you want to take advantage of PhpStorm's support of the _directory_ `.phpstorm.meta.php/`: all files placed there are parsed, should you want to provide additional files to PhpStorm.
 
 ## Usage with Lumen
 

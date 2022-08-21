@@ -296,10 +296,8 @@ class Generator
                 return !$reflection->isInternal() && $reflection->getName() === $class;
             })
             ->filter(function ($class) {
-                $traits = class_uses_recursive($class);
-
-                // Filter only classes with the macroable trait
-                return isset($traits[Macroable::class]);
+                $reflection = new ReflectionClass($class);
+                return in_array(Macroable::class, $reflection->getTraitNames());
             })
             ->filter(function ($class) use ($aliases) {
                 $class = Str::start($class, '\\');

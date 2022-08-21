@@ -41,11 +41,6 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             });
         }
 
-        if ($this->app->has('view')) {
-            $viewPath = __DIR__ . '/../resources/views';
-            $this->loadViewsFrom($viewPath, 'ide-helper');
-        }
-
         $configPath = __DIR__ . '/../config/ide-helper.php';
         if (function_exists('config_path')) {
             $publishPath = config_path('ide-helper.php');
@@ -115,9 +110,10 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     /**
      * @return Factory
      */
-    private function createLocalViewFactory()
+    public function createLocalViewFactory(): Factory
     {
         $resolver = new EngineResolver();
+
         $resolver->register('php', function () {
             return new PhpEngine($this->app['files']);
         });

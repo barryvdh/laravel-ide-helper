@@ -22,6 +22,7 @@ use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -427,6 +428,9 @@ class ModelsCommand extends Command
             }
 
             if (!isset($this->properties[$name])) {
+                continue;
+            }
+            if ($this->isInboundCast($realType)) {
                 continue;
             }
 
@@ -1293,6 +1297,11 @@ class ModelsCommand extends Command
         }
 
         return $keyword;
+    }
+
+    protected function isInboundCast(string $type): bool
+    {
+        return class_exists($type) && is_subclass_of($type, CastsInboundAttributes::class);
     }
 
     protected function checkForCastableCasts(string $type, array $params = []): string

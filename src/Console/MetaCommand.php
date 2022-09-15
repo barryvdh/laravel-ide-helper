@@ -13,6 +13,7 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Factories;
 use Illuminate\Console\Command;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -84,7 +85,7 @@ class MetaCommand extends Command
         // Needs to run before exception handler is registered
         $factories = $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [];
 
-        $this->registerClassAutoloadExceptions();
+        $ourAutoloader = $this->registerClassAutoloadExceptions();
 
         $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
@@ -95,6 +96,11 @@ class MetaCommand extends Command
 
             try {
                 $concrete = $this->laravel->make($abstract);
+
+                if ($concrete === null) {
+                    throw new RuntimeException("Cannot create instance for '$abstract', received 'null'");
+                }
+
                 $reflectionClass = new \ReflectionClass($concrete);
                 if (is_object($concrete) && !$reflectionClass->isAnonymous()) {
                     $bindings[$abstract] = get_class($concrete);
@@ -106,7 +112,7 @@ class MetaCommand extends Command
             }
         }
 
-        $this->unregisterClassAutoloadExceptions();
+        $this->unregisterClassAutoloadExceptions($ourAutoloader);
 
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
@@ -143,12 +149,16 @@ class MetaCommand extends Command
 
     /**
      * Register an autoloader the throws exceptions when a class is not found.
+     *
+     * @return callable
      */
-    protected function registerClassAutoloadExceptions()
+    protected function registerClassAutoloadExceptions(): callable
     {
-        spl_autoload_register(function ($class) {
+        $autoloader = function ($class) {
             throw new \ReflectionException("Class '$class' not found.");
-        });
+        };
+        spl_autoload_register($autoloader);
+        return $autoloader;
     }
 
     /**
@@ -167,11 +177,11 @@ class MetaCommand extends Command
 
     /**
      * Remove our custom autoloader that we pushed onto the autoload stack
+     *
+     * @param callable $ourAutoloader
      */
-    private function unregisterClassAutoloadExceptions()
+    private function unregisterClassAutoloadExceptions(callable $ourAutoloader): void
     {
-        $autoloadFunctions = spl_autoload_functions();
-        $ourAutoloader = array_pop($autoloadFunctions);
         spl_autoload_unregister($ourAutoloader);
     }
 }

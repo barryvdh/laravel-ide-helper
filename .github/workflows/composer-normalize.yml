@@ -8,7 +8,7 @@ on:
 jobs:
   normalize:
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v2

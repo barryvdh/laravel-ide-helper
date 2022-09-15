@@ -12,14 +12,14 @@ on:
 
 jobs:
     php-lumen-integration-tests:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         timeout-minutes: 15
         env:
             COMPOSER_NO_INTERACTION: 1
         strategy:
             matrix:
-                php: [7.4, 7.3, 7.2]
-                lumen: [7.*, 6.*]
+                php: [8.1, 8.0, 7.4, 7.3]
+                lumen: [8.*]
         name: P${{ matrix.php }} - Lumen${{ matrix.lumen }}
         steps:
             - name: Checkout code
@@ -32,13 +32,12 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
-                  tools: composer:v2
 
             - name: Install dependencies
               run: |
                   composer create-project --prefer-dist laravel/lumen:${{ matrix.lumen }} --no-progress sample
                   cd sample
-                  composer require "league/flysystem" --no-update --no-progress
+                  composer require "league/flysystem:^1" --no-update --no-progress
                   composer update  --prefer-stable --prefer-dist --no-progress
 
             - name: Add package from source
@@ -58,29 +57,37 @@ jobs:
             - name: Execute meta run
               run: |
                   cd sample
-                  php artisan ide-helper:meta
+                  php artisan ide-helper:meta -v
 
             - name: Check file existence
               run: |
                 ls sample/_ide_helper.php
                 ls sample/.phpstorm.meta.php
 
-            - name: Check file count in logs
+            - name: Check logs
               run: |
-                if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ];then exit 1;fi
+                if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ]; then
+                  for logfile in sample/storage/logs/*; do
+                    echo "-- $logfile --"
+                    cat $logfile
+                  done
+                  exit 1
+                fi
 
     php-laravel-integration-tests:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         timeout-minutes: 15
         env:
             COMPOSER_NO_INTERACTION: 1
         strategy:
             matrix:
-                php: [7.4, 7.3, 7.2]
-                laravel: [8.*, 7.*, 6.*]
+                php: [8.1, 8.0, 7.4, 7.3]
+                laravel: [9.*, 8.*]
                 exclude:
-                  - laravel: 8.*
-                    php: 7.2
+                  - php: 7.4
+                    laravel: 9.*
+                  - php: 7.3
+                    laravel: 9.*
         name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
         steps:
             - name: Checkout code
@@ -93,7 +100,6 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
                   coverage: none
-                  tools: composer:v2
 
             - name: Install dependencies
               run: |
@@ -115,13 +121,20 @@ jobs:
             - name: Execute meta run
               run: |
                   cd sample
-                  php artisan ide-helper:meta
+                  php artisan ide-helper:meta -v
 
             - name: Check file existence
               run: |
                 ls sample/_ide_helper.php
                 ls sample/.phpstorm.meta.php
 
-            - name: Check file count in logs
+
+            - name: Check logs
               run: |
-                if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ];then exit 1;fi
+                if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ]; then
+                  for logfile in sample/storage/logs/*; do
+                    echo "-- $logfile --"
+                    cat $logfile
+                  done
+                  exit 1
+                fi

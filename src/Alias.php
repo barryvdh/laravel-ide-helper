@@ -17,6 +17,7 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\Facade;
 use ReflectionClass;
 
@@ -39,6 +40,7 @@ class Alias
     protected $magicMethods = [];
     protected $interfaces = [];
     protected $phpdoc = null;
+    protected $classAliases = [];
 
     /** @var ConfigRepository  */
     protected $config;
@@ -77,10 +79,11 @@ class Alias
         $this->detectExtendsNamespace();
 
         if (!empty($this->namespace)) {
-            //Create a DocBlock and serializer instance
-            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace));
-        }
+            $this->classAliases = (new UsesResolver())->loadFromClass($this->root);
 
+            //Create a DocBlock and serializer instance
+            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace, $this->classAliases));
+        }
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
             $this->usedMethods = ['decrement', 'increment'];
@@ -329,7 +332,7 @@ class Alias
 
             if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
-                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
+                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces, $this->classAliases);
                 }
                 $this->usedMethods[] = $magic;
             }
@@ -343,7 +346,6 @@ class Alias
      */
     protected function detectMethods()
     {
-
         foreach ($this->classes as $class) {
             $reflection = new \ReflectionClass($class);
 
@@ -359,7 +361,8 @@ class Alias
                                 $this->alias,
                                 $reflection,
                                 $method->name,
-                                $this->interfaces
+                                $this->interfaces,
+                                $this->classAliases
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -368,8 +371,9 @@ class Alias
             }
 
             // Check if the class is macroable
+            // (Eloquent\Builder is also macroable but doesn't use Macroable trait)
             $traits = collect($reflection->getTraitNames());
-            if ($traits->contains('Illuminate\Support\Traits\Macroable')) {
+            if ($traits->contains('Illuminate\Support\Traits\Macroable') || $class === EloquentBuilder::class) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
@@ -380,7 +384,8 @@ class Alias
                             $this->alias,
                             $reflection,
                             $macro_name,
-                            $this->interfaces
+                            $this->interfaces,
+                            $this->classAliases
                         );
                         $this->usedMethods[] = $macro_name;
                     }

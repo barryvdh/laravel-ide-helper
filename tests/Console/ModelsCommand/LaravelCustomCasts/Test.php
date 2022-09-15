@@ -6,19 +6,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCas
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Illuminate\Foundation\Application;
 
 class Test extends AbstractModelsCommand
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        if (version_compare(Application::VERSION, '7.0', '<')) {
-            $this->markTestSkipped('This test requires Laravel 7.0 or higher');
-        }
-    }
-
     public function test(): void
     {
         $command = $this->app->make(ModelsCommand::class);

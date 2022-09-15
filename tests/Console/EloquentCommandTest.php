@@ -45,12 +45,15 @@ class EloquentCommandTest extends TestCase
         $this->assertMatchesTxtSnapshot($actualContent);
 
         $display = $tester->getDisplay();
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             ';Unexpected no document on Illuminate\\\Database\\\Eloquent\\\Model;',
             $display
         );
-        $this->assertRegExp(
-            ';Wrote expected docblock to .*/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php;',
+        $modelClassFilePath = preg_quote(
+            str_replace('/', DIRECTORY_SEPARATOR, '/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php')
+        );
+        $this->assertMatchesRegularExpression(
+            ';Wrote expected docblock to .*' . $modelClassFilePath . ';',
             $display
         );
     }

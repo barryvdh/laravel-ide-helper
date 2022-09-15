@@ -9,6 +9,7 @@
 ?>
 
 // @formatter:off
+// phpcs:ignoreFile
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
@@ -35,7 +36,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
             //Method inherited from <?= $method->getDeclaringClass() ?>
          <?php endif; ?>
 
-            <?php if ($method->isInstanceCall()) :?>
+            <?php if ($method->isInstanceCall()) : ?>
             /** @var <?=$method->getRoot()?> $instance */
             <?php endif?>
             <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;
@@ -58,7 +59,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
                 //Method inherited from <?= $method->getDeclaringClass() ?>
              <?php endif; ?>
 
-                <?php if ($method->isInstanceCall()) :?>
+                <?php if ($method->isInstanceCall()) : ?>
                 /** @var <?=$method->getRoot()?> $instance */
                 <?php endif?>
                 <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;

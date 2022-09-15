@@ -54,9 +54,9 @@ class Generator
         // Find the drivers to add to the extra/interfaces
         $this->detectDrivers();
 
-        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra'));
-        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic'));
-        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'));
+        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra'), []);
+        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic'), []);
+        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'), []);
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
             $interface = '\\' . ltrim($interface, '\\');
@@ -67,21 +67,9 @@ class Generator
     /**
      * Generate the helper file contents;
      *
-     * @param  string  $format  The format to generate the helper in (php/json)
      * @return string;
      */
-    public function generate($format = 'php')
-    {
-        // Check if the generator for this format exists
-        $method = 'generate' . ucfirst($format) . 'Helper';
-        if (method_exists($this, $method)) {
-            return $this->$method();
-        }
-
-        return $this->generatePhpHelper();
-    }
-
-    public function generatePhpHelper()
+    public function generate()
     {
         $app = app();
         return $this->view->make('helper')
@@ -92,33 +80,6 @@ class Generator
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
             ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
-    }
-
-    public function generateJsonHelper()
-    {
-        $classes = [];
-        foreach ($this->getValidAliases() as $aliases) {
-            foreach ($aliases as $alias) {
-                $functions = [];
-                foreach ($alias->getMethods() as $method) {
-                    $functions[$method->getName()] = '(' . $method->getParamsWithDefault() . ')';
-                }
-                $classes[$alias->getAlias()] = [
-                    'functions' => $functions,
-                ];
-            }
-        }
-
-        $flags = JSON_FORCE_OBJECT;
-        if (defined('JSON_PRETTY_PRINT')) {
-            $flags |= JSON_PRETTY_PRINT;
-        }
-
-        return json_encode([
-            'php' => [
-                'classes' => $classes,
-            ],
-        ], $flags);
     }
 
     protected function detectDrivers()
@@ -335,7 +296,7 @@ class Generator
                 return !$reflection->isInternal() && $reflection->getName() === $class;
             })
             ->filter(function ($class) {
-                $traits = class_uses($class);
+                $traits = class_uses_recursive($class);
 
                 // Filter only classes with the macroable trait
                 return isset($traits[Macroable::class]);

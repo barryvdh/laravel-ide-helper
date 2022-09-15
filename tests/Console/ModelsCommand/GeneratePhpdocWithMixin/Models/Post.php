@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property $someProp
  * @method someMethod(string $method)
+ * @mixin IdeHelperPost
  */
 class Post extends Model
 {

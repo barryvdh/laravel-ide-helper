@@ -2,13 +2,118 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.8.1...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.3...master)
 --------------
 
+### Fixes
+- Fix return type of methods provided by `SoftDeletes` [#1345 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1345)
+- Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
+- Fix issue where \Eloquent is not included when using write_mixin [#1352 / Jefemy](https://github.com/barryvdh/laravel-ide-helper/pull/1352)
+- Fix model factory method arguments for Laravel >= 9 [#1361 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1361)
+
+### Added
+- Add support for custom casts that implement `CastsInboundAttributes` [#1329 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1329)
+
+2022-03-06, 2.12.3
+------------------
+
+### Fixed
+- Fix date and datetime handling for attributes that set a serialization format option for the Carbon instance [#1324 / FLeudts](https://github.com/barryvdh/laravel-ide-helper/pull/1324)
+- Fix composer conflict with composer/pcre version 2/3. [#1327 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1327)
+
+2022-02-08, 2.12.2
+------------------
+### Fixed
+- Remove composer dependecy, use copy of ClassMapGenerator [#1313 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1313)
+
+2022-01-24, 2.12.1
+------------------
+### Fixed
+- Properly handle `Castable`s without return type. [#1306 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1306)
+
+2022-01-23, 2.12.0
+------------------
+### Added
+- Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
+- Added Laravel 9 support [#1297 / rcerljenko](https://github.com/barryvdh/laravel-ide-helper/pull/1297)
+- Added option `additional_relation_return_types` for custom relations that don't fit the typical naming scheme
+
+2022-01-03, 2.11.0
+------------------
+### Added
+- Add support for Laravel 8.77 Attributes [\#1289 / SimonJnsson](https://github.com/barryvdh/laravel-ide-helper/pull/1289)
+- Add support for cast types `decimal:*`, `encrypted:*`, `immutable_date`, `immutable_datetime`, `custom_datetime`, and `immutable_custom_datetime` [#1262 / miken32](https://github.com/barryvdh/laravel-ide-helper/pull/1262)
+- Add support of variadic parameters in `ide-helper:models` [\#1234 / shaffe-fr](https://github.com/barryvdh/laravel-ide-helper/pull/1234)
+- Add support of custom casts without properties [\#1267 / sparclex](https://github.com/barryvdh/laravel-ide-helper/pull/1267)
+
+### Fixed
+- Fix recursively searching for `HasFactory` and `Macroable` traits [\#1216 / daniel-de-wit](https://github.com/barryvdh/laravel-ide-helper/pull/1216)
+- Use platformName to determine db type when casting boolean types [\#1212 / stockalexander](https://github.com/barryvdh/laravel-ide-helper/pull/1212)
+
+### Changed
+- Move default models helper filename to config [\#1241 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)
+
+2021-06-18, 2.10.1
+------------------
+### Added
+- Added Type registration according to [Custom Mapping Types documentation](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types) [\#1228 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)
+
+### Fixed
+- Fixing issue where configured custom_db_types could cause a DBAL exception to be thrown while running `ide-helper:models` [\#1228 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1241)
+
+2021-04-09, 2.10.0
+------------------
+### Added
+- Allowing Methods to be set or unset in ModelHooks [\#1198 / jenga201](https://github.com/barryvdh/laravel-ide-helper/pull/1198)\
+  Note: the visibility of `\Barryvdh\LaravelIdeHelper\Console\ModelsCommand::setMethod` has been changed to **public**!
+
+### Fixed
+- Fixing issue where incorrect autoloader unregistered [\#1210 / tezhm](https://github.com/barryvdh/laravel-ide-helper/pull/1210)
+
+2021-04-02, 2.9.3
+-----------------
+### Fixed
+- Support both customized namespace factories as well as default resolvable ones [\#1201 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1201)
+
+2021-04-01, 2.9.2
+-----------------
+### Added
+- Model hooks for adding custom information from external sources to model classes through the ModelsCommand [\#945 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/945)
+
+### Fixed
+- Fix ide-helper:models exception if model doesn't have factory [\#1196 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1196)
+- Running tests triggering post_migrate hooks [\#1193 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1193)
+- Array_merge error when config is cached prior to package install [\#1184 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1184)
+
+2021-03-15, 2.9.1
+-----------------
+### Added
+- Generate PHPDoc for Laravel 8.x factories [\#1074 / ahmed-aliraqi](https://github.com/barryvdh/laravel-ide-helper/pull/1074)
+- Add a comment to a property like table columns [\#1168 / biiiiiigmonster](https://github.com/barryvdh/laravel-ide-helper/pull/1168)
+- Added `post_migrate` hook to run commands after a migration [\#1163 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/1163)
+- Allow for PhpDoc for macros with union types [\#1148 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1148)
+
+### Fixed
+- Error when generating helper for invokable classes [\#1124 / standaniels](https://github.com/barryvdh/laravel-ide-helper/pull/1124)
+- Fix broken ReflectionUnionTypes [\#1132 / def-studio](https://github.com/barryvdh/laravel-ide-helper/pull/1132)
+- Relative class names are not converted to fully-qualified class names [\#1005 / SavKS](https://github.com/barryvdh/laravel-ide-helper/pull/1005)
+
+2020-12-30, 2.9.0
+-----------------
+### Changed
+- Dropped support for Laravel 6 and Laravel 7, as well as support for PHP 7.2 and added support for doctrine/dbal:^3 [\#1114 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1114)
+
+### Fixed
+- `Macro::initPhpDoc()` will save original docblock if present [\#1116 / LastDragon-ru](https://github.com/barryvdh/laravel-ide-helper/pull/1116)
+- `Alias` will grab macros from `\Illuminate\Database\Eloquent\Builder` too [\#1118 / LastDragon-ru](https://github.com/barryvdh/laravel-ide-helper/pull/1118)
+
+2020-12-08, 2.8.2
+-----------------
 ### Added
 - Fix phpdoc generate for custom cast with parameter [\#986 / artelkr](https://github.com/barryvdh/laravel-ide-helper/pull/986)
 - Created a possibility to add custom relation type [\#987 / efinder2](https://github.com/barryvdh/laravel-ide-helper/pull/987)
 - Added `@see` with macro/mixin definition location to PhpDoc [\#1054 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1054)
+- Initial compatibility for PHP8 [\#1106 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1106)
 
 ### Changed
 - Implement DeferrableProvider [\#914 / kon-shou](https://github.com/barryvdh/laravel-ide-helper/pull/914)
@@ -17,6 +122,10 @@ All notable changes to this project will be documented in this file.
 - Compatibility with Lumen [\#1043 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1043)
 - Allow model_locations to have glob patterns [\#1059 / saackearl](https://github.com/barryvdh/laravel-ide-helper/pull/1059)
 - Error when generating helper for macroable classes which are not facades and contain a "fake" method [\#1066 / domkrm] (https://github.com/barryvdh/laravel-ide-helper/pull/1066)
+- Casts with a return type of `static` or `$this` now resolve to an instance of the cast [\#1103 / riesjart](https://github.com/barryvdh/laravel-ide-helper/pull/1103)
+
+### Removed
+- Removed format and broken generateJsonHelper [\#1053 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1053)
 
 2020-09-07, 2.8.1
 -----------------

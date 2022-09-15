@@ -7,12 +7,22 @@ return [
     | Filename & Format
     |--------------------------------------------------------------------------
     |
-    | The default filename (without extension) and the format (php or json)
+    | The default filename
     |
     */
 
-    'filename'  => '_ide_helper',
-    'format'    => 'php',
+    'filename'  => '_ide_helper.php',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models filename
+    |--------------------------------------------------------------------------
+    |
+    | The default filename for the models helper file
+    |
+    */
+
+    'models_filename' => '_ide_helper_models.php',
 
     /*
     |--------------------------------------------------------------------------
@@ -61,6 +71,17 @@ return [
     */
 
     'write_model_magic_where' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write Model External Eloquent Builder methods
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable write external eloquent builder methods
+    |
+    */
+
+    'write_model_external_builder_methods' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -136,6 +157,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Models hooks
+    |--------------------------------------------------------------------------
+    |
+    | Define which hook classes you want to run for models to add custom information
+    |
+    | Hooks should implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface.
+    |
+    */
+
+    'model_hooks' => [
+        // App\Support\IdeHelper\MyModelHook::class
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Extra classes
     |--------------------------------------------------------------------------
     |
@@ -181,7 +217,7 @@ return [
     | The value of the array is an array of type mappings. Key is the name of the custom type,
     | (for example, "jsonb" from Postgres 9.4) and the value is the name of the corresponding Doctrine2 type (in
     | our case it is 'json_array'. Doctrine types are listed here:
-    | http://doctrine-dbal.readthedocs.org/en/latest/reference/types.html
+    | https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#types
     |
     | So to support jsonb in your models when working with Postgres, just add the following entry to the array below:
     |
@@ -267,5 +303,30 @@ return [
     |
     */
     'additional_relation_types' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Additional relation return types
+    |--------------------------------------------------------------------------
+    |
+    | When using custom relation types its possible for the class name to not contain
+    | the proper return type of the relation. The key of the array is the relationship
+    | method name. The value of the array is the return type of the relation.
+    | e.g. `'relationName' => 'many'`.
+    |
+    */
+    'additional_relation_return_types' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Run artisan commands after migrations to generate model helpers
+    |--------------------------------------------------------------------------
+    |
+    | The specified commands should run after migrations are finished running.
+    |
+    */
+    'post_migrate' => [
+        // 'ide-helper:models --nowrite',
+    ],
 
 ];

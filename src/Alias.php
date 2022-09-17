@@ -421,7 +421,7 @@ class Alias
      */
     public function getDocComment($prefix = "\t\t")
     {
-        $serializer = new DocBlockSerializer(1, $prefix);
+        $serializer = new DocBlockSerializer(1, $prefix, true, null, $this->config->get('ide-helper.separate_tags'));
 
         if (!$this->phpdoc) {
             return '';

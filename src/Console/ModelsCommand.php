@@ -105,6 +105,8 @@ class ModelsCommand extends Command
     protected $keep_text;
     protected $phpstorm_noinspections;
     protected $write_model_external_builder_methods;
+    protected $separate_tags = false;
+
     /**
      * @var bool[string]
      */
@@ -157,6 +159,7 @@ class ModelsCommand extends Command
         $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
+        $this->separate_tags = $this->laravel['config']->get('ide-helper.separate_tags', false);
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
@@ -931,14 +934,14 @@ class ModelsCommand extends Command
 
             // remove the already existing tag to prevent duplicates
             foreach ($phpdoc->getTagsByName('mixin') as $tag) {
-                if($tag->getContent() === $eloquentClassNameInModel) {
+                if ($tag->getContent() === $eloquentClassNameInModel) {
                     $phpdoc->deleteTag($tag);
                 }
             }
 
             $phpdoc->appendTag(Tag::createInstance('@mixin ' . $eloquentClassNameInModel, $phpdoc));
         }
-        
+
         if ($this->phpstorm_noinspections) {
             /**
              * Facades, Eloquent API
@@ -954,7 +957,7 @@ class ModelsCommand extends Command
             );
         }
 
-        $serializer = new DocBlockSerializer();
+        $serializer = new DocBlockSerializer(0, ' ', true, null, $this->separate_tags);
         $docComment = $serializer->getDocComment($phpdoc);
 
         if ($this->write_mixin) {

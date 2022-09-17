@@ -70,7 +70,8 @@ class Eloquent
             return;
         }
 
-        $serializer = new DocBlockSerializer();
+        $separateTags = $command->getLaravel()['config']->get('ide-helper.separate_tags');
+        $serializer = new DocBlockSerializer(0, ' ', true, null, $separateTags);
         $serializer->getDocComment($phpdoc);
         $docComment = $serializer->getDocComment($phpdoc);
 

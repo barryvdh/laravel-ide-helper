@@ -939,7 +939,7 @@ class ModelsCommand extends Command
 
             // remove the already existing tag to prevent duplicates
             foreach ($phpdoc->getTagsByName('mixin') as $tag) {
-                if($tag->getContent() === $eloquentClassNameInModel) {
+                if ($tag->getContent() === $eloquentClassNameInModel) {
                     $phpdoc->deleteTag($tag);
                 }
             }

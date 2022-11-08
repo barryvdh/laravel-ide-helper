@@ -942,7 +942,7 @@ class ModelsCommand extends Command
 
             $phpdoc->appendTag(Tag::createInstance('@mixin ' . $eloquentClassNameInModel, $phpdoc));
         }
-        
+
         if ($this->phpstorm_noinspections) {
             /**
              * Facades, Eloquent API
@@ -1328,7 +1328,7 @@ class ModelsCommand extends Command
 
         return $this->getReturnTypeFromReflection($methodReflection) ??
             $this->getReturnTypeFromDocBlock($methodReflection, $reflection) ??
-            'mixed';
+            $type;
     }
 
     /**

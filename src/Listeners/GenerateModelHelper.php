@@ -46,7 +46,9 @@ class GenerateModelHelper
         self::$shouldRun = false;
 
         foreach ($this->config->get('ide-helper.post_migrate', []) as $command) {
-            $this->artisan->call($command, [], $event->output);
+            if (!empty($command)) {
+                $this->artisan->call($command, [], $event->output);
+            }
         }
     }
 }

@@ -23,6 +23,8 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -412,8 +414,12 @@ class ModelsCommand extends Command
                 case 'immutable_datetime':
                     $realType = '\Carbon\CarbonImmutable';
                     break;
+                case AsCollection::class:
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
+                    break;
+                case AsArrayObject::class:
+                    $realType = '\ArrayObject';
                     break;
                 default:
                     // In case of an optional custom cast parameter , only evaluate
@@ -935,14 +941,14 @@ class ModelsCommand extends Command
 
             // remove the already existing tag to prevent duplicates
             foreach ($phpdoc->getTagsByName('mixin') as $tag) {
-                if($tag->getContent() === $eloquentClassNameInModel) {
+                if ($tag->getContent() === $eloquentClassNameInModel) {
                     $phpdoc->deleteTag($tag);
                 }
             }
 
             $phpdoc->appendTag(Tag::createInstance('@mixin ' . $eloquentClassNameInModel, $phpdoc));
         }
-        
+
         if ($this->phpstorm_noinspections) {
             /**
              * Facades, Eloquent API

@@ -38,14 +38,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Collection $cast_to_encrypted_collection
  * @property array $cast_to_encrypted_json
  * @property object $cast_to_encrypted_object
- * @property string $cast_to_as_collection
- * @property string $cast_to_as_array_object
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast query()
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToArray($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToAsArrayObject($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToAsCollection($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToBool($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToBoolean($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToCollection($value)

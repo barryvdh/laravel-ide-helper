@@ -107,4 +107,9 @@ class Simple extends Model
     {
         return $this->testToAnyMorphedRelation(Simple::class);
     }
+
+    public function relationSampleToBadlyNamedNotManyRelation()
+    {
+        return $this->testToBadlyNamedNotManyRelation(Simple::class);
+    }
 }

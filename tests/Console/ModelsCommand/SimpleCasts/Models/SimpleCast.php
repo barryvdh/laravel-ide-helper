@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SimpleCasts\Models;
 
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SimpleCasts\Castables\ChildObject;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SimpleCasts\Castables\ParentObject;
 use Illuminate\Database\Eloquent\Model;
 
 class SimpleCast extends Model
@@ -36,5 +38,7 @@ class SimpleCast extends Model
         'cast_to_encrypted_collection' => 'encrypted:collection',
         'cast_to_encrypted_json' => 'encrypted:json',
         'cast_to_encrypted_object' => 'encrypted:object',
+        'cast_to_parent_object_using_cast_static_tag' => ParentObject::class,
+        'cast_to_child_object_using_cast_static_tag' => ChildObject::class,
     ];
 }

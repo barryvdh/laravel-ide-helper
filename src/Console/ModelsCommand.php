@@ -1211,6 +1211,30 @@ class ModelsCommand extends Command
         return $type;
     }
 
+    /**
+     * Check to see if a class (or its parents) has a @ide-helper-eloquent-cast-to-specified-class tag
+     *
+     * @param \Reflector $reflector
+     *
+     * @return boolean
+     */
+    protected function classHasCastSpecifiedTag(\Reflector $reflector = null): bool
+    {
+        $phpDocContext = (new ContextFactory())->createFromReflector($reflector);
+        $context = new Context(
+            $phpDocContext->getNamespace(),
+            $phpDocContext->getNamespaceAliases()
+        );
+        $phpdoc = new DocBlock($reflector, $context);
+
+        if ($phpdoc->hasTag('ide-helper-eloquent-cast-to-specified-class')) {
+            return true;
+        }
+
+        $parentReflector = $reflector->getParentClass();
+
+        return $parentReflector ? $this->classHasCastSpecifiedTag($parentReflector) : false;
+    }
 
     /**
      * Generates methods provided by the SoftDeletes trait
@@ -1313,6 +1337,10 @@ class ModelsCommand extends Command
         $reflection = new \ReflectionClass($type);
 
         if (!$reflection->implementsInterface(Castable::class)) {
+            return $type;
+        }
+
+        if ($this->classHasCastSpecifiedTag($reflection)) {
             return $type;
         }
 

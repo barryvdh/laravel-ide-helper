@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Improve return type of mock helper methods in tests [#1405 / bentleyo](https://github.com/barryvdh/laravel-ide-helper/pull/1405) 
 
 ### Added
+- Added Laravel 10 support [#1407 / lptn](https://github.com/barryvdh/laravel-ide-helper/pull/1407)
 - Add support for custom casts that implement `CastsInboundAttributes` [#1329 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1329)
 
 2022-03-06, 2.12.3

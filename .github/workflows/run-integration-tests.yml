@@ -90,6 +90,8 @@ jobs:
                     laravel: dev-master
                   - php: 7.4
                     laravel: dev-master
+                  - php: 7.3
+                    laravel: dev-master
                   - php: 7.4
                     laravel: 9.*
                   - php: 7.3

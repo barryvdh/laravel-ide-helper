@@ -37,6 +37,7 @@ jobs:
               run: |
                   composer create-project --prefer-dist laravel/lumen:${{ matrix.lumen }} --no-progress sample
                   cd sample
+                  composer config minimum-stability dev
                   composer require "league/flysystem:^1" --no-update --no-progress
                   composer update  --prefer-stable --prefer-dist --no-progress
 

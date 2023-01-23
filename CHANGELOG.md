@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add support for custom casts that implement `CastsInboundAttributes` [#1329 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1329)
+- A solution to detect property types when casting Eloquent attributes to objects. Add the `@ide-helper-eloquent-cast-to-specified-class` tag to the class being cast to
 
 2022-03-06, 2.12.3
 ------------------

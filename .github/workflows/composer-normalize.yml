@@ -3,6 +3,7 @@ name: normalize composer.json
 on:
   push:
     paths:
+      - .github/workflows/composer-normalize.yml
       - composer.json
 
 jobs:
@@ -18,6 +19,7 @@ jobs:
 
       - name: Normalize composer.json
         run: |
+          composer global config --no-plugins allow-plugins.ergebnis/composer-normalize true
           composer global require ergebnis/composer-normalize
           composer normalize
 

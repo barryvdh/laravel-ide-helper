@@ -3,6 +3,7 @@ name: normalize composer.json
 on:
   push:
     paths:
+      - .github/workflows/composer-normalize.yml
       - composer.json
 
 jobs:

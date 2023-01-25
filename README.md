@@ -231,7 +231,7 @@ By default, these attributes are generated in the phpdoc. You can turn them off 
 
 Laravel 9 introduced generics annotations in DocBlocks for collections. PhpStorm 2022.3 and above support the use of generics annotations within `@property` and `@property-read` declarations in DocBlocks, e.g. `Collection<User>` instead of `Collection|User[]`.
 
-These can be enabled by setting the config `use_generics_annotations` to `true`.
+These can be disabled by setting the config `use_generics_annotations` to `false`.
 
 #### Support `@comment` based on DocBlock
 

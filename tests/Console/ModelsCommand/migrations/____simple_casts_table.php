@@ -26,6 +26,8 @@ class SimpleCastsTable extends Migration
             $table->string('cast_to_collection');
             $table->string('cast_to_date');
             $table->string('cast_to_datetime');
+            $table->string('cast_to_date_serialization');
+            $table->string('cast_to_datetime_serialization');
             $table->string('cast_to_custom_datetime');
             $table->string('cast_to_immutable_date');
             $table->string('cast_to_immutable_custom_datetime');

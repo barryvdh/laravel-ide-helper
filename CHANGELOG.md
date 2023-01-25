@@ -2,12 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.11.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.3...master)
 --------------
+
+### Fixes
+- Fix return type of methods provided by `SoftDeletes` [#1345 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1345)
+- Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
+- Fix issue where \Eloquent is not included when using write_mixin [#1352 / Jefemy](https://github.com/barryvdh/laravel-ide-helper/pull/1352)
+- Fix model factory method arguments for Laravel >= 9 [#1361 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1361)
+- Improve return type of mock helper methods in tests [#1405 / bentleyo](https://github.com/barryvdh/laravel-ide-helper/pull/1405) 
+
+### Added
+- Add support for custom casts that implement `CastsInboundAttributes` [#1329 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1329)
+- Add option `use_generics_annotations` for collection type hints [#1298 / tanerkay](https://github.com/barryvdh/laravel-ide-helper/pull/1298)
+
+2022-03-06, 2.12.3
+------------------
+
+### Fixed
+- Fix date and datetime handling for attributes that set a serialization format option for the Carbon instance [#1324 / FLeudts](https://github.com/barryvdh/laravel-ide-helper/pull/1324)
+- Fix composer conflict with composer/pcre version 2/3. [#1327 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1327)
+
+2022-02-08, 2.12.2
+------------------
+### Fixed
+- Remove composer dependecy, use copy of ClassMapGenerator [#1313 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1313)
+
+2022-01-24, 2.12.1
+------------------
+### Fixed
+- Properly handle `Castable`s without return type. [#1306 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1306)
+
+2022-01-23, 2.12.0
+------------------
 ### Added
 - Add support for custom casts that using `Castable` [#1287 / binotaliu](https://github.com/barryvdh/laravel-ide-helper/pull/1287)
 - Added Laravel 9 support [#1297 / rcerljenko](https://github.com/barryvdh/laravel-ide-helper/pull/1297)
-- Add option `use_generics_annotations` for collection type hints [#1298 / tanerkay](https://github.com/barryvdh/laravel-ide-helper/pull/1298)
+- Added option `additional_relation_return_types` for custom relations that don't fit the typical naming scheme
 
 2022-01-03, 2.11.0
 ------------------

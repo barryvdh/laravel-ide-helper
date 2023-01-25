@@ -16,12 +16,13 @@ use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
-use Composer\Autoload\ClassMapGenerator;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -362,6 +363,10 @@ class ModelsCommand extends Command
                 $type = 'decimal';
             } elseif (Str::startsWith($type, 'custom_datetime:')) {
                 $type = 'date';
+            } elseif (Str::startsWith($type, 'date:')) {
+                $type = 'date';
+            } elseif (Str::startsWith($type, 'datetime:')) {
+                $type = 'date';
             } elseif (Str::startsWith($type, 'immutable_custom_datetime:')) {
                 $type = 'immutable_date';
             } elseif (Str::startsWith($type, 'encrypted:')) {
@@ -425,6 +430,9 @@ class ModelsCommand extends Command
             if (!isset($this->properties[$name])) {
                 continue;
             }
+            if ($this->isInboundCast($realType)) {
+                continue;
+            }
 
             $realType = $this->checkForCastableCasts($realType, $params);
             $realType = $this->checkForCustomLaravelCasts($realType);
@@ -459,6 +467,7 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromTable($model)
     {
+        $database = $model->getConnection()->getDatabaseName();
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();
@@ -476,11 +485,6 @@ class ModelsCommand extends Command
                 throw $exception;
             }
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
-        }
-
-        $database = null;
-        if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
         }
 
         $columns = $schema->listTableColumns($table, $database);
@@ -698,7 +702,10 @@ class ModelsCommand extends Command
                                     get_class($relationObj->getRelated())
                                 );
 
-                                if (strpos(get_class($relationObj), 'Many') !== false) {
+                                if (
+                                    strpos(get_class($relationObj), 'Many') !== false ||
+                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'many'
+                                ) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);
@@ -723,7 +730,10 @@ class ModelsCommand extends Command
                                         // What kind of comments should be added to the relation count here?
                                         );
                                     }
-                                } elseif ($relation === 'morphTo') {
+                                } elseif (
+                                    $relation === 'morphTo' ||
+                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'morphTo'
+                                ) {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
                                         $method,
@@ -921,10 +931,19 @@ class ModelsCommand extends Command
             $phpdoc->appendTag($tag);
         }
 
-        if ($this->write && !$phpdoc->getTagsByName('mixin')) {
+        if ($this->write) {
             $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
+
+            // remove the already existing tag to prevent duplicates
+            foreach ($phpdoc->getTagsByName('mixin') as $tag) {
+                if ($tag->getContent() === $eloquentClassNameInModel) {
+                    $phpdoc->deleteTag($tag);
+                }
+            }
+
             $phpdoc->appendTag(Tag::createInstance('@mixin ' . $eloquentClassNameInModel, $phpdoc));
         }
+
         if ($this->phpstorm_noinspections) {
             /**
              * Facades, Eloquent API
@@ -1089,6 +1108,14 @@ class ModelsCommand extends Command
     }
 
     /**
+     * Returns the return types of relations
+     */
+    protected function getRelationReturnTypes(): array
+    {
+        return $this->laravel['config']->get('ide-helper.additional_relation_return_types', []);
+    }
+
+    /**
      * @return bool
      */
     protected function hasCamelCaseModelProperties()
@@ -1212,7 +1239,7 @@ class ModelsCommand extends Command
         $traits = class_uses_recursive($model);
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
-            $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Query\Builder::class);
+            $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class);
             $this->setMethod('withTrashed', $builder . '|' . $modelName, []);
             $this->setMethod('withoutTrashed', $builder . '|' . $modelName, []);
             $this->setMethod('onlyTrashed', $builder . '|' . $modelName, []);
@@ -1250,7 +1277,11 @@ class ModelsCommand extends Command
             return;
         }
 
-        $this->setMethod('factory', $factory, ['...$parameters']);
+        if (version_compare($this->laravel->version(), '9', '>=')) {
+            $this->setMethod('factory', $factory, ['$count = null, $state = []']);
+        } else {
+            $this->setMethod('factory', $factory, ['...$parameters']);
+        }
     }
 
     /**
@@ -1287,6 +1318,11 @@ class ModelsCommand extends Command
         return $keyword;
     }
 
+    protected function isInboundCast(string $type): bool
+    {
+        return class_exists($type) && is_subclass_of($type, CastsInboundAttributes::class);
+    }
+
     protected function checkForCastableCasts(string $type, array $params = []): string
     {
         if (!class_exists($type) || !interface_exists(Castable::class)) {
@@ -1310,7 +1346,8 @@ class ModelsCommand extends Command
         $methodReflection = $castReflection->getMethod('get');
 
         return $this->getReturnTypeFromReflection($methodReflection) ??
-            $this->getReturnTypeFromDocBlock($methodReflection, $reflection);
+            $this->getReturnTypeFromDocBlock($methodReflection, $reflection) ??
+            'mixed';
     }
 
     /**

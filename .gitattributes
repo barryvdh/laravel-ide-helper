@@ -5,5 +5,11 @@
 /.gitattributes     export-ignore
 /.github            export-ignore
 /.gitignore         export-ignore
+/.editorconfig      export-ignore
 /phpunit.xml.dist   export-ignore
 /tests              export-ignore
+/.php_cs.common.php export-ignore
+/.php_cs.dist       export-ignore
+/.php_cs.tests.php  export-ignore
+/psalm.xml          export-ignore
+/psalm-baseline.xml export-ignore

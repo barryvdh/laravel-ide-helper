@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenericsSyntax;
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenericsSyntaxDisabled;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
@@ -13,9 +13,7 @@ class Test extends AbstractModelsCommand
     {
         parent::getEnvironmentSetUp($app);
 
-        $app['config']->set('ide-helper.use_generics_annotations', [
-            true,
-        ]);
+        $app['config']->set('ide-helper.use_generics_annotations', false);
     }
 
     public function test(): void

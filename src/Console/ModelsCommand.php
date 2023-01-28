@@ -1090,7 +1090,7 @@ class ModelsCommand extends Command
      */
     protected function getCollectionTypeHint(string $collectionClassNameInModel, string $relatedModel): string
     {
-        $useGenericsSyntax = $this->laravel['config']->get('ide-helper.use_generics_annotations', false);
+        $useGenericsSyntax = $this->laravel['config']->get('ide-helper.use_generics_annotations', true);
         if ($useGenericsSyntax) {
             return $collectionClassNameInModel . '<int, ' . $relatedModel . '>';
         } else {

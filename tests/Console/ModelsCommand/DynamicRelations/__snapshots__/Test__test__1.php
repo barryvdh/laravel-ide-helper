@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\DynamicRelations\Models\Dynamic
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|Dynamic[] $regularHasMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Dynamic> $regularHasMany
  * @property-read int|null $regular_has_many_count
  * @method static \Illuminate\Database\Eloquent\Builder|Dynamic newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Dynamic newQuery()

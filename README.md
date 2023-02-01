@@ -1,4 +1,4 @@
-# Laravel IDE Helper Generator
+# IDE Helper Generator for Laravel
 
 [![Tests](https://github.com/barryvdh/laravel-ide-helper/actions/workflows/run-tests.yml/badge.svg)](https://github.com/barryvdh/laravel-ide-helper/actions)
 [![Packagist License](https://poser.pugx.org/barryvdh/laravel-ide-helper/license.png)](http://choosealicense.com/licenses/mit/)
@@ -226,6 +226,12 @@ If for some reason it's undesired to have them generated (one for each column), 
 You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) method to count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columname>_count` convention.
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
+
+#### Generics annotations
+
+Laravel 9 introduced generics annotations in DocBlocks for collections. PhpStorm 2022.3 and above support the use of generics annotations within `@property` and `@property-read` declarations in DocBlocks, e.g. `Collection<User>` instead of `Collection|User[]`.
+
+These can be disabled by setting the config `use_generics_annotations` to `false`.
 
 #### Support `@comment` based on DocBlock
 

@@ -1,4 +1,4 @@
-# Laravel IDE Helper Generator
+# IDE Helper Generator for Laravel
 
 [![Tests](https://github.com/barryvdh/laravel-ide-helper/actions/workflows/run-tests.yml/badge.svg)](https://github.com/barryvdh/laravel-ide-helper/actions)
 [![Packagist License](https://poser.pugx.org/barryvdh/laravel-ide-helper/license.png)](http://choosealicense.com/licenses/mit/)

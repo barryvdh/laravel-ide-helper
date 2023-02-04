@@ -82,16 +82,16 @@ jobs:
         strategy:
             matrix:
                 php: [8.2, 8.1, 8.0, 7.4, 7.3]
-                laravel: [dev-master, 9.*, 8.*]
+                laravel: [10.*, 9.*, 8.*]
                 exclude:
                   - php: 8.0
-                    laravel: dev-master
+                    laravel: 10.*
                   - php: 7.4
-                    laravel: dev-master
+                    laravel: 10.*
                   - php: 7.4
-                    laravel: dev-master
+                    laravel: 10.*
                   - php: 7.3
-                    laravel: dev-master
+                    laravel: 10.*
                   - php: 7.4
                     laravel: 9.*
                   - php: 7.3

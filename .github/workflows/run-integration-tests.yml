@@ -111,7 +111,7 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --no-progress sample
+                  composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample
                   cd sample
                   composer update --prefer-stable --prefer-dist --no-progress
 

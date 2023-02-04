@@ -40,7 +40,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property SelfCastingCasterWithStaticDocblockReturn $casted_property_with_static_return_docblock_and_param
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_castable
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_anonymous_cast
- * @property mixed $casted_property_without_return_type
+ * @property CastableWithoutReturnType $casted_property_without_return_type
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $cast_without_property
  * @property mixed $cast_inbound_attribute
  * @method static \Illuminate\Database\Eloquent\Builder|CustomCast newModelQuery()

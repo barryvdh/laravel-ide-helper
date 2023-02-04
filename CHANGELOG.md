@@ -2,8 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.3...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.13.0...master)
 --------------
+
+2023-02-04, 2.13.0
+------------------
 
 ### Fixes
 - Fix return type of methods provided by `SoftDeletes` [#1345 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1345)

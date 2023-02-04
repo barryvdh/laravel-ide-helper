@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Fix issue where \Eloquent is not included when using write_mixin [#1352 / Jefemy](https://github.com/barryvdh/laravel-ide-helper/pull/1352)
 - Fix model factory method arguments for Laravel >= 9 [#1361 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1361)
 - Improve return type of mock helper methods in tests [#1405 / bentleyo](https://github.com/barryvdh/laravel-ide-helper/pull/1405) 
+- Fix Castable class if failed to detect it from return types [#1388 / kwarcu](https://github.com/barryvdh/laravel-ide-helper/pull/1388)
 
 ### Added
 - Added Laravel 10 support [#1407 / lptn](https://github.com/barryvdh/laravel-ide-helper/pull/1407)

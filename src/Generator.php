@@ -128,15 +128,6 @@ class Generator
         }
 
         try {
-            if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)) {
-                $class = get_class(\SSH::connection());
-                $this->extra['SSH'] = [$class];
-                $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;
-            }
-        } catch (\Exception $e) {
-        }
-
-        try {
             if (class_exists('Storage') && is_a('Storage', '\Illuminate\Support\Facades\Storage', true)) {
                 $class = get_class(\Storage::disk());
                 $this->extra['Storage'] = [$class];

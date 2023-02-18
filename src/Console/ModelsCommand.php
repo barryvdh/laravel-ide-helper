@@ -570,11 +570,11 @@ class ModelsCommand extends Command
     public function getPropertiesFromMethods($model)
     {
         $reflectionClass = new ReflectionClass($model);
-        $methodReflections = $reflectionClass->getMethods();
-        if ($methodReflections) {
+        $reflections = $reflectionClass->getMethods();
+        if ($reflections) {
             // Filter out private methods because they can't be used to generate magic properties and HasAttributes'
             // methods that resemble mutators but aren't.
-            $methodReflections = array_filter($methodReflections, function (\ReflectionMethod $methodReflection) {
+            $reflections = array_filter($reflections, function (\ReflectionMethod $methodReflection) {
                 return !$methodReflection->isPrivate() && !(
                     in_array(
                         \Illuminate\Database\Eloquent\Concerns\HasAttributes::class,
@@ -585,11 +585,11 @@ class ModelsCommand extends Command
                     )
                 );
             });
-            sort($methodReflections);
-            foreach ($methodReflections as $methodReflection) {
-                $type = $this->getReturnTypeFromReflection($methodReflection);
+            sort($reflections);
+            foreach ($reflections as $reflection) {
+                $type = $this->getReturnTypeFromReflection($reflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
-                $method = $methodReflection->getName();
+                $method = $reflection->getName();
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith(
                         $method,
@@ -599,15 +599,15 @@ class ModelsCommand extends Command
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
-                        $type = $this->getReturnType($methodReflection);
+                        $type = $this->getReturnType($reflection);
                         $type = $this->getTypeInModel($model, $type);
-                        $comment = $this->getCommentFromDocBlock($methodReflection);
+                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null, $comment);
                     }
                 } elseif ($isAttribute) {
                     $name = Str::snake($method);
-                    $types = $this->getAttributeReturnType($model, $methodReflection);
-                    $comment = $this->getCommentFromDocBlock($methodReflection);
+                    $types = $this->getAttributeReturnType($model, $reflection);
+                    $comment = $this->getCommentFromDocBlock($reflection);
 
                     if ($types->has('get')) {
                         $type = $this->getTypeInModel($model, $types['get']);
@@ -626,24 +626,24 @@ class ModelsCommand extends Command
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
-                        $comment = $this->getCommentFromDocBlock($methodReflection);
+                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
                     //Magic set<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (!empty($name)) {
-                        $comment = $this->getCommentFromDocBlock($methodReflection);
-                        $args = $this->getParameters($methodReflection);
+                        $comment = $this->getCommentFromDocBlock($reflection);
+                        $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
                         $builder = $this->getClassNameInDestinationFile(
-                            $methodReflection->getDeclaringClass(),
+                            $reflection->getDeclaringClass(),
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
-                            $methodReflection->getDeclaringClass(),
-                            $methodReflection->getDeclaringClass()->getName()
+                            $reflection->getDeclaringClass(),
+                            $reflection->getDeclaringClass()->getName()
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }
@@ -663,20 +663,20 @@ class ModelsCommand extends Command
                     && !Str::startsWith($method, 'get')
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
-                    if ($returnType = $methodReflection->getReturnType()) {
+                    if ($returnType = $reflection->getReturnType()) {
                         $type = $returnType instanceof ReflectionNamedType
                             ? $returnType->getName()
                             : (string)$returnType;
                     } else {
                         // php 7.x type or fallback to docblock
-                        $type = (string)$this->getReturnTypeFromDocBlock($methodReflection);
+                        $type = (string)$this->getReturnTypeFromDocBlock($reflection);
                     }
 
-                    $file = new \SplFileObject($methodReflection->getFileName());
-                    $file->seek($methodReflection->getStartLine() - 1);
+                    $file = new \SplFileObject($reflection->getFileName());
+                    $file->seek($reflection->getStartLine() - 1);
 
                     $code = '';
-                    while ($file->key() < $methodReflection->getEndLine()) {
+                    while ($file->key() < $reflection->getEndLine()) {
                         $code .= $file->current();
                         $file->next();
                     }
@@ -690,20 +690,20 @@ class ModelsCommand extends Command
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
                             //Resolve the relation's model to a Relation object.
-                            if ($methodReflection->getNumberOfParameters()) {
+                            if ($reflection->getNumberOfParameters()) {
                                 continue;
                             }
 
-                            $comment = $this->getCommentFromDocBlock($methodReflection);
+                            $comment = $this->getCommentFromDocBlock($reflection);
                             // Adding constraints requires reading model properties which
                             // can cause errors. Since we don't need constraints we can
                             // disable them when we fetch the relation to avoid errors.
-                            $relationObj = Relation::noConstraints(function () use ($model, $methodReflection) {
+                            $relationObj = Relation::noConstraints(function () use ($model, $reflection) {
                                 try {
-                                    $methodName = $methodReflection->getName();
+                                    $methodName = $reflection->getName();
                                     return $model->$methodName();
                                 } catch (Throwable $e) {
-                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $methodReflection->getName(), $e->getMessage()));
+                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $reflection->getName(), $e->getMessage()));
 
                                     return null;
                                 }

@@ -589,14 +589,15 @@ class ModelsCommand extends Command
             foreach ($methodReflections as $methodReflection) {
                 $type = $this->getReturnTypeFromReflection($methodReflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
+                $method = $methodReflection->getName();
                 if (
-                    Str::startsWith($methodReflection->getName(), 'get') && Str::endsWith(
-                        $methodReflection->getName(),
+                    Str::startsWith($method, 'get') && Str::endsWith(
+                        $method,
                         'Attribute'
-                    ) && $methodReflection->getName() !== 'getAttribute'
+                    ) && $method !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
-                    $name = Str::snake(substr($methodReflection->getName(), 3, -9));
+                    $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
                         $type = $this->getReturnType($methodReflection);
                         $type = $this->getTypeInModel($model, $type);
@@ -604,7 +605,7 @@ class ModelsCommand extends Command
                         $this->setProperty($name, $type, true, null, $comment);
                     }
                 } elseif ($isAttribute) {
-                    $name = Str::snake($methodReflection->getName());
+                    $name = Str::snake($method);
                     $types = $this->getAttributeReturnType($model, $methodReflection);
                     $comment = $this->getCommentFromDocBlock($methodReflection);
 
@@ -617,20 +618,20 @@ class ModelsCommand extends Command
                         $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (
-                    Str::startsWith($methodReflection->getName(), 'set') && Str::endsWith(
-                        $methodReflection->getName(),
+                    Str::startsWith($method, 'set') && Str::endsWith(
+                        $method,
                         'Attribute'
-                    ) && $methodReflection->getName() !== 'setAttribute'
+                    ) && $method !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
-                    $name = Str::snake(substr($methodReflection->getName(), 3, -9));
+                    $name = Str::snake(substr($method, 3, -9));
                     if (!empty($name)) {
                         $comment = $this->getCommentFromDocBlock($methodReflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
-                } elseif (Str::startsWith($methodReflection->getName(), 'scope') && $methodReflection->getName() !== 'scopeQuery') {
+                } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
                     //Magic set<name>Attribute
-                    $name = Str::camel(substr($methodReflection->getName(), 5));
+                    $name = Str::camel(substr($method, 5));
                     if (!empty($name)) {
                         $comment = $this->getCommentFromDocBlock($methodReflection);
                         $args = $this->getParameters($methodReflection);
@@ -646,11 +647,11 @@ class ModelsCommand extends Command
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }
-                } elseif (in_array($methodReflection->getName(), ['query', 'newQuery', 'newModelQuery'])) {
+                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
                     $this->setMethod(
-                        $methodReflection->getName(),
+                        $method,
                         $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
 
@@ -658,8 +659,8 @@ class ModelsCommand extends Command
                         $this->writeModelExternalBuilderMethods($model);
                     }
                 } elseif (
-                    !method_exists('Illuminate\Database\Eloquent\Model', $methodReflection->getName())
-                    && !Str::startsWith($methodReflection->getName(), 'get')
+                    !method_exists('Illuminate\Database\Eloquent\Model', $method)
+                    && !Str::startsWith($method, 'get')
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     if ($returnType = $methodReflection->getReturnType()) {
@@ -727,7 +728,7 @@ class ModelsCommand extends Command
                                     );
                                     $collectionTypeHint = $this->getCollectionTypeHint($collectionClassNameInModel, $relatedModel);
                                     $this->setProperty(
-                                        $methodReflection->getName(),
+                                        $method,
                                         $collectionTypeHint,
                                         true,
                                         null,
@@ -735,7 +736,7 @@ class ModelsCommand extends Command
                                     );
                                     if ($this->write_model_relation_count_properties) {
                                         $this->setProperty(
-                                            Str::snake($methodReflection->getName()) . '_count',
+                                            Str::snake($method) . '_count',
                                             'int|null',
                                             true,
                                             false
@@ -748,7 +749,7 @@ class ModelsCommand extends Command
                                 ) {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
-                                        $methodReflection->getName(),
+                                        $method,
                                         $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
                                         true,
                                         null,
@@ -757,7 +758,7 @@ class ModelsCommand extends Command
                                 } else {
                                     //Single model is returned
                                     $this->setProperty(
-                                        $methodReflection->getName(),
+                                        $method,
                                         $relatedModel,
                                         true,
                                         null,

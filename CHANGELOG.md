@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 [Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.13.0...master)
 --------------
 
+### Changed
+- Official support for Lumen has been dropped [#1425 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1425)
+
 2023-02-04, 2.13.0
 ------------------
 

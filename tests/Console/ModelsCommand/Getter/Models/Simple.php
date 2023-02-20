@@ -103,4 +103,8 @@ class Simple extends Model
     public function getAttributeReturnsVoidAttribute(): void
     {
     }
+
+    private function getInvalidAccessModifierAttribute()
+    {
+    }
 }

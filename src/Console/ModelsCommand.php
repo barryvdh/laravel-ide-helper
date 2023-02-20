@@ -437,12 +437,44 @@ class ModelsCommand extends Command
             $realType = $this->checkForCastableCasts($realType, $params);
             $realType = $this->checkForCustomLaravelCasts($realType);
             $realType = $this->getTypeOverride($realType);
-            $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
+            $realType = $this->getTypeInModel($model, $realType);
+            $realType = $this->applyNullability($realType, isset($this->nullableColumns[$name]));
 
-            if (isset($this->nullableColumns[$name])) {
-                $this->properties[$name]['type'] .= '|null';
-            }
+            $this->properties[$name]['type'] = $realType;
         }
+    }
+
+    protected function applyNullability(?string $type, bool $isNullable): ?string
+    {
+        if (!$type) {
+            return null;
+        }
+
+        $nullString = null;
+
+        // Find instance of:
+        // A) start of string or non-word character (like space or pipe) followed by 'null|'
+        // B) '|null' followed by end of string or non-word character (like space or pipe)
+        // This will find 'or null' instances at the beginning, middle or end of a type string,
+        // but will exclude solo/pure null instances and null being part of a type's name (e.g. class 'Benull').
+        if (preg_match('/(?:(?:^|\W)(null\|))|(\|null(?:$|\W))/', $type, $matches) === 1) {
+            $nullString = array_pop($matches);
+        }
+
+        // Return the current type string if:
+        // A) the type can be null and the type contains a null instance
+        // B) the type can not be null and the type does not contain a null instance
+        if (!($isNullable xor $nullString)) {
+            return $type;
+        }
+
+        if ($isNullable) {
+            $type .= '|null';
+        } else {
+            $type = str_replace($nullString, '', $type);
+        }
+
+        return $type;
     }
 
     /**

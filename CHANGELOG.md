@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
 
+### Changed
+- Refactor resolving of null information for custom casted attribute types [#1330 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1330)
+
 2023-02-04, 2.13.0
 ------------------
 

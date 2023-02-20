@@ -441,12 +441,44 @@ class ModelsCommand extends Command
             $realType = $this->checkForCastableCasts($realType, $params);
             $realType = $this->checkForCustomLaravelCasts($realType);
             $realType = $this->getTypeOverride($realType);
-            $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
+            $realType = $this->getTypeInModel($model, $realType);
+            $realType = $this->applyNullability($realType, isset($this->nullableColumns[$name]));
 
-            if (isset($this->nullableColumns[$name])) {
-                $this->properties[$name]['type'] .= '|null';
-            }
+            $this->properties[$name]['type'] = $realType;
         }
+    }
+
+    protected function applyNullability(?string $type, bool $isNullable): ?string
+    {
+        if (!$type) {
+            return null;
+        }
+
+        $nullString = null;
+
+        // Find instance of:
+        // A) start of string or non-word character (like space or pipe) followed by 'null|'
+        // B) '|null' followed by end of string or non-word character (like space or pipe)
+        // This will find 'or null' instances at the beginning, middle or end of a type string,
+        // but will exclude solo/pure null instances and null being part of a type's name (e.g. class 'Benull').
+        if (preg_match('/(?:(?:^|\W)(null\|))|(\|null(?:$|\W))/', $type, $matches) === 1) {
+            $nullString = array_pop($matches);
+        }
+
+        // Return the current type string if:
+        // A) the type can be null and the type contains a null instance
+        // B) the type can not be null and the type does not contain a null instance
+        if (!($isNullable xor $nullString)) {
+            return $type;
+        }
+
+        if ($isNullable) {
+            $type .= '|null';
+        } else {
+            $type = str_replace($nullString, '', $type);
+        }
+
+        return $type;
     }
 
     /**
@@ -717,9 +749,10 @@ class ModelsCommand extends Command
                                         $model,
                                         $collectionClass
                                     );
+                                    $collectionTypeHint = $this->getCollectionTypeHint($collectionClassNameInModel, $relatedModel);
                                     $this->setProperty(
                                         $method,
-                                        $collectionClassNameInModel . '|' . $relatedModel . '[]',
+                                        $collectionTypeHint,
                                         true,
                                         null,
                                         $comment
@@ -1085,6 +1118,23 @@ class ModelsCommand extends Command
     }
 
     /**
+     * Determine a model classes' collection type hint.
+     *
+     * @param string $collectionClassNameInModel
+     * @param string $relatedModel
+     * @return string
+     */
+    protected function getCollectionTypeHint(string $collectionClassNameInModel, string $relatedModel): string
+    {
+        $useGenericsSyntax = $this->laravel['config']->get('ide-helper.use_generics_annotations', true);
+        if ($useGenericsSyntax) {
+            return $collectionClassNameInModel . '<int, ' . $relatedModel . '>';
+        } else {
+            return $collectionClassNameInModel . '|' . $relatedModel . '[]';
+        }
+    }
+
+    /**
      * Returns the available relation types
      */
     protected function getRelationTypes(): array
@@ -1281,8 +1331,9 @@ class ModelsCommand extends Command
         if ($collectionClass !== '\\' . \Illuminate\Database\Eloquent\Collection::class) {
             $collectionClassInModel = $this->getClassNameInDestinationFile($model, $collectionClass);
 
-            $this->setMethod('get', $collectionClassInModel . '|static[]', ['$columns = [\'*\']']);
-            $this->setMethod('all', $collectionClassInModel . '|static[]', ['$columns = [\'*\']']);
+            $collectionTypeHint = $this->getCollectionTypeHint($collectionClassInModel, 'static');
+            $this->setMethod('get', $collectionTypeHint, ['$columns = [\'*\']']);
+            $this->setMethod('all', $collectionTypeHint, ['$columns = [\'*\']']);
         }
     }
 
@@ -1332,7 +1383,7 @@ class ModelsCommand extends Command
 
         return $this->getReturnTypeFromReflection($methodReflection) ??
             $this->getReturnTypeFromDocBlock($methodReflection, $reflection) ??
-            'mixed';
+            $type;
     }
 
     /**

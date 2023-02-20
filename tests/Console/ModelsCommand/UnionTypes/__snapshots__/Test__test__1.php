@@ -12,7 +12,7 @@ use Illuminate\Database\Query\Builder;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\UnionTypes\Models\UnionTypeModel
  *
  * @property-read string|int|null $foo
- * @property-read \Illuminate\Database\Eloquent\Collection|UnionTypeModel[] $withUnionTypeReturn
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, UnionTypeModel> $withUnionTypeReturn
  * @property-read int|null $with_union_type_return_count
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UnionTypeModel newQuery()

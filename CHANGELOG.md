@@ -2,18 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.12.3...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.13.0...master)
 --------------
+
+2023-02-04, 2.13.0
+------------------
 
 ### Fixes
 - Fix return type of methods provided by `SoftDeletes` [#1345 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1345)
 - Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
 - Fix issue where \Eloquent is not included when using write_mixin [#1352 / Jefemy](https://github.com/barryvdh/laravel-ide-helper/pull/1352)
 - Fix model factory method arguments for Laravel >= 9 [#1361 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1361)
+- Improve return type of mock helper methods in tests [#1405 / bentleyo](https://github.com/barryvdh/laravel-ide-helper/pull/1405) 
+- Fix Castable class if failed to detect it from return types [#1388 / kwarcu](https://github.com/barryvdh/laravel-ide-helper/pull/1388)
 
 ### Added
+- Added Laravel 10 support [#1407 / lptn](https://github.com/barryvdh/laravel-ide-helper/pull/1407)
 - Add support for custom casts that implement `CastsInboundAttributes` [#1329 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1329)
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
+- Add option `use_generics_annotations` for collection type hints [#1298 / tanerkay](https://github.com/barryvdh/laravel-ide-helper/pull/1298)
 
 2022-03-06, 2.12.3
 ------------------

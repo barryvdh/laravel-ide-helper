@@ -369,6 +369,10 @@ class ModelsCommand extends Command
                 $type = 'date';
             } elseif (Str::startsWith($type, 'immutable_custom_datetime:')) {
                 $type = 'immutable_date';
+            } elseif (Str::startsWith($type, 'immutable_date:')) {
+                $type = 'immutable_date';
+            } elseif (Str::startsWith($type, 'immutable_datetime:')) {
+                $type = 'immutable_datetime';
             } elseif (Str::startsWith($type, 'encrypted:')) {
                 $type = Str::after($type, ':');
             }

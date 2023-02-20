@@ -605,13 +605,27 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromMethods($model)
     {
-        $methods = get_class_methods($model);
-        if ($methods) {
-            sort($methods);
-            foreach ($methods as $method) {
-                $reflection = new \ReflectionMethod($model, $method);
+        $reflectionClass = new ReflectionClass($model);
+        $reflections = $reflectionClass->getMethods();
+        if ($reflections) {
+            // Filter out private methods because they can't be used to generate magic properties and HasAttributes'
+            // methods that resemble mutators but aren't.
+            $reflections = array_filter($reflections, function (\ReflectionMethod $methodReflection) {
+                return !$methodReflection->isPrivate() && !(
+                    in_array(
+                        \Illuminate\Database\Eloquent\Concerns\HasAttributes::class,
+                        $methodReflection->getDeclaringClass()->getTraitNames()
+                    ) && (
+                        $methodReflection->getName() === 'setClassCastableAttribute' ||
+                        $methodReflection->getName() === 'setEnumCastableAttribute'
+                    )
+                );
+            });
+            sort($reflections);
+            foreach ($reflections as $reflection) {
                 $type = $this->getReturnTypeFromReflection($reflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
+                $method = $reflection->getName();
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith(
                         $method,
@@ -628,16 +642,15 @@ class ModelsCommand extends Command
                     }
                 } elseif ($isAttribute) {
                     $name = Str::snake($method);
-                    $types = $this->getAttributeReturnType($model, $method);
+                    $types = $this->getAttributeReturnType($model, $reflection);
+                    $comment = $this->getCommentFromDocBlock($reflection);
 
                     if ($types->has('get')) {
                         $type = $this->getTypeInModel($model, $types['get']);
-                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null, $comment);
                     }
 
                     if ($types->has('set')) {
-                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (
@@ -713,8 +726,7 @@ class ModelsCommand extends Command
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
                             //Resolve the relation's model to a Relation object.
-                            $methodReflection = new \ReflectionMethod($model, $method);
-                            if ($methodReflection->getNumberOfParameters()) {
+                            if ($reflection->getNumberOfParameters()) {
                                 continue;
                             }
 
@@ -722,11 +734,12 @@ class ModelsCommand extends Command
                             // Adding constraints requires reading model properties which
                             // can cause errors. Since we don't need constraints we can
                             // disable them when we fetch the relation to avoid errors.
-                            $relationObj = Relation::noConstraints(function () use ($model, $method) {
+                            $relationObj = Relation::noConstraints(function () use ($model, $reflection) {
                                 try {
-                                    return $model->$method();
+                                    $methodName = $reflection->getName();
+                                    return $model->$methodName();
                                 } catch (Throwable $e) {
-                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $method, $e->getMessage()));
+                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $reflection->getName(), $e->getMessage()));
 
                                     return null;
                                 }
@@ -1159,10 +1172,13 @@ class ModelsCommand extends Command
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
     }
 
-    protected function getAttributeReturnType(Model $model, string $method): Collection
+    protected function getAttributeReturnType(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
+        // Private/protected ReflectionMethods require setAccessible prior to PHP 8.1
+        $reflectionMethod->setAccessible(true);
+
         /** @var Attribute $attribute */
-        $attribute = $model->{$method}();
+        $attribute = $reflectionMethod->invoke($model);
 
         return collect([
             'get' => $attribute->get ? optional(new \ReflectionFunction($attribute->get))->getReturnType() : null,
@@ -1171,7 +1187,7 @@ class ModelsCommand extends Command
             ->filter()
             ->map(function ($type) {
                 if ($type instanceof \ReflectionUnionType) {
-                    $types =collect($type->getTypes())
+                    $types = collect($type->getTypes())
                         /** @var ReflectionType $reflectionType */
                         ->map(function ($reflectionType) {
                             return collect($this->extractReflectionTypes($reflectionType));
@@ -1259,7 +1275,7 @@ class ModelsCommand extends Command
         $type = implode('|', $types);
 
         if ($returnType->allowsNull()) {
-            $type .='|null';
+            $type .= '|null';
         }
 
         return $type;
@@ -1501,10 +1517,10 @@ class ModelsCommand extends Command
             $type = implode('|', $types);
 
             if ($paramType->allowsNull()) {
-                if (count($types)==1) {
+                if (count($types) == 1) {
                     $type = '?' . $type;
                 } else {
-                    $type .='|null';
+                    $type .= '|null';
                 }
             }
 
@@ -1581,7 +1597,7 @@ class ModelsCommand extends Command
         } else {
             $types = [];
             foreach ($reflection_type->getTypes() as $named_type) {
-                if ($named_type->getName()==='null') {
+                if ($named_type->getName() === 'null') {
                     continue;
                 }
 

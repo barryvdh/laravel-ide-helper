@@ -508,6 +508,10 @@ class ModelsCommand extends Command
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
+        
+        if (strpos($table, '.')) {
+            [$database, $table] = explode('.', $table);
+        }
 
         $platformName = $databasePlatform->getName();
         $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);

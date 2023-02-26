@@ -14,7 +14,7 @@ class MethodTest extends TestCase
         parent::getEnvironmentSetUp($app);
 
         if ($this->getName() == 'testSeparateTags') {
-            $app['config']->set('ide-helper.separate_tags', true);
+            $app['config']->set('ide-helper.phpdoc_separate_tags', true);
         }
     }
 

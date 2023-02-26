@@ -13,7 +13,7 @@ class Test extends AbstractModelsCommand
     {
         parent::getEnvironmentSetUp($app);
 
-        $app['config']->set('ide-helper.separate_tags', true);
+        $app['config']->set('ide-helper.phpdoc_separate_tags', true);
     }
 
     public function test(): void

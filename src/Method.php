@@ -145,7 +145,7 @@ class Method
      */
     public function getDocComment($prefix = "\t\t")
     {
-        $serializer = new DocBlockSerializer(1, $prefix, true, null, config('ide-helper.separate_tags'));
+        $serializer = new DocBlockSerializer(1, $prefix, true, null, config('ide-helper.phpdoc_separate_tags', false));
         return $serializer->getDocComment($this->phpdoc);
     }
 

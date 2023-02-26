@@ -111,14 +111,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Separate Tag Groups
+    | PHPDOC: Separate Tag Groups
     |--------------------------------------------------------------------------
     |
     | Set to true to separate tags into groups with an empty string.
     |
     */
 
-    'separate_tags' => false,
+    'phpdoc_separate_tags' => false,
 
     /*
     |--------------------------------------------------------------------------

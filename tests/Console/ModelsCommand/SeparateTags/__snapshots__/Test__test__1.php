@@ -83,7 +83,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $macaddress_not_nullable
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Post[] $posts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Post> $posts
  * @property-read int|null $posts_count
  * @property-write mixed $first_name Set the user's first name.
  *

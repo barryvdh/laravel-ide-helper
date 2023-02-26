@@ -6,6 +6,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class MethodTest extends TestCase
 {
@@ -142,40 +143,31 @@ DOC;
      */
     public function testSeparateTags()
     {
-        $reflectionClass = new \ReflectionClass(Builder::class);
-        $reflectionMethod = $reflectionClass->getMethod('paginate');
+        $reflectionClass = new \ReflectionClass(Model::class);
+        $reflectionMethod = $reflectionClass->getMethod('toJson');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
+        $method = new Method($reflectionMethod, 'Model', $reflectionClass);
 
         $output =  <<<'DOC'
 /**
- * Paginate the given query.
+ * Convert the model instance to JSON.
  *
- * @param int|null $perPage
- * @param array $columns
- * @param string $pageName
- * @param int|null $page
- * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator 
+ * @param int $options
+ * @return string 
  *
- * @throws \InvalidArgumentException
+ * @throws \Illuminate\Database\Eloquent\JsonEncodingException
  *
  * @static 
  */
 DOC;
 
         $this->assertSame($output, $method->getDocComment(''));
-        $this->assertSame('paginate', $method->getName());
-        $this->assertSame('\\' . Builder::class, $method->getDeclaringClass());
-        $this->assertSame('$perPage, $columns, $pageName, $page', $method->getParams(true));
-        $this->assertSame(['$perPage', '$columns', '$pageName', '$page'], $method->getParams(false));
-        $this->assertSame(
-            '$perPage = null, $columns = [], $pageName = \'page\', $page = null',
-            $method->getParamsWithDefault(true)
-        );
-        $this->assertSame(
-            ['$perPage = null', '$columns = []', '$pageName = \'page\'', '$page = null'],
-            $method->getParamsWithDefault(false)
-        );
+        $this->assertSame('toJson', $method->getName());
+        $this->assertSame('\\' . Model::class, $method->getDeclaringClass());
+        $this->assertSame('$options', $method->getParams(true));
+        $this->assertSame(['$options'], $method->getParams(false));
+        $this->assertSame('$options = 0', $method->getParamsWithDefault(true));
+        $this->assertSame(['$options = 0'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
     }
 }

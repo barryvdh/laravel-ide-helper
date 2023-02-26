@@ -263,6 +263,33 @@ add support for creating a new dedicated class instead of using local scopes in 
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_external_builder_methods` and setting it to `false`.
 
+#### Separating docblock tags into groups
+
+By default, all docblock tags are written sequentially on each line. Problems can arise when using Laravel Pint or other linters because they use different formatting.
+
+Change the `phpdoc_separate_tags` setting in the config to `true` to fix this behavior.
+
+```php
+// => before
+
+/**
+ * @property integer $id
+ * @property-write mixed $first_name Set the user's first name.
+ * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Post query()
+ */
+
+// => after
+
+/**
+ * @property integer $id
+ * @property-write mixed $first_name Set the user's first name.
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Post query()
+ */
+```
+
 #### Unsupported or custom database types
 
 Common column types (e.g. varchar, integer) are correctly mapped to PHP types (`string`, `int`).

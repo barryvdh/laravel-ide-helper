@@ -1,0 +1,28 @@
+name: normalize composer.json
+
+on:
+  push:
+    paths:
+      - .github/workflows/composer-normalize.yml
+      - composer.json
+
+jobs:
+  normalize:
+    timeout-minutes: 15
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Validate Composer configuration
+        run: composer validate --strict
+
+      - name: Normalize composer.json
+        run: |
+          composer global config --no-plugins allow-plugins.ergebnis/composer-normalize true
+          composer global require ergebnis/composer-normalize
+          composer normalize
+
+      - uses: stefanzweifel/git-auto-commit-action@v4.0.0
+        with:
+          commit_message: normalize composer.json

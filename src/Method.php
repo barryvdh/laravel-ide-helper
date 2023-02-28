@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -12,10 +13,12 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
-use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag;
+use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
+use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class Method
 {
@@ -29,12 +32,13 @@ class Method
     protected $declaringClassName;
     protected $name;
     protected $namespace;
-    protected $params = array();
-    protected $params_with_default = array();
-    protected $interfaces = array();
+    protected $params = [];
+    protected $params_with_default = [];
+    protected $interfaces = [];
     protected $real_name;
     protected $return = null;
     protected $root;
+    protected $classAliases;
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
@@ -42,17 +46,19 @@ class Method
      * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
+     * @param array $classAliases
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = array())
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
+        $this->classAliases = $classAliases;
         $this->name = $methodName ?: $method->name;
         $this->real_name = $method->isClosure() ? $this->name : $method->name;
         $this->initClassDefinedProperties($method, $class);
 
         //Reference the 'real' function in the declaring class
-        $this->root = '\\' . ltrim($class->getName(), '\\');
+        $this->root = '\\' . ltrim($method->name === '__invoke' ? $method->getDeclaringClass()->getName() : $class->getName(), '\\');
 
         //Create a DocBlock and serializer instance
         $this->initPhpDoc($method);
@@ -77,7 +83,7 @@ class Method
      */
     protected function initPhpDoc($method)
     {
-        $this->phpdoc = new DocBlock($method, new Context($this->namespace));
+        $this->phpdoc = new DocBlock($method, new Context($this->namespace, $this->classAliases));
     }
 
     /**
@@ -116,7 +122,7 @@ class Method
      */
     public function isInstanceCall()
     {
-        return ! ($this->method->isClosure() || $this->method->isStatic());
+        return !($this->method->isClosure() || $this->method->isStatic());
     }
 
     /**
@@ -248,33 +254,37 @@ class Method
      */
     protected function normalizeReturn(DocBlock $phpdoc)
     {
-        //Get the return type and adjust them for beter autocomplete
+        //Get the return type and adjust them for better autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
-        if ($returnTags) {
-            /** @var ReturnTag $tag */
-            $tag = reset($returnTags);
-            // Get the expanded type
-            $returnValue = $tag->getType();
 
-            // Replace the interfaces
-            foreach ($this->interfaces as $interface => $real) {
-                $returnValue = str_replace($interface, $real, $returnValue);
-            }
-
-            // Set the changed content
-            $tag->setContent($returnValue . ' ' . $tag->getDescription());
-            $this->return = $returnValue;
-
-            if ($tag->getType() === '$this') {
-                $tag->setType($this->root);
-            }
-        } else {
+        if (count($returnTags) === 0) {
             $this->return = null;
+            return;
+        }
+
+        /** @var ReturnTag $tag */
+        $tag = reset($returnTags);
+        // Get the expanded type
+        $returnValue = $tag->getType();
+
+        // Replace the interfaces
+        foreach ($this->interfaces as $interface => $real) {
+            $returnValue = str_replace($interface, $real, $returnValue);
+        }
+
+        // Set the changed content
+        $tag->setContent($returnValue . ' ' . $tag->getDescription());
+        $this->return = $returnValue;
+
+        if ($tag->getType() === '$this') {
+            Str::contains($this->root, Builder::class)
+                ? $tag->setType($this->root . '|static')
+                : $tag->setType($this->root);
         }
     }
 
     /**
-     * Convert keywwords that are incorrect.
+     * Convert keywords that are incorrect.
      *
      * @param  string $string
      * @return string
@@ -295,7 +305,7 @@ class Method
      */
     public function shouldReturn()
     {
-        if ($this->return !== "void" && $this->method->name !== "__construct") {
+        if ($this->return !== 'void' && $this->method->name !== '__construct') {
             return true;
         }
 
@@ -306,22 +316,22 @@ class Method
      * Get the parameters and format them correctly
      *
      * @param  \ReflectionMethod $method
-     * @return array
+     * @return void
      */
     public function getParameters($method)
     {
-        //Loop through the default values for paremeters, and make the correct output string
-        $params = array();
-        $paramsWithDefault = array();
+        //Loop through the default values for parameters, and make the correct output string
+        $params = [];
+        $paramsWithDefault = [];
         foreach ($method->getParameters() as $param) {
-            $paramStr = '$' . $param->getName();
+            $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
             $params[] = $paramStr;
-            if ($param->isOptional()) {
+            if ($param->isOptional() && !$param->isVariadic()) {
                 $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';
                 } elseif (is_array($default)) {
-                    $default = 'array()';
+                    $default = '[]';
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {
@@ -329,7 +339,7 @@ class Method
                 } elseif (is_resource($default)) {
                     //skip to not fail
                 } else {
-                    $default = "'" . trim($default) . "'";
+                    $default = var_export($default, true);
                 }
                 $paramStr .= " = $default";
             }
@@ -356,14 +366,14 @@ class Method
         }
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
-            $phpdoc = new DocBlock($method, new Context($namespace));
-            
+            $phpdoc = new DocBlock($method, new Context($namespace, $this->classAliases));
+
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);
-            } else {
-                return $phpdoc;
             }
+
+            return $phpdoc;
         }
     }
 }

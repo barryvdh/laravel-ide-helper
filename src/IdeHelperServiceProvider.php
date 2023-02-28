@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -14,22 +15,18 @@ use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Listeners\GenerateModelHelper;
+use Illuminate\Console\Events\CommandFinished;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 
-class IdeHelperServiceProvider extends ServiceProvider
+class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * Bootstrap the application events.
      *
@@ -37,6 +34,13 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (!$this->app->runningUnitTests() && $this->app['config']->get('ide-helper.post_migrate', [])) {
+            $this->app['events']->listen(CommandFinished::class, GenerateModelHelper::class);
+            $this->app['events']->listen(MigrationsEnded::class, function () {
+                GenerateModelHelper::$shouldRun = true;
+            });
+        }
+
         if ($this->app->has('view')) {
             $viewPath = __DIR__ . '/../resources/views';
             $this->loadViewsFrom($viewPath, 'ide-helper');
@@ -104,7 +108,7 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('command.ide-helper.generate', 'command.ide-helper.models');
+        return ['command.ide-helper.generate', 'command.ide-helper.models'];
     }
 
     /**
@@ -112,16 +116,13 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     private function createLocalViewFactory()
     {
-        static $factory=null;
-        if (!$factory) {
-            $resolver = new EngineResolver();
-            $resolver->register('php', function () {
-                return new PhpEngine();
-            });
-            $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
-            $factory = new Factory($resolver, $finder, $this->app['events']);
-            $factory->addExtension('php', 'php');
-        }
+        $resolver = new EngineResolver();
+        $resolver->register('php', function () {
+            return new PhpEngine($this->app['files']);
+        });
+        $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
+        $factory = new Factory($resolver, $finder, $this->app['events']);
+        $factory->addExtension('php', 'php');
         return $factory;
     }
 }

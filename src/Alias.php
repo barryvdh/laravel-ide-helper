@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -10,16 +11,20 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use ReflectionClass;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
-use Illuminate\Config\Repository as ConfigRepository;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
+use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
+use Closure;
+use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Support\Facades\Facade;
+use ReflectionClass;
 
 class Alias
 {
     protected $alias;
+    /** @psalm-var class-string $facade */
     protected $facade;
     protected $extends = null;
     protected $extendsClass = null;
@@ -28,13 +33,14 @@ class Alias
     protected $short;
     protected $namespace = '__root';
     protected $root = null;
-    protected $classes = array();
-    protected $methods = array();
-    protected $usedMethods = array();
+    protected $classes = [];
+    protected $methods = [];
+    protected $usedMethods = [];
     protected $valid = false;
-    protected $magicMethods = array();
-    protected $interfaces = array();
+    protected $magicMethods = [];
+    protected $interfaces = [];
     protected $phpdoc = null;
+    protected $classAliases = [];
 
     /** @var ConfigRepository  */
     protected $config;
@@ -42,11 +48,12 @@ class Alias
     /**
      * @param ConfigRepository $config
      * @param string           $alias
+     * @psalm-param class-string $facade
      * @param string           $facade
      * @param array            $magicMethods
      * @param array            $interfaces
      */
-    public function __construct($config, $alias, $facade, $magicMethods = array(), $interfaces = array())
+    public function __construct($config, $alias, $facade, $magicMethods = [], $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
@@ -59,11 +66,11 @@ class Alias
 
         $this->detectRoot();
 
-        if ((!$this->isTrait() && $this->root)) {
-            $this->valid = true;
-        } else {
+        if (!$this->root || $this->isTrait()) {
             return;
         }
+
+        $this->valid = true;
 
         $this->addClass($this->root);
         $this->detectFake();
@@ -72,13 +79,14 @@ class Alias
         $this->detectExtendsNamespace();
 
         if (!empty($this->namespace)) {
+            $this->classAliases = (new UsesResolver())->loadFromClass($this->root);
+
             //Create a DocBlock and serializer instance
-            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace));
+            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace, $this->classAliases));
         }
 
-
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
-            $this->usedMethods = array('decrement', 'increment');
+            $this->usedMethods = ['decrement', 'increment'];
         }
     }
 
@@ -197,13 +205,17 @@ class Alias
     protected function detectFake()
     {
         $facade = $this->facade;
-        
+
+        if (!is_subclass_of($facade, Facade::class)) {
+            return;
+        }
+
         if (!method_exists($facade, 'fake')) {
             return;
         }
 
         $real = $facade::getFacadeRoot();
-        
+
         try {
             $facade::fake();
             $fake = $facade::getFacadeRoot();
@@ -285,12 +297,12 @@ class Alias
             //When the database connection is not set, some classes will be skipped
         } catch (\PDOException $e) {
             $this->error(
-                "PDOException: " . $e->getMessage() .
+                'PDOException: ' . $e->getMessage() .
                 "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)." .
                 " Skipping $facade."
             );
         } catch (\Exception $e) {
-            $this->error("Exception: " . $e->getMessage() . "\nSkipping $facade.");
+            $this->error('Exception: ' . $e->getMessage() . "\nSkipping $facade.");
         }
     }
 
@@ -302,10 +314,7 @@ class Alias
     protected function isTrait()
     {
         // Check if the facade is not a Trait
-        if (function_exists('trait_exists') && trait_exists($this->facade)) {
-            return true;
-        }
-        return false;
+        return trait_exists($this->facade);
     }
 
     /**
@@ -315,7 +324,7 @@ class Alias
     {
         foreach ($this->magicMethods as $magic => $real) {
             list($className, $name) = explode('::', $real);
-            if (!class_exists($className) && !interface_exists($className)) {
+            if ((!class_exists($className) && !interface_exists($className)) || !method_exists($className, $name)) {
                 continue;
             }
             $method = new \ReflectionMethod($className, $name);
@@ -323,7 +332,7 @@ class Alias
 
             if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
-                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces);
+                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces, $this->classAliases);
                 }
                 $this->usedMethods[] = $magic;
             }
@@ -337,7 +346,6 @@ class Alias
      */
     protected function detectMethods()
     {
-
         foreach ($this->classes as $class) {
             $reflection = new \ReflectionClass($class);
 
@@ -353,7 +361,8 @@ class Alias
                                 $this->alias,
                                 $reflection,
                                 $method->name,
-                                $this->interfaces
+                                $this->interfaces,
+                                $this->classAliases
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -362,8 +371,9 @@ class Alias
             }
 
             // Check if the class is macroable
+            // (Eloquent\Builder is also macroable but doesn't use Macroable trait)
             $traits = collect($reflection->getTraitNames());
-            if ($traits->contains('Illuminate\Support\Traits\Macroable')) {
+            if ($traits->contains('Illuminate\Support\Traits\Macroable') || $class === EloquentBuilder::class) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
@@ -374,7 +384,8 @@ class Alias
                             $this->alias,
                             $reflection,
                             $macro_name,
-                            $this->interfaces
+                            $this->interfaces,
+                            $this->classAliases
                         );
                         $this->usedMethods[] = $macro_name;
                     }
@@ -395,7 +406,7 @@ class Alias
             return new \ReflectionMethod($macro_func[0], $macro_func[1]);
         }
 
-        if (is_object($macro_func) && is_callable($macro_func)) {
+        if (is_object($macro_func) && is_callable($macro_func) && !$macro_func instanceof Closure) {
             return new \ReflectionMethod($macro_func, '__invoke');
         }
 
@@ -412,22 +423,22 @@ class Alias
     {
         $serializer = new DocBlockSerializer(1, $prefix);
 
-        if ($this->phpdoc) {
-            if ($this->config->get('ide-helper.include_class_docblocks')) {
-                // if a class doesn't expose any DocBlock tags
-                // we can perform reflection on the class and
-                // add in the original class DocBlock
-                if (count($this->phpdoc->getTags()) === 0) {
-                    $class = new ReflectionClass($this->root);
-                    $this->phpdoc = new DocBlock($class->getDocComment());
-                }
-            }
-
-            $this->removeDuplicateMethodsFromPhpDoc();
-            return $serializer->getDocComment($this->phpdoc);
+        if (!$this->phpdoc) {
+            return '';
         }
 
-        return '';
+        if ($this->config->get('ide-helper.include_class_docblocks')) {
+            // if a class doesn't expose any DocBlock tags
+            // we can perform reflection on the class and
+            // add in the original class DocBlock
+            if (count($this->phpdoc->getTags()) === 0) {
+                $class = new ReflectionClass($this->root);
+                $this->phpdoc = new DocBlock($class->getDocComment());
+            }
+        }
+
+        $this->removeDuplicateMethodsFromPhpDoc();
+        return $serializer->getDocComment($this->phpdoc);
     }
 
     /**

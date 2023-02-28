@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -10,7 +11,9 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Factories;
 use Illuminate\Console\Command;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,7 +24,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MetaCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -42,24 +44,28 @@ class MetaCommand extends Command
     /** @var \Illuminate\Contracts\View\Factory */
     protected $view;
 
-    /** @var \Illuminate\Contracts\Config */
+    /** @var \Illuminate\Contracts\Config\Repository */
     protected $config;
 
     protected $methods = [
       'new \Illuminate\Contracts\Container\Container',
+      '\Illuminate\Container\Container::makeWith(0)',
+      '\Illuminate\Contracts\Container\Container::get(0)',
       '\Illuminate\Contracts\Container\Container::make(0)',
       '\Illuminate\Contracts\Container\Container::makeWith(0)',
+      '\App::get(0)',
       '\App::make(0)',
       '\App::makeWith(0)',
       '\app(0)',
       '\resolve(0)',
+      '\Psr\Container\ContainerInterface::get(0)',
     ];
 
     /**
      *
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
      * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Illuminate\Contracts\Config $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct($files, $view, $config)
     {
@@ -76,9 +82,12 @@ class MetaCommand extends Command
      */
     public function handle()
     {
-        $this->registerClassAutoloadExceptions();
+        // Needs to run before exception handler is registered
+        $factories = $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [];
 
-        $bindings = array();
+        $ourAutoloader = $this->registerClassAutoloadExceptions();
+
+        $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
             // Validator and seeder cause problems
             if (in_array($abstract, ['validator', 'seeder'])) {
@@ -87,19 +96,28 @@ class MetaCommand extends Command
 
             try {
                 $concrete = $this->laravel->make($abstract);
-                if (is_object($concrete)) {
+
+                if ($concrete === null) {
+                    throw new RuntimeException("Cannot create instance for '$abstract', received 'null'");
+                }
+
+                $reflectionClass = new \ReflectionClass($concrete);
+                if (is_object($concrete) && !$reflectionClass->isAnonymous()) {
                     $bindings[$abstract] = get_class($concrete);
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                    $this->comment("Cannot make '$abstract': ".$e->getMessage());
+                    $this->comment("Cannot make '$abstract': " . $e->getMessage());
                 }
             }
         }
 
+        $this->unregisterClassAutoloadExceptions($ourAutoloader);
+
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
           'methods' => $this->methods,
+          'factories' => $factories,
         ])->render();
 
         $filename = $this->option('filename');
@@ -131,12 +149,16 @@ class MetaCommand extends Command
 
     /**
      * Register an autoloader the throws exceptions when a class is not found.
+     *
+     * @return callable
      */
-    protected function registerClassAutoloadExceptions()
+    protected function registerClassAutoloadExceptions(): callable
     {
-        spl_autoload_register(function ($class) {
-            throw new \Exception("Class '$class' not found.");
-        });
+        $autoloader = function ($class) {
+            throw new \ReflectionException("Class '$class' not found.");
+        };
+        spl_autoload_register($autoloader);
+        return $autoloader;
     }
 
     /**
@@ -148,8 +170,18 @@ class MetaCommand extends Command
     {
         $filename = $this->config->get('ide-helper.meta_filename');
 
-        return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
-        );
+        return [
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
+        ];
+    }
+
+    /**
+     * Remove our custom autoloader that we pushed onto the autoload stack
+     *
+     * @param callable $ourAutoloader
+     */
+    private function unregisterClassAutoloadExceptions(callable $ourAutoloader): void
+    {
+        spl_autoload_unregister($ourAutoloader);
     }
 }

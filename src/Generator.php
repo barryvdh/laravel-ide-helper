@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Laravel IDE Helper Generator
  *
@@ -10,9 +11,10 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -27,9 +29,9 @@ class Generator
     /** @var \Symfony\Component\Console\Output\OutputInterface */
     protected $output;
 
-    protected $extra = array();
-    protected $magic = array();
-    protected $interfaces = array();
+    protected $extra = [];
+    protected $magic = [];
+    protected $interfaces = [];
     protected $helpers;
 
     /**
@@ -39,8 +41,10 @@ class Generator
      * @param string $helpers
      */
     public function __construct(
-        /*ConfigRepository */ $config,
-        /* Illuminate\View\Factory */ $view,
+        /*ConfigRepository */
+        $config,
+        /* Illuminate\View\Factory */
+        $view,
         OutputInterface $output = null,
         $helpers = ''
     ) {
@@ -50,9 +54,9 @@ class Generator
         // Find the drivers to add to the extra/interfaces
         $this->detectDrivers();
 
-        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra'));
-        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic'));
-        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'));
+        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra'), []);
+        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic'), []);
+        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'), []);
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
             $interface = '\\' . ltrim($interface, '\\');
@@ -63,21 +67,9 @@ class Generator
     /**
      * Generate the helper file contents;
      *
-     * @param  string  $format  The format to generate the helper in (php/json)
      * @return string;
      */
-    public function generate($format = 'php')
-    {
-        // Check if the generator for this format exists
-        $method = 'generate'.ucfirst($format).'Helper';
-        if (method_exists($this, $method)) {
-            return $this->$method();
-        }
-
-        return $this->generatePhpHelper();
-    }
-
-    public function generatePhpHelper()
+    public function generate()
     {
         $app = app();
         return $this->view->make('helper')
@@ -86,34 +78,8 @@ class Generator
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
+            ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
-    }
-
-    public function generateJsonHelper()
-    {
-        $classes = array();
-        foreach ($this->getValidAliases() as $aliases) {
-            foreach ($aliases as $alias) {
-                $functions = array();
-                foreach ($alias->getMethods() as $method) {
-                    $functions[$method->getName()] = '('. $method->getParamsWithDefault().')';
-                }
-                $classes[$alias->getAlias()] = array(
-                    'functions' => $functions,
-                );
-            }
-        }
-
-        $flags = JSON_FORCE_OBJECT;
-        if (defined('JSON_PRETTY_PRINT')) {
-            $flags |= JSON_PRETTY_PRINT;
-        }
-
-        return json_encode(array(
-            'php' => array(
-                'classes' => $classes,
-            ),
-        ), $flags);
     }
 
     protected function detectDrivers()
@@ -122,18 +88,12 @@ class Generator
         $this->interfaces['\Illuminate\Contracts\Auth\Authenticatable'] = $defaultUserModel;
 
         try {
-            if (class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)) {
-                if (class_exists('\Illuminate\Foundation\Application')) {
-                    $authMethod = version_compare(Application::VERSION, '5.2', '>=') ? 'guard' : 'driver';
-                } else {
-                    $refClass = new ReflectionClass('\Laravel\Lumen\Application');
-                    $versionStr = $refClass->newInstanceWithoutConstructor()->version();
-                    $authMethod = strpos($versionStr, 'Lumen (5.0') === 0 ?
-                        'driver' :
-                        (strpos($versionStr, 'Lumen (5.1') === 0 ? 'driver' : 'guard');
-                }
-                $class = get_class(\Auth::$authMethod());
-                $this->extra['Auth'] = array($class);
+            if (
+                class_exists('Auth') && is_a('Auth', '\Illuminate\Support\Facades\Auth', true)
+                && app()->bound('auth')
+            ) {
+                $class = get_class(\Auth::guard());
+                $this->extra['Auth'] = [$class];
                 $this->interfaces['\Illuminate\Auth\UserProviderInterface'] = $class;
             }
         } catch (\Exception $e) {
@@ -142,7 +102,7 @@ class Generator
         try {
             if (class_exists('DB') && is_a('DB', '\Illuminate\Support\Facades\DB', true)) {
                 $class = get_class(\DB::connection());
-                $this->extra['DB'] = array($class);
+                $this->extra['DB'] = [$class];
                 $this->interfaces['\Illuminate\Database\ConnectionInterface'] = $class;
             }
         } catch (\Exception $e) {
@@ -152,7 +112,7 @@ class Generator
             if (class_exists('Cache') && is_a('Cache', '\Illuminate\Support\Facades\Cache', true)) {
                 $driver = get_class(\Cache::driver());
                 $store = get_class(\Cache::getStore());
-                $this->extra['Cache'] = array($driver, $store);
+                $this->extra['Cache'] = [$driver, $store];
                 $this->interfaces['\Illuminate\Cache\StoreInterface'] = $store;
             }
         } catch (\Exception $e) {
@@ -161,17 +121,8 @@ class Generator
         try {
             if (class_exists('Queue') && is_a('Queue', '\Illuminate\Support\Facades\Queue', true)) {
                 $class = get_class(\Queue::connection());
-                $this->extra['Queue'] = array($class);
+                $this->extra['Queue'] = [$class];
                 $this->interfaces['\Illuminate\Queue\QueueInterface'] = $class;
-            }
-        } catch (\Exception $e) {
-        }
-
-        try {
-            if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)) {
-                $class = get_class(\SSH::connection());
-                $this->extra['SSH'] = array($class);
-                $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;
             }
         } catch (\Exception $e) {
         }
@@ -179,7 +130,7 @@ class Generator
         try {
             if (class_exists('Storage') && is_a('Storage', '\Illuminate\Support\Facades\Storage', true)) {
                 $class = get_class(\Storage::disk());
-                $this->extra['Storage'] = array($class);
+                $this->extra['Storage'] = [$class];
                 $this->interfaces['\Illuminate\Contracts\Filesystem\Filesystem'] = $class;
             }
         } catch (\Exception $e) {
@@ -202,7 +153,7 @@ class Generator
                 continue;
             }
 
-            $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
+            $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
             $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
                 //Add extra methods, from other classes (magic static calls)
@@ -224,7 +175,11 @@ class Generator
      */
     protected function getAliasesByExtendsNamespace()
     {
-        return $this->getValidAliases()->groupBy(function (Alias $alias) {
+        $aliases = $this->getValidAliases();
+
+        $this->addMacroableClasses($aliases);
+
+        return $aliases->groupBy(function (Alias $alias) {
             return $alias->getExtendsNamespace();
         });
     }
@@ -282,36 +237,6 @@ class Generator
     }
 
     /**
-     * Get the driver/connection/store from the managers
-     *
-     * @param $alias
-     * @return array|bool|string
-     */
-    public function getDriver($alias)
-    {
-        try {
-            if ($alias == "Auth") {
-                $driver = \Auth::driver();
-            } elseif ($alias == "DB") {
-                $driver = \DB::connection();
-            } elseif ($alias == "Cache") {
-                $driver = get_class(\Cache::driver());
-                $store = get_class(\Cache::getStore());
-                return array($driver, $store);
-            } elseif ($alias == "Queue") {
-                $driver = \Queue::connection();
-            } else {
-                return false;
-            }
-
-            return get_class($driver);
-        } catch (\Exception $e) {
-            $this->error("Could not determine driver/connection for $alias.");
-            return false;
-        }
-    }
-
-    /**
      * Write a string as error output.
      *
      * @param  string  $string
@@ -324,5 +249,56 @@ class Generator
         } else {
             echo $string . "\r\n";
         }
+    }
+
+    /**
+     * Add all macroable classes which are not already loaded as an alias and have defined macros.
+     *
+     * @param Collection $aliases
+     */
+    protected function addMacroableClasses(Collection $aliases)
+    {
+        $macroable = $this->getMacroableClasses($aliases);
+
+        foreach ($macroable as $class) {
+            $reflection = new ReflectionClass($class);
+
+            if (!$reflection->getStaticProperties()['macros']) {
+                continue;
+            }
+
+            $aliases[] = new Alias($this->config, $class, $class, [], $this->interfaces);
+        }
+    }
+
+    /**
+     * Get all loaded macroable classes which are not loaded as an alias.
+     *
+     * @param Collection $aliases
+     * @return Collection
+     */
+    protected function getMacroableClasses(Collection $aliases)
+    {
+        return (new Collection(get_declared_classes()))
+            ->filter(function ($class) {
+                $reflection = new ReflectionClass($class);
+
+                // Filter out internal classes and class aliases
+                return !$reflection->isInternal() && $reflection->getName() === $class;
+            })
+            ->filter(function ($class) {
+                $traits = class_uses_recursive($class);
+
+                // Filter only classes with the macroable trait
+                return isset($traits[Macroable::class]);
+            })
+            ->filter(function ($class) use ($aliases) {
+                $class = Str::start($class, '\\');
+
+                // Filter out aliases
+                return !$aliases->first(function (Alias $alias) use ($class) {
+                    return $alias->getExtends() === $class;
+                });
+            });
     }
 }

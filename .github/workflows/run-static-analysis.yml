@@ -1,0 +1,28 @@
+name: Run Static Analysis
+
+on:
+    push:
+    pull_request:
+    schedule:
+        - cron: '0 0 * * *'
+
+jobs:
+    build:
+        timeout-minutes: 15
+        runs-on: ubuntu-20.04
+
+        steps:
+            - uses: actions/checkout@v2
+              
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                php-version: 8.0
+                coverage: none
+                extensions: pdo_sqlite
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress --no-suggest
+
+            - name: Analyze
+              run: composer analyze

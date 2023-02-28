@@ -6,20 +6,32 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on <?= date("Y-m-d H:i:s") ?>.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
     */
-<?php foreach ($methods as $method): ?>
+<?php foreach ($methods as $method) : ?>
     override(<?= $method ?>, map([
         '' => '@',
-<?php foreach($bindings as $abstract => $class): ?>
+    <?php foreach ($bindings as $abstract => $class) : ?>
         '<?= $abstract ?>' => \<?= $class ?>::class,
-<?php endforeach; ?>
+    <?php endforeach; ?>
     ]));
 <?php endforeach; ?>
 
+<?php if (count($factories)) : ?>
+    override(\factory(0), map([
+        '' => '@FactoryBuilder',
+    <?php foreach ($factories as $factory) : ?>
+        '<?= $factory->getName() ?>' => \<?= $factory->getName() ?>FactoryBuilder::class,
+    <?php endforeach; ?>
+    ]));
+<?php endif; ?>
+
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::mock(0), map(["" => "@&\Mockery\MockInterface"]));
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::partialMock(0), map(["" => "@&\Mockery\MockInterface"]));
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::instance(0), type(1));
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::spy(0), map(["" => "@&\Mockery\MockInterface"]));
     override(\Illuminate\Support\Arr::add(0), type(0));
     override(\Illuminate\Support\Arr::except(0), type(0));
     override(\Illuminate\Support\Arr::first(0), elementType(0));
@@ -49,5 +61,6 @@ namespace PHPSTORM_META {
     override(\last(0), elementType(0));
     override(\with(0), type(0));
     override(\tap(0), type(0));
+    override(\optional(0), type(0));
 
 }

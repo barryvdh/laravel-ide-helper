@@ -184,6 +184,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
-    class IdeHelperPost {}
+	class IdeHelperPost {}
 }
 

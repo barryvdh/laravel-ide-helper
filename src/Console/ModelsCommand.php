@@ -1055,9 +1055,11 @@ class ModelsCommand extends Command
         }
 
         $classname = $this->write_mixin ? $mixinClassName : $classname;
-        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} ";
 
-        if (!$this->write_mixin) {
+        $allowDynamicAttributes = $this->write_mixin ? "#[\AllowDynamicProperties]\n\t" : '';
+        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}{$allowDynamicAttributes}class {$classname} ";
+
+        if (! $this->write_mixin) {
             $output .= "extends \Eloquent ";
 
             if ($interfaceNames) {

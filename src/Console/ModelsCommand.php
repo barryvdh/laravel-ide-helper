@@ -545,6 +545,7 @@ class ModelsCommand extends Command
                     case 'datetimetz':
                     case 'datetime':
                     case 'decimal':
+                    case 'binary':
                         $type = 'string';
                         break;
                     case 'integer':

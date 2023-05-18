@@ -1184,7 +1184,7 @@ class ModelsCommand extends Command
             'get' => $attribute->get,
             'set' => $attribute->set,
         ])
-            ->map(function($function, $functionName) {
+            ->map(function ($function, $functionName) {
                 if (!$function) {
                     return null;
                 }
@@ -1213,7 +1213,7 @@ class ModelsCommand extends Command
                     } else {
                         $types = collect($this->extractReflectionTypes($type));
                     }
-                    
+
                     if ($type->allowsNull()) {
                         $types->push('null');
                     }

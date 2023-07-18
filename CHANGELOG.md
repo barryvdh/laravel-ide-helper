@@ -11,7 +11,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
-
+- Fix case issue in `ModelsCommand::unsetMethod()` [#1453 / leo108](https://github.com/barryvdh/laravel-ide-helper/pull/1453)
+- 
 ### Added
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
 

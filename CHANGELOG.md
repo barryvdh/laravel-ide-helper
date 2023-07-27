@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
+- Add support for real-time facades in the helper file. [pending PR](#)
 
 2023-02-04, 2.13.0
 ------------------

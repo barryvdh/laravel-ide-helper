@@ -109,6 +109,10 @@ The generator tries to identify the real class, but if it cannot be found, you c
 Some classes need a working database connection. If you do not have a default working connection, some facades will not be included.
 You can use an in-memory SQLite driver by adding the `-M` option.
 
+If you use [real-time facades](https://laravel.com/docs/master/facades#real-time-facades) in your app, those will also be included in the generated file using a `@mixin` annotation and extending the original class underneath the facade. 
+
+**Note**: this feature uses the generated real-time facades files in the `storage/framework/cache` folder. Those files are generated on-demand as you use the real-time facade, so if the framework has not generated that first, it will not be included in the helper file. Run the route/command/code first and then regenerate the helper file and this time the real-time facade will be included in it.
+
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 

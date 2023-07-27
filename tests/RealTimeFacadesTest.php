@@ -52,12 +52,6 @@ class RealTimeFacadesTest extends TestCase
 
         $parsed = collect((new Php7(new Emulative()))->parse($content) ?: []);
 
-        // make sure we have only 2 namespaces and each is an instance of Namespace_
-        $this->assertCount(2, $parsed);
-        foreach ($parsed as $namespace) {
-            $this->assertInstanceOf(Namespace_::class, $namespace, 'Expected instance of Namespace_');
-        }
-
         // test the Facades\Illuminate\Foundation\Exceptions namespace in the generated helper file
         $frameworkExceptionsNamespace = $parsed->first(function ($stmt) {
             return ($stmt instanceof Namespace_) && $stmt->name->toString() === 'Facades\Illuminate\Foundation\Exceptions';

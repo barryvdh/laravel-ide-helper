@@ -16,4 +16,9 @@
       <code>\Storage</code>
     </UndefinedClass>
   </file>
+  <file src="src/Console/ModelsCommand.php">
+    <UndefinedClass occurrences="1">
+      <code>\UnitEnum</code>
+    </UndefinedClass>
+  </file>
 </files>

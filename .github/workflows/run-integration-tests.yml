@@ -36,7 +36,7 @@ jobs:
         name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
                   path: src
 

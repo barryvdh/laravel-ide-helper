@@ -31,6 +31,7 @@ class CustomCast extends Model
         'casted_property_with_return_primitive' => CustomCasterWithPrimitiveReturn::class,
         'casted_property_with_return_primitive_docblock' => CustomCasterWithPrimitiveDocblockReturn::class,
         'casted_property_with_return_nullable_primitive' => CustomCasterWithNullablePrimitiveReturn::class,
+        'casted_property_with_return_nullable_primitive_and_nullable_column' => CustomCasterWithNullablePrimitiveReturn::class,
         'casted_property_without_return' => CustomCasterWithoutReturnType::class,
         'casted_property_with_param' => CustomCasterWithParam::class . ':param',
         'casted_property_with_static_return_docblock' => SelfCastingCasterWithStaticDocblockReturn::class,

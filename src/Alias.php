@@ -20,6 +20,7 @@ use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\Facade;
 use ReflectionClass;
+use Throwable;
 
 class Alias
 {
@@ -301,7 +302,7 @@ class Alias
                 "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)." .
                 " Skipping $facade."
             );
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->error('Exception: ' . $e->getMessage() . "\nSkipping $facade.");
         }
     }
@@ -323,7 +324,7 @@ class Alias
     protected function addMagicMethods()
     {
         foreach ($this->magicMethods as $magic => $real) {
-            list($className, $name) = explode('::', $real);
+            [$className, $name] = explode('::', $real);
             if ((!class_exists($className) && !interface_exists($className)) || !method_exists($className, $name)) {
                 continue;
             }

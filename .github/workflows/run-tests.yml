@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, windows-2019]
-        php: [8.1, 8.0, 7.4, 7.3]
+        php: [8.3, 8.2, 8.1, 8.0, 7.4, 7.3]
         laravel: [8.*, 9.*, 10.*]
         dependency-version: [prefer-lowest, prefer-stable]
         exclude:
@@ -48,7 +48,7 @@ jobs:
         git config --global core.eol lf
 
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2

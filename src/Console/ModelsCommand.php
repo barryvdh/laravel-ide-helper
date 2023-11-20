@@ -231,6 +231,7 @@ class ModelsCommand extends Command
         $output = "<?php
 
 // @formatter:off
+// phpcs:ignoreFile
 /**
  * A helper file for your Eloquent Models
  * Copy the phpDocs from this file to the correct Model,
@@ -369,6 +370,10 @@ class ModelsCommand extends Command
                 $type = 'date';
             } elseif (Str::startsWith($type, 'immutable_custom_datetime:')) {
                 $type = 'immutable_date';
+            } elseif (Str::startsWith($type, 'immutable_date:')) {
+                $type = 'immutable_date';
+            } elseif (Str::startsWith($type, 'immutable_datetime:')) {
+                $type = 'immutable_datetime';
             } elseif (Str::startsWith($type, 'encrypted:')) {
                 $type = Str::after($type, ':');
             }
@@ -437,12 +442,44 @@ class ModelsCommand extends Command
             $realType = $this->checkForCastableCasts($realType, $params);
             $realType = $this->checkForCustomLaravelCasts($realType);
             $realType = $this->getTypeOverride($realType);
-            $this->properties[$name]['type'] = $this->getTypeInModel($model, $realType);
+            $realType = $this->getTypeInModel($model, $realType);
+            $realType = $this->applyNullability($realType, isset($this->nullableColumns[$name]));
 
-            if (isset($this->nullableColumns[$name])) {
-                $this->properties[$name]['type'] .= '|null';
-            }
+            $this->properties[$name]['type'] = $realType;
         }
+    }
+
+    protected function applyNullability(?string $type, bool $isNullable): ?string
+    {
+        if (!$type) {
+            return null;
+        }
+
+        $nullString = null;
+
+        // Find instance of:
+        // A) start of string or non-word character (like space or pipe) followed by 'null|'
+        // B) '|null' followed by end of string or non-word character (like space or pipe)
+        // This will find 'or null' instances at the beginning, middle or end of a type string,
+        // but will exclude solo/pure null instances and null being part of a type's name (e.g. class 'Benull').
+        if (preg_match('/(?:(?:^|\W)(null\|))|(\|null(?:$|\W))/', $type, $matches) === 1) {
+            $nullString = array_pop($matches);
+        }
+
+        // Return the current type string if:
+        // A) the type can be null and the type contains a null instance
+        // B) the type can not be null and the type does not contain a null instance
+        if (!($isNullable xor $nullString)) {
+            return $type;
+        }
+
+        if ($isNullable) {
+            $type .= '|null';
+        } else {
+            $type = str_replace($nullString, '', $type);
+        }
+
+        return $type;
     }
 
     /**
@@ -569,13 +606,27 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromMethods($model)
     {
-        $methods = get_class_methods($model);
-        if ($methods) {
-            sort($methods);
-            foreach ($methods as $method) {
-                $reflection = new \ReflectionMethod($model, $method);
+        $reflectionClass = new ReflectionClass($model);
+        $reflections = $reflectionClass->getMethods();
+        if ($reflections) {
+            // Filter out private methods because they can't be used to generate magic properties and HasAttributes'
+            // methods that resemble mutators but aren't.
+            $reflections = array_filter($reflections, function (\ReflectionMethod $methodReflection) {
+                return !$methodReflection->isPrivate() && !(
+                    in_array(
+                        \Illuminate\Database\Eloquent\Concerns\HasAttributes::class,
+                        $methodReflection->getDeclaringClass()->getTraitNames()
+                    ) && (
+                        $methodReflection->getName() === 'setClassCastableAttribute' ||
+                        $methodReflection->getName() === 'setEnumCastableAttribute'
+                    )
+                );
+            });
+            sort($reflections);
+            foreach ($reflections as $reflection) {
                 $type = $this->getReturnTypeFromReflection($reflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
+                $method = $reflection->getName();
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith(
                         $method,
@@ -592,16 +643,15 @@ class ModelsCommand extends Command
                     }
                 } elseif ($isAttribute) {
                     $name = Str::snake($method);
-                    $types = $this->getAttributeReturnType($model, $method);
+                    $types = $this->getAttributeReturnType($model, $reflection);
+                    $comment = $this->getCommentFromDocBlock($reflection);
 
                     if ($types->has('get')) {
                         $type = $this->getTypeInModel($model, $types['get']);
-                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null, $comment);
                     }
 
                     if ($types->has('set')) {
-                        $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (
@@ -677,8 +727,7 @@ class ModelsCommand extends Command
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string)$type, '\\')) {
                             //Resolve the relation's model to a Relation object.
-                            $methodReflection = new \ReflectionMethod($model, $method);
-                            if ($methodReflection->getNumberOfParameters()) {
+                            if ($reflection->getNumberOfParameters()) {
                                 continue;
                             }
 
@@ -686,11 +735,12 @@ class ModelsCommand extends Command
                             // Adding constraints requires reading model properties which
                             // can cause errors. Since we don't need constraints we can
                             // disable them when we fetch the relation to avoid errors.
-                            $relationObj = Relation::noConstraints(function () use ($model, $method) {
+                            $relationObj = Relation::noConstraints(function () use ($model, $reflection) {
                                 try {
-                                    return $model->$method();
+                                    $methodName = $reflection->getName();
+                                    return $model->$methodName();
                                 } catch (Throwable $e) {
-                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $method, $e->getMessage()));
+                                    $this->warn(sprintf('Error resolving relation model of %s:%s() : %s', get_class($model), $reflection->getName(), $e->getMessage()));
 
                                     return null;
                                 }
@@ -1131,10 +1181,13 @@ class ModelsCommand extends Command
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
     }
 
-    protected function getAttributeReturnType(Model $model, string $method): Collection
+    protected function getAttributeReturnType(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
+        // Private/protected ReflectionMethods require setAccessible prior to PHP 8.1
+        $reflectionMethod->setAccessible(true);
+
         /** @var Attribute $attribute */
-        $attribute = $model->{$method}();
+        $attribute = $reflectionMethod->invoke($model);
 
         return collect([
             'get' => $attribute->get ? optional(new \ReflectionFunction($attribute->get))->getReturnType() : null,
@@ -1143,7 +1196,7 @@ class ModelsCommand extends Command
             ->filter()
             ->map(function ($type) {
                 if ($type instanceof \ReflectionUnionType) {
-                    $types =collect($type->getTypes())
+                    $types = collect($type->getTypes())
                         /** @var ReflectionType $reflectionType */
                         ->map(function ($reflectionType) {
                             return collect($this->extractReflectionTypes($reflectionType));
@@ -1231,7 +1284,7 @@ class ModelsCommand extends Command
         $type = implode('|', $types);
 
         if ($returnType->allowsNull()) {
-            $type .='|null';
+            $type .= '|null';
         }
 
         return $type;
@@ -1473,10 +1526,10 @@ class ModelsCommand extends Command
             $type = implode('|', $types);
 
             if ($paramType->allowsNull()) {
-                if (count($types)==1) {
+                if (count($types) == 1) {
                     $type = '?' . $type;
                 } else {
-                    $type .='|null';
+                    $type .= '|null';
                 }
             }
 
@@ -1553,7 +1606,7 @@ class ModelsCommand extends Command
         } else {
             $types = [];
             foreach ($reflection_type->getTypes() as $named_type) {
-                if ($named_type->getName()==='null') {
+                if ($named_type->getName() === 'null') {
                     continue;
                 }
 

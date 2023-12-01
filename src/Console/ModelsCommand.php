@@ -508,8 +508,8 @@ class ModelsCommand extends Command
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         if (str_contains($table, '.')) {
             $tableArray = explode('.', $table);
-            $database = $table[0];
-            $table = $table[1];
+            $database = $tableArray[0];
+            $table = $tableArray[1];
         }
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();

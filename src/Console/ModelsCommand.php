@@ -506,6 +506,11 @@ class ModelsCommand extends Command
     {
         $database = $model->getConnection()->getDatabaseName();
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
+        if (str_contains($table, '.')) {
+            $tableArray = explode('.', $table);
+            $database = $table[0];
+            $table = $table[1];
+        }
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');

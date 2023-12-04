@@ -506,10 +506,8 @@ class ModelsCommand extends Command
     {
         $database = $model->getConnection()->getDatabaseName();
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
-        if (str_contains($table, '.')) {
-            $tableArray = explode('.', $table);
-            $database = $tableArray[0];
-            $table = $tableArray[1];
+        if (strpos($table, '.')) {
+            [$database, $table] = explode('.', $table);
         }
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();

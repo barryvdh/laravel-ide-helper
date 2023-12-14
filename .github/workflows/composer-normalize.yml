@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Git checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Validate Composer configuration
         run: composer validate --strict
@@ -23,6 +23,6 @@ jobs:
           composer global require ergebnis/composer-normalize
           composer normalize
 
-      - uses: stefanzweifel/git-auto-commit-action@v4.0.0
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: normalize composer.json

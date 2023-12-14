@@ -18,7 +18,7 @@ jobs:
             COMPOSER_NO_INTERACTION: 1
         strategy:
             matrix:
-                php: [8.2, 8.1, 8.0, 7.4, 7.3]
+                php: [8.3, 8.2, 8.1, 8.0, 7.4, 7.3]
                 laravel: [10.*, 9.*, 8.*]
                 exclude:
                   - php: 8.0
@@ -36,7 +36,7 @@ jobs:
         name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
                   path: src
 

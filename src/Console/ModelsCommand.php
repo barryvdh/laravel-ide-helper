@@ -838,6 +838,14 @@ class ModelsCommand extends Command
         $fkProp->setAccessible(true);
 
         if ($relation === 'belongsTo') {
+            if (is_array($fkProp->getValue($relationObj))) {
+                return (bool) \Illuminate\Support\Arr::first(
+                    (array)$fkProp->getValue($relationObj),
+                    fn (string $value) => isset($this->nullableColumns[$value]) ||
+                        !in_array($value, $this->foreignKeyConstraintsColumns, true)
+                );
+            }
+
             return isset($this->nullableColumns[$fkProp->getValue($relationObj)]) ||
                 !in_array($fkProp->getValue($relationObj), $this->foreignKeyConstraintsColumns, true);
         }

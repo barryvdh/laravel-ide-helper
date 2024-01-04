@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 
 - Add AllowDynamicProperties when creating mixin: credit to GeoSot - https://github.com/GeoSot/laravel-ide-helper
-- Fix for getSomethingAttribute functions which return a collection with type templating in the phpDoc.
+- Fix for getSomethingAttribute functions which return a collection with type templating in the phpDoc. https://github.com/scrumble-nl/laravel-ide-helper/pull/1
 
 ### Extra
 This release contains all commits from the main laravel-ide-helper repo up to 04-01-2024.

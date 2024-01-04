@@ -78,6 +78,17 @@ All notable changes to this project will be documented in this file.
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
 - Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
 
+2024-01-04, v2.14.0
+------------------
+
+### Fixes
+
+- Add AllowDynamicProperties when creating mixin: credit to GeoSot - https://github.com/GeoSot/laravel-ide-helper
+- Fix for getSomethingAttribute functions which return a collection with type templating in the phpDoc.
+
+### Extra
+This release contains all commits from the main laravel-ide-helper repo up to 04-01-2024.
+
 2023-02-04, 2.13.0
 ------------------
 

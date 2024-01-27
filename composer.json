@@ -24,7 +24,7 @@
         "ext-json": "*",
         "barryvdh/reflection-docblock": "^2.0.6",
         "composer/class-map-generator": "^1.0",
-        "doctrine/dbal": "^2.6 || ^3",
+        "doctrine/dbal": "^2.6 || ^3 || ^4",
         "illuminate/console": "^8 || ^9 || ^10",
         "illuminate/filesystem": "^8 || ^9 || ^10",
         "illuminate/support": "^8 || ^9 || ^10",

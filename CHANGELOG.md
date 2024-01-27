@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
 
 ### Added
+- Add support for nikic/php-parser 5 (next to 4) [#1502 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1502)
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
 
 2023-02-04, 2.13.0

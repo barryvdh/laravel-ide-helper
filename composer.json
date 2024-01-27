@@ -28,7 +28,7 @@
         "illuminate/console": "^8 || ^9 || ^10",
         "illuminate/filesystem": "^8 || ^9 || ^10",
         "illuminate/support": "^8 || ^9 || ^10",
-        "nikic/php-parser": "^4.7",
+        "nikic/php-parser": "^4.18 || ^5",
         "phpdocumentor/type-resolver": "^1.1.0"
     },
     "require-dev": {

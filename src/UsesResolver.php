@@ -64,7 +64,7 @@ class UsesResolver
             '\\'
         );
 
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->createForHostVersion();
         $namespaceData = null;
 
         foreach ($parser->parse($code) as $node) {

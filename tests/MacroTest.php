@@ -227,7 +227,7 @@ class MacroTest extends TestCase
     {
         $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
 
-        $macro = new Macro($reflectionMethod, UrlGenerator::class, new \ReflectionClass(UrlGenerator::class), 'macroName');
+        $macro = new Macro($reflectionMethod, UrlGenerator::class, new ReflectionClass(UrlGenerator::class), 'macroName');
 
         $this->assertInstanceOf(Macro::class, $macro);
     }
@@ -239,7 +239,7 @@ class MacroTest extends TestCase
     {
         $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
 
-        $macro = new Macro($reflectionMethod, 'URL', new \ReflectionClass(UrlGenerator::class), 'macroName');
+        $macro = new Macro($reflectionMethod, 'URL', new ReflectionClass(UrlGenerator::class), 'macroName');
         $output = <<<'DOC'
 /**
  * 

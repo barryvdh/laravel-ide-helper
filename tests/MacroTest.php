@@ -190,10 +190,6 @@ class MacroTest extends TestCase
 
     public function testInitPhpDocParamsWithUnionTypes(): void
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('This test requires PHP 8.0 or higher');
-        }
-
         $phpdoc = (new MacroMock())->getPhpDoc(eval(<<<'PHP'
             return new ReflectionFunction(
                 /**

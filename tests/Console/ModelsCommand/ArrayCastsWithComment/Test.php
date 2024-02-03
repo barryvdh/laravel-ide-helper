@@ -9,6 +9,10 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 
 class Test extends AbstractModelsCommand
 {
+    /**
+     * The generated snapshot is wrong until
+     * https://github.com/barryvdh/laravel-ide-helper/issues/1505 is fixed
+     */
     public function test(): void
     {
         $command = $this->app->make(ModelsCommand::class);

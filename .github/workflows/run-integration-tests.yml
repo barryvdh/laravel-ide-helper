@@ -62,7 +62,7 @@ jobs:
               run: |
                   cd sample
                   sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
-                  composer require --dev "barryvdh/laravel-ide-helper:*"
+                  composer require --dev "barryvdh/laravel-ide-helper:*" --with-all-dependencies
 
             - name: Execute generate run
               run: |

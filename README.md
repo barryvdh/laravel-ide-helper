@@ -33,6 +33,10 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
+> [!NOTE]  
+> If you encounter version conflicts with doctrine/dbal, please try:
+> `composer require --dev barryvdh/laravel-ide-helper --with-all-dependencies`
+ 
 This package makes use of [Laravels package auto-discovery mechanism](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518), which means if you don't install dev dependencies in production, it also won't be loaded.
 
 If for some reason you want manually control this:

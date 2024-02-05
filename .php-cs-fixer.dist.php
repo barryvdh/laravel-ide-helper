@@ -5,10 +5,10 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('tests');
 
-$config = require __DIR__ . '/.php_cs.common.php';
+$config = require __DIR__ . '/.php-cs-fixer.common.php';
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setFinder($finder)
     ->setRules($config)
     ->setRiskyAllowed(true)
-    ->setCacheFile(__DIR__ . '/.php_cs.cache');
+    ->setCacheFile(__DIR__ . '/.php-cs-fixer.cache');

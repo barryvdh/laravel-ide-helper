@@ -5,7 +5,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/tests')
     ->exclude('__snapshots__');
 
-$config = require __DIR__ . '/.php_cs.common.php';
+$config = require __DIR__ . '/.php-cs-fixer.common.php';
 
 // Additional rules for tests
 $config = array_merge(
@@ -15,8 +15,8 @@ $config = array_merge(
     ]
 );
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setFinder($finder)
     ->setRules($config)
     ->setRiskyAllowed(true)
-    ->setCacheFile(__DIR__ . '/.php_cs.tests.cache');
+    ->setCacheFile(__DIR__ . '/.php-cs-fixer.tests.cache');

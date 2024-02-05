@@ -329,7 +329,7 @@ class Alias
                 continue;
             }
             $method = new \ReflectionMethod($className, $name);
-            $class = new \ReflectionClass($className);
+            $class = new ReflectionClass($className);
 
             if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
@@ -348,7 +348,7 @@ class Alias
     protected function detectMethods()
     {
         foreach ($this->classes as $class) {
-            $reflection = new \ReflectionClass($class);
+            $reflection = new ReflectionClass($class);
 
             $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
             if ($methods) {

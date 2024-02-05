@@ -26,7 +26,7 @@ class Generator
     /** @var \Illuminate\View\Factory */
     protected $view;
 
-    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    /** @var OutputInterface */
     protected $output;
 
     protected $extra = [];
@@ -37,7 +37,7 @@ class Generator
     /**
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $helpers
      */
     public function __construct(

@@ -70,7 +70,7 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 <?php endforeach; ?>
 
 <?php foreach($real_time_facades as $name): ?>
-<?php $nested = explode('\\', str_replace('\\'.class_basename($name), '', $name)); ?>
+<?php $nested = explode('\\', str_replace('\\' . class_basename($name), '', $name)); ?>
 namespace <?php echo implode('\\', $nested); ?> {
     /**
      * @mixin <?= str_replace('Facades', '', $name) ?>

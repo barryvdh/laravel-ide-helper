@@ -13,6 +13,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
@@ -26,7 +27,7 @@ class Generator
     /** @var \Illuminate\View\Factory */
     protected $view;
 
-    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    /** @var OutputInterface */
     protected $output;
 
     protected $extra = [];
@@ -37,7 +38,7 @@ class Generator
     /**
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $helpers
      */
     public function __construct(
@@ -152,6 +153,11 @@ class Generator
             if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
+			
+			// Skip the swoole
+			if ($facade == 'SwooleTW\Http\Server\Facades\Server' && $name == 'Server' && !class_exists('Swoole\Http\Server')) {
+                continue;
+            }
 
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
             $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
@@ -175,7 +181,9 @@ class Generator
      */
     protected function getAliasesByExtendsNamespace()
     {
-        $aliases = $this->getValidAliases();
+        $aliases = $this->getValidAliases()->filter(static function (Alias $alias) {
+            return is_subclass_of($alias->getExtends(), Facade::class);
+        });
 
         $this->addMacroableClasses($aliases);
 

@@ -2,8 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.13.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.14.0...master)
 --------------
+
+### Changed
+- Removed support for Laravel 8 and therefore for PHP < 8.0 [#1504 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1504)
+
+
+### Added
+- Add support for enum default arguments using enum cases. [#1464 / d8vjork](https://github.com/barryvdh/laravel-ide-helper/pull/1464)
+
+2024-02-05, 2.14.0
+------------------
 
 ### Changed
 - Official support for Lumen has been dropped [#1425 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1425)
@@ -11,9 +21,10 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
-- Add support for enum default arguments using enum cases. [#1464 / d8vjork](https://github.com/barryvdh/laravel-ide-helper/pull/1464)
+- Catch exceptions when loading aliases [#1465 / dongm2ez](https://github.com/barryvdh/laravel-ide-helper/pull/1465)
 
 ### Added
+- Add support for nikic/php-parser 5 (next to 4) [#1502 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1502)
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
 
 2023-02-04, 2.13.0

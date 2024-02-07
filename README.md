@@ -11,7 +11,7 @@
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
 
-It supports Laravel 8+ and PHP 7.3+
+It supports Laravel 9+ and PHP 8.0+
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -33,6 +33,10 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
+> [!NOTE]  
+> If you encounter version conflicts with doctrine/dbal, please try:
+> `composer require --dev barryvdh/laravel-ide-helper --with-all-dependencies`
+ 
 This package makes use of [Laravels package auto-discovery mechanism](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518), which means if you don't install dev dependencies in production, it also won't be loaded.
 
 If for some reason you want manually control this:
@@ -141,9 +145,9 @@ The class name will be different from the model, avoiding the IDE duplicate anno
 
 > Please make sure to back up your models, before writing the info.
 
-Writing to the models should keep the existing comments and only append new properties/methods.
-The existing PHPDoc is replaced, or added if not found.
-With the `--reset (-R)` option, the existing PHPDocs are ignored, and only the newly found columns/relations are saved as PHPDocs.
+Writing to the models should keep the existing comments and only append new properties/methods. It will not update changed properties/methods.
+
+With the `--reset (-R)` option, the whole existing PHPDoc is replaced, including any comments that have been made. The `--smart-reset` option will instead keep the 'text' part of the phpdoc comment, and just replace all the property/method defininitions.
 
 ```bash
 php artisan ide-helper:models "App\Models\Post"

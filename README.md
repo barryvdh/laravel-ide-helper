@@ -11,7 +11,7 @@
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
 
-It supports Laravel 8+ and PHP 7.3+
+It supports Laravel 9+ and PHP 8.0+
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -33,6 +33,10 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
+> [!NOTE]  
+> If you encounter version conflicts with doctrine/dbal, please try:
+> `composer require --dev barryvdh/laravel-ide-helper --with-all-dependencies`
+ 
 This package makes use of [Laravels package auto-discovery mechanism](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518), which means if you don't install dev dependencies in production, it also won't be loaded.
 
 If for some reason you want manually control this:
@@ -109,6 +113,10 @@ The generator tries to identify the real class, but if it cannot be found, you c
 Some classes need a working database connection. If you do not have a default working connection, some facades will not be included.
 You can use an in-memory SQLite driver by adding the `-M` option.
 
+If you use [real-time facades](https://laravel.com/docs/master/facades#real-time-facades) in your app, those will also be included in the generated file using a `@mixin` annotation and extending the original class underneath the facade. 
+
+**Note**: this feature uses the generated real-time facades files in the `storage/framework/cache` folder. Those files are generated on-demand as you use the real-time facade, so if the framework has not generated that first, it will not be included in the helper file. Run the route/command/code first and then regenerate the helper file and this time the real-time facade will be included in it.
+
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
@@ -141,9 +149,9 @@ The class name will be different from the model, avoiding the IDE duplicate anno
 
 > Please make sure to back up your models, before writing the info.
 
-Writing to the models should keep the existing comments and only append new properties/methods.
-The existing PHPDoc is replaced, or added if not found.
-With the `--reset (-R)` option, the existing PHPDocs are ignored, and only the newly found columns/relations are saved as PHPDocs.
+Writing to the models should keep the existing comments and only append new properties/methods. It will not update changed properties/methods.
+
+With the `--reset (-R)` option, the whole existing PHPDoc is replaced, including any comments that have been made. The `--smart-reset` option will instead keep the 'text' part of the phpdoc comment, and just replace all the property/method defininitions.
 
 ```bash
 php artisan ide-helper:models "App\Models\Post"

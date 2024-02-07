@@ -231,6 +231,7 @@ class ModelsCommand extends Command
         $output = "<?php
 
 // @formatter:off
+// phpcs:ignoreFile
 /**
  * A helper file for your Eloquent Models
  * Copy the phpDocs from this file to the correct Model,
@@ -265,6 +266,7 @@ class ModelsCommand extends Command
             }
             $this->properties = [];
             $this->methods = [];
+            $this->foreignKeyConstraintsColumns = [];
             if (class_exists($name)) {
                 try {
                     // handle abstract classes, interfaces, ...
@@ -353,7 +355,7 @@ class ModelsCommand extends Command
     /**
      * cast the properties's type from $casts.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      */
     public function castPropertiesType($model)
     {
@@ -497,7 +499,7 @@ class ModelsCommand extends Command
     /**
      * Load the properties from the database table.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      *
      * @throws DBALException If custom field failed to register
      */
@@ -601,7 +603,7 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      */
     public function getPropertiesFromMethods($model)
     {
@@ -776,7 +778,7 @@ class ModelsCommand extends Command
                                             'int|null',
                                             true,
                                             false
-                                        // What kind of comments should be added to the relation count here?
+                                            // What kind of comments should be added to the relation count here?
                                         );
                                     }
                                 } elseif (
@@ -1103,6 +1105,8 @@ class ModelsCommand extends Command
                     $default = 'null';
                 } elseif (is_int($default)) {
                     //$default = $default;
+                } elseif ($default instanceof \UnitEnum) {
+                    $default = '\\' . get_class($default) . '::' . $default->name;
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
@@ -1130,7 +1134,7 @@ class ModelsCommand extends Command
             return '\Illuminate\Database\Eloquent\Collection';
         }
 
-        /** @var \Illuminate\Database\Eloquent\Model $model */
+        /** @var Model $model */
         $model = new $className();
         return '\\' . get_class($model->newCollection());
     }
@@ -1289,7 +1293,7 @@ class ModelsCommand extends Command
 
     /**
      * Generates methods provided by the SoftDeletes trait
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      */
     protected function getSoftDeleteMethods($model)
     {
@@ -1306,7 +1310,7 @@ class ModelsCommand extends Command
     /**
      * Generate factory method from "HasFactory" trait.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      */
     protected function getFactoryMethods($model)
     {
@@ -1334,16 +1338,12 @@ class ModelsCommand extends Command
             return;
         }
 
-        if (version_compare($this->laravel->version(), '9', '>=')) {
-            $this->setMethod('factory', $factory, ['$count = null, $state = []']);
-        } else {
-            $this->setMethod('factory', $factory, ['...$parameters']);
-        }
+        $this->setMethod('factory', $factory, ['$count = null, $state = []']);
     }
 
     /**
      * Generates methods that return collections
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      */
     protected function getCollectionMethods($model)
     {
@@ -1386,7 +1386,7 @@ class ModelsCommand extends Command
             return $type;
         }
 
-        $reflection = new \ReflectionClass($type);
+        $reflection = new ReflectionClass($type);
 
         if (!$reflection->implementsInterface(Castable::class)) {
             return $type;
@@ -1418,7 +1418,7 @@ class ModelsCommand extends Command
             return $type;
         }
 
-        $reflection = new \ReflectionClass($type);
+        $reflection = new ReflectionClass($type);
 
         if (!$reflection->implementsInterface(CastsAttributes::class)) {
             return $type;
@@ -1624,7 +1624,7 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \RuntimeException
      */

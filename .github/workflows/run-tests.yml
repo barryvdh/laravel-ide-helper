@@ -18,6 +18,7 @@ jobs:
       COMPOSER_NO_INTERACTION: 1
 
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04, windows-2019]
         php: [8.3, 8.2, 8.1]

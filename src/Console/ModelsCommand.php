@@ -516,12 +516,17 @@ class ModelsCommand extends Command
                     case 'datetimetz':
                     case 'datetime':
                     case 'decimal':
-                    case 'varchar':
                     case 'numeric':
+                    case 'mediumtext':
+                    case 'tinytext':
+                    case 'char':
+                    case 'varchar':
+                    case 'nvarchar':
                         $type = 'string';
                         break;
                     case 'integer':
                     case 'bigint':
+                    case 'mediumint':
                     case 'smallint':
                     case 'tinyint':
                         $type = 'integer';
@@ -538,6 +543,9 @@ class ModelsCommand extends Command
                         }
                         break;
                     case 'float':
+                    case 'double':
+                    case 'real':
+                    case 'double precision':
                         $type = 'float';
                         break;
                     default:

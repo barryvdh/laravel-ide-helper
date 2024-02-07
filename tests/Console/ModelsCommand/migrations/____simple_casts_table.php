@@ -30,8 +30,10 @@ class SimpleCastsTable extends Migration
             $table->string('cast_to_datetime_serialization');
             $table->string('cast_to_custom_datetime');
             $table->string('cast_to_immutable_date');
+            $table->string('cast_to_immutable_date_serialization');
             $table->string('cast_to_immutable_custom_datetime');
             $table->string('cast_to_immutable_datetime');
+            $table->string('cast_to_immutable_datetime_serialization');
             $table->string('cast_to_timestamp');
             $table->string('cast_to_encrypted');
             $table->string('cast_to_encrypted_array');

@@ -26,7 +26,7 @@ class Generator
     /** @var \Illuminate\View\Factory */
     protected $view;
 
-    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    /** @var OutputInterface */
     protected $output;
 
     protected $extra = [];
@@ -37,7 +37,7 @@ class Generator
     /**
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $helpers
      */
     public function __construct(
@@ -123,15 +123,6 @@ class Generator
                 $class = get_class(\Queue::connection());
                 $this->extra['Queue'] = [$class];
                 $this->interfaces['\Illuminate\Queue\QueueInterface'] = $class;
-            }
-        } catch (\Exception $e) {
-        }
-
-        try {
-            if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)) {
-                $class = get_class(\SSH::connection());
-                $this->extra['SSH'] = [$class];
-                $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;
             }
         } catch (\Exception $e) {
         }

@@ -28,8 +28,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon $cast_to_datetime_serialization
  * @property \Illuminate\Support\Carbon $cast_to_custom_datetime
  * @property \Carbon\CarbonImmutable $cast_to_immutable_date
+ * @property \Carbon\CarbonImmutable $cast_to_immutable_date_serialization
  * @property \Carbon\CarbonImmutable $cast_to_immutable_custom_datetime
  * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime
+ * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime_serialization
  * @property integer $cast_to_timestamp
  * @property mixed $cast_to_encrypted
  * @property array $cast_to_encrypted_array
@@ -58,7 +60,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToFloat($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToImmutableCustomDatetime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToImmutableDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToImmutableDateSerialization($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToImmutableDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToImmutableDatetimeSerialization($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToInt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToInteger($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SimpleCast whereCastToJson($value)
@@ -90,8 +94,10 @@ class SimpleCast extends Model
         'cast_to_datetime_serialization' => 'datetime:Y-m-d H:i:s',
         'cast_to_custom_datetime' => 'custom_datetime:Y-m-d H:i:s',
         'cast_to_immutable_date' => 'immutable_date',
+        'cast_to_immutable_date_serialization' => 'immutable_date:Y-m-d',
         'cast_to_immutable_custom_datetime' => 'immutable_custom_datetime:Y-m-d H:i:s',
         'cast_to_immutable_datetime' => 'immutable_datetime',
+        'cast_to_immutable_datetime_serialization' => 'immutable_datetime:Y-m-d H:i:s',
         'cast_to_timestamp' => 'timestamp',
         'cast_to_encrypted' => 'encrypted',
         'cast_to_encrypted_array' => 'encrypted:array',

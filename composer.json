@@ -20,30 +20,30 @@
         }
     ],
     "require": {
-        "php": "^7.3 || ^8.0",
+        "php": "^8.0",
         "ext-json": "*",
         "barryvdh/reflection-docblock": "^2.0.6",
         "composer/class-map-generator": "^1.0",
         "doctrine/dbal": "^2.6 || ^3.1.4",
-        "illuminate/console": "^8 || ^9",
-        "illuminate/filesystem": "^8 || ^9",
-        "illuminate/support": "^8 || ^9",
-        "nikic/php-parser": "^4.7",
+        "illuminate/console": "^9 || ^10",
+        "illuminate/filesystem": "^9 || ^10",
+        "illuminate/support": "^9 || ^10",
+        "nikic/php-parser": "^4.18 || ^5",
         "phpdocumentor/type-resolver": "^1.1.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
-        "friendsofphp/php-cs-fixer": "^2",
-        "illuminate/config": "^8 || ^9",
-        "illuminate/view": "^8 || ^9",
+        "friendsofphp/php-cs-fixer": "^3",
+        "illuminate/config": "^9 || ^10",
+        "illuminate/view": "^9 || ^10",
         "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^6 || ^7",
-        "phpunit/phpunit": "^8.5 || ^9",
-        "spatie/phpunit-snapshot-assertions": "^3 || ^4",
-        "vimeo/psalm": "^3.12"
+        "orchestra/testbench": "^7 || ^8",
+        "phpunit/phpunit": "^9",
+        "spatie/phpunit-snapshot-assertions": "^4",
+        "vimeo/psalm": "^5.4"
     },
     "suggest": {
-        "illuminate/events": "Required for automatic helper generation (^6|^7|^8|^9)."
+        "illuminate/events": "Required for automatic helper generation (^6|^7|^8|^9|^10)."
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -65,7 +65,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.12-dev"
+            "dev-master": "2.14-dev"
         },
         "laravel": {
             "providers": [
@@ -81,7 +81,7 @@
         ],
         "fix-style": [
             "php-cs-fixer fix",
-            "php-cs-fixer fix --config=.php_cs.tests.php"
+            "php-cs-fixer fix --config=.php-cs-fixer.tests.php"
         ],
         "psalm-set-baseline": "psalm --set-baseline=psalm-baseline.xml",
         "test": "phpunit",

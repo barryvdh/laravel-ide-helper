@@ -8,7 +8,6 @@ labels: question
 ### Versions:
 - ide-helper Version: #.#.#
 - Laravel Version: #.#.# <!-- remove if not applicable -->
-- Lumen Version: #.#.# <!-- remove if not applicable -->
 - PHP Version: #.#.#
 
 ### Question:

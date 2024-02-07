@@ -17,6 +17,7 @@ class CustomCastsTable extends Migration
             $table->string('casted_property_with_return_primitive');
             $table->string('casted_property_with_return_primitive_docblock');
             $table->string('casted_property_with_return_nullable_primitive');
+            $table->string('casted_property_with_return_nullable_primitive_and_nullable_column')->nullable();
             $table->string('casted_property_without_return');
             $table->string('casted_property_with_param');
             $table->string('casted_property_with_static_return_docblock');

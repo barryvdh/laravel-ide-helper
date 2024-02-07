@@ -22,7 +22,7 @@
     "require": {
         "php": "^8.0",
         "ext-json": "*",
-        "barryvdh/reflection-docblock": "^2.0.6",
+        "barryvdh/reflection-docblock": "^2.1.1",
         "composer/class-map-generator": "^1.0",
         "doctrine/dbal": "^2.6 || ^3",
         "illuminate/console": "^9 || ^10",
@@ -33,6 +33,7 @@
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
+        "nesbot/carbon": "^2.62.1",
         "friendsofphp/php-cs-fixer": "^3",
         "illuminate/config": "^9 || ^10",
         "illuminate/view": "^9 || ^10",

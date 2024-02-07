@@ -22,7 +22,7 @@ jobs:
         os: [ubuntu-20.04, windows-2019]
         php: [8.3, 8.2, 8.1]
         laravel: [10.*]
-        dependency-version: [prefer-lowest, prefer-stable]
+        stability: [prefer-lowest, prefer-stable]
 
     steps:
     - name: Set git to use LF
@@ -46,7 +46,7 @@ jobs:
         composer remove vimeo/psalm --no-update --dev
         composer remove friendsofphp/php-cs-fixer --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
-        composer update --prefer-dist --no-progress
+        composer update --prefer-dist --no-progress --${{ matrix.stability }}
 
     - name: Execute Unit Tests
       run: composer test-ci

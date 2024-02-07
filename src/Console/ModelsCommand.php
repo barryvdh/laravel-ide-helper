@@ -510,7 +510,7 @@ class ModelsCommand extends Command
         $schema = $model->getConnection()->getDoctrineSchemaManager();
         $databasePlatform = $schema->getDatabasePlatform();
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
-        
+
         if (strpos($table, '.')) {
             [$database, $table] = explode('.', $table);
         }

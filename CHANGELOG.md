@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Removed support for Laravel 8 and therefore for PHP < 8.0 [#1504 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1504)
 
+
+### Added
+- Add support for enum default arguments using enum cases. [#1464 / d8vjork](https://github.com/barryvdh/laravel-ide-helper/pull/1464)
+
 2024-02-05, 2.14.0
 ------------------
 

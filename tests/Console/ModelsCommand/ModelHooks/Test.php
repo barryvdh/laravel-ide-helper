@@ -76,8 +76,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property-read string $custom
  * @method static \Illuminate\Database\Eloquent\Builder|Simple custom($custom)
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
  * @mixin \Eloquent
  */

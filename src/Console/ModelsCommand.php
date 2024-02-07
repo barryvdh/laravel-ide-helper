@@ -892,7 +892,12 @@ class ModelsCommand extends Command
 
     public function unsetMethod($name)
     {
-        unset($this->methods[strtolower($name)]);
+        foreach ($this->methods as $k => $v) {
+            if (strtolower($k) === strtolower($name)) {
+                unset($this->methods[$k]);
+                return;
+            }
+        }
     }
 
     public function getMethodType(Model $model, string $classType)

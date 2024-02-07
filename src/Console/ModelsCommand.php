@@ -17,8 +17,6 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\ClassMapGenerator\ClassMapGenerator;
-use Doctrine\DBAL\Exception as DBALException;
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
@@ -37,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Schema\Builder;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -241,8 +240,6 @@ class ModelsCommand extends Command
  */
 \n\n";
 
-        $hasDoctrine = interface_exists('Doctrine\DBAL\Driver');
-
         if (empty($loadModels)) {
             $models = $this->loadModels();
         } else {
@@ -284,9 +281,7 @@ class ModelsCommand extends Command
 
                     $model = $this->laravel->make($name);
 
-                    if ($hasDoctrine) {
-                        $this->getPropertiesFromTable($model);
-                    }
+                    $this->getPropertiesFromTable($model);
 
                     if (method_exists($model, 'getCasts')) {
                         $this->castPropertiesType($model);
@@ -308,13 +303,6 @@ class ModelsCommand extends Command
                         $e->getTraceAsString());
                 }
             }
-        }
-
-        if (!$hasDoctrine) {
-            $this->error(
-                'Warning: `"doctrine/dbal": "~2.3"` is required to load database information. ' .
-                'Please require that in your composer.json and run `composer update`.'
-            );
         }
 
         return $output;
@@ -498,33 +486,15 @@ class ModelsCommand extends Command
     /**
      * Load the properties from the database table.
      *
-     * @param Model $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      *
-     * @throws DBALException If custom field failed to register
      */
     public function getPropertiesFromTable($model)
     {
         $database = $model->getConnection()->getDatabaseName();
-        $table = $model->getConnection()->getTablePrefix() . $model->getTable();
-        $schema = $model->getConnection()->getDoctrineSchemaManager();
-        $databasePlatform = $schema->getDatabasePlatform();
-        $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
-
-        $platformName = $databasePlatform->getName();
-        $customTypes = $this->laravel['config']->get("ide-helper.custom_db_types.{$platformName}", []);
-        foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
-            try {
-                if (!Type::hasType($yourTypeName)) {
-                    Type::addType($yourTypeName, get_class(Type::getType($doctrineTypeName)));
-                }
-            } catch (DBALException $exception) {
-                $this->error("Failed registering custom db type \"$yourTypeName\" as \"$doctrineTypeName\"");
-                throw $exception;
-            }
-            $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
-        }
-
-        $columns = $schema->listTableColumns($table, $database);
+        $table = $model->getTable();
+        $schema = $model->getConnection()->getSchemaBuilder();
+        $columns = $schema->getColumns($table);
 
         if (!$columns) {
             return;
@@ -532,11 +502,11 @@ class ModelsCommand extends Command
 
         $this->setForeignKeys($schema, $table);
         foreach ($columns as $column) {
-            $name = $column->getName();
+            $name = $column['name'];
             if (in_array($name, $model->getDates())) {
                 $type = $this->dateClass;
             } else {
-                $type = $column->getType()->getName();
+                $type = $column['type_name'];
                 switch ($type) {
                     case 'string':
                     case 'text':
@@ -573,8 +543,8 @@ class ModelsCommand extends Command
                 }
             }
 
-            $comment = $column->getComment();
-            if (!$column->getNotnull()) {
+            $comment = $column['comment'];
+            if (!$column['nullable']) {
                 $this->nullableColumns[$name] = true;
             }
             $this->setProperty(
@@ -583,7 +553,7 @@ class ModelsCommand extends Command
                 true,
                 true,
                 $comment,
-                !$column->getNotnull()
+                !$column['nullable']
             );
             if ($this->write_model_magic_where) {
                 $builderClass = $this->write_model_external_builder_methods
@@ -1638,14 +1608,13 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param \Doctrine\DBAL\Schema\AbstractSchemaManager $schema
+     * @param Builder $schema
      * @param string $table
-     * @throws DBALException
      */
     protected function setForeignKeys($schema, $table)
     {
-        foreach ($schema->listTableForeignKeys($table) as $foreignKeyConstraint) {
-            foreach ($foreignKeyConstraint->getLocalColumns() as $columnName) {
+        foreach ($schema->getForeignKeys($table) as $foreignKeyConstraint) {
+            foreach ($foreignKeyConstraint['columns'] as $columnName) {
                 $this->foreignKeyConstraintsColumns[] = $columnName;
             }
         }

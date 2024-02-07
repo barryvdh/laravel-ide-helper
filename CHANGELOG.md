@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Add support for enum default arguments using enum cases. [#1464 / d8vjork](https://github.com/barryvdh/laravel-ide-helper/pull/1464)
+- Add support for real-time facades in the helper file. [#1455 / filipac](https://github.com/barryvdh/laravel-ide-helper/pull/1455)
 
 2024-02-05, 2.14.0
 ------------------
@@ -26,7 +27,6 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add support for nikic/php-parser 5 (next to 4) [#1502 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1502)
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
-- Add support for real-time facades in the helper file. [pending PR](#)
 
 2023-02-04, 2.13.0
 ------------------

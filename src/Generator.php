@@ -16,6 +16,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
+use PhpParser\Lexer\Emulative;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Parser\Php7;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -76,6 +80,7 @@ class Generator
         return $this->view->make('helper')
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
+            ->with('real_time_facades', $this->getRealTimeFacades())
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
@@ -173,6 +178,51 @@ class Generator
 
         return $aliases;
     }
+
+    protected function getRealTimeFacades()
+    {
+        $facades = [];
+        $realTimeFacadeFiles = glob(storage_path('framework/cache/facade-*.php'));
+        foreach ($realTimeFacadeFiles as $file) {
+            try {
+                $name = $this->getFullyQualifiedClassNameInFile($file);
+                $facades[$name] = $name;
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        return $facades;
+    }
+
+    protected function getFullyQualifiedClassNameInFile(string $path)
+    {
+        $contents = file_get_contents($path);
+
+        $parsers = new Php7(new Emulative());
+
+        $parsed = collect($parsers->parse($contents) ?: []);
+
+        $namespace = $parsed->first(function ($node) {
+            return $node instanceof Namespace_;
+        });
+
+        if ($namespace) {
+            $name = $namespace->name->toString();
+
+            $class = collect($namespace->stmts)->first(function ($node) {
+                return $node instanceof Class_;
+            });
+
+            if ($class) {
+                $name .= '\\' . $class->name->toString();
+            }
+
+            return $name;
+        }
+    }
+
+
 
     /**
      * Regroup aliases by namespace of extended classes

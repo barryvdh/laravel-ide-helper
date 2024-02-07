@@ -158,9 +158,9 @@ class Generator
             if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
-			
-			// Skip the swoole
-			if ($facade == 'SwooleTW\Http\Server\Facades\Server' && $name == 'Server' && !class_exists('Swoole\Http\Server')) {
+
+            // Skip the swoole
+            if ($facade == 'SwooleTW\Http\Server\Facades\Server' && $name == 'Server' && !class_exists('Swoole\Http\Server')) {
                 continue;
             }
 
@@ -183,7 +183,7 @@ class Generator
     {
         $facades = [];
         $realTimeFacadeFiles = glob(storage_path('framework/cache/facade-*.php'));
-        foreach($realTimeFacadeFiles as $file) {
+        foreach ($realTimeFacadeFiles as $file) {
             try {
                 $name = $this->getFullyQualifiedClassNameInFile($file);
                 $facades[$name] = $name;
@@ -195,10 +195,11 @@ class Generator
         return $facades;
     }
 
-    protected function getFullyQualifiedClassNameInFile(string $path) {
+    protected function getFullyQualifiedClassNameInFile(string $path)
+    {
         $contents = file_get_contents($path);
 
-        $parsers = new Php7(new Emulative);
+        $parsers = new Php7(new Emulative());
 
         $parsed = collect($parsers->parse($contents) ?: []);
 
@@ -206,14 +207,14 @@ class Generator
             return $node instanceof Namespace_;
         });
 
-        if($namespace) {
+        if ($namespace) {
             $name = $namespace->name->toString();
 
             $class = collect($namespace->stmts)->first(function ($node) {
                 return $node instanceof Class_;
             });
 
-            if($class) {
+            if ($class) {
                 $name .= '\\' . $class->name->toString();
             }
 

@@ -12,17 +12,24 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Barryvdh\LaravelIdeHelper\Database\MySqlDriver;
+use Barryvdh\LaravelIdeHelper\Database\PostgresDriver;
+use Barryvdh\LaravelIdeHelper\Database\SQLiteDriver;
+use Barryvdh\LaravelIdeHelper\Database\SqlServerDriver;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\ClassMapGenerator\ClassMapGenerator;
+use Doctrine\DBAL\Connection as DBALConnection;
 use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -495,6 +503,28 @@ class ModelsCommand extends Command
         return $typeOverrides[$type] ?? $type;
     }
 
+    private function getSchema(Connection $connection): AbstractSchemaManager
+    {
+        $driver = match ($connection->getConfig('driver')) {
+            'sqlite' => new SQLiteDriver(),
+            'mysql' => new MySqlDriver(),
+            'pgsql' => new PostgresDriver(),
+            'sqlsrv' => new SqlServerDriver(),
+            default => throw new InvalidArgumentException(
+                'Unsupported driver: ' . $connection->getConfig('driver')
+            ),
+        };
+
+        $doctrineConnection =  new DBALConnection(array_filter([
+            'pdo' => $connection->getPdo(),
+            'dbname' => $connection->getDatabaseName(),
+            'driver' => $driver->getName(),
+            'serverVersion' => $connection->getConfig('server_version'),
+        ]), $driver);
+
+        return $doctrineConnection->createSchemaManager();
+    }
+
     /**
      * Load the properties from the database table.
      *
@@ -506,7 +536,7 @@ class ModelsCommand extends Command
     {
         $database = $model->getConnection()->getDatabaseName();
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
-        $schema = $model->getConnection()->getDoctrineSchemaManager();
+        $schema = $this->getSchema($model->getConnection());
         $databasePlatform = $schema->getDatabasePlatform();
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
@@ -1638,7 +1668,7 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param \Doctrine\DBAL\Schema\AbstractSchemaManager $schema
+     * @param AbstractSchemaManager $schema
      * @param string $table
      * @throws DBALException
      */

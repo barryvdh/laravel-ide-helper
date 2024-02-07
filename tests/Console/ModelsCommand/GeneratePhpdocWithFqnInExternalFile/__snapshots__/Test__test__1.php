@@ -52,8 +52,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @property float $double_not_nullable
  * @property string|null $decimal_nullable
  * @property string $decimal_not_nullable
- * @property string|null $unsigned_decimal_nullable
- * @property string $unsigned_decimal_not_nullable
  * @property integer|null $boolean_nullable
  * @property integer $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -149,8 +147,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereTinyIntegerNullable($value)
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereUnsignedBigIntegerNotNullable($value)
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereUnsignedBigIntegerNullable($value)
- * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereUnsignedDecimalNotNullable($value)
- * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereUnsignedDecimalNullable($value)
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereUnsignedIntegerNotNullable($value)
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereUnsignedIntegerNullable($value)
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Builders\EMaterialQueryBuilder|Post whereUnsignedMediumIntegerNotNullable($value)

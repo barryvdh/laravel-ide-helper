@@ -46,8 +46,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $double_not_nullable
  * @property string|null $decimal_nullable
  * @property string $decimal_not_nullable
- * @property string|null $unsigned_decimal_nullable
- * @property string $unsigned_decimal_not_nullable
  * @property integer|null $boolean_nullable
  * @property integer $boolean_not_nullable
  * @property string|null $enum_nullable

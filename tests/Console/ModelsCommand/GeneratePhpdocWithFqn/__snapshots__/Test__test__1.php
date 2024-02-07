@@ -54,8 +54,6 @@ use Illuminate\Support\Carbon;
  * @property float $double_not_nullable
  * @property string|null $decimal_nullable
  * @property string $decimal_not_nullable
- * @property string|null $unsigned_decimal_nullable
- * @property string $unsigned_decimal_not_nullable
  * @property integer|null $boolean_nullable
  * @property integer $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -155,8 +153,6 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder|Post whereTinyIntegerNullable($value)
  * @method static EloquentBuilder|Post whereUnsignedBigIntegerNotNullable($value)
  * @method static EloquentBuilder|Post whereUnsignedBigIntegerNullable($value)
- * @method static EloquentBuilder|Post whereUnsignedDecimalNotNullable($value)
- * @method static EloquentBuilder|Post whereUnsignedDecimalNullable($value)
  * @method static EloquentBuilder|Post whereUnsignedIntegerNotNullable($value)
  * @method static EloquentBuilder|Post whereUnsignedIntegerNullable($value)
  * @method static EloquentBuilder|Post whereUnsignedMediumIntegerNotNullable($value)

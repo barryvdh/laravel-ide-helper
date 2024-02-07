@@ -47,8 +47,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $double_not_nullable
  * @property string|null $decimal_nullable
  * @property string $decimal_not_nullable
- * @property string|null $unsigned_decimal_nullable
- * @property string $unsigned_decimal_not_nullable
  * @property integer|null $boolean_nullable
  * @property integer $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -147,8 +145,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static PostExternalQueryBuilder|Post whereTinyIntegerNullable($value)
  * @method static PostExternalQueryBuilder|Post whereUnsignedBigIntegerNotNullable($value)
  * @method static PostExternalQueryBuilder|Post whereUnsignedBigIntegerNullable($value)
- * @method static PostExternalQueryBuilder|Post whereUnsignedDecimalNotNullable($value)
- * @method static PostExternalQueryBuilder|Post whereUnsignedDecimalNullable($value)
  * @method static PostExternalQueryBuilder|Post whereUnsignedIntegerNotNullable($value)
  * @method static PostExternalQueryBuilder|Post whereUnsignedIntegerNullable($value)
  * @method static PostExternalQueryBuilder|Post whereUnsignedMediumIntegerNotNullable($value)

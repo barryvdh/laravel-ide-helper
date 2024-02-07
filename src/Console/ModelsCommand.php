@@ -486,7 +486,7 @@ class ModelsCommand extends Command
     /**
      * Load the properties from the database table.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param Model $model
      *
      */
     public function getPropertiesFromTable($model)

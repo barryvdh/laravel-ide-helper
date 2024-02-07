@@ -266,6 +266,7 @@ class ModelsCommand extends Command
             }
             $this->properties = [];
             $this->methods = [];
+            $this->foreignKeyConstraintsColumns = [];
             if (class_exists($name)) {
                 try {
                     // handle abstract classes, interfaces, ...

@@ -153,6 +153,11 @@ class Generator
             if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
+			
+			// Skip the swoole
+			if ($facade == 'SwooleTW\Http\Server\Facades\Server' && $name == 'Server' && !class_exists('Swoole\Http\Server')) {
+                continue;
+            }
 
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
             $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);

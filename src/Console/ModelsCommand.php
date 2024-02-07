@@ -491,7 +491,6 @@ class ModelsCommand extends Command
      */
     public function getPropertiesFromTable($model)
     {
-        $database = $model->getConnection()->getDatabaseName();
         $table = $model->getTable();
         $schema = $model->getConnection()->getSchemaBuilder();
         $columns = $schema->getColumns($table);
@@ -516,23 +515,18 @@ class ModelsCommand extends Command
                     case 'datetimetz':
                     case 'datetime':
                     case 'decimal':
+                    case 'varchar':
+                    case 'numeric':
                         $type = 'string';
                         break;
                     case 'integer':
                     case 'bigint':
                     case 'smallint':
+                    case 'tinyint':
                         $type = 'integer';
                         break;
                     case 'boolean':
-                        switch ($platformName) {
-                            case 'sqlite':
-                            case 'mysql':
-                                $type = 'integer';
-                                break;
-                            default:
-                                $type = 'boolean';
-                                break;
-                        }
+                        $type = 'boolean';
                         break;
                     case 'float':
                         $type = 'float';
@@ -544,7 +538,7 @@ class ModelsCommand extends Command
             }
 
             $comment = $column['comment'];
-            if (!$column['nullable']) {
+            if ($column['nullable']) {
                 $this->nullableColumns[$name] = true;
             }
             $this->setProperty(
@@ -553,7 +547,7 @@ class ModelsCommand extends Command
                 true,
                 true,
                 $comment,
-                !$column['nullable']
+                $column['nullable']
             );
             if ($this->write_model_magic_where) {
                 $builderClass = $this->write_model_external_builder_methods

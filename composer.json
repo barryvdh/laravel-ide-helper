@@ -25,9 +25,9 @@
         "barryvdh/reflection-docblock": "^2.0.6",
         "composer/class-map-generator": "^1.0",
         "illuminate/console": "^10",
+        "illuminate/database": "^10.30",
         "illuminate/filesystem": "^10",
         "illuminate/support": "^10",
-        "illuminate/database": "^10.30",
         "nikic/php-parser": "^4.18 || ^5",
         "phpdocumentor/type-resolver": "^1.1.0"
     },

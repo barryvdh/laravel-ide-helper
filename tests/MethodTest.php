@@ -6,10 +6,19 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
 use Illuminate\Database\Eloquent\Builder;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Database\Eloquent\Model;
 
 class MethodTest extends TestCase
 {
+    protected function getEnvironmentSetUp($app)
+    {
+        parent::getEnvironmentSetUp($app);
+
+        if ($this->getName() == 'testSeparateTags') {
+            $app['config']->set('ide-helper.phpdoc_separate_tags', true);
+        }
+    }
+
     /**
      * Test that we can actually instantiate the class
      */
@@ -126,6 +135,39 @@ DOC;
         $this->assertSame([], $method->getParams(false));
         $this->assertSame('', $method->getParamsWithDefault(true));
         $this->assertSame([], $method->getParamsWithDefault(false));
+        $this->assertTrue($method->shouldReturn());
+    }
+
+    /**
+     * Test class output when separating tag groups
+     */
+    public function testSeparateTags()
+    {
+        $reflectionClass = new \ReflectionClass(Model::class);
+        $reflectionMethod = $reflectionClass->getMethod('toJson');
+
+        $method = new Method($reflectionMethod, 'Model', $reflectionClass);
+
+        $output =  <<<'DOC'
+/**
+ * Convert the model instance to JSON.
+ *
+ * @param int $options
+ * @return string 
+ *
+ * @throws \Illuminate\Database\Eloquent\JsonEncodingException
+ *
+ * @static 
+ */
+DOC;
+
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('toJson', $method->getName());
+        $this->assertSame('\\' . Model::class, $method->getDeclaringClass());
+        $this->assertSame('$options', $method->getParams(true));
+        $this->assertSame(['$options'], $method->getParams(false));
+        $this->assertSame('$options = 0', $method->getParamsWithDefault(true));
+        $this->assertSame(['$options = 0'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
     }
 }

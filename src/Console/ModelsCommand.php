@@ -1110,6 +1110,8 @@ class ModelsCommand extends Command
                     $default = 'null';
                 } elseif (is_int($default)) {
                     //$default = $default;
+                } elseif ($default instanceof \UnitEnum) {
+                    $default = '\\' . get_class($default) . '::' . $default->name;
                 } else {
                     $default = "'" . trim($default) . "'";
                 }

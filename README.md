@@ -145,9 +145,9 @@ The class name will be different from the model, avoiding the IDE duplicate anno
 
 > Please make sure to back up your models, before writing the info.
 
-Writing to the models should keep the existing comments and only append new properties/methods.
-The existing PHPDoc is replaced, or added if not found.
-With the `--reset (-R)` option, the existing PHPDocs are ignored, and only the newly found columns/relations are saved as PHPDocs.
+Writing to the models should keep the existing comments and only append new properties/methods. It will not update changed properties/methods.
+
+With the `--reset (-R)` option, the whole existing PHPDoc is replaced, including any comments that have been made. The `--smart-reset` option will instead keep the 'text' part of the phpdoc comment, and just replace all the property/method defininitions.
 
 ```bash
 php artisan ide-helper:models "App\Models\Post"

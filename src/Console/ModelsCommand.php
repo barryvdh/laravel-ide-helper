@@ -494,6 +494,7 @@ class ModelsCommand extends Command
         $table = $model->getTable();
         $schema = $model->getConnection()->getSchemaBuilder();
         $columns = $schema->getColumns($table);
+        $platformName = $model->getConnection()->getConfig('driver');
 
         if (!$columns) {
             return;
@@ -526,7 +527,15 @@ class ModelsCommand extends Command
                         $type = 'integer';
                         break;
                     case 'boolean':
-                        $type = 'boolean';
+                        switch ($platformName) {
+                            case 'sqlite':
+                            case 'mysql':
+                                $type = 'integer';
+                                break;
+                            default:
+                                $type = 'boolean';
+                                break;
+                        }
                         break;
                     case 'float':
                         $type = 'float';

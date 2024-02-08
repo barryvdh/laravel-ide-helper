@@ -159,6 +159,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read Model|\Eloquent $relationSampleToAnyMorphedRelationType
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleToAnyRelationType
  * @property-read int|null $relation_sample_to_any_relation_type_count
+ * @property-read Simple $relationSampleToBadlyNamedNotManyRelation
  * @property-read Simple $relationSampleToManyRelationType
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
@@ -256,5 +257,10 @@ class Simple extends Model
     public function relationSampleToAnyMorphedRelationType()
     {
         return $this->testToAnyMorphedRelation(Simple::class);
+    }
+
+    public function relationSampleToBadlyNamedNotManyRelation()
+    {
+        return $this->testToBadlyNamedNotManyRelation(Simple::class);
     }
 }

@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\ContextFactory;
@@ -854,12 +855,17 @@ class ModelsCommand extends Command
         $fkProp = $reflectionObj->getProperty('foreignKey');
         $fkProp->setAccessible(true);
 
-        if ($relation === 'belongsTo') {
-            return isset($this->nullableColumns[$fkProp->getValue($relationObj)]) ||
-                !in_array($fkProp->getValue($relationObj), $this->foreignKeyConstraintsColumns, true);
+        foreach (Arr::wrap($fkProp->getValue($relationObj)) as $foreignKey) {
+            if (isset($this->nullableColumns[$foreignKey])) {
+                return true;
+            }
+
+            if (!in_array($foreignKey, $this->foreignKeyConstraintsColumns, true)) {
+                return true;
+            }
         }
 
-        return isset($this->nullableColumns[$fkProp->getValue($relationObj)]);
+        return false;
     }
 
     /**

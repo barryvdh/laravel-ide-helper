@@ -21,6 +21,8 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -407,8 +409,12 @@ class ModelsCommand extends Command
                 case 'immutable_datetime':
                     $realType = '\Carbon\CarbonImmutable';
                     break;
+                case AsCollection::class:
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
+                    break;
+                case AsArrayObject::class:
+                    $realType = '\ArrayObject';
                     break;
                 default:
                     // In case of an optional custom cast parameter , only evaluate
@@ -720,9 +726,14 @@ class ModelsCommand extends Command
                                     get_class($relationObj->getRelated())
                                 );
 
+                                $relationReturnType = $this->getRelationReturnTypes()[$relation] ?? false;
+
                                 if (
-                                    strpos(get_class($relationObj), 'Many') !== false ||
-                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'many'
+                                    $relationReturnType === 'many' ||
+                                    (
+                                        !$relationReturnType &&
+                                        strpos(get_class($relationObj), 'Many') !== false
+                                    )
                                 ) {
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
@@ -749,8 +760,11 @@ class ModelsCommand extends Command
                                         );
                                     }
                                 } elseif (
-                                    $relation === 'morphTo' ||
-                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'morphTo'
+                                    $relationReturnType === 'morphTo' ||
+                                    (
+                                        !$relationReturnType &&
+                                        $relation === 'morphTo'
+                                    )
                                 ) {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
@@ -1034,7 +1048,9 @@ class ModelsCommand extends Command
         }
 
         $classname = $this->write_mixin ? $mixinClassName : $classname;
-        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} ";
+
+        $allowDynamicAttributes = $this->write_mixin ? "#[\AllowDynamicProperties]\n\t" : '';
+        $output = "namespace {$namespace}{\n{$docComment}\n\t{$keyword}{$allowDynamicAttributes}class {$classname} ";
 
         if (!$this->write_mixin) {
             $output .= "extends \Eloquent ";

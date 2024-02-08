@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Add support for real-time facades in the helper file. [#1455 / filipac](https://github.com/barryvdh/laravel-ide-helper/pull/1455)
 - Add support for relations with composite keys. [#1479 / calebdw](https://github.com/barryvdh/laravel-ide-helper/pull/1479)
 - Add support for attribute accessors with no backing field or type hinting [#1411 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1411).
+- Add support for AsCollection and AsArrayObject casts [#1393 / pataar](https://github.com/barryvdh/laravel-ide-helper/pull/1393)
 
 2024-02-05, 2.14.0
 ------------------

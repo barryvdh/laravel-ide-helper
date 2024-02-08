@@ -540,53 +540,6 @@ class ModelsCommand extends Command
 
                     default => 'mixed',
                 };
-                switch ($type) {
-                    case 'string':
-                    case 'text':
-                    case 'date':
-                    case 'time':
-                    case 'guid':
-                    case 'datetimetz':
-                    case 'datetime':
-                    case 'decimal':
-                    case 'numeric':
-                    case 'mediumtext':
-                    case 'tinytext':
-                    case 'char':
-                    case 'varchar':
-                    case 'bpchar':
-                    case 'nvarchar':
-                    case 'binary':
-                        $type = 'string';
-                        break;
-                    case 'integer':
-                    case 'bigint':
-                    case 'mediumint':
-                    case 'smallint':
-                    case 'tinyint':
-                        $type = 'integer';
-                        break;
-                    case 'boolean':
-                        switch ($platformName) {
-                            case 'sqlite':
-                            case 'mysql':
-                                $type = 'integer';
-                                break;
-                            default:
-                                $type = 'boolean';
-                                break;
-                        }
-                        break;
-                    case 'float':
-                    case 'double':
-                    case 'real':
-                    case 'double precision':
-                        $type = 'float';
-                        break;
-                    default:
-                        $type = 'mixed';
-                        break;
-                }
             }
 
             $comment = $column['comment'];

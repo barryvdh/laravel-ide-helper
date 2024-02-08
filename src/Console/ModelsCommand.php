@@ -753,9 +753,14 @@ class ModelsCommand extends Command
                                     get_class($relationObj->getRelated())
                                 );
 
+                                $relationReturnType = $this->getRelationReturnTypes()[$relation] ?? false;
+
                                 if (
-                                    strpos(get_class($relationObj), 'Many') !== false ||
-                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'many'
+                                    $relationReturnType === 'many' ||
+                                    (
+                                        !$relationReturnType &&
+                                        strpos(get_class($relationObj), 'Many') !== false
+                                    )
                                 ) {
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
@@ -793,8 +798,11 @@ class ModelsCommand extends Command
                                         );
                                     }
                                 } elseif (
-                                    $relation === 'morphTo' ||
-                                    ($this->getRelationReturnTypes()[$relation] ?? '') === 'morphTo'
+                                    $relationReturnType === 'morphTo' ||
+                                    (
+                                        !$relationReturnType &&
+                                        $relation === 'morphTo'
+                                    )
                                 ) {
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(

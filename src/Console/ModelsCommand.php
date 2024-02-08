@@ -526,6 +526,7 @@ class ModelsCommand extends Command
                     case 'tinytext':
                     case 'char':
                     case 'varchar':
+                    case 'bpchar':
                     case 'nvarchar':
                         $type = 'string';
                         break;

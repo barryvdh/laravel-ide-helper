@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * This is second line, success too.
  * @property-read string $many_format_comment There is format comment, success.
  * @property-read string $not_comment
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationHasMany HasMany relations.
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationHasMany HasMany relations.
  * @property-read int|null $relation_has_many_count
  * @property-read Simple|null $relationHasOne Others relations.
  * @property-read Model|\Eloquent $relationMorphTo MorphTo relations.

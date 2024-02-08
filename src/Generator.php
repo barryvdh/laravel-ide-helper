@@ -13,8 +13,13 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
+use PhpParser\Lexer\Emulative;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Parser\Php7;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -26,7 +31,7 @@ class Generator
     /** @var \Illuminate\View\Factory */
     protected $view;
 
-    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    /** @var OutputInterface */
     protected $output;
 
     protected $extra = [];
@@ -37,7 +42,7 @@ class Generator
     /**
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $helpers
      */
     public function __construct(
@@ -75,6 +80,7 @@ class Generator
         return $this->view->make('helper')
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
+            ->with('real_time_facades', $this->getRealTimeFacades())
             ->with('helpers', $this->helpers)
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
@@ -128,15 +134,6 @@ class Generator
         }
 
         try {
-            if (class_exists('SSH') && is_a('SSH', '\Illuminate\Support\Facades\SSH', true)) {
-                $class = get_class(\SSH::connection());
-                $this->extra['SSH'] = [$class];
-                $this->interfaces['\Illuminate\Remote\ConnectionInterface'] = $class;
-            }
-        } catch (\Exception $e) {
-        }
-
-        try {
             if (class_exists('Storage') && is_a('Storage', '\Illuminate\Support\Facades\Storage', true)) {
                 $class = get_class(\Storage::disk());
                 $this->extra['Storage'] = [$class];
@@ -162,6 +159,11 @@ class Generator
                 continue;
             }
 
+            // Skip the swoole
+            if ($facade == 'SwooleTW\Http\Server\Facades\Server' && $name == 'Server' && !class_exists('Swoole\Http\Server')) {
+                continue;
+            }
+
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
             $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
@@ -177,6 +179,51 @@ class Generator
         return $aliases;
     }
 
+    protected function getRealTimeFacades()
+    {
+        $facades = [];
+        $realTimeFacadeFiles = glob(storage_path('framework/cache/facade-*.php'));
+        foreach ($realTimeFacadeFiles as $file) {
+            try {
+                $name = $this->getFullyQualifiedClassNameInFile($file);
+                $facades[$name] = $name;
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        return $facades;
+    }
+
+    protected function getFullyQualifiedClassNameInFile(string $path)
+    {
+        $contents = file_get_contents($path);
+
+        $parsers = new Php7(new Emulative());
+
+        $parsed = collect($parsers->parse($contents) ?: []);
+
+        $namespace = $parsed->first(function ($node) {
+            return $node instanceof Namespace_;
+        });
+
+        if ($namespace) {
+            $name = $namespace->name->toString();
+
+            $class = collect($namespace->stmts)->first(function ($node) {
+                return $node instanceof Class_;
+            });
+
+            if ($class) {
+                $name .= '\\' . $class->name->toString();
+            }
+
+            return $name;
+        }
+    }
+
+
+
     /**
      * Regroup aliases by namespace of extended classes
      *
@@ -184,7 +231,9 @@ class Generator
      */
     protected function getAliasesByExtendsNamespace()
     {
-        $aliases = $this->getValidAliases();
+        $aliases = $this->getValidAliases()->filter(static function (Alias $alias) {
+            return is_subclass_of($alias->getExtends(), Facade::class);
+        });
 
         $this->addMacroableClasses($aliases);
 

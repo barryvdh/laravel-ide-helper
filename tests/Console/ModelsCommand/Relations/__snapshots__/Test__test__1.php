@@ -57,6 +57,68 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\CompositeBelongsToVariation
+ *
+ * @property integer $id
+ * @property integer $not_null_column_with_foreign_key_constraint
+ * @property integer $not_null_column_with_no_foreign_key_constraint
+ * @property integer|null $nullable_column_with_foreign_key_constraint
+ * @property integer|null $nullable_column_with_no_foreign_key_constraint
+ * @property-read CompositeBelongsToVariation $bothNonNullableWithForeignKeyConstraint
+ * @property-read CompositeBelongsToVariation|null $nonNullableMixedWithoutForeignKeyConstraint
+ * @property-read CompositeBelongsToVariation|null $nullableMixedWithForeignKeyConstraint
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNotNullColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNotNullColumnWithNoForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNullableColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNullableColumnWithNoForeignKeyConstraint($value)
+ * @mixin \Eloquent
+ */
+class CompositeBelongsToVariation extends Model
+{
+    public $table = 'belongs_to_variations';
+
+    public function bothNonNullableWithForeignKeyConstraint(): BelongsTo
+    {
+        // Note, duplicating the keys here for simplicity.
+        return $this->belongsTo(
+            self::class,
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+        );
+    }
+
+    public function nonNullableMixedWithoutForeignKeyConstraint(): BelongsTo
+    {
+        return $this->belongsTo(
+            self::class,
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_no_foreign_key_constraint'],
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_no_foreign_key_constraint'],
+        );
+    }
+
+    public function nullableMixedWithForeignKeyConstraint(): BelongsTo
+    {
+        return $this->belongsTo(
+            self::class,
+            ['nullable_column_with_no_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+            ['nullable_column_with_no_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+        );
+    }
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
+
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Traits\HasTestRelations;
 use Illuminate\Database\Eloquent\Model;
@@ -75,28 +137,29 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property integer $id
  * @property-read Simple|null $relationBelongsTo
  * @property-read AnotherModel|null $relationBelongsToInAnotherNamespace
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToManyWithSub
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToManyWithSub
  * @property-read int|null $relation_belongs_to_many_with_sub_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationBelongsToManyWithSubAnother
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToManyWithSubAnother
  * @property-read int|null $relation_belongs_to_many_with_sub_another_count
  * @property-read AnotherModel|null $relationBelongsToSameNameAsColumn
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationHasMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationHasMany
  * @property-read int|null $relation_has_many_count
  * @property-read Simple|null $relationHasOne
  * @property-read Simple $relationHasOneWithDefault
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationMorphMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationMorphMany
  * @property-read int|null $relation_morph_many_count
  * @property-read Simple|null $relationMorphOne
  * @property-read Model|\Eloquent $relationMorphTo
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationMorphedByMany
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationSampleRelationType
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleRelationType
  * @property-read int|null $relation_sample_relation_type_count
  * @property-read Model|\Eloquent $relationSampleToAnyMorphedRelationType
- * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $relationSampleToAnyRelationType
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleToAnyRelationType
  * @property-read int|null $relation_sample_to_any_relation_type_count
+ * @property-read Simple $relationSampleToBadlyNamedNotManyRelation
  * @property-read Simple $relationSampleToManyRelationType
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
@@ -194,5 +257,10 @@ class Simple extends Model
     public function relationSampleToAnyMorphedRelationType()
     {
         return $this->testToAnyMorphedRelation(Simple::class);
+    }
+
+    public function relationSampleToBadlyNamedNotManyRelation()
+    {
+        return $this->testToBadlyNamedNotManyRelation(Simple::class);
     }
 }

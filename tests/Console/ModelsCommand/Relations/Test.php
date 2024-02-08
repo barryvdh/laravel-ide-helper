@@ -6,7 +6,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToAnyMorphedRelationType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToAnyRelationType;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToBadlyNamedNotManyRelationType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToManyRelationType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToOneRelationType;
 use Illuminate\Support\Facades\Config;
@@ -22,11 +24,13 @@ class Test extends AbstractModelsCommand
             'testToManyRelation' => SampleToManyRelationType::class,
             'testToAnyRelation' => SampleToAnyRelationType::class,
             'testToAnyMorphedRelation' => SampleToAnyMorphedRelationType::class,
+            'testToBadlyNamedNotManyRelation' => SampleToBadlyNamedNotManyRelationType::class,
         ]);
 
         Config::set('ide-helper.additional_relation_return_types', [
             'testToAnyRelation' => 'many',
             'testToAnyMorphedRelation' => 'morphTo',
+            'testToBadlyNamedNotManyRelation' => 'one',
         ]);
     }
 

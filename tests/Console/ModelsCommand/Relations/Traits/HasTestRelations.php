@@ -6,6 +6,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Traits
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToAnyMorphedRelationType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToAnyRelationType;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToBadlyNamedNotManyRelationType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToManyRelationType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Types\SampleToOneRelationType;
 
@@ -33,5 +34,11 @@ trait HasTestRelations
     {
         $instance = $this->newRelatedInstance($related);
         return new SampleToAnyMorphedRelationType($instance->newQuery(), $this);
+    }
+
+    public function testToBadlyNamedNotManyRelation($related)
+    {
+        $instance = $this->newRelatedInstance($related);
+        return new SampleToBadlyNamedNotManyRelationType($instance->newQuery(), $this);
     }
 }

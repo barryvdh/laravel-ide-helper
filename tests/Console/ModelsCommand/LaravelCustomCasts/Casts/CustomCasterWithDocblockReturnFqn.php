@@ -10,7 +10,7 @@ class CustomCasterWithDocblockReturnFqn implements CastsAttributes
 {
     /**
      * @inheritDoc
-     * @return \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty
+     * @return CastedProperty
      */
     public function get($model, string $key, $value, array $attributes)
     {

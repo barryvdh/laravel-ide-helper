@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add support for enum default arguments using enum cases. [#1464 / d8vjork](https://github.com/barryvdh/laravel-ide-helper/pull/1464)
 - Add support for real-time facades in the helper file. [#1455 / filipac](https://github.com/barryvdh/laravel-ide-helper/pull/1455)
+- Add support for relations with composite keys. [#1479 / calebdw](https://github.com/barryvdh/laravel-ide-helper/pull/1479)
+- Add support for attribute accessors with no backing field or type hinting [#1411 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1411).
 
 2024-02-05, 2.14.0
 ------------------
@@ -23,12 +25,12 @@ All notable changes to this project will be documented in this file.
 - Refactor resolving of null information for custom casted attribute types [#1330 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1330)
 
 ### Fixed
-- Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
 - Catch exceptions when loading aliases [#1465 / dongm2ez](https://github.com/barryvdh/laravel-ide-helper/pull/1465)
 
 ### Added
 - Add support for nikic/php-parser 5 (next to 4) [#1502 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1502)
 - Add support for `immutable_date:*` and `immutable_datetime:*` casts. [#1380 / thekonz](https://github.com/barryvdh/laravel-ide-helper/pull/1380)
+- Add support for attribute accessors marked as protected. [#1339 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1339)
 
 2023-02-04, 2.13.0
 ------------------

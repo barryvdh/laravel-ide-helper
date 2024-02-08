@@ -512,8 +512,13 @@ class ModelsCommand extends Command
             if (in_array($name, $model->getDates())) {
                 $type = $this->dateClass;
             } else {
+                // Allow to register custom types
                 $type = $this->laravel['config']->get("ide-helper.custom_db_types.{$driverName}.{$column['type_name']}", null);
-                $type ??= $column['type'] === 'tinyint(1)' ? 'boolean' : null;
+
+                // mysql and sqlite drivers return tinyint(1) as integer, not as bool
+                $type ??= $column['type'] === 'tinyint(1)' && !in_array($driverName, ['mysql', 'sqlite'])  ? 'boolean' : null;
+
+                // Match other types to php equivalent
                 $type ??= match ($column['type_name']) {
                     'varchar', 'nvarchar',
                     'char', 'bpchar', 'nchar',

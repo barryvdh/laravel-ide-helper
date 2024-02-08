@@ -1186,6 +1186,9 @@ class ModelsCommand extends Command
         return $this->laravel['config']->get('ide-helper.model_camel_case_properties', false);
     }
 
+    /**
+     * @psalm-suppress NoValue
+     */
     protected function getAttributeTypes(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
         // Private/protected ReflectionMethods require setAccessible prior to PHP 8.1

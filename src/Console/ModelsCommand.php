@@ -620,7 +620,7 @@ class ModelsCommand extends Command
             // methods that resemble mutators but aren't.
             $reflections = array_filter($reflections, function (\ReflectionMethod $methodReflection) {
                 return !$methodReflection->isPrivate() && !(
-                    $methodReflection->getDeclaringClass()->getName() === \Illuminate\Database\Eloquent\Model::class && (
+                    $methodReflection->getDeclaringClass()->getName() === Model::class && (
                         $methodReflection->getName() === 'setClassCastableAttribute' ||
                         $methodReflection->getName() === 'setEnumCastableAttribute'
                     )

@@ -496,7 +496,7 @@ class ModelsCommand extends Command
         $table = $model->getTable();
         $schema = $model->getConnection()->getSchemaBuilder();
         $columns = $schema->getColumns($table);
-        $platformName = $model->getConnection()->getConfig('driver');
+        $driverName = $model->getConnection()->getDriverName();
 
         if (strpos($table, '.')) {
             [$database, $table] = explode('.', $table);

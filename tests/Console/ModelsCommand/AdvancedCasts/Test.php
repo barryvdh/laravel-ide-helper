@@ -12,7 +12,6 @@ class Test extends AbstractModelsCommand
 {
     public function test(): void
     {
-
         if (!version_compare(Application::VERSION, '8.28', '>=')) {
             $this->markTestSkipped(
                 'This test only works in Laravel >= 8.28'

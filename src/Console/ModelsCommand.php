@@ -1195,24 +1195,42 @@ class ModelsCommand extends Command
         $attribute = $reflectionMethod->invoke($model);
 
         return collect([
-            'get' => $attribute->get ? optional(new \ReflectionFunction($attribute->get))->getReturnType() : null,
-            'set' => $attribute->set ? optional(new \ReflectionFunction($attribute->set))->getReturnType() : null,
+            'get' => $attribute->get,
+            'set' => $attribute->set,
         ])
-            ->filter()
-            ->map(function ($type) {
-                if ($type instanceof \ReflectionUnionType) {
-                    $types = collect($type->getTypes())
-                        /** @var ReflectionType $reflectionType */
-                        ->map(function ($reflectionType) {
-                            return collect($this->extractReflectionTypes($reflectionType));
-                        })
-                        ->flatten();
-                } else {
-                    $types = collect($this->extractReflectionTypes($type));
+            ->map(function ($function, $functionName) {
+                if (!$function) {
+                    return null;
                 }
 
-                if ($type->allowsNull()) {
-                    $types->push('null');
+                $reflectionFunction = new \ReflectionFunction($function);
+                $functionReturnType = optional($reflectionFunction)->getReturnType();
+
+                if (!$functionReturnType) {
+                    $functionReturnType = 'mixed';
+                }
+
+                return $functionReturnType;
+            })
+            ->filter()
+            ->map(function ($type) {
+                if ($type === 'mixed') {
+                    $types = collect(['mixed']);
+                } else {
+                    if ($type instanceof \ReflectionUnionType) {
+                        $types = collect($type->getTypes())
+                            /** @var ReflectionType $reflectionType */
+                            ->map(function ($reflectionType) {
+                                return collect($this->extractReflectionTypes($reflectionType));
+                            })
+                            ->flatten();
+                    } else {
+                        $types = collect($this->extractReflectionTypes($type));
+                    }
+
+                    if ($type->allowsNull()) {
+                        $types->push('null');
+                    }
                 }
 
                 return $types->join('|');

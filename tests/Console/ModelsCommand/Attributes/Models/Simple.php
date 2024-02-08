@@ -21,6 +21,18 @@ class Simple extends Model
         );
     }
 
+    protected function attributeWithoutReturnTypes(): Attribute
+    {
+        return new Attribute(
+            function (?string $name) {
+                return $name;
+            },
+            function (?string $name) {
+                return $name === null ? null : ucfirst($name);
+            }
+        );
+    }
+
     /**
      * ide-helper does not recognize this method being an Attribute
      * because the method has no actual return type;

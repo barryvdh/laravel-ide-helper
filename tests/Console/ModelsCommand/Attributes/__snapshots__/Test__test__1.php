@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Attributes\Models\Simple
  *
  * @property integer $id
+ * @property mixed $attribute_without_return_types
  * @property string|null $name
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
@@ -27,6 +28,18 @@ class Simple extends Model
                 return $name;
             },
             function (?string $name): ?string {
+                return $name === null ? null : ucfirst($name);
+            }
+        );
+    }
+
+    protected function attributeWithoutReturnTypes(): Attribute
+    {
+        return new Attribute(
+            function (?string $name) {
+                return $name;
+            },
+            function (?string $name) {
                 return $name === null ? null : ucfirst($name);
             }
         );

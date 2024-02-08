@@ -101,7 +101,7 @@ class Simple extends Model
      * phpdoc is ignored here deliberately due to performance reasons and also
      * isn't supported by Laravel itself.
      *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     * @return Attribute
      */
     protected function notAnAttribute()
     {

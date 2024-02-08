@@ -322,7 +322,8 @@ return [
     |
     | When using custom relation types its possible for the class name to not contain
     | the proper return type of the relation. The key of the array is the relationship
-    | method name. The value of the array is the return type of the relation.
+    | method name. The value of the array is the return type of the relation ('many'
+    | or 'morphTo').
     | e.g. `'relationName' => 'many'`.
     |
     */

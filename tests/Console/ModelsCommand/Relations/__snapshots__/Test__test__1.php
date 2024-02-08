@@ -57,6 +57,68 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\CompositeBelongsToVariation
+ *
+ * @property integer $id
+ * @property integer $not_null_column_with_foreign_key_constraint
+ * @property integer $not_null_column_with_no_foreign_key_constraint
+ * @property integer|null $nullable_column_with_foreign_key_constraint
+ * @property integer|null $nullable_column_with_no_foreign_key_constraint
+ * @property-read CompositeBelongsToVariation $bothNonNullableWithForeignKeyConstraint
+ * @property-read CompositeBelongsToVariation|null $nonNullableMixedWithoutForeignKeyConstraint
+ * @property-read CompositeBelongsToVariation|null $nullableMixedWithForeignKeyConstraint
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNotNullColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNotNullColumnWithNoForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNullableColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNullableColumnWithNoForeignKeyConstraint($value)
+ * @mixin \Eloquent
+ */
+class CompositeBelongsToVariation extends Model
+{
+    public $table = 'belongs_to_variations';
+
+    public function bothNonNullableWithForeignKeyConstraint(): BelongsTo
+    {
+        // Note, duplicating the keys here for simplicity.
+        return $this->belongsTo(
+            self::class,
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+        );
+    }
+
+    public function nonNullableMixedWithoutForeignKeyConstraint(): BelongsTo
+    {
+        return $this->belongsTo(
+            self::class,
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_no_foreign_key_constraint'],
+            ['not_null_column_with_foreign_key_constraint', 'not_null_column_with_no_foreign_key_constraint'],
+        );
+    }
+
+    public function nullableMixedWithForeignKeyConstraint(): BelongsTo
+    {
+        return $this->belongsTo(
+            self::class,
+            ['nullable_column_with_no_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+            ['nullable_column_with_no_foreign_key_constraint', 'not_null_column_with_foreign_key_constraint'],
+        );
+    }
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models;
+
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\ModelsOtherNamespace\AnotherModel;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Traits\HasTestRelations;
 use Illuminate\Database\Eloquent\Model;

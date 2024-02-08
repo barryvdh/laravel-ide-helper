@@ -512,7 +512,34 @@ class ModelsCommand extends Command
             if (in_array($name, $model->getDates())) {
                 $type = $this->dateClass;
             } else {
-                $type = $column['type_name'];
+                $type = $this->laravel['config']->get("ide-helper.custom_db_types.{$driverName}.{$column['type_name']}", null);
+                $type ??= $column['type'] === 'tinyint(1)' ? 'boolean' : null;
+                $type ??= match ($column['type_name']) {
+                    'varchar', 'nvarchar',
+                    'char', 'bpchar', 'nchar',
+                    'binary', 'varbinary', 'blob', 'bytea',
+                    'decimal', 'numeric',
+                    'date', 'time', 'timetz', 'datetime', 'datetime2', 'datetimeoffset', 'timestamp', 'timestamptz', 'year',
+                    'uuid', 'uniqueidentifier',
+                    'json', 'jsonb',
+                    'macaddr', 'inet',
+                    'enum', 'set',
+                    'geography', 'geometry', 'geometrycollection', 'linestring', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon',
+                    'text', 'tinytext', 'longtext', 'mediumtext' => 'string',
+
+                    'tinyint',
+                    'integer', 'int', 'int4',
+                    'smallint', 'int2',
+                    'mediumint',
+                    'bigint', 'int8' => 'integer',
+
+                    'boolean', 'bool', 'bit' => 'boolean',
+
+                    'float', 'real', 'float4',
+                    'double', 'float8' => 'float',
+
+                    default => 'mixed',
+                };
                 switch ($type) {
                     case 'string':
                     case 'text':

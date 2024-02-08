@@ -522,7 +522,7 @@ class ModelsCommand extends Command
                 $type = $this->laravel['config']->get("ide-helper.custom_db_types.{$driverName}.{$column['type_name']}", null);
 
                 // mysql and sqlite drivers return tinyint(1) as integer, not as bool
-                $type ??= $column['type'] === 'tinyint(1)' && !in_array($driverName, ['mysql', 'sqlite'])  ? 'boolean' : null;
+                $type ??= $column['type'] === 'tinyint(1)' && !in_array($driverName, ['mysql', 'sqlite']) ? 'boolean' : null;
 
                 // Match other types to php equivalent
                 $type ??= match ($column['type_name']) {

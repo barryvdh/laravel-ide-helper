@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 --------------
 
 ### Fixed
+
+### Changed
+
+### Added
+
+2024-02-12, 2.15.0
+------------------
+
+### Fixed
 - Fix case issue in `ModelsCommand::unsetMethod()` [#1453 / leo108](https://github.com/barryvdh/laravel-ide-helper/pull/1453)
 
 ### Changed

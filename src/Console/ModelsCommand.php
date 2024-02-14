@@ -562,7 +562,7 @@ class ModelsCommand extends Command
                 $this->getTypeInModel($model, $type),
                 true,
                 true,
-                $comment,
+                $column['comment'],
                 $column['nullable']
             );
             if ($this->write_model_magic_where) {

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.14.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.15.0...master)
 --------------
 
 ### Fixed
@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-2024-02-12, 2.15.0
+2024-02-14, 2.15.0
 ------------------
 
 ### Fixed

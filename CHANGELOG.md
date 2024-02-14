@@ -16,8 +16,15 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fix case issue in `ModelsCommand::unsetMethod()` [#1453 / leo108](https://github.com/barryvdh/laravel-ide-helper/pull/1453)
+- Fix non-facade classes will result in no autocomplete [#841 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/841)
+- Skip swoole, otherwise fatal error [#1477 / TimoFrenzel](https://github.com/barryvdh/laravel-ide-helper/pull/1477)
+- Fix vulnerability CVE-2021-43608 [#1392 / allanlaal](https://github.com/barryvdh/laravel-ide-helper/pull/1392)
+- Reset foreignKeyConstraintsColumns on model loop start [#1461 / snmatsui](https://github.com/barryvdh/laravel-ide-helper/pull/1461)
+- Accept scope & scopes as relation [#1452 / Muetze42](https://github.com/barryvdh/laravel-ide-helper/pull/1452)
+- Fix #1300 relation_return_type must take precedence if it is defined [#1394 / menthol](https://github.com/barryvdh/laravel-ide-helper/pull/1394)
 
 ### Changed
+- Disable inspections of helper files [#1486 / eidng8](https://github.com/barryvdh/laravel-ide-helper/pull/1486)
 - Removed support for Laravel 8 and therefore for PHP < 8.0 [#1504 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1504)
 
 ### Added
@@ -26,6 +33,9 @@ All notable changes to this project will be documented in this file.
 - Add support for relations with composite keys. [#1479 / calebdw](https://github.com/barryvdh/laravel-ide-helper/pull/1479)
 - Add support for attribute accessors with no backing field or type hinting [#1411 / pindab0ter](https://github.com/barryvdh/laravel-ide-helper/pull/1411).
 - Add support for AsCollection and AsArrayObject casts [#1393 / pataar](https://github.com/barryvdh/laravel-ide-helper/pull/1393)
+- Reintroduce support for multi-db setups [#1426 / benpoulson](https://github.com/barryvdh/laravel-ide-helper/pull/1426)
+- Support the BINARY(...) database field type [#1434 / Sfonxs](https://github.com/barryvdh/laravel-ide-helper/pull/1434)
+- Add AllowDynamicProperties Attribute to cooperate with php8.2 deprecation [#1428 / GeoSot](https://github.com/barryvdh/laravel-ide-helper/pull/1428)
 
 2024-02-05, 2.14.0
 ------------------

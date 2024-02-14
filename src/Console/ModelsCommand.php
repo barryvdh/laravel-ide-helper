@@ -504,9 +504,6 @@ class ModelsCommand extends Command
         $columns = $schema->getColumns($table);
         $driverName = $model->getConnection()->getDriverName();
 
-        if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
-        }
 
         if (!$columns) {
             return;

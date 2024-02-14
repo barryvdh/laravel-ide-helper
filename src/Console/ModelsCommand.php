@@ -547,7 +547,6 @@ class ModelsCommand extends Command
                 };
             }
 
-            $comment = $column['comment'];
             if ($column['nullable']) {
                 $this->nullableColumns[$name] = true;
             }

@@ -517,7 +517,7 @@ class ModelsCommand extends Command
             } else {
                 // Allow to register custom types
                 $type = $this->laravel['config']->get("ide-helper.custom_db_types.{$driverName}.{$column['type_name']}", null);
-                
+
                 // Match other types to php equivalent
                 $type ??= match ($column['type_name']) {
                     'varchar', 'nvarchar',

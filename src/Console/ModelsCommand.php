@@ -515,23 +515,8 @@ class ModelsCommand extends Command
             if (in_array($name, $model->getDates())) {
                 $type = $this->dateClass;
             } else {
-                // Allow to register custom types
-                $type = $this->laravel['config']->get("ide-helper.custom_db_types.{$driverName}.{$column['type_name']}", null);
-
-                // Match other types to php equivalent
-                $type ??= match ($column['type_name']) {
-                    'varchar', 'nvarchar',
-                    'char', 'bpchar', 'nchar',
-                    'binary', 'varbinary', 'blob', 'bytea',
-                    'decimal', 'numeric',
-                    'date', 'time', 'timetz', 'datetime', 'datetime2', 'datetimeoffset', 'timestamp', 'timestamptz', 'year',
-                    'uuid', 'uniqueidentifier',
-                    'json', 'jsonb',
-                    'macaddr', 'inet',
-                    'enum', 'set',
-                    'geography', 'geometry', 'geometrycollection', 'linestring', 'multilinestring', 'multipoint', 'multipolygon', 'point', 'polygon',
-                    'text', 'tinytext', 'longtext', 'mediumtext' => 'string',
-
+                // Match types to php equivalent
+                $type = match ($column['type_name']) {
                     'tinyint', 'bit',
                     'integer', 'int', 'int4',
                     'smallint', 'int2',
@@ -543,7 +528,7 @@ class ModelsCommand extends Command
                     'float', 'real', 'float4',
                     'double', 'float8' => 'float',
 
-                    default => 'mixed',
+                    default => 'string',
                 };
             }
 

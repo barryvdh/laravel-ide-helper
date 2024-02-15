@@ -9,6 +9,22 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property $someProp
  * @method someMethod(string $method)
+ * @mixin IdeHelperFinalPost
+ */
+final class FinalPost extends Model
+{
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @property $someProp
+ * @method someMethod(string $method)
  * @mixin IdeHelperPost
  */
 class Post extends Model
@@ -26,6 +42,21 @@ class Post extends Model
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
 
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
+/**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models\FinalPost
+ *
+ * @property $someProp
+ * @method someMethod(string $method)
+ * @method static \Illuminate\Database\Eloquent\Builder|FinalPost newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|FinalPost newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|FinalPost query()
+ * @mixin \Eloquent
+ */
+	#[\AllowDynamicProperties]
+	final class IdeHelperFinalPost {}
+}
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**

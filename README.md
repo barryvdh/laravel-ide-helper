@@ -120,6 +120,47 @@ If you use [real-time facades](https://laravel.com/docs/master/facades#real-time
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
+#### Cooperation with release builds
+Create a file `app/Console/Commands/IdeHelperDoIt.php`:
+```php
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+
+class IdeHelperDoIt extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'ide-helper:do-it';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Run barryvdh/laravel-ide-helper';
+
+    public function handle()
+    {
+        if ('local' === config('app.env', 'production')) {
+            Artisan::call('ide-helper:generate');
+            Artisan::call('ide-helper:meta');
+            Artisan::call('ide-helper:models', ['--nowrite' => true]);
+        }
+    }
+}
+```
+
+In `composer.json` you can then add `"@php artisan ide-helper:do-it"` that will gracefully work indepent of `--no-dev` composer installs.
+
+It checks wether `APP_ENV="local"` is in `.env`. You can change that to match your setup.
+
 ### Automatic PHPDoc generation for macros and mixins
 
 This package can generate PHPDocs for macros and mixins which will be added to the `_ide_helper.php` file.

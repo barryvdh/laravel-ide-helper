@@ -11,9 +11,18 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-2024-02-14, 2.15.0
+2024-02-15, 2.15.1
 ------------------
 
+### Fixed
+- Fix final class keyword in wrong position [#1517 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1517)
+
+### Changed
+
+### Added
+
+2024-02-14, 2.15.0
+------------------
 ### Fixed
 - Fix case issue in `ModelsCommand::unsetMethod()` [#1453 / leo108](https://github.com/barryvdh/laravel-ide-helper/pull/1453)
 - Fix non-facade classes will result in no autocomplete [#841 / netpok](https://github.com/barryvdh/laravel-ide-helper/pull/841)

@@ -780,6 +780,7 @@ class ModelsCommand extends Command
                                             );
                                         }
                                     }
+
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);

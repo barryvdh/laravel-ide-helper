@@ -714,7 +714,7 @@ class ModelsCommand extends Command
                                         if ($pivot != Pivot::class) {
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $pivot,
+                                                $this->getClassNameInDestinationFile($model,$pivot),
                                                 true,
                                                 false
                                             );

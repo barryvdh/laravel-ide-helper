@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * the class phpdoc is written back, one is inserted.
  *
  * @link https://github.com/barryvdh/laravel-ide-helper/issues/666
- * @SuppressWarnings (PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @property integer $id
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()

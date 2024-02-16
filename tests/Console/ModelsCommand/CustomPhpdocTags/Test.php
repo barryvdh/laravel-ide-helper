@@ -10,18 +10,8 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 class Test extends AbstractModelsCommand
 {
     /**
-     * This test shows that, when adding custom phpdoc tags with a parameter
-     * but without a space, they're changed when writing break, possibly breaking
-     * tools.
-     *
-     * It is changed from
-     * - `@SuppressWarnings(PHPMD.ExcessiveClassComplexity)`
-     *   to
-     * - `@SuppressWarnings (PHPMD.ExcessiveClassComplexity)`
-     *
-     * If this test fails because the issue has been fixed, please keep the
-     * test but adjust it and it's comments, to prevent this from every breaking
-     * again.
+     * This test makes sure that custom phpdoc tags are not mangled, e.g.
+     * there are no spaces inserted etc.
      *
      * @link https://github.com/barryvdh/laravel-ide-helper/issues/666
      */

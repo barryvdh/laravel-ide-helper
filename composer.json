@@ -38,7 +38,7 @@
         "illuminate/view": "^9 || ^10 || ^11",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "^8 || ^9",
-        "phpunit/phpunit": "^9 || ^10.5",
+        "phpunit/phpunit": "^10.5",
         "spatie/phpunit-snapshot-assertions": "^4 || ^5",
         "vimeo/psalm": "^5.4"
     },

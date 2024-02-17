@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -711,7 +712,7 @@ class ModelsCommand extends Command
                                 ) {
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
-                                        if ($pivot != Pivot::class) {
+                                        if (!in_array($pivot,[ Pivot::class, MorphPivot::class])) {
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
                                                 $this->getClassNameInDestinationFile($model,$pivot),

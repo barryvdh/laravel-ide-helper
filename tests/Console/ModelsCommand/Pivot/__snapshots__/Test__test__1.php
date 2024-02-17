@@ -22,8 +22,7 @@ class ModelWithPivot extends Model
     {
         return $this->belongsToMany(ModelwithPivot::class)
             ->using(CustomPivot::class)
-            ->as('customAccessor')
-            ;
+            ->as('customAccessor');
     }
 }
 <?php

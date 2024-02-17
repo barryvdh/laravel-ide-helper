@@ -42,6 +42,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\DocBlock\Tags\Generic;
+use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -1212,21 +1214,20 @@ class ModelsCommand extends Command
      *
      * @return null|string
      */
-    protected function getCommentFromDocBlock(\ReflectionMethod $reflection)
+    protected function getCommentFromDocBlock(\ReflectionMethod $reflection) : ?string
     {
-        $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
-        $context = new Context(
-            $phpDocContext->getNamespace(),
-            $phpDocContext->getNamespaceAliases()
-        );
-        $comment = '';
-        $phpdoc = new DocBlock($reflection, $context);
-
-        if ($phpdoc->hasTag('comment')) {
-            $comment = $phpdoc->getTagsByName('comment')[0]->getContent();
+        if (!$reflection->getDocComment()) {
+            return '';
         }
 
-        return $comment;
+        $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
+        $phpdoc = (DocBlockFactory::createInstance())->create($reflection->getDocComment(), $phpDocContext);
+
+        if (!$phpdoc->hasTag('comment')) {
+            return '';
+        }
+
+        return $phpdoc->getTagsByName('comment')[0] ?: '';
     }
 
     /**

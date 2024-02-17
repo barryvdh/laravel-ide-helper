@@ -11,7 +11,7 @@
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
 
-It supports Laravel 9+ and PHP 8.0+
+The 3.x branch supports Laravel 10 and 11. For older version, use the 2.x releases.
 
 - [Installation](#installation)
 - [Usage](#usage)

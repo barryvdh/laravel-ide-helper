@@ -11,12 +11,6 @@ class Test extends AbstractModelsCommand
 {
     public function test(): void
     {
-        if (!version_compare(PHP_VERSION, '8.1', '>=')) {
-            $this->markTestSkipped(
-                'This test only works in PHP >= 8.1'
-            );
-        }
-
         $command = $this->app->make(ModelsCommand::class);
 
         $tester = $this->runCommand($command, [

@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-json": "*",
         "barryvdh/reflection-docblock": "^2.1.1",
         "composer/class-map-generator": "^1.0",

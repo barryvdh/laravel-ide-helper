@@ -48,8 +48,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $double_not_nullable
  * @property string|null $decimal_nullable
  * @property string $decimal_not_nullable
- * @property string|null $unsigned_decimal_nullable
- * @property string $unsigned_decimal_not_nullable
  * @property integer|null $boolean_nullable
  * @property integer $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -146,8 +144,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Post whereTinyIntegerNullable($value)
  * @method static Builder|Post whereUnsignedBigIntegerNotNullable($value)
  * @method static Builder|Post whereUnsignedBigIntegerNullable($value)
- * @method static Builder|Post whereUnsignedDecimalNotNullable($value)
- * @method static Builder|Post whereUnsignedDecimalNullable($value)
  * @method static Builder|Post whereUnsignedIntegerNotNullable($value)
  * @method static Builder|Post whereUnsignedIntegerNullable($value)
  * @method static Builder|Post whereUnsignedMediumIntegerNotNullable($value)

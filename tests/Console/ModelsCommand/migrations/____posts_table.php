@@ -67,9 +67,6 @@ class PostsTable extends Migration
             $table->decimal('decimal_nullable')->nullable();
             $table->decimal('decimal_not_nullable');
 
-            $table->unsignedDecimal('unsigned_decimal_nullable')->nullable();
-            $table->unsignedDecimal('unsigned_decimal_not_nullable');
-
             $table->boolean('boolean_nullable')->nullable();
             $table->boolean('boolean_not_nullable');
 

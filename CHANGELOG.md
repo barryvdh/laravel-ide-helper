@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - You _might_ have top-level dependency on doctrine/dbal. This may have been in the past due to ide-helper, we suggest to check if you still need it and remove it otherwise
 
 ### Added
+- Support for Laravel 11 [#1520 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1520)
 
 2024-02-15, 2.15.1
 ------------------

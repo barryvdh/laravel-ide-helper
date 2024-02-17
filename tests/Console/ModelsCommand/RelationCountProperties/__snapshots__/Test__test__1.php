@@ -47,8 +47,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property float $double_not_nullable
  * @property string|null $decimal_nullable
  * @property string $decimal_not_nullable
- * @property string|null $unsigned_decimal_nullable
- * @property string $unsigned_decimal_not_nullable
  * @property integer|null $boolean_nullable
  * @property integer $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -145,8 +143,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereTinyIntegerNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedBigIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedBigIntegerNullable($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedDecimalNotNullable($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedDecimalNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedIntegerNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedMediumIntegerNotNullable($value)

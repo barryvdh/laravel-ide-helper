@@ -29,6 +29,7 @@
         "illuminate/filesystem": "^10 || ^11",
         "illuminate/support": "^10 || ^11",
         "nikic/php-parser": "^4.18 || ^5",
+        "phpdocumentor/reflection-docblock": "^5.3",
         "phpdocumentor/type-resolver": "^1.1.0"
     },
     "require-dev": {

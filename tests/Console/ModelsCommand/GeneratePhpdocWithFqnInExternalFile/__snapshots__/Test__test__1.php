@@ -78,8 +78,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @property string $timestamptz_not_nullable
  * @property integer|null $year_nullable
  * @property integer $year_not_nullable
- * @property mixed|null $binary_nullable
- * @property mixed $binary_not_nullable
+ * @property string|null $binary_nullable
+ * @property string $binary_not_nullable
  * @property string|null $uuid_nullable
  * @property string $uuid_not_nullable
  * @property string|null $ipaddress_nullable

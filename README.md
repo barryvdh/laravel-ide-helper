@@ -271,26 +271,6 @@ add support for creating a new dedicated class instead of using local scopes in 
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_external_builder_methods` and setting it to `false`.
 
-#### Unsupported or custom database types
-
-Common column types (e.g. varchar, integer) are correctly mapped to PHP types (`string`, `int`).
-
-But sometimes you may want to use custom column types in your database like `geography`, `jsonb`, `citext`, `bit`, etc. which may throw an "Unknown database type"-Exception.
-
-For those special cases, you can map them via the config `custom_db_types`. Example:
-```php
-'custom_db_types' => [
-    'mysql' => [
-        'geography' => 'array',
-        'point' => 'array',
-    ],
-    'postgresql' => [
-        'jsonb' => 'string',
-        '_int4' => 'array',
-    ],
-],
-```
-
 #### Custom Relationship Types
 
 If you are using relationships not built into Laravel you will need to specify the name and returning class in the config to get proper generation.

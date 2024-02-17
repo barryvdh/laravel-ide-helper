@@ -72,8 +72,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $timestamptzNotNullable
  * @property integer|null $yearNullable
  * @property integer $yearNotNullable
- * @property mixed|null $binaryNullable
- * @property mixed $binaryNotNullable
+ * @property string|null $binaryNullable
+ * @property string $binaryNotNullable
  * @property string|null $uuidNullable
  * @property string $uuidNotNullable
  * @property string|null $ipaddressNullable

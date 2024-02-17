@@ -22,12 +22,12 @@
     "require": {
         "php": "^8.0",
         "ext-json": "*",
-        "barryvdh/reflection-docblock": "^2.0.6",
+        "barryvdh/reflection-docblock": "^2.1.1",
         "composer/class-map-generator": "^1.0",
-        "doctrine/dbal": "^2.6 || ^3.1.4",
-        "illuminate/console": "^9 || ^10",
-        "illuminate/filesystem": "^9 || ^10",
-        "illuminate/support": "^9 || ^10",
+        "illuminate/console": "^10",
+        "illuminate/database": "^10.38",
+        "illuminate/filesystem": "^10",
+        "illuminate/support": "^10",
         "nikic/php-parser": "^4.18 || ^5",
         "phpdocumentor/type-resolver": "^1.1.0"
     },
@@ -37,7 +37,7 @@
         "illuminate/config": "^9 || ^10",
         "illuminate/view": "^9 || ^10",
         "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^7 || ^8",
+        "orchestra/testbench": "^8",
         "phpunit/phpunit": "^9",
         "spatie/phpunit-snapshot-assertions": "^4",
         "vimeo/psalm": "^5.4"

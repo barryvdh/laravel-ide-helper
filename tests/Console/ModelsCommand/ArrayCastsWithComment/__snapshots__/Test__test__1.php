@@ -7,18 +7,16 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ArrayCastsWithCo
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ArrayCastsWithComment\Models\ArrayCastsWithComment
- *
- * @property array<int, string>|null $cast_to_array -- These three should not be duplicated
- * @property array<int, string> $cast_to_json some-description
- * @property \Illuminate\Support\Collection<int, string> $cast_to_collection some-description
+ * @property array<int,string>|null $cast_to_array -- These three should not be duplicated
+ * @property array<int,string> $cast_to_json some-description
+ * @property \Illuminate\Support\Collection<int,string> $cast_to_collection some-description
  * @property array|null $cast_to_encrypted_array -- These three are OK (no types)
  * @property array $cast_to_encrypted_json some-description
  * @property \Illuminate\Support\Collection $cast_to_encrypted_collection some-description
  * @property string $cast_to_string -- The next three are OK (no description), this not included
- * @property array<int, string>|null $cast_to_immutable_date
- * @property array<int, string> $cast_to_immutable_date_serialization
- * @property \Illuminate\Support\Collection<int, string> $cast_to_immutable_custom_datetime
+ * @property array<int,string>|null $cast_to_immutable_date
+ * @property array<int,string> $cast_to_immutable_date_serialization
+ * @property \Illuminate\Support\Collection<int,string> $cast_to_immutable_custom_datetime
  * @property string $cast_to_int
  * @property string $cast_to_integer
  * @property string $cast_to_real
@@ -28,9 +26,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $cast_to_bool
  * @property string $cast_to_boolean
  * @property string $cast_to_object
- * @property array $cast_to_array
- * @property array $cast_to_json
- * @property \Illuminate\Support\Collection $cast_to_collection
  * @property string $cast_to_date
  * @property string $cast_to_datetime
  * @property string $cast_to_date_serialization

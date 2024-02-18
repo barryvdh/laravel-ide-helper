@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SimpleCasts\Models\SimpleCast
  *
- * @property integer $cast_to_int
- * @property integer $cast_to_integer
+ * @property int $cast_to_int
+ * @property int $cast_to_integer
  * @property float $cast_to_real
  * @property float $cast_to_float
  * @property float $cast_to_double
  * @property string $cast_to_decimal
  * @property string $cast_to_string
- * @property boolean $cast_to_bool
- * @property boolean $cast_to_boolean
+ * @property bool $cast_to_bool
+ * @property bool $cast_to_boolean
  * @property object $cast_to_object
  * @property array $cast_to_array
  * @property array $cast_to_json
@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\CarbonImmutable $cast_to_immutable_custom_datetime
  * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime
  * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime_serialization
- * @property integer $cast_to_timestamp
+ * @property int $cast_to_timestamp
  * @property mixed $cast_to_encrypted
  * @property array $cast_to_encrypted_array
  * @property \Illuminate\Support\Collection $cast_to_encrypted_collection

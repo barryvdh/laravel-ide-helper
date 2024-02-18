@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\BelongsToVariation
  *
- * @property integer $id
- * @property integer $not_null_column_with_foreign_key_constraint
- * @property integer $not_null_column_with_no_foreign_key_constraint
- * @property integer|null $nullable_column_with_foreign_key_constraint
- * @property integer|null $nullable_column_with_no_foreign_key_constraint
+ * @property int $id
+ * @property int $not_null_column_with_foreign_key_constraint
+ * @property int $not_null_column_with_no_foreign_key_constraint
+ * @property int|null $nullable_column_with_foreign_key_constraint
+ * @property int|null $nullable_column_with_no_foreign_key_constraint
  * @property-read BelongsToVariation $notNullColumnWithForeignKeyConstraint
  * @property-read BelongsToVariation|null $notNullColumnWithNoForeignKeyConstraint
  * @property-read BelongsToVariation|null $nullableColumnWithForeignKeyConstraint
@@ -63,11 +63,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\CompositeBelongsToVariation
  *
- * @property integer $id
- * @property integer $not_null_column_with_foreign_key_constraint
- * @property integer $not_null_column_with_no_foreign_key_constraint
- * @property integer|null $nullable_column_with_foreign_key_constraint
- * @property integer|null $nullable_column_with_no_foreign_key_constraint
+ * @property int $id
+ * @property int $not_null_column_with_foreign_key_constraint
+ * @property int $not_null_column_with_no_foreign_key_constraint
+ * @property int|null $nullable_column_with_foreign_key_constraint
+ * @property int|null $nullable_column_with_no_foreign_key_constraint
  * @property-read CompositeBelongsToVariation $bothNonNullableWithForeignKeyConstraint
  * @property-read CompositeBelongsToVariation|null $nonNullableMixedWithoutForeignKeyConstraint
  * @property-read CompositeBelongsToVariation|null $nullableMixedWithForeignKeyConstraint
@@ -134,7 +134,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 /**
  * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple
  *
- * @property integer $id
+ * @property int $id
  * @property-read Simple|null $relationBelongsTo
  * @property-read AnotherModel|null $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToMany

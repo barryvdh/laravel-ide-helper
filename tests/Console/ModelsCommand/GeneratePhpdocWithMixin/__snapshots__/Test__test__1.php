@@ -7,8 +7,10 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models\FinalPost
+ *
  * @property $someProp
- * @method someMethod(string $method)
+ * @method void someMethod(string $method)
  * @mixin IdeHelperFinalPost
  */
 final class FinalPost extends Model
@@ -23,8 +25,10 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models\Post
+ *
  * @property $someProp
- * @method someMethod(string $method)
+ * @method void someMethod(string $method)
  * @mixin IdeHelperPost
  */
 class Post extends Model
@@ -45,10 +49,8 @@ class Post extends Model
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models\FinalPost
- *
  * @property $someProp
- * @method someMethod(string $method)
+ * @method void someMethod(string $method)
  * @method static \Illuminate\Database\Eloquent\Builder|FinalPost newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FinalPost newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FinalPost query()
@@ -60,11 +62,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models\Post
- *
  * @property $someProp
- * @method someMethod(string $method)
- * @property integer $id
+ * @method void someMethod(string $method)
+ * @property int $id
  * @property string|null $char_nullable
  * @property string $char_not_nullable
  * @property string|null $string_nullable
@@ -75,34 +75,34 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @property string $medium_text_not_nullable
  * @property string|null $long_text_nullable
  * @property string $long_text_not_nullable
- * @property integer|null $integer_nullable
- * @property integer $integer_not_nullable
- * @property integer|null $tiny_integer_nullable
- * @property integer $tiny_integer_not_nullable
- * @property integer|null $small_integer_nullable
- * @property integer $small_integer_not_nullable
- * @property integer|null $medium_integer_nullable
- * @property integer $medium_integer_not_nullable
- * @property integer|null $big_integer_nullable
- * @property integer $big_integer_not_nullable
- * @property integer|null $unsigned_integer_nullable
- * @property integer $unsigned_integer_not_nullable
- * @property integer|null $unsigned_tiny_integer_nullable
- * @property integer $unsigned_tiny_integer_not_nullable
- * @property integer|null $unsigned_small_integer_nullable
- * @property integer $unsigned_small_integer_not_nullable
- * @property integer|null $unsigned_medium_integer_nullable
- * @property integer $unsigned_medium_integer_not_nullable
- * @property integer|null $unsigned_big_integer_nullable
- * @property integer $unsigned_big_integer_not_nullable
+ * @property int|null $integer_nullable
+ * @property int $integer_not_nullable
+ * @property int|null $tiny_integer_nullable
+ * @property int $tiny_integer_not_nullable
+ * @property int|null $small_integer_nullable
+ * @property int $small_integer_not_nullable
+ * @property int|null $medium_integer_nullable
+ * @property int $medium_integer_not_nullable
+ * @property int|null $big_integer_nullable
+ * @property int $big_integer_not_nullable
+ * @property int|null $unsigned_integer_nullable
+ * @property int $unsigned_integer_not_nullable
+ * @property int|null $unsigned_tiny_integer_nullable
+ * @property int $unsigned_tiny_integer_not_nullable
+ * @property int|null $unsigned_small_integer_nullable
+ * @property int $unsigned_small_integer_not_nullable
+ * @property int|null $unsigned_medium_integer_nullable
+ * @property int $unsigned_medium_integer_not_nullable
+ * @property int|null $unsigned_big_integer_nullable
+ * @property int $unsigned_big_integer_not_nullable
  * @property float|null $float_nullable
  * @property float $float_not_nullable
  * @property float|null $double_nullable
  * @property float $double_not_nullable
  * @property string|null $decimal_nullable
  * @property string $decimal_not_nullable
- * @property integer|null $boolean_nullable
- * @property integer $boolean_not_nullable
+ * @property int|null $boolean_nullable
+ * @property int $boolean_not_nullable
  * @property string|null $enum_nullable
  * @property string $enum_not_nullable
  * @property string|null $json_nullable
@@ -123,8 +123,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @property string $timestamp_not_nullable
  * @property string|null $timestamptz_nullable
  * @property string $timestamptz_not_nullable
- * @property integer|null $year_nullable
- * @property integer $year_not_nullable
+ * @property int|null $year_nullable
+ * @property int $year_not_nullable
  * @property string|null $binary_nullable
  * @property string $binary_not_nullable
  * @property string|null $uuid_nullable

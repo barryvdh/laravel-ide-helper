@@ -11,14 +11,15 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
-use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\Facade;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Serializer;
+use phpDocumentor\Reflection\DocBlock\Tags\Method as MethodTag;
+use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\Types\Context;
 use ReflectionClass;
 use Throwable;
 
@@ -41,6 +42,7 @@ class Alias
     protected $magicMethods = [];
     protected $interfaces = [];
     protected $phpdoc = null;
+    protected $phpdocContext = null;
     protected $classAliases = [];
 
     /** @var ConfigRepository  */
@@ -82,8 +84,14 @@ class Alias
         if (!empty($this->namespace)) {
             $this->classAliases = (new UsesResolver())->loadFromClass($this->root);
 
-            //Create a DocBlock and serializer instance
-            $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace, $this->classAliases));
+            //Create a DocBlock
+            $this->phpdocContext = new Context($this->namespace, $this->classAliases);
+            $reflector = new ReflectionClass($alias);
+            if ($reflector->getDocComment()) {
+                $this->phpdoc = (DocBlockFactory::createInstance())->create($reflector, $this->phpdocContext);
+            } else {
+                $this->phpdoc =  new DocBlock('', null, [], $this->phpdocContext);
+            }
         }
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
@@ -422,8 +430,7 @@ class Alias
      */
     public function getDocComment($prefix = "\t\t")
     {
-        $serializer = new DocBlockSerializer(1, $prefix);
-
+        $serializer = new Serializer(1, $prefix);
         if (!$this->phpdoc) {
             return '';
         }
@@ -433,8 +440,13 @@ class Alias
             // we can perform reflection on the class and
             // add in the original class DocBlock
             if (count($this->phpdoc->getTags()) === 0) {
-                $class = new ReflectionClass($this->root);
-                $this->phpdoc = new DocBlock($class->getDocComment());
+
+                $reflector = new ReflectionClass($this->root);
+                if ($reflector->getDocComment()) {
+                    $this->phpdoc = (DocBlockFactory::createInstance())->create($reflector, $this->phpdocContext);
+                } else {
+                    $this->phpdoc =  new DocBlock('', null, [], $this->phpdocContext);
+                }
             }
         }
 
@@ -456,7 +468,7 @@ class Alias
 
         foreach ($this->phpdoc->getTags() as $tag) {
             if ($tag instanceof MethodTag && in_array($tag->getMethodName(), $methodNames)) {
-                $this->phpdoc->deleteTag($tag);
+                $this->phpdoc->removeTag($tag);
             }
         }
     }

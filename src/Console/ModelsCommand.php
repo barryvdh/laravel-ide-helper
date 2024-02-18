@@ -45,7 +45,6 @@ use phpDocumentor\Reflection\DocBlock\StandardTagFactory;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\TagFactory;
 use phpDocumentor\Reflection\DocBlock\Tags\BaseTag;
-use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\TypeResolver;
@@ -910,7 +909,7 @@ class ModelsCommand extends Command
             }
 
             if (!$this->reset) {
-              $tags = $existingTags;
+                $tags = $existingTags;
             }
         }
 
@@ -980,22 +979,20 @@ class ModelsCommand extends Command
              * @see https://www.jetbrains.com/help/phpstorm/php-unnecessary-fully-qualified-name.html
              */
             $tags[] = $tagFactory->create('@noinspection PhpUnnecessaryFullyQualifiedNameInspection', $phpDocContext);
-
         }
 
         $serializer = new Serializer();
 
         if ($this->write_mixin) {
-
             // remove all mixin tags prefixed with IdeHelper
-            $mixinTags = array_filter($existingTags, function(Tag $tag) {
+            $mixinTags = array_filter($existingTags, function (Tag $tag) {
                 return !($tag instanceof BaseTag) || !Str::startsWith($tag->getDescription(), 'IdeHelper');
             });
 
             $mixinClassName = "IdeHelper{$classname}";
             $mixinTags[] = $tagFactory->create("@mixin {$mixinClassName}", $phpDocContext);
 
-            $tags = array_filter($tags, function(Tag $tag) {
+            $tags = array_filter($tags, function (Tag $tag) {
                 return !($tag instanceof BaseTag) || !Str::startsWith($tag->getDescription(), 'IdeHelper');
             });
 
@@ -1045,7 +1042,7 @@ class ModelsCommand extends Command
         return $output . "{}\n}\n\n";
     }
 
-    private function getTagFactory() : TagFactory
+    private function getTagFactory(): TagFactory
     {
         $fqsenResolver = new FqsenResolver();
         $tagFactory = new StandardTagFactory($fqsenResolver);
@@ -1227,7 +1224,7 @@ class ModelsCommand extends Command
      *
      * @return null|string
      */
-    protected function getCommentFromDocBlock(\ReflectionMethod $reflection) : ?string
+    protected function getCommentFromDocBlock(\ReflectionMethod $reflection): ?string
     {
         if (!$reflection->getDocComment()) {
             return '';
@@ -1236,7 +1233,7 @@ class ModelsCommand extends Command
         $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
         $phpdoc = (DocBlockFactory::createInstance())->create($reflection, $phpDocContext);
 
-        foreach($phpdoc->getTagsByName('comment') as $tag) {
+        foreach ($phpdoc->getTagsByName('comment') as $tag) {
             return $tag;
         }
 
@@ -1250,7 +1247,7 @@ class ModelsCommand extends Command
      *
      * @return null|string
      */
-    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, \Reflector $reflectorForContext = null) : ?string
+    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, \Reflector $reflectorForContext = null): ?string
     {
         if (!$reflection->getDocComment()) {
             return null;

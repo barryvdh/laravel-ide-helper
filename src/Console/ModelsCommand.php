@@ -38,12 +38,17 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\DescriptionFactory;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use phpDocumentor\Reflection\DocBlock\StandardTagFactory;
 use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\TagFactory;
 use phpDocumentor\Reflection\DocBlock\Tags\BaseTag;
+use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\FqsenResolver;
+use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -889,9 +894,7 @@ class ModelsCommand extends Command
             $reflection->getParentClass()->getInterfaceNames()
         );
         $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
-
-        $fqsenResolver = new FqsenResolver();
-        $tagFactory = new StandardTagFactory($fqsenResolver);
+        $tagFactory = $this->getTagFactory();
 
         $existingTags = [];
         $tags = [];
@@ -941,6 +944,7 @@ class ModelsCommand extends Command
             }
 
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");
+
             $tags[] = $tagFactory->create($tagLine, $phpDocContext);
         }
 
@@ -979,9 +983,6 @@ class ModelsCommand extends Command
 
         }
 
-//        $serializer = new DocBlockSerializer();
-//        $docComment = $serializer->getDocComment($phpdoc);
-
         $serializer = new Serializer();
 
         if ($this->write_mixin) {
@@ -998,7 +999,7 @@ class ModelsCommand extends Command
                 return !($tag instanceof BaseTag) || !Str::startsWith($tag->getDescription(), 'IdeHelper');
             });
 
-            $phpdocMixin = new \phpDocumentor\Reflection\DocBlock($summary ?: $class, $description, $mixinTags, $phpDocContext);
+            $phpdocMixin = new DocBlock($summary ?: $class, $description, $mixinTags, $phpDocContext);
             $mixinDocComment = $serializer->getDocComment($phpdocMixin);
             // remove blank lines if there's no text
             if (!$phpdocMixin->getSummary()) {
@@ -1006,11 +1007,7 @@ class ModelsCommand extends Command
             }
         }
 
-        $tags = collect($tags)->unique(function(Tag $tag) {
-            return (string) $tag;
-        })->toArray();
-
-        $phpdoc = new \phpDocumentor\Reflection\DocBlock($summary ?: '', $description, $tags, $phpDocContext);
+        $phpdoc = new DocBlock($summary ?: '', $description, $tags, $phpDocContext);
         $docComment = $serializer->getDocComment($phpdoc);
 
         if ($this->write) {
@@ -1046,6 +1043,18 @@ class ModelsCommand extends Command
         }
 
         return $output . "{}\n}\n\n";
+    }
+
+    private function getTagFactory() : TagFactory
+    {
+        $fqsenResolver = new FqsenResolver();
+        $tagFactory = new StandardTagFactory($fqsenResolver);
+        $descriptionFactory = new DescriptionFactory($tagFactory);
+
+        $tagFactory->addService($descriptionFactory);
+        $tagFactory->addService(new TypeResolver($fqsenResolver));
+
+        return $tagFactory;
     }
 
     /**

@@ -12,6 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Barryvdh\LaravelIdeHelper\TypeResolver\LocalFsqenResolver;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
@@ -46,7 +47,6 @@ use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\TagFactory;
 use phpDocumentor\Reflection\DocBlock\Tags\BaseTag;
 use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
@@ -1044,7 +1044,7 @@ class ModelsCommand extends Command
 
     private function getTagFactory(): TagFactory
     {
-        $fqsenResolver = new FqsenResolver();
+        $fqsenResolver = new LocalFsqenResolver();
         $tagFactory = new StandardTagFactory($fqsenResolver);
         $descriptionFactory = new DescriptionFactory($tagFactory);
 

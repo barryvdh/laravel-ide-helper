@@ -12,7 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
-use Barryvdh\LaravelIdeHelper\TypeResolver\LocalFsqenResolver;
+use Barryvdh\LaravelIdeHelper\DocBlock\DocBlockBuilder;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
@@ -39,15 +39,10 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\DescriptionFactory;
 use phpDocumentor\Reflection\DocBlock\Serializer;
-use phpDocumentor\Reflection\DocBlock\StandardTagFactory;
 use phpDocumentor\Reflection\DocBlock\Tag;
-use phpDocumentor\Reflection\DocBlock\TagFactory;
 use phpDocumentor\Reflection\DocBlock\Tags\BaseTag;
 use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -893,29 +888,25 @@ class ModelsCommand extends Command
             $reflection->getParentClass()->getInterfaceNames()
         );
         $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
-        $tagFactory = $this->getTagFactory();
+        $phpdoc = DocBlockBuilder::createFromReflector($reflection, $phpDocContext);
 
-        $existingTags = [];
-        $tags = [];
-        $summary = $class;
-        $description = null;
-
-        if ($reflection->getDocComment()) {
-            $phpdoc = (DocBlockFactory::createInstance())->create($reflection, $phpDocContext);
-            $existingTags = $phpdoc->getTags();
-            if (!$this->reset || $this->keep_text) {
-                $summary = $phpdoc->getSummary();
-                $description = $phpdoc->getDescription();
-            }
-
-            if (!$this->reset) {
-                $tags = $existingTags;
+        if ($this->reset) {
+            $phpdoc->clearTags();
+            if (!$this->keep_text) {
+                $phpdoc->setSummary('');
+                $phpdoc->setDescription(null);
             }
         }
 
+        // Set default summary to classname
+        if (!$phpdoc->getSummary()) {
+            $phpdoc->setSummary($class);
+        }
+
+        $existingTags = $phpdoc->getTags();
         $properties = [];
         $methods = [];
-        foreach ($tags as $tag) {
+        foreach ($phpdoc->getTags() as $tag) {
             $name = $tag->getName();
             if ($name == 'property' || $name == 'property-read' || $name == 'property-write') {
                 $properties[] = $tag->getVariableName();
@@ -944,7 +935,7 @@ class ModelsCommand extends Command
 
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");
 
-            $tags[] = $tagFactory->create($tagLine, $phpDocContext);
+            $phpdoc->appendTagline($tagLine);
         }
 
         ksort($this->methods);
@@ -958,13 +949,14 @@ class ModelsCommand extends Command
             if ($method['comment'] !== '') {
                 $tagLine .= " {$method['comment']}";
             }
-            $tags[] = $tagFactory->create($tagLine, $phpDocContext);
+
+            $phpdoc->appendTagline($tagLine);
         }
 
         if ($this->write) {
             $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
 
-            $tags[] = $tagFactory->create('@mixin ' . $eloquentClassNameInModel, $phpDocContext);
+            $phpdoc->appendTagline('@mixin ' . $eloquentClassNameInModel);
         }
 
         if ($this->phpstorm_noinspections) {
@@ -972,13 +964,12 @@ class ModelsCommand extends Command
              * Facades, Eloquent API
              * @see https://www.jetbrains.com/help/phpstorm/php-fully-qualified-name-usage.html
              */
-            $tags[] = $tagFactory->create('@noinspection PhpFullyQualifiedNameUsageInspection', $phpDocContext);
-
+            $phpdoc->appendTagline('@noinspection PhpFullyQualifiedNameUsageInspection');
             /**
              * Relations, other models in the same namespace
              * @see https://www.jetbrains.com/help/phpstorm/php-unnecessary-fully-qualified-name.html
              */
-            $tags[] = $tagFactory->create('@noinspection PhpUnnecessaryFullyQualifiedNameInspection', $phpDocContext);
+            $phpdoc->appendTagline('@noinspection PhpUnnecessaryFullyQualifiedNameInspection');
         }
 
         $serializer = new Serializer();
@@ -989,31 +980,24 @@ class ModelsCommand extends Command
                 return !($tag instanceof BaseTag) || !Str::startsWith($tag->getDescription(), 'IdeHelper');
             });
 
+            $phpdocMixin = DocBlockBuilder::create($phpdoc->getSummary(), $phpdoc->getDescription(), $mixinTags, $phpDocContext);
             $mixinClassName = "IdeHelper{$classname}";
-            $mixinTags[] = $tagFactory->create("@mixin {$mixinClassName}", $phpDocContext);
+            $phpdocMixin->appendTagline("@mixin {$mixinClassName}");
 
-            $tags = array_filter($tags, function (Tag $tag) {
-                return !($tag instanceof BaseTag) || !Str::startsWith($tag->getDescription(), 'IdeHelper');
-            });
+            foreach ($phpdoc->getTags() as $tag) {
+                if ($tag instanceof BaseTag && Str::startsWith($tag->getDescription(), 'IdeHelper')) {
+                    $phpdoc->removeTag($tag);
+                }
+            }
 
-            $phpdocMixin = new DocBlock($summary ?: $class, $description, $mixinTags, $phpDocContext);
-            $mixinDocComment = $serializer->getDocComment($phpdocMixin);
+            $mixinDocComment = $serializer->getDocComment($phpdocMixin->getDocBlock());
             // remove blank lines if there's no text
             if (!$phpdocMixin->getSummary()) {
                 $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
             }
         }
 
-        $tags = collect($tags)->unique(function (Tag $tag) {
-            if (method_exists($tag, 'getVariableName')) {
-                return $tag->getName() . ' ' . $tag->getVariableName();
-            }
-            return (string) $tag;
-
-        })->toArray();
-
-        $phpdoc = new DocBlock($summary ?: '', $description, $tags, $phpDocContext);
-        $docComment = $serializer->getDocComment($phpdoc);
+        $docComment = $serializer->getDocComment($phpdoc->getDocBlock());
 
         if ($this->write) {
             $modelDocComment = $this->write_mixin ? $mixinDocComment : $docComment;
@@ -1048,18 +1032,6 @@ class ModelsCommand extends Command
         }
 
         return $output . "{}\n}\n\n";
-    }
-
-    private function getTagFactory(): TagFactory
-    {
-        $fqsenResolver = new LocalFsqenResolver();
-        $tagFactory = new StandardTagFactory($fqsenResolver);
-        $descriptionFactory = new DescriptionFactory($tagFactory);
-
-        $tagFactory->addService($descriptionFactory);
-        $tagFactory->addService(new TypeResolver($fqsenResolver));
-
-        return $tagFactory;
     }
 
     /**

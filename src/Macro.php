@@ -2,8 +2,8 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Barryvdh\LaravelIdeHelper\DocBlock\DocBlockBuilder;
 use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Tag;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
 
@@ -35,7 +35,7 @@ class Macro extends Method
      */
     protected function initPhpDoc($method)
     {
-        $this->phpdoc = new DocBlock($method);
+        $this->phpdoc = DocBlockBuilder::createFromReflector($method);
 
         $this->addLocationToPhpDoc();
 
@@ -56,7 +56,7 @@ class Macro extends Method
                 $name = $parameter->isVariadic() ? '...' : '';
                 $name .= '$' . $parameter->getName();
 
-                $this->phpdoc->appendTag(Tag::createInstance("@param {$type} {$name}"));
+                $this->phpdoc->appendTagline("@param {$type} {$name}");
             }
         }
 
@@ -73,7 +73,7 @@ class Macro extends Method
                 $type .= $return->allowsNull() ? '|null' : '';
             }
 
-            $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
+            $this->phpdoc->appendTagLine("@return {$type}");
         }
     }
 
@@ -109,9 +109,9 @@ class Macro extends Method
             });
 
         if ($enclosingMethod) {
-            $this->phpdoc->appendTag(Tag::createInstance(
+            $this->phpdoc->appendTagLine(
                 '@see \\' . $enclosingClass->getName() . '::' . $enclosingMethod->getName() . '()'
-            ));
+            );
         }
     }
 

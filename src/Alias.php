@@ -11,6 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Barryvdh\LaravelIdeHelper\DocBlock\DocBlockBuilder;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -18,7 +19,6 @@ use Illuminate\Support\Facades\Facade;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use phpDocumentor\Reflection\DocBlock\Tags\Method as MethodTag;
-use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\Context;
 use ReflectionClass;
 use Throwable;
@@ -87,11 +87,8 @@ class Alias
             //Create a DocBlock
             $this->phpdocContext = new Context($this->namespace, $this->classAliases);
             $reflector = new ReflectionClass($alias);
-            if ($reflector->getDocComment()) {
-                $this->phpdoc = (DocBlockFactory::createInstance())->create($reflector, $this->phpdocContext);
-            } else {
-                $this->phpdoc =  new DocBlock('', null, [], $this->phpdocContext);
-            }
+
+            $this->phpdoc = DocBlockBuilder::createFromReflector($reflector, $this->phpdocContext);
         }
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
@@ -440,18 +437,13 @@ class Alias
             // we can perform reflection on the class and
             // add in the original class DocBlock
             if (count($this->phpdoc->getTags()) === 0) {
-
                 $reflector = new ReflectionClass($this->root);
-                if ($reflector->getDocComment()) {
-                    $this->phpdoc = (DocBlockFactory::createInstance())->create($reflector, $this->phpdocContext);
-                } else {
-                    $this->phpdoc =  new DocBlock('', null, [], $this->phpdocContext);
-                }
+                $this->phpdoc = DocBlockBuilder::createFromReflector($reflector, $this->phpdocContext);
             }
         }
 
         $this->removeDuplicateMethodsFromPhpDoc();
-        return $serializer->getDocComment($this->phpdoc);
+        return $serializer->getDocComment($this->phpdoc->getDocBlock());
     }
 
     /**

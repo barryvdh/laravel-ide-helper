@@ -1,6 +1,6 @@
 <?php
 
-namespace Barryvdh\LaravelIdeHelper\TypeResolver;
+namespace Barryvdh\LaravelIdeHelper\DocBlock;
 
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;

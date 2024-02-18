@@ -11,18 +11,19 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Barryvdh\LaravelIdeHelper\DocBlock\DocBlockBuilder;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\DocBlock\Serializer;
 
 class Method
 {
-    /** @var DocBlock  */
+    /** @var DocBlockBuilder  */
     protected $phpdoc;
 
     /** @var \ReflectionMethod  */
@@ -65,9 +66,9 @@ class Method
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
-            $this->normalizeParams($this->phpdoc);
-            $this->normalizeReturn($this->phpdoc);
-            $this->normalizeDescription($this->phpdoc);
+            //            $this->normalizeParams($this->phpdoc);
+            //            $this->normalizeReturn($this->phpdoc);
+            //            $this->normalizeDescription($this->phpdoc);
         } catch (\Exception $e) {
         }
 
@@ -75,7 +76,7 @@ class Method
         $this->getParameters($method);
 
         //Make the method static
-        $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
+        $this->phpdoc->appendTagline('@static');
     }
 
     /**
@@ -83,7 +84,8 @@ class Method
      */
     protected function initPhpDoc($method)
     {
-        $this->phpdoc = new DocBlock($method, new Context($this->namespace, $this->classAliases));
+        $context = new \phpDocumentor\Reflection\Types\Context($this->namespace, $this->classAliases);
+        $this->phpdoc = DocBlockBuilder::createFromReflector($method, $context);
     }
 
     /**
@@ -145,8 +147,8 @@ class Method
      */
     public function getDocComment($prefix = "\t\t")
     {
-        $serializer = new DocBlockSerializer(1, $prefix);
-        return $serializer->getDocComment($this->phpdoc);
+        $serializer = new Serializer(1, $prefix);
+        return $serializer->getDocComment($this->phpdoc->getDocBlock());
     }
 
     /**
@@ -189,39 +191,6 @@ class Method
     public function getParamsWithDefault($implode = true)
     {
         return $implode ? implode(', ', $this->params_with_default) : $this->params_with_default;
-    }
-
-    /**
-     * Get the description and get the inherited docs.
-     *
-     * @param DocBlock $phpdoc
-     */
-    protected function normalizeDescription(DocBlock $phpdoc)
-    {
-        //Get the short + long description from the DocBlock
-        $description = $phpdoc->getText();
-
-        //Loop through parents/interfaces, to fill in {@inheritdoc}
-        if (strpos($description, '{@inheritdoc}') !== false) {
-            $inheritdoc = $this->getInheritDoc($this->method);
-            $inheritDescription = $inheritdoc->getText();
-
-            $description = str_replace('{@inheritdoc}', $inheritDescription, $description);
-            $phpdoc->setText($description);
-
-            $this->normalizeParams($inheritdoc);
-            $this->normalizeReturn($inheritdoc);
-
-            //Add the tags that are inherited
-            $inheritTags = $inheritdoc->getTags();
-            if ($inheritTags) {
-                /** @var Tag $tag */
-                foreach ($inheritTags as $tag) {
-                    $tag->setDocBlock();
-                    $phpdoc->appendTag($tag);
-                }
-            }
-        }
     }
 
     /**

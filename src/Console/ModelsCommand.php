@@ -12,10 +12,6 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
-use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
-use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
-use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\Castable;
@@ -42,8 +38,12 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\DocBlock\Tags\Generic;
+use phpDocumentor\Reflection\DocBlock\Serializer;
+use phpDocumentor\Reflection\DocBlock\StandardTagFactory;
+use phpDocumentor\Reflection\DocBlock\Tag;
+use phpDocumentor\Reflection\DocBlock\Tags\BaseTag;
 use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -888,25 +888,32 @@ class ModelsCommand extends Command
             $reflection->getInterfaceNames(),
             $reflection->getParentClass()->getInterfaceNames()
         );
+        $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
 
-        if ($this->reset) {
-            $phpdoc = new DocBlock('', new Context($namespace));
-            if ($this->keep_text) {
-                $phpdoc->setText(
-                    (new DocBlock($reflection, new Context($namespace)))->getText()
-                );
+        $fqsenResolver = new FqsenResolver();
+        $tagFactory = new StandardTagFactory($fqsenResolver);
+
+        $existingTags = [];
+        $tags = [];
+        $summary = $class;
+        $description = null;
+
+        if ($reflection->getDocComment()) {
+            $phpdoc = (DocBlockFactory::createInstance())->create($reflection, $phpDocContext);
+            $existingTags = $phpdoc->getTags();
+            if (!$this->reset || $this->keep_text) {
+                $summary = $phpdoc->getSummary();
+                $description = $phpdoc->getDescription();
             }
-        } else {
-            $phpdoc = new DocBlock($reflection, new Context($namespace));
-        }
 
-        if (!$phpdoc->getText()) {
-            $phpdoc->setText($class);
+            if (!$this->reset) {
+              $tags = $existingTags;
+            }
         }
 
         $properties = [];
         $methods = [];
-        foreach ($phpdoc->getTags() as $tag) {
+        foreach ($tags as $tag) {
             $name = $tag->getName();
             if ($name == 'property' || $name == 'property-read' || $name == 'property-write') {
                 $properties[] = $tag->getVariableName();
@@ -934,8 +941,7 @@ class ModelsCommand extends Command
             }
 
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");
-            $tag = Tag::createInstance($tagLine, $phpdoc);
-            $phpdoc->appendTag($tag);
+            $tags[] = $tagFactory->create($tagLine, $phpDocContext);
         }
 
         ksort($this->methods);
@@ -949,21 +955,13 @@ class ModelsCommand extends Command
             if ($method['comment'] !== '') {
                 $tagLine .= " {$method['comment']}";
             }
-            $tag = Tag::createInstance($tagLine, $phpdoc);
-            $phpdoc->appendTag($tag);
+            $tags[] = $tagFactory->create($tagLine, $phpDocContext);
         }
 
         if ($this->write) {
             $eloquentClassNameInModel = $this->getClassNameInDestinationFile($reflection, 'Eloquent');
 
-            // remove the already existing tag to prevent duplicates
-            foreach ($phpdoc->getTagsByName('mixin') as $tag) {
-                if ($tag->getContent() === $eloquentClassNameInModel) {
-                    $phpdoc->deleteTag($tag);
-                }
-            }
-
-            $phpdoc->appendTag(Tag::createInstance('@mixin ' . $eloquentClassNameInModel, $phpdoc));
+            $tags[] = $tagFactory->create('@mixin ' . $eloquentClassNameInModel, $phpDocContext);
         }
 
         if ($this->phpstorm_noinspections) {
@@ -971,43 +969,49 @@ class ModelsCommand extends Command
              * Facades, Eloquent API
              * @see https://www.jetbrains.com/help/phpstorm/php-fully-qualified-name-usage.html
              */
-            $phpdoc->appendTag(Tag::createInstance('@noinspection PhpFullyQualifiedNameUsageInspection', $phpdoc));
+            $tags[] = $tagFactory->create('@noinspection PhpFullyQualifiedNameUsageInspection', $phpDocContext);
+
             /**
              * Relations, other models in the same namespace
              * @see https://www.jetbrains.com/help/phpstorm/php-unnecessary-fully-qualified-name.html
              */
-            $phpdoc->appendTag(
-                Tag::createInstance('@noinspection PhpUnnecessaryFullyQualifiedNameInspection', $phpdoc)
-            );
+            $tags[] = $tagFactory->create('@noinspection PhpUnnecessaryFullyQualifiedNameInspection', $phpDocContext);
+
         }
 
-        $serializer = new DocBlockSerializer();
-        $docComment = $serializer->getDocComment($phpdoc);
+//        $serializer = new DocBlockSerializer();
+//        $docComment = $serializer->getDocComment($phpdoc);
+
+        $serializer = new Serializer();
 
         if ($this->write_mixin) {
-            $phpdocMixin = new DocBlock($reflection, new Context($namespace));
+
             // remove all mixin tags prefixed with IdeHelper
-            foreach ($phpdocMixin->getTagsByName('mixin') as $tag) {
-                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
-                    $phpdocMixin->deleteTag($tag);
-                }
-            }
+            $mixinTags = array_filter($existingTags, function(Tag $tag) {
+                return !($tag instanceof BaseTag) || !Str::startsWith($tag->getDescription(), 'IdeHelper');
+            });
 
             $mixinClassName = "IdeHelper{$classname}";
-            $phpdocMixin->appendTag(Tag::createInstance("@mixin {$mixinClassName}", $phpdocMixin));
+            $mixinTags[] = $tagFactory->create("@mixin {$mixinClassName}", $phpDocContext);
+
+            $tags = array_filter($tags, function(Tag $tag) {
+                return !($tag instanceof BaseTag) || !Str::startsWith($tag->getDescription(), 'IdeHelper');
+            });
+
+            $phpdocMixin = new \phpDocumentor\Reflection\DocBlock($summary ?: $class, $description, $mixinTags, $phpDocContext);
             $mixinDocComment = $serializer->getDocComment($phpdocMixin);
             // remove blank lines if there's no text
-            if (!$phpdocMixin->getText()) {
+            if (!$phpdocMixin->getSummary()) {
                 $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
             }
-
-            foreach ($phpdoc->getTagsByName('mixin') as $tag) {
-                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
-                    $phpdoc->deleteTag($tag);
-                }
-            }
-            $docComment = $serializer->getDocComment($phpdoc);
         }
+
+        $tags = collect($tags)->unique(function(Tag $tag) {
+            return (string) $tag;
+        })->toArray();
+
+        $phpdoc = new \phpDocumentor\Reflection\DocBlock($summary ?: '', $description, $tags, $phpDocContext);
+        $docComment = $serializer->getDocComment($phpdoc);
 
         if ($this->write) {
             $modelDocComment = $this->write_mixin ? $mixinDocComment : $docComment;
@@ -1221,13 +1225,13 @@ class ModelsCommand extends Command
         }
 
         $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
-        $phpdoc = (DocBlockFactory::createInstance())->create($reflection->getDocComment(), $phpDocContext);
+        $phpdoc = (DocBlockFactory::createInstance())->create($reflection, $phpDocContext);
 
-        if (!$phpdoc->hasTag('comment')) {
-            return '';
+        foreach($phpdoc->getTagsByName('comment') as $tag) {
+            return $tag;
         }
 
-        return $phpdoc->getTagsByName('comment')[0] ?: '';
+        return '';
     }
 
     /**
@@ -1237,21 +1241,19 @@ class ModelsCommand extends Command
      *
      * @return null|string
      */
-    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, \Reflector $reflectorForContext = null)
+    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, \Reflector $reflectorForContext = null) : ?string
     {
+        if (!$reflection->getDocComment()) {
+            return null;
+        }
         $phpDocContext = (new ContextFactory())->createFromReflector($reflectorForContext ?? $reflection);
-        $context = new Context(
-            $phpDocContext->getNamespace(),
-            $phpDocContext->getNamespaceAliases()
-        );
-        $type = null;
-        $phpdoc = new DocBlock($reflection, $context);
+        $phpdoc = (DocBlockFactory::createInstance())->create($reflection, $phpDocContext);
 
-        if ($phpdoc->hasTag('return')) {
-            $type = $phpdoc->getTagsByName('return')[0]->getType();
+        foreach ($phpdoc->getTagsByName('return') as $tag) {
+            return $tag;
         }
 
-        return $type;
+        return null;
     }
 
     protected function getReturnTypeFromReflection(\ReflectionMethod $reflection): ?string

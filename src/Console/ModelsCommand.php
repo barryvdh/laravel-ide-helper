@@ -1004,6 +1004,14 @@ class ModelsCommand extends Command
             }
         }
 
+        $tags = collect($tags)->unique(function (Tag $tag) {
+            if (method_exists($tag, 'getVariableName')) {
+                return $tag->getName() . ' ' . $tag->getVariableName();
+            }
+            return (string) $tag;
+
+        })->toArray();
+
         $phpdoc = new DocBlock($summary ?: '', $description, $tags, $phpDocContext);
         $docComment = $serializer->getDocComment($phpdoc);
 

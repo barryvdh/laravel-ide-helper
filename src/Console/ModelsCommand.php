@@ -378,7 +378,7 @@ class ModelsCommand extends Command
                     break;
                 case 'boolean':
                 case 'bool':
-                    $realType = 'boolean';
+                    $realType = 'bool';
                     break;
                 case 'decimal':
                 case 'string':
@@ -394,7 +394,7 @@ class ModelsCommand extends Command
                 case 'int':
                 case 'integer':
                 case 'timestamp':
-                    $realType = 'integer';
+                    $realType = 'int';
                     break;
                 case 'real':
                 case 'double':
@@ -521,9 +521,9 @@ class ModelsCommand extends Command
                     'integer', 'int', 'int4',
                     'smallint', 'int2',
                     'mediumint',
-                    'bigint', 'int8' => 'integer',
+                    'bigint', 'int8' => 'int',
 
-                    'boolean', 'bool' => 'boolean',
+                    'boolean', 'bool' => 'bool',
 
                     'float', 'real', 'float4',
                     'double', 'float8' => 'float',

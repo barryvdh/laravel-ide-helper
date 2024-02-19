@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\CarbonImmutable $cast_to_immutable_date
  * @property \Carbon\CarbonImmutable $cast_to_immutable_custom_datetime
  * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime
- * @property integer $cast_to_timestamp
+ * @property int $cast_to_timestamp
  * @property mixed $cast_to_encrypted
  * @property array $cast_to_encrypted_array
  * @property \Illuminate\Support\Collection $cast_to_encrypted_collection

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithCustomNamespace
+ * 
  *
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\CustomSpace\ModelWithCustomNamespaceFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace newModelQuery()
@@ -41,7 +41,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithFactory
+ * 
  *
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithFactoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory newModelQuery()
@@ -60,7 +60,7 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithNestedFactory
+ * 
  *
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithNestedFactoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory newModelQuery()
@@ -81,7 +81,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithoutFactory
+ * 
  *
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newQuery()

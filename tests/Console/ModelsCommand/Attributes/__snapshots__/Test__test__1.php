@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Attributes\Models\Simple
+ * 
  *
  * @property integer $id
  * @property int $diverging_type_hinted_get_and_set

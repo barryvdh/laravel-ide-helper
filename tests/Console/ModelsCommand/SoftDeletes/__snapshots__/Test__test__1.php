@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletes\Models\Simple
+ * 
  *
  * @property integer $id
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()

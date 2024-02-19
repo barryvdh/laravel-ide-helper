@@ -13,7 +13,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Models{
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqnInExternalFile\Models\Post
+ * 
  *
  * @property integer $id
  * @property string|null $char_nullable

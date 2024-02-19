@@ -7,7 +7,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SimpleCasts\Mode
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SimpleCasts\Models\SimpleCast
+ * 
  *
  * @property integer $cast_to_int
  * @property integer $cast_to_integer

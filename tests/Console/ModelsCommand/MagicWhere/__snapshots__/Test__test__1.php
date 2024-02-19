@@ -7,7 +7,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\MagicWhere\Model
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\MagicWhere\Models\Post
+ * 
  *
  * @property integer $id
  * @property string|null $char_nullable

@@ -15,7 +15,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithFqn\Models\Post
+ * 
  *
  * @property integer $id
  * @property string|null $char_nullable

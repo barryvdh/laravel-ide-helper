@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\BelongsToVariation
+ * 
  *
  * @property integer $id
  * @property integer $not_null_column_with_foreign_key_constraint
@@ -61,7 +61,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\CompositeBelongsToVariation
+ * 
  *
  * @property integer $id
  * @property integer $not_null_column_with_foreign_key_constraint
@@ -132,7 +132,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Relations\Models\Simple
+ * 
  *
  * @property integer $id
  * @property-read Simple|null $relationBelongsTo

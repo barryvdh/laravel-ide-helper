@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @link https://github.com/barryvdh/laravel-ide-helper/issues/666
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @property integer $id
+ * @property int $id
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()

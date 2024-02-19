@@ -20,6 +20,8 @@ use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlock\Serializer;
+use phpDocumentor\Reflection\DocBlock\Tags\InvalidTag;
+use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 
 class Method
 {
@@ -64,11 +66,9 @@ class Method
         //Create a DocBlock and serializer instance
         $this->initPhpDoc($method);
 
-        //Normalize the description and inherit the docs from parents/interfaces
+        //Normalize the returns and inherit the docs from parents/interfaces
         try {
-            //            $this->normalizeParams($this->phpdoc);
-            //            $this->normalizeReturn($this->phpdoc);
-            //            $this->normalizeDescription($this->phpdoc);
+            $this->normalizeReturn($this->phpdoc);
         } catch (\Exception $e) {
         }
 
@@ -194,34 +194,11 @@ class Method
     }
 
     /**
-     * Normalize the parameters
-     *
-     * @param DocBlock $phpdoc
-     */
-    protected function normalizeParams(DocBlock $phpdoc)
-    {
-        //Get the return type and adjust them for beter autocomplete
-        $paramTags = $phpdoc->getTagsByName('param');
-        if ($paramTags) {
-            /** @var ParamTag $tag */
-            foreach ($paramTags as $tag) {
-                // Convert the keywords
-                $content = $this->convertKeywords($tag->getContent());
-                $tag->setContent($content);
-
-                // Get the expanded type and re-set the content
-                $content = $tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
-                $tag->setContent(trim($content));
-            }
-        }
-    }
-
-    /**
      * Normalize the return tag (make full namespace, replace interfaces)
      *
      * @param DocBlock $phpdoc
      */
-    protected function normalizeReturn(DocBlock $phpdoc)
+    protected function normalizeReturn(DocBlockBuilder $phpdoc)
     {
         //Get the return type and adjust them for better autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
@@ -231,8 +208,13 @@ class Method
             return;
         }
 
-        /** @var ReturnTag $tag */
+
+        /** @var Return_ $tag */
         $tag = reset($returnTags);
+
+        if ($tag instanceof InvalidTag) {
+            return;
+        }
         // Get the expanded type
         $returnValue = $tag->getType();
 
@@ -241,15 +223,18 @@ class Method
             $returnValue = str_replace($interface, $real, $returnValue);
         }
 
-        // Set the changed content
-        $tag->setContent($returnValue . ' ' . $tag->getDescription());
         $this->return = $returnValue;
 
-        if ($tag->getType() === '$this') {
-            Str::contains($this->root, Builder::class)
-                ? $tag->setType($this->root . '|static')
-                : $tag->setType($this->root);
+        if ($returnValue === '$this') {
+            $returnValue = Str::contains($this->root, Builder::class)
+                ? $this->root . '|static'
+                : $this->root;
         }
+
+        // Set the changed content
+        $this->phpdoc->removeTag($tag);
+        $this->phpdoc->appendTagline('@return ' . $returnValue . ' ' . $tag->getDescription());
+
     }
 
     /**
@@ -317,32 +302,5 @@ class Method
 
         $this->params = $params;
         $this->params_with_default = $paramsWithDefault;
-    }
-
-    /**
-     * @param \ReflectionMethod $reflectionMethod
-     * @return DocBlock
-     */
-    protected function getInheritDoc($reflectionMethod)
-    {
-        $parentClass = $reflectionMethod->getDeclaringClass()->getParentClass();
-
-        //Get either a parent or the interface
-        if ($parentClass) {
-            $method = $parentClass->getMethod($reflectionMethod->getName());
-        } else {
-            $method = $reflectionMethod->getPrototype();
-        }
-        if ($method) {
-            $namespace = $method->getDeclaringClass()->getNamespaceName();
-            $phpdoc = new DocBlock($method, new Context($namespace, $this->classAliases));
-
-            if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
-                //Not at the end yet, try another parent/interface..
-                return $this->getInheritDoc($method);
-            }
-
-            return $phpdoc;
-        }
     }
 }

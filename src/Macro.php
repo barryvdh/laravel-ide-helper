@@ -6,6 +6,7 @@ use Barryvdh\LaravelIdeHelper\DocBlock\DocBlockBuilder;
 use Barryvdh\Reflection\DocBlock;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
+use phpDocumentor\Reflection\FqsenResolver;
 
 class Macro extends Method
 {
@@ -64,8 +65,8 @@ class Macro extends Method
         if ($method->hasReturnType() && !$this->phpdoc->hasTag('return')) {
             $builder = EloquentBuilder::class;
             $return = $method->getReturnType();
-
             $type = $this->concatReflectionTypes($return);
+
 
             /** @psalm-suppress UndefinedClass */
             if (!$return instanceof \ReflectionUnionType) {

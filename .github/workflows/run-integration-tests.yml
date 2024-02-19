@@ -12,7 +12,7 @@ on:
 
 jobs:
     php-laravel-integration-tests:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         timeout-minutes: 15
         env:
             COMPOSER_NO_INTERACTION: 1

@@ -7,8 +7,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models\FinalPost
- *
  * @property $someProp
  * @method void someMethod(string $method)
  * @mixin IdeHelperFinalPost
@@ -25,8 +23,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models\Post
- *
  * @property $someProp
  * @method void someMethod(string $method)
  * @mixin IdeHelperPost

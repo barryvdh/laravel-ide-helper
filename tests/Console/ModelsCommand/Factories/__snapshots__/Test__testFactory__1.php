@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithCustomNamespace
- *
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\CustomSpace\ModelWithCustomNamespaceFactory factory(mixed $count, mixed $state)
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithCustomNamespace newQuery()
@@ -41,8 +39,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithFactory
- *
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithFactoryFactory factory(mixed $count, mixed $state)
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithFactory newQuery()
@@ -60,8 +56,6 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithNestedFactory
- *
  * @method static \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Factories\ModelWithNestedFactoryFactory factory(mixed $count, mixed $state)
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithNestedFactory newQuery()
@@ -81,8 +75,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Factories\Models\ModelWithoutFactory
- *
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ModelWithoutFactory query()

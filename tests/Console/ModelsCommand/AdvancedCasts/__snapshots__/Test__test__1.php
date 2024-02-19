@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AdvancedCasts\Models\AdvancedCast
- *
  * @property \Illuminate\Support\Carbon $cast_to_date_serialization
  * @property \Illuminate\Support\Carbon $cast_to_datetime_serialization
  * @property \Illuminate\Support\Carbon $cast_to_custom_datetime

@@ -8,8 +8,6 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExte
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilderWithFqn\Models\Post
- *
  * @property int $id
  * @property string|null $char_nullable
  * @property string $char_not_nullable

@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Variadic\Models\Simple
- *
  * @property int $id
  * @method static Builder|Simple newModelQuery()
  * @method static Builder|Simple newQuery()

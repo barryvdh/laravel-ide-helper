@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\RelationCountProperties\Models\Post
- *
  * @property int $id
  * @property string|null $char_nullable
  * @property string $char_not_nullable

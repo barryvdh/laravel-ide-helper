@@ -13,8 +13,6 @@
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilder\Models{
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithExternalEloquentBuilder\Models\Post
- *
  * @property int $id
  * @property string|null $char_nullable
  * @property string $char_not_nullable

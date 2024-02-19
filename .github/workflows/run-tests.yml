@@ -20,11 +20,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019]
+        os: [ubuntu-22.04, windows-2019]
         php: [8.3, 8.2, 8.1]
         laravel: [10.*, 11.*]
         stability: [prefer-lowest, prefer-stable]
-        dependency-version: [prefer-lowest, prefer-stable]
         exclude:
           - php: 8.1
             laravel: 11.*

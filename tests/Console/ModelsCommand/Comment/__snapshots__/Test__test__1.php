@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * 
  *
- * @property integer $id
+ * @property int $id
  * @property string $both_same_name I'm a getter
  * @property string $both_without_getter_comment
  * @property-read string $faker_comment

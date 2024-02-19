@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Merge --reset and --smart-reset, to always keep the text. Always skipp the classname [#1523 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1523)
+- Use short types (`int` and `bool` instead of `integer` and `boolean`) [#1524 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1524)
 
 ### Removed
 - Support for Laravel 9 and use of doctrine/dbal [#1512 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1512) 

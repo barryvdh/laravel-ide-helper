@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 
  *
- * @property integer $id
+ * @property int $id
  * @method static Builder|Simple newModelQuery()
  * @method static Builder|Simple newQuery()
  * @method static Builder|Simple query()

@@ -13,10 +13,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\LaravelIdeHelper\DocBlock\DocBlockBuilder;
 use Barryvdh\Reflection\DocBlock;
-use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Tag;
-use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
-use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlock\Serializer;
@@ -234,7 +231,6 @@ class Method
         // Set the changed content
         $this->phpdoc->removeTag($tag);
         $this->phpdoc->appendTagline('@return ' . $returnValue . ' ' . $tag->getDescription());
-
     }
 
     /**

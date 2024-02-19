@@ -6,7 +6,6 @@ use Barryvdh\LaravelIdeHelper\DocBlock\DocBlockBuilder;
 use Barryvdh\Reflection\DocBlock;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
-use phpDocumentor\Reflection\FqsenResolver;
 
 class Macro extends Method
 {

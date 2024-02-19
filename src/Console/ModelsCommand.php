@@ -150,7 +150,7 @@ class ModelsCommand extends Command
         );
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
-        $this->reset = $this->option('reset') || $this->option('smart-reset');
+        $this->reset = $this->option('reset');
         $this->phpstorm_noinspections = $this->option('phpstorm-noinspections');
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
         $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
@@ -215,7 +215,6 @@ class ModelsCommand extends Command
           ],
           ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
           ['reset', 'R', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
-          ['smart-reset', 'r', InputOption::VALUE_NONE, 'Deprecated: same as --reset'],
           ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
               'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
               'noinspection tags',

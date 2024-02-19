@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 - Support for Laravel 11 [#1520 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1520)
 
 ### Changed
-- Merge --reset and --smart-reset, to always keep the text. Always skipp the classname [#1523 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1523)
+- Make `--reset` always keep the text and remove `--smart-reset`. Always skipp the classname [#1523 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1523) & [#1525 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1525)
 - Use short types (`int` and `bool` instead of `integer` and `boolean`) [#1524 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1524)
 
 ### Removed

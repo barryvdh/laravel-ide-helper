@@ -81,6 +81,10 @@ class DocBlockBuilder
         $this->description = $description;
     }
 
+    public function getContext()
+    {
+        return $this->context;
+    }
     public function getTags()
     {
         return $this->tags;
@@ -95,6 +99,7 @@ class DocBlockBuilder
 
     public function hasTag(string $name): bool
     {
+        /** @var Tag $tag */
         foreach ($this->tags as $tag) {
             if ($tag->getName() === $name) {
                 return true;
@@ -102,6 +107,22 @@ class DocBlockBuilder
         }
 
         return false;
+    }
+
+    public function getTagsByName($name)
+    {
+        $result = [];
+
+        /** @var Tag $tag */
+        foreach ($this->tags as $tag) {
+            if ($tag->getName() != $name) {
+                continue;
+            }
+
+            $result[] = $tag;
+        }
+
+        return $result;
     }
 
     public function appendTag(Tag $tag)

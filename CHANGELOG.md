@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Support for Laravel 11 [#1520 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1520)
 
+### Changed
+- Use short types (`int` and `bool` instead of `integer` and `boolean`) [#1524 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1524)
+
 ### Removed
 - Support for Laravel 9 and use of doctrine/dbal [#1512 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1512) 
   With this functionality gone, a few changes have been made:

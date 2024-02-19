@@ -71,7 +71,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Model
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Models\Simple
+ * 
  *
  * @property int $id
  * @property-read string $custom

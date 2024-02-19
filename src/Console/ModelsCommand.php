@@ -105,7 +105,6 @@ class ModelsCommand extends Command
     protected $write_mixin = false;
     protected $dirs = [];
     protected $reset;
-    protected $keep_text;
     protected $phpstorm_noinspections;
     protected $write_model_external_builder_methods;
     /**
@@ -151,11 +150,8 @@ class ModelsCommand extends Command
         );
         $model = $this->argument('model');
         $ignore = $this->option('ignore');
-        $this->reset = $this->option('reset');
+        $this->reset = $this->option('reset') || $this->option('smart-reset');
         $this->phpstorm_noinspections = $this->option('phpstorm-noinspections');
-        if ($this->option('smart-reset')) {
-            $this->keep_text = $this->reset = true;
-        }
         $this->write_model_magic_where = $this->laravel['config']->get('ide-helper.write_model_magic_where', true);
         $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
@@ -218,8 +214,8 @@ class ModelsCommand extends Command
               "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
           ],
           ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
-          ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
-          ['smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
+          ['reset', 'R', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
+          ['smart-reset', 'r', InputOption::VALUE_NONE, 'Deprecated: same as --reset'],
           ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
               'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
               'noinspection tags',
@@ -889,17 +885,11 @@ class ModelsCommand extends Command
 
         if ($this->reset) {
             $phpdoc = new DocBlock('', new Context($namespace));
-            if ($this->keep_text) {
-                $phpdoc->setText(
-                    (new DocBlock($reflection, new Context($namespace)))->getText()
-                );
-            }
+            $phpdoc->setText(
+                (new DocBlock($reflection, new Context($namespace)))->getText()
+            );
         } else {
             $phpdoc = new DocBlock($reflection, new Context($namespace));
-        }
-
-        if (!$phpdoc->getText()) {
-            $phpdoc->setText($class);
         }
 
         $properties = [];

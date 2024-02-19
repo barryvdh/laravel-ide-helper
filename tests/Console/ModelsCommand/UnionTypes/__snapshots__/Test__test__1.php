@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\UnionTypes\Models\UnionTypeModel
+ * 
  *
  * @property-read string|int|null $foo
  * @property-read \Illuminate\Database\Eloquent\Collection<int, UnionTypeModel> $withUnionTypeReturn

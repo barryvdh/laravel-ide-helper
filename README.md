@@ -151,7 +151,7 @@ The class name will be different from the model, avoiding the IDE duplicate anno
 
 Writing to the models should keep the existing comments and only append new properties/methods. It will not update changed properties/methods.
 
-With the `--reset (-R)` option, the whole existing PHPDoc is replaced, including any comments that have been made. The `--smart-reset` option will instead keep the 'text' part of the phpdoc comment, and just replace all the property/method defininitions.
+With the `--reset (-R)` option, the whole existing PHPDoc is replaced, including any comments that have been made.
 
 ```bash
 php artisan ide-helper:models "App\Models\Post"

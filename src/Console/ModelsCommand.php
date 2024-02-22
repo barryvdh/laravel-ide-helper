@@ -252,6 +252,8 @@ class ModelsCommand extends Command
             $this->laravel['config']->get('ide-helper.ignored_models', [])
         );
 
+        $skippedGeneratingTablePropertiesForModels = [];
+
         foreach ($models as $name) {
             if (in_array($name, $ignore)) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
@@ -280,7 +282,20 @@ class ModelsCommand extends Command
 
                     $model = $this->laravel->make($name);
 
-                    $this->getPropertiesFromTable($model);
+                    try {
+                        $this->getPropertiesFromTable($model);
+                    } catch (Throwable $e) {
+                        $modelName = $model::class;
+
+                        if ($this->warningsAreAllowedForForModel($model)) {
+                            $connectionName = $model->getConnectionName() ?? $this->laravel['config']->get('database.default');
+                            $driver = $model->getConnection()::class;
+
+                            $this->warn("Could not get table properties for model [{$modelName}] using connection [{$connectionName}]. The underlying database driver [{$driver}] may not be supported.");
+
+                            $skippedGeneratingTablePropertiesForModels[] = $model;
+                        }
+                    }
 
                     if (method_exists($model, 'getCasts')) {
                         $this->castPropertiesType($model);
@@ -302,6 +317,16 @@ class ModelsCommand extends Command
                         $e->getTraceAsString());
                 }
             }
+        }
+
+        if (! empty($skippedGeneratingTablePropertiesForModels)) {
+            $classes = collect($skippedGeneratingTablePropertiesForModels)
+                ->map(fn ($model) => ' • ' . $model::class);
+            $this->warn('Could not inspect table properties for some models. See output above for any warnings');
+            $this->warn('Models without table inspection:');
+            $this->newLine();
+            $this->warn($classes->implode(PHP_EOL));
+            $this->newLine();
         }
 
         return $output;
@@ -1625,5 +1650,11 @@ class ModelsCommand extends Command
                 $this->foreignKeyConstraintsColumns[] = $columnName;
             }
         }
+    }
+
+    protected function warningsAreAllowedForForModel(Model $model): bool
+    {
+        return collect($this->laravel['config']->get('ide-helper.silenced_models'))
+            ->doesntContain($model::class);
     }
 }

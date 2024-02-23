@@ -178,7 +178,9 @@ class ModelsCommand extends Command
 
         $content = $this->generateDocs($model, $ignore);
 
-        if (!$this->write || $this->write_mixin) {
+        $this->handleWarnings();
+
+        if (! $this->write || $this->write_mixin) {
             $written = $this->files->put($filename, $content);
             if ($written !== false) {
                 $this->info("Model information was written to $filename");
@@ -309,19 +311,6 @@ class ModelsCommand extends Command
                         $e->getTraceAsString());
                 }
             }
-        }
-
-        if (! empty($this->modelWarnings)) {
-            foreach ($this->modelWarnings as $modelClass => $warnings) {
-                $this->newline();
-                $this->warn("{$modelClass} has the following warnings:");
-                foreach ($warnings as $warning) {
-                    $this->warn('• '.$warning->message());
-                }
-            }
-
-            $this->newline();
-            $this->warn('There are warnings for some of the models that we tried to generate docs for. Please see the output above for more information.');
         }
 
         return $output;
@@ -1644,6 +1633,22 @@ class ModelsCommand extends Command
             foreach ($foreignKeyConstraint['columns'] as $columnName) {
                 $this->foreignKeyConstraintsColumns[] = $columnName;
             }
+        }
+    }
+
+    protected function handleWarnings(): void
+    {
+        if (! empty($this->modelWarnings)) {
+            foreach ($this->modelWarnings as $modelClass => $warnings) {
+                $this->newline();
+                $this->warn("{$modelClass} has the following warnings:");
+                foreach ($warnings as $warning) {
+                    $this->warn('• '.$warning->message());
+                }
+            }
+
+            $this->newline();
+            $this->warn('There are warnings for some of the models that we tried to generate docs for. Please see the output above for more information.');
         }
     }
 

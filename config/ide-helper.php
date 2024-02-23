@@ -165,7 +165,7 @@ return [
     */
 
     'silenced_models' => [
-
+        // App\Models\User::class
     ],
 
     /*

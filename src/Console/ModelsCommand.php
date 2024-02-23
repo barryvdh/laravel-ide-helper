@@ -255,8 +255,6 @@ class ModelsCommand extends Command
             $this->laravel['config']->get('ide-helper.ignored_models', [])
         );
 
-        $skippedGeneratingTablePropertiesForModels = [];
-
         foreach ($models as $name) {
             if (in_array($name, $ignore)) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {

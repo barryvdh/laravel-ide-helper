@@ -12,6 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Barryvdh\LaravelIdeHelper\Enums\ModelWarning;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -115,6 +116,8 @@ class ModelsCommand extends Command
      * @var string[]
      */
     protected $foreignKeyConstraintsColumns = [];
+
+    protected $modelWarnings = [];
 
     /**
      * During initialization we use Laravels Date Facade to
@@ -285,16 +288,7 @@ class ModelsCommand extends Command
                     try {
                         $this->getPropertiesFromTable($model);
                     } catch (Throwable $e) {
-                        $modelName = $model::class;
-
-                        if ($this->warningsAreAllowedForForModel($model)) {
-                            $connectionName = $model->getConnectionName() ?? $this->laravel['config']->get('database.default');
-                            $driver = $model->getConnection()::class;
-
-                            $this->warn("Could not get table properties for model [{$modelName}] using connection [{$connectionName}]. The underlying database driver [{$driver}] may not be supported.");
-
-                            $skippedGeneratingTablePropertiesForModels[] = $model;
-                        }
+                        $this->tableInspectionFailedForModel($model, $e);
                     }
 
                     if (method_exists($model, 'getCasts')) {
@@ -319,14 +313,17 @@ class ModelsCommand extends Command
             }
         }
 
-        if (! empty($skippedGeneratingTablePropertiesForModels)) {
-            $classes = collect($skippedGeneratingTablePropertiesForModels)
-                ->map(fn ($model) => ' • ' . $model::class);
-            $this->warn('Could not inspect table properties for some models. See output above for any warnings');
-            $this->warn('Models without table inspection:');
-            $this->newLine();
-            $this->warn($classes->implode(PHP_EOL));
-            $this->newLine();
+        if (! empty($this->modelWarnings)) {
+            foreach ($this->modelWarnings as $modelClass => $warnings) {
+                $this->newline();
+                $this->warn("{$modelClass} has the following warnings:");
+                foreach ($warnings as $warning) {
+                    $this->warn('• '.$warning->message());
+                }
+            }
+
+            $this->newline();
+            $this->warn('There are warnings for some of the models that we tried to generate docs for. Please see the output above for more information.');
         }
 
         return $output;
@@ -1652,9 +1649,41 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function warningsAreAllowedForForModel(Model $model): bool
+    protected function gracefullyHandleExceptions(): bool
     {
-        return collect($this->laravel['config']->get('ide-helper.silenced_models'))
-            ->doesntContain($model::class);
+        return ! is_null($this->laravel['config']->get('ide-helper.silenced_models'));
+    }
+
+    protected function warningsAreSilencedForModel(Model $model): bool
+    {
+        $silencedModels = $this->laravel['config']->get('ide-helper.silenced_models');
+
+        return collect($silencedModels)->contains($model::class);
+    }
+
+    protected function tableInspectionFailedForModel(Model $model, ?Throwable $e = null): void
+    {
+        if ($e && ! $this->gracefullyHandleExceptions()) {
+            throw $e;
+        }
+
+        if ($this->warningsAreSilencedForModel($model)) {
+            return;
+        }
+
+        $modelName = $model::class;
+
+        $connectionName = $model->getConnectionName() ?? $this->laravel['config']->get('database.default');
+        $driver = $model->getConnection()::class;
+
+        $this->warn("Could not get table properties for model [{$modelName}] using connection [{$connectionName}]. The underlying database driver [{$driver}] may not be supported.");
+
+        if ($e) {
+            $this->warn(get_class($e).' '.$e->getMessage());
+        }
+
+        $this->modelWarnings[$model::class] ??= [];
+
+        $this->modelWarnings[$model::class][] = ModelWarning::TableInspectionFailed;
     }
 }

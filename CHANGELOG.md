@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 --------------
 
 
-2024-02-15, 3.0.0
+2024-03-01, 3.0.0
 ------------------
 
 ### Fixed

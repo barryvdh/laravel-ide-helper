@@ -2,14 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v2.15.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.0.0...master)
 --------------
 
+### Fixed
+
+### Changed
+
+### Added
 
 2024-03-01, 3.0.0
 ------------------
-
-### Fixed
 
 ### Added
 - Support for Laravel 11 [#1520 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1520)

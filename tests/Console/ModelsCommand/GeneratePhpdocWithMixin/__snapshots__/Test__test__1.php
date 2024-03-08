@@ -45,7 +45,7 @@ class Post extends Model
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- *
+ * 
  *
  * @property $someProp
  * @method someMethod(string $method)
@@ -60,7 +60,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- *
+ * 
  *
  * @property $someProp
  * @method someMethod(string $method)

@@ -46,7 +46,7 @@ class WithCollection extends Model
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\Models{
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\Models\WithCollection
+ * 
  *
  * @property-read \Illuminate\Support\Collection<int, string> $collection
  * @property-read \Illuminate\Support\Collection $collection_without_doc_block

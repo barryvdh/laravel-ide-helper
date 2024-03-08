@@ -208,7 +208,7 @@ class ModelsCommand extends Command
         return [
             ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file'],
             ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'The model dir, supports glob patterns', [],],
+                'The model dir, supports glob patterns', [], ],
             ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
             ['write-mixin', 'M', InputOption::VALUE_NONE,
                 "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
@@ -1254,7 +1254,8 @@ class ModelsCommand extends Command
      * @param array $namespaceAliases
      * @return string|null
      */
-    private function extractTypeAlias(string $typeAlias, array $namespaceAliases): string|null {
+    private function extractTypeAlias(string $typeAlias, array $namespaceAliases): string|null
+    {
         $matches = [];
         preg_match('/(\w+)(<.*>)/', $typeAlias, $matches);
         $matchCount = count($matches);
@@ -1267,7 +1268,7 @@ class ModelsCommand extends Command
             return null;
         }
 
-        return $namespaceAliases[$matches[1]].($matches[2] ?? '');
+        return $namespaceAliases[$matches[1]] . ($matches[2] ?? '');
     }
 
     protected function getReturnTypeFromReflection(\ReflectionMethod $reflection): ?string

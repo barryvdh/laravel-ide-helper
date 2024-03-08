@@ -1,8 +1,8 @@
 .phpunit.result.cache
 
 /.idea
-/.php_cs
-/.php_cs.cache
-/.php_cs.tests.cache
+/.php-cs-fixer.cache
+/.php-cs-fixer.php
+/.php-cs-fixer.tests.cache
 /composer.lock
 /vendor

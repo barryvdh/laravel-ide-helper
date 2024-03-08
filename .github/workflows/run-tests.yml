@@ -18,28 +18,15 @@ jobs:
       COMPOSER_NO_INTERACTION: 1
 
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019]
-        php: [8.3, 8.2, 8.1, 8.0, 7.4, 7.3]
-        laravel: [8.*, 9.*, 10.*]
-        dependency-version: [prefer-lowest, prefer-stable]
+        os: [ubuntu-22.04, windows-2019]
+        php: [8.3, 8.2, 8.1]
+        laravel: [10.*, 11.*]
+        stability: [prefer-lowest, prefer-stable]
         exclude:
-          - php: 8.0
-            laravel: 10.*
-          - php: 7.4
-            laravel: 10.*
-          - php: 7.3
-            laravel: 10.*
-          - php: 8.0
-            dependency-version: prefer-lowest
-          - php: 7.4
-            laravel: 9.*
-          - php: 7.3
-            laravel: 9.*
-          - os: windows-2019
-            php: 7.4
-          - os: windows-2019
-            php: 7.3
+          - php: 8.1
+            laravel: 11.*
     steps:
     - name: Set git to use LF
       if: ${{ matrix.os == 'windows-2019' }}
@@ -62,7 +49,7 @@ jobs:
         composer remove vimeo/psalm --no-update --dev
         composer remove friendsofphp/php-cs-fixer --no-update --dev
         composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
-        composer update --prefer-dist --no-progress
+        composer update --prefer-dist --no-progress --${{ matrix.stability }}
 
     - name: Execute Unit Tests
       run: composer test-ci

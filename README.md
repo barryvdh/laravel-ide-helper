@@ -11,7 +11,7 @@
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
 
-It supports Laravel 8+ and PHP 7.3+
+The 3.x branch supports Laravel 10 and 11. For older version, use the 2.x releases.
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -33,6 +33,10 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
+> [!NOTE]  
+> If you encounter version conflicts with doctrine/dbal, please try:
+> `composer require --dev barryvdh/laravel-ide-helper --with-all-dependencies`
+ 
 This package makes use of [Laravels package auto-discovery mechanism](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518), which means if you don't install dev dependencies in production, it also won't be loaded.
 
 If for some reason you want manually control this:
@@ -68,7 +72,7 @@ If for some reason you want manually control this:
 _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
 
 - `php artisan ide-helper:generate` - [PHPDoc generation for Laravel Facades ](#automatic-phpdoc-generation-for-laravel-facades)
-- `php artisan ide-helper:models` - [PHPDocs for models](#automatic-PHPDocs-for-models)
+- `php artisan ide-helper:models` - [PHPDocs for models](#automatic-phpdocs-for-models)
 - `php artisan ide-helper:meta` - [PhpStorm Meta file](#phpstorm-meta-for-container-instances)
 
 
@@ -109,6 +113,10 @@ The generator tries to identify the real class, but if it cannot be found, you c
 Some classes need a working database connection. If you do not have a default working connection, some facades will not be included.
 You can use an in-memory SQLite driver by adding the `-M` option.
 
+If you use [real-time facades](https://laravel.com/docs/master/facades#real-time-facades) in your app, those will also be included in the generated file using a `@mixin` annotation and extending the original class underneath the facade. 
+
+**Note**: this feature uses the generated real-time facades files in the `storage/framework/cache` folder. Those files are generated on-demand as you use the real-time facade, so if the framework has not generated that first, it will not be included in the helper file. Run the route/command/code first and then regenerate the helper file and this time the real-time facade will be included in it.
+
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
 
@@ -141,9 +149,9 @@ The class name will be different from the model, avoiding the IDE duplicate anno
 
 > Please make sure to back up your models, before writing the info.
 
-Writing to the models should keep the existing comments and only append new properties/methods.
-The existing PHPDoc is replaced, or added if not found.
-With the `--reset (-R)` option, the existing PHPDocs are ignored, and only the newly found columns/relations are saved as PHPDocs.
+Writing to the models should keep the existing comments and only append new properties/methods. It will not update changed properties/methods.
+
+With the `--reset (-R)` option, the whole existing PHPDoc is replaced, including any comments that have been made.
 
 ```bash
 php artisan ide-helper:models "App\Models\Post"
@@ -262,26 +270,6 @@ A new method to the eloquent models was added called `newEloquentBuilder` [Refer
 add support for creating a new dedicated class instead of using local scopes in the model itself.
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_external_builder_methods` and setting it to `false`.
-
-#### Unsupported or custom database types
-
-Common column types (e.g. varchar, integer) are correctly mapped to PHP types (`string`, `int`).
-
-But sometimes you may want to use custom column types in your database like `geography`, `jsonb`, `citext`, `bit`, etc. which may throw an "Unknown database type"-Exception.
-
-For those special cases, you can map them via the config `custom_db_types`. Example:
-```php
-'custom_db_types' => [
-    'mysql' => [
-        'geography' => 'array',
-        'point' => 'array',
-    ],
-    'postgresql' => [
-        'jsonb' => 'string',
-        '_int4' => 'array',
-    ],
-],
-```
 
 #### Custom Relationship Types
 

@@ -8,9 +8,9 @@ use DateTime;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Getter\Models\Simple
+ * 
  *
- * @property integer $id
+ * @property int $id
  * @property-read int|null $attribute_return_type_int_or_null
  * @property-read array $attribute_returns_array
  * @property-read bool $attribute_returns_bool

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -46,7 +48,7 @@ class WithCollection extends Model
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\Models{
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\Models\WithCollection
+ * 
  *
  * @property-read \Illuminate\Support\Collection<int, string> $collection
  * @property-read \Illuminate\Support\Collection $collection_without_doc_block

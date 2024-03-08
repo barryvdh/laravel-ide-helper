@@ -7,9 +7,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhp
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhpdocCamel\Models\Post
+ * 
  *
- * @property integer $id
+ * @property int $id
  * @property string|null $charNullable
  * @property string $charNotNullable
  * @property string|null $stringNullable
@@ -20,36 +20,34 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $mediumTextNotNullable
  * @property string|null $longTextNullable
  * @property string $longTextNotNullable
- * @property integer|null $integerNullable
- * @property integer $integerNotNullable
- * @property integer|null $tinyIntegerNullable
- * @property integer $tinyIntegerNotNullable
- * @property integer|null $smallIntegerNullable
- * @property integer $smallIntegerNotNullable
- * @property integer|null $mediumIntegerNullable
- * @property integer $mediumIntegerNotNullable
- * @property integer|null $bigIntegerNullable
- * @property integer $bigIntegerNotNullable
- * @property integer|null $unsignedIntegerNullable
- * @property integer $unsignedIntegerNotNullable
- * @property integer|null $unsignedTinyIntegerNullable
- * @property integer $unsignedTinyIntegerNotNullable
- * @property integer|null $unsignedSmallIntegerNullable
- * @property integer $unsignedSmallIntegerNotNullable
- * @property integer|null $unsignedMediumIntegerNullable
- * @property integer $unsignedMediumIntegerNotNullable
- * @property integer|null $unsignedBigIntegerNullable
- * @property integer $unsignedBigIntegerNotNullable
+ * @property int|null $integerNullable
+ * @property int $integerNotNullable
+ * @property int|null $tinyIntegerNullable
+ * @property int $tinyIntegerNotNullable
+ * @property int|null $smallIntegerNullable
+ * @property int $smallIntegerNotNullable
+ * @property int|null $mediumIntegerNullable
+ * @property int $mediumIntegerNotNullable
+ * @property int|null $bigIntegerNullable
+ * @property int $bigIntegerNotNullable
+ * @property int|null $unsignedIntegerNullable
+ * @property int $unsignedIntegerNotNullable
+ * @property int|null $unsignedTinyIntegerNullable
+ * @property int $unsignedTinyIntegerNotNullable
+ * @property int|null $unsignedSmallIntegerNullable
+ * @property int $unsignedSmallIntegerNotNullable
+ * @property int|null $unsignedMediumIntegerNullable
+ * @property int $unsignedMediumIntegerNotNullable
+ * @property int|null $unsignedBigIntegerNullable
+ * @property int $unsignedBigIntegerNotNullable
  * @property float|null $floatNullable
  * @property float $floatNotNullable
  * @property float|null $doubleNullable
  * @property float $doubleNotNullable
  * @property string|null $decimalNullable
  * @property string $decimalNotNullable
- * @property string|null $unsignedDecimalNullable
- * @property string $unsignedDecimalNotNullable
- * @property integer|null $booleanNullable
- * @property integer $booleanNotNullable
+ * @property int|null $booleanNullable
+ * @property int $booleanNotNullable
  * @property string|null $enumNullable
  * @property string $enumNotNullable
  * @property string|null $jsonNullable
@@ -70,10 +68,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $timestampNotNullable
  * @property string|null $timestamptzNullable
  * @property string $timestamptzNotNullable
- * @property integer|null $yearNullable
- * @property integer $yearNotNullable
- * @property mixed|null $binaryNullable
- * @property mixed $binaryNotNullable
+ * @property int|null $yearNullable
+ * @property int $yearNotNullable
+ * @property string|null $binaryNullable
+ * @property string $binaryNotNullable
  * @property string|null $uuidNullable
  * @property string $uuidNotNullable
  * @property string|null $ipaddressNullable
@@ -143,8 +141,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereTinyIntegerNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedBigIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedBigIntegerNullable($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedDecimalNotNullable($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedDecimalNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedIntegerNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedIntegerNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUnsignedMediumIntegerNotNullable($value)

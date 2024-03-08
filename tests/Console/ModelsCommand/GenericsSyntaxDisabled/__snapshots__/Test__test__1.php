@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenericsSyntaxDisabled\Models\Simple
+ * 
  *
- * @property integer $id
+ * @property int $id
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $regularBelongsToMany
  * @property-read int|null $regular_belongs_to_many_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $regularHasMany

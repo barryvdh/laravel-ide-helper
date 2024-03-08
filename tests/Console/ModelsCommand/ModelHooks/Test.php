@@ -71,13 +71,13 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Model
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Models\Simple
+ * 
  *
  * @property int $id
  * @property-read string $custom
  * @method static \Illuminate\Database\Eloquent\Builder|Simple custom($custom)
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
  * @mixin \Eloquent
  */

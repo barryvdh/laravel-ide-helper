@@ -30,7 +30,6 @@ return [
     ],
     'return_type_declaration' => true,
     'short_scalar_cast' => true,
-    'single_blank_line_before_namespace' => true,
     'single_trait_insert_per_statement' => true,
     'ternary_operator_spaces' => true,
     'visibility_required' => [
@@ -56,7 +55,7 @@ return [
     'no_unused_imports' => true,
     'single_quote' => true,
     'space_after_semicolon' => true,
-    'trailing_comma_in_multiline_array' => true,
+    'trailing_comma_in_multiline' => true,
     'trim_array_spaces' => true,
     'unary_operator_spaces' => true,
     'whitespace_after_comma_in_array' => true,

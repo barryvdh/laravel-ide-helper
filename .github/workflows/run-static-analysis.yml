@@ -9,15 +9,15 @@ on:
 jobs:
     build:
         timeout-minutes: 15
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
 
         steps:
             - uses: actions/checkout@v4
-              
+
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                php-version: 8.0
+                php-version: 8.3
                 coverage: none
                 extensions: pdo_sqlite
 

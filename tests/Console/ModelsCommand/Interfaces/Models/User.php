@@ -19,6 +19,11 @@ class User extends Model implements Authenticatable
         // TODO: Implement getAuthIdentifier() method.
     }
 
+    public function getAuthPasswordName()
+    {
+        // TODO: Implement getAuthPasswordName() method.
+    }
+
     public function getAuthPassword()
     {
         // TODO: Implement getAuthPassword() method.

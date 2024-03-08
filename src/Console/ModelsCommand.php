@@ -12,6 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Barryvdh\LaravelIdeHelper\helpers\PhpDocTypeParser;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -1239,7 +1240,8 @@ class ModelsCommand extends Command
         if ($phpdoc->hasTag('return')) {
             $returnTag = $phpdoc->getTagsByName('return')[0];
 
-            if ($typeAlias = $this->extractTypeAlias($returnTag->getContent(), $context->getNamespaceAliases())) {
+            $typeParser = new PhpDocTypeParser($returnTag->getContent(), $context->getNamespaceAliases());
+            if ($typeAlias = $typeParser->parse()) {
                 return $typeAlias;
             }
 
@@ -1247,28 +1249,6 @@ class ModelsCommand extends Command
         }
 
         return $type;
-    }
-
-    /**
-     * @param string $typeAlias
-     * @param array $namespaceAliases
-     * @return string|null
-     */
-    private function extractTypeAlias(string $typeAlias, array $namespaceAliases): string|null
-    {
-        $matches = [];
-        preg_match('/(\w+)(<.*>)/', $typeAlias, $matches);
-        $matchCount = count($matches);
-
-        if ($matchCount === 0 || $matchCount === 1) {
-            return null;
-        }
-
-        if (empty($namespaceAliases[$matches[1]])) {
-            return null;
-        }
-
-        return $namespaceAliases[$matches[1]] . ($matches[2] ?? '');
     }
 
     protected function getReturnTypeFromReflection(\ReflectionMethod $reflection): ?string

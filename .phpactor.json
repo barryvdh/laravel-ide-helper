@@ -1,0 +1,5 @@
+{
+    "$schema": "/Users/stefan/.local/share/nvim/mason/packages/phpactor/phpactor.schema.json",
+    "language_server_psalm.enabled": true,
+    "language_server_php_cs_fixer.enabled": true
+}

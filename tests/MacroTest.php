@@ -190,10 +190,6 @@ class MacroTest extends TestCase
 
     public function testInitPhpDocParamsWithUnionTypes(): void
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('This test requires PHP 8.0 or higher');
-        }
-
         $phpdoc = (new MacroMock())->getPhpDoc(eval(<<<'PHP'
             return new ReflectionFunction(
                 /**
@@ -231,7 +227,7 @@ class MacroTest extends TestCase
     {
         $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
 
-        $macro = new Macro($reflectionMethod, UrlGenerator::class, new \ReflectionClass(UrlGenerator::class), 'macroName');
+        $macro = new Macro($reflectionMethod, UrlGenerator::class, new ReflectionClass(UrlGenerator::class), 'macroName');
 
         $this->assertInstanceOf(Macro::class, $macro);
     }
@@ -243,7 +239,7 @@ class MacroTest extends TestCase
     {
         $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
 
-        $macro = new Macro($reflectionMethod, 'URL', new \ReflectionClass(UrlGenerator::class), 'macroName');
+        $macro = new Macro($reflectionMethod, 'URL', new ReflectionClass(UrlGenerator::class), 'macroName');
         $output = <<<'DOC'
 /**
  * 

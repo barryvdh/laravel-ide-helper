@@ -12,6 +12,6 @@ class UnsetMethod implements ModelHookInterface
 {
     public function run(ModelsCommand $command, Model $model): void
     {
-        $command->unsetMethod('query');
+        $command->unsetMethod('newmodelquery');
     }
 }

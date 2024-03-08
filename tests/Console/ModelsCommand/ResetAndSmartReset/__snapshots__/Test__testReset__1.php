@@ -7,9 +7,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartRes
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ResetAndSmartReset\Models\Simple
+ * Text of existing phpdoc
  *
- * @property integer $id
+ * @property int $id
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Simple query()

@@ -8,6 +8,7 @@
  */
 ?>
 
+/* @noinspection ALL */
 // @formatter:off
 // phpcs:ignoreFile
 
@@ -22,9 +23,6 @@
  */
 
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
-    <?php if ($namespace == '\Illuminate\Database\Eloquent') :
-        continue;
-    endif; ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
         <?= trim($alias->getDocComment('    ')) ?>
@@ -69,6 +67,16 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
     <?php endforeach; ?>
 }
 
+<?php endforeach; ?>
+
+<?php foreach($real_time_facades as $name): ?>
+<?php $nested = explode('\\', str_replace('\\' . class_basename($name), '', $name)); ?>
+namespace <?php echo implode('\\', $nested); ?> {
+    /**
+     * @mixin <?= str_replace('Facades', '', $name) ?>
+     */
+    class <?= class_basename($name) ?> extends <?= str_replace('Facades', '', $name) ?> {}
+}
 <?php endforeach; ?>
 
 <?php if ($helpers) : ?>

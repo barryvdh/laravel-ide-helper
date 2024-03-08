@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Variadic\Models\Simple
+ * 
  *
- * @property integer $id
+ * @property int $id
  * @method static Builder|Simple newModelQuery()
  * @method static Builder|Simple newQuery()
  * @method static Builder|Simple query()

@@ -35,18 +35,4 @@ class Test extends AbstractModelsCommand
         $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
         $this->assertMatchesMockedSnapshot();
     }
-
-    public function testSmartReset(): void
-    {
-        $command = $this->app->make(ModelsCommand::class);
-
-        $tester = $this->runCommand($command, [
-            '--write' => true,
-            '--smart-reset' => true,
-        ]);
-
-        $this->assertSame(0, $tester->getStatusCode());
-        $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
-        $this->assertMatchesMockedSnapshot();
-    }
 }

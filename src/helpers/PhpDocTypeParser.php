@@ -9,12 +9,12 @@ class PhpDocTypeParser
     /**
      * @var string
      */
-    private $typeAlias;
+    private string $typeAlias;
 
     /**
      * @var array
      */
-    private $namespaceAliases;
+    private array $namespaceAliases;
 
     /**
      * @param string $typeAlias
@@ -29,7 +29,7 @@ class PhpDocTypeParser
     /**
      * @return string|null
      */
-    public function parse()
+    public function parse(): string|null
     {
         $matches = [];
         preg_match('/(\w+)(<.*>)/', $this->typeAlias, $matches);
@@ -56,16 +56,25 @@ class PhpDocTypeParser
             return '';
         }
 
-        $matches = [];
-        preg_match_all('/\w+/', $template, $matches);
-        $types = array_unique($matches[0]);
-        foreach ($types as $type) {
-            $typeAlias = $this->namespaceAliases[$type] ?? $type;
+        $type = '';
+        $result = '';
 
-            dump($this->namespaceAliases, $typeAlias);
-            $template = preg_replace("/\W$type\W/", $typeAlias, $template);
+        foreach (str_split($template) as $char) {
+            $match = preg_match('/[A-z]/', $char);
+
+            if (!$match) {
+                $type = $this->namespaceAliases[$type] ?? $type;
+                $result .= $type;
+                $result .= $char;
+                $type = '';
+
+
+                continue;
+            }
+
+            $type .= $char;
         }
 
-        return $template;
+        return $result;
     }
 }

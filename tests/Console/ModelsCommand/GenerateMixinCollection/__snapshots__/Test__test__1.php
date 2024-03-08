@@ -15,42 +15,41 @@ use Illuminate\Support\Collection as IntCollection;
  */
 class WithCollection extends Model
 {
-//    /**
-//     * @return Collection<int, string>
-//     */
-//    public function getCollectionAttribute(): Collection
-//    {
-//        return new Collection();
-//    }
-//
-//    /**
-//     * @return Collection
-//     */
-//    public function getCollectionWithoutTemplateAttribute(): Collection
-//    {
-//        return new Collection();
-//    }
-//
-//    public function getCollectionWithoutDocBlockAttribute(): Collection
-//    {
-//        return new Collection();
-//    }
-//
-//    /**
-//     * @return Collection<int, NonModel>
-//     */
-//    public function getCollectionWithNonModelTemplateAttribute(): Collection
-//    {
-//        return new Collection();
-//    }
-//
+    /**
+     * @return Collection<int, string>
+     */
+    public function getCollectionAttribute(): Collection
+    {
+        return new Collection();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCollectionWithoutTemplateAttribute(): Collection
+    {
+        return new Collection();
+    }
+
+    public function getCollectionWithoutDocBlockAttribute(): Collection
+    {
+        return new Collection();
+    }
+
+    /**
+     * @return Collection<int, NonModel>
+     */
+    public function getCollectionWithNonModelTemplateAttribute(): Collection
+    {
+        return new Collection();
+    }
+
     /**
      * @return Collection<Collection, CollectionModel<IntCollection, CollectionModel<int, NonModel>>>
      */
     public function getCollectionWithNestedTemplateAttribute(): Collection
     {
         return new Collection();
-
     }
 }
 <?php
@@ -70,7 +69,11 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCol
 /**
  * 
  *
- * @property-read \Illuminate\Support\Collection\Illuminate\Support\Collection\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\CollectionModelIntCollection,\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\CollectionModelint,\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\NonModel>> $collection_with_nested_template
+ * @property-read \Illuminate\Support\Collection<int, string> $collection
+ * @property-read \Illuminate\Support\Collection<\Illuminate\Support\Collection, \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\CollectionModel<\Illuminate\Support\Collection, \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\CollectionModel<int, \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\NonModel>>> $collection_with_nested_template
+ * @property-read \Illuminate\Support\Collection<int, \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\NonModel> $collection_with_non_model_template
+ * @property-read \Illuminate\Support\Collection $collection_without_doc_block
+ * @property-read \Illuminate\Support\Collection $collection_without_template
  * @method static \Illuminate\Database\Eloquent\Builder|WithCollection newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WithCollection newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WithCollection query()

@@ -12,35 +12,35 @@ use Illuminate\Support\Collection as IntCollection;
 
 class WithCollection extends Model
 {
-    //    /**
-    //     * @return Collection<int, string>
-    //     */
-    //    public function getCollectionAttribute(): Collection
-    //    {
-    //        return new Collection();
-    //    }
-    //
-    //    /**
-    //     * @return Collection
-    //     */
-    //    public function getCollectionWithoutTemplateAttribute(): Collection
-    //    {
-    //        return new Collection();
-    //    }
-    //
-    //    public function getCollectionWithoutDocBlockAttribute(): Collection
-    //    {
-    //        return new Collection();
-    //    }
-    //
-    //    /**
-    //     * @return Collection<int, NonModel>
-    //     */
-    //    public function getCollectionWithNonModelTemplateAttribute(): Collection
-    //    {
-    //        return new Collection();
-    //    }
-    //
+    /**
+     * @return Collection<int, string>
+     */
+    public function getCollectionAttribute(): Collection
+    {
+        return new Collection();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCollectionWithoutTemplateAttribute(): Collection
+    {
+        return new Collection();
+    }
+
+    public function getCollectionWithoutDocBlockAttribute(): Collection
+    {
+        return new Collection();
+    }
+
+    /**
+     * @return Collection<int, NonModel>
+     */
+    public function getCollectionWithNonModelTemplateAttribute(): Collection
+    {
+        return new Collection();
+    }
+
     /**
      * @return Collection<Collection, CollectionModel<IntCollection, CollectionModel<int, NonModel>>>
      */

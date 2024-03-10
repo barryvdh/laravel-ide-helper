@@ -6,7 +6,7 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Pivots\Cu
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\ModelWithPivot
+ * 
  *
  * @property-read CustomPivot $customAccessor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithCustomPivot
@@ -32,7 +32,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Piv
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Pivots\CustomPivot
+ * 
  *
  * @method static \Illuminate\Database\Eloquent\Builder|CustomPivot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomPivot newQuery()

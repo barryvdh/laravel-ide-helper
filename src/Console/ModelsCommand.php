@@ -34,8 +34,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Filesystem\Filesystem;
@@ -708,6 +710,17 @@ class ModelsCommand extends Command
                                         strpos(get_class($relationObj), 'Many') !== false
                                     )
                                 ) {
+                                    if ($relationObj instanceof BelongsToMany) {
+                                        $pivot = get_class($relationObj->newPivot());
+                                        if (!in_array($pivot,[ Pivot::class, MorphPivot::class])) {
+                                            $this->setProperty(
+                                                $relationObj->getPivotAccessor(),
+                                                $this->getClassNameInDestinationFile($model,$pivot),
+                                                true,
+                                                false
+                                            );
+                                        }
+                                    }
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);

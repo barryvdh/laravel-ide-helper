@@ -12,6 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Barryvdh\LaravelIdeHelper\Enums\ModelWarning;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -118,6 +119,8 @@ class ModelsCommand extends Command
      */
     protected $foreignKeyConstraintsColumns = [];
 
+    protected $modelWarnings = [];
+
     /**
      * During initialization we use Laravels Date Facade to
      * determine the actual date class and store it here.
@@ -177,7 +180,9 @@ class ModelsCommand extends Command
 
         $content = $this->generateDocs($model, $ignore);
 
-        if (!$this->write || $this->write_mixin) {
+        $this->handleWarnings();
+
+        if (! $this->write || $this->write_mixin) {
             $written = $this->files->put($filename, $content);
             if ($written !== false) {
                 $this->info("Model information was written to $filename");
@@ -282,7 +287,11 @@ class ModelsCommand extends Command
 
                     $model = $this->laravel->make($name);
 
-                    $this->getPropertiesFromTable($model);
+                    try {
+                        $this->getPropertiesFromTable($model);
+                    } catch (Throwable $e) {
+                        $this->tableInspectionFailedForModel($model, $e);
+                    }
 
                     if (method_exists($model, 'getCasts')) {
                         $this->castPropertiesType($model);
@@ -1638,5 +1647,59 @@ class ModelsCommand extends Command
                 $this->foreignKeyConstraintsColumns[] = $columnName;
             }
         }
+    }
+
+    protected function handleWarnings(): void
+    {
+        if (! empty($this->modelWarnings)) {
+            foreach ($this->modelWarnings as $modelClass => $warnings) {
+                $this->newline();
+                $this->warn("{$modelClass} has the following warnings:");
+                foreach ($warnings as $warning) {
+                    $this->warn('• '.$warning->message());
+                }
+            }
+
+            $this->newline();
+            $this->warn('There are warnings for some of the models that we tried to generate docs for. Please see the output above for more information.');
+        }
+    }
+
+    protected function gracefullyHandleExceptions(): bool
+    {
+        return ! is_null($this->laravel['config']->get('ide-helper.silenced_models'));
+    }
+
+    protected function warningsAreSilencedForModel(Model $model): bool
+    {
+        $silencedModels = $this->laravel['config']->get('ide-helper.silenced_models');
+
+        return collect($silencedModels)->contains($model::class);
+    }
+
+    protected function tableInspectionFailedForModel(Model $model, ?Throwable $e = null): void
+    {
+        if ($e && ! $this->gracefullyHandleExceptions()) {
+            throw $e;
+        }
+
+        if ($this->warningsAreSilencedForModel($model)) {
+            return;
+        }
+
+        $modelName = $model::class;
+
+        $connectionName = $model->getConnectionName() ?? $this->laravel['config']->get('database.default');
+        $driver = $model->getConnection()::class;
+
+        $this->warn("Could not get table properties for model [{$modelName}] using connection [{$connectionName}]. The underlying database driver [{$driver}] may not be supported.");
+
+        if ($e) {
+            $this->warn(get_class($e).' '.$e->getMessage());
+        }
+
+        $this->modelWarnings[$model::class] ??= [];
+
+        $this->modelWarnings[$model::class][] = ModelWarning::TableInspectionFailed;
     }
 }

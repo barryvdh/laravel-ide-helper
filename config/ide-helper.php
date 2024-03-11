@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'filename'  => '_ide_helper.php',
+    'filename' => '_ide_helper.php',
 
     /*
     |--------------------------------------------------------------------------
@@ -153,6 +153,19 @@ return [
 
     'ignored_models' => [
 
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models to silence warnings
+    |--------------------------------------------------------------------------
+    |
+    | Define which models should have warnings silenced
+    |
+    */
+
+    'silenced_models' => [
+        // App\Models\User::class
     ],
 
     /*

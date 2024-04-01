@@ -616,7 +616,7 @@ class ModelsCommand extends Command
                         $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery' && $method !== 'scope' && $method !== 'scopes') {
-                    //Magic set<name>Attribute
+                    //Magic scope<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (!empty($name)) {
                         $comment = $this->getCommentFromDocBlock($reflection);
@@ -628,8 +628,8 @@ class ModelsCommand extends Command
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
-                            $reflection->getDeclaringClass(),
-                            $reflection->getDeclaringClass()->getName()
+                            new \ReflectionClass($model),
+                            get_class($model)
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }

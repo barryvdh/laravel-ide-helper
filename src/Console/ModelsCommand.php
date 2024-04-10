@@ -110,7 +110,7 @@ class ModelsCommand extends Command
     protected $phpstorm_noinspections;
     protected $write_model_external_builder_methods;
     /**
-     * @var bool[string]
+     * @var array<string, true>
      */
     protected $nullableColumns = [];
     /**

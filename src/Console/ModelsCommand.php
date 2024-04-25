@@ -1415,7 +1415,7 @@ class ModelsCommand extends Command
             $reflectionType = $this->getReturnTypeFromDocBlock($methodReflection);
         }
 
-        if ($reflectionType === 'static' || $reflectionType === '\\static' || $reflectionType === '$this') {
+        if ($reflectionType === 'static' || $reflectionType === '$this') {
             $reflectionType = $type;
         }
 
@@ -1598,7 +1598,7 @@ class ModelsCommand extends Command
     protected function getReflectionNamedType(ReflectionNamedType $paramType): string
     {
         $parameterName = $paramType->getName();
-        if (!$paramType->isBuiltin()) {
+        if (!$paramType->isBuiltin() && $paramType->getName() !== 'static') {
             $parameterName = '\\' . $parameterName;
         }
 

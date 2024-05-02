@@ -580,10 +580,7 @@ class ModelsCommand extends Command
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
                 $method = $reflection->getName();
                 if (
-                    Str::startsWith($method, 'get') && Str::endsWith(
-                        $method,
-                        'Attribute'
-                    ) && $method !== 'getAttribute'
+                    Str::startsWith($method, 'get') && Str::endsWith($method, 'Attribute') && $method !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -599,15 +596,14 @@ class ModelsCommand extends Command
                     $this->setProperty(
                         Str::snake($method),
                         $type,
-                        $types->has('get'),
-                        $types->has('set'),
+                        $types->has('get') ?: null,
+                        $types->has('set') ?: null,
                         $this->getCommentFromDocBlock($reflection)
                     );
                 } elseif (
-                    Str::startsWith($method, 'set') && Str::endsWith(
-                        $method,
-                        'Attribute'
-                    ) && $method !== 'setAttribute'
+                    Str::startsWith($method, 'set') &&
+                    Str::endsWith($method, 'Attribute') &&
+                    $method !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));

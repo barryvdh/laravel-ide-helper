@@ -15,6 +15,7 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Cas
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithPrimitiveDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithPrimitiveReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithReturnType;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithStaticReturnType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\ExtendedSelfCastingCasterWithStaticDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\ExtendedSelfCastingCasterWithThisDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\InboundAttributeCaster;
@@ -39,6 +40,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property ExtendedSelfCastingCasterWithStaticDocblockReturn $extended_casted_property_with_static_return_docblock
  * @property ExtendedSelfCastingCasterWithThisDocblockReturn $extended_casted_property_with_this_return_docblock
  * @property SelfCastingCasterWithStaticDocblockReturn $casted_property_with_static_return_docblock_and_param
+ * @property CustomCasterWithStaticReturnType $casted_property_with_static_return_type
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_castable
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_anonymous_cast
  * @property CastableWithoutReturnType $casted_property_without_return_type
@@ -67,6 +69,7 @@ class CustomCast extends Model
 {
     protected $casts = [
         'casted_property_with_return_type' => CustomCasterWithReturnType::class,
+        'casted_property_with_static_return_type' => CustomCasterWithStaticReturnType::class,
         'casted_property_with_return_docblock' => CustomCasterWithDocblockReturn::class,
         'casted_property_with_return_docblock_fqn' => CustomCasterWithDocblockReturnFqn::class,
         'casted_property_with_return_primitive' => CustomCasterWithPrimitiveReturn::class,

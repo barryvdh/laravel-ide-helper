@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
  - Add type to pivot when using a custom pivot class [#1518 / d3v2a](https://github.com/barryvdh/laravel-ide-helper/pull/1518)
+ - Add support in morphTo relationship for null values [#1547 / matysekmichal](https://github.com/barryvdh/laravel-ide-helper/pull/1547)
 
 2024-03-01, 3.0.0
 ------------------

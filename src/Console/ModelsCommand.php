@@ -23,6 +23,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -407,6 +408,7 @@ class ModelsCommand extends Command
                     $realType = '\Carbon\CarbonImmutable';
                     break;
                 case AsCollection::class:
+                case AsEnumCollection::class:
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
                     break;
@@ -628,7 +630,7 @@ class ModelsCommand extends Command
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
-                            new \ReflectionClass($model),
+                            new ReflectionClass($model),
                             get_class($model)
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
@@ -712,10 +714,10 @@ class ModelsCommand extends Command
                                 ) {
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
-                                        if (!in_array($pivot,[ Pivot::class, MorphPivot::class])) {
+                                        if (!in_array($pivot, [Pivot::class, MorphPivot::class])) {
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $this->getClassNameInDestinationFile($model,$pivot),
+                                                $this->getClassNameInDestinationFile($model, $pivot),
                                                 true,
                                                 false
                                             );

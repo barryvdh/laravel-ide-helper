@@ -714,7 +714,7 @@ class ModelsCommand extends Command
                                 ) {
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
-                                        if (!in_array($pivot,  [Pivot::class, MorphPivot::class])) {
+                                        if (!in_array($pivot,[ Pivot::class, MorphPivot::class])) {
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
                                                 $this->getClassNameInDestinationFile($model,$pivot),

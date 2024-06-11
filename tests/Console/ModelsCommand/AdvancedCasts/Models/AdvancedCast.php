@@ -6,6 +6,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AdvancedCasts\Mo
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Model;
 
 class AdvancedCast extends Model
@@ -24,6 +25,7 @@ class AdvancedCast extends Model
         'cast_to_encrypted_json' => 'encrypted:json',
         'cast_to_encrypted_object' => 'encrypted:object',
         'cast_to_as_collection' => AsCollection::class,
+        'cast_to_as_enum_collection' => AsEnumCollection::class,
         'cast_to_as_array_object' => AsArrayObject::class,
     ];
 }

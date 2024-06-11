@@ -7,7 +7,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ArrayCastsWithCo
 use Illuminate\Database\Eloquent\Model;
 
 /**
- *
+ * 
  *
  * @property array<int, string>|null $cast_to_array -- These three should not be duplicated
  * @property array<int, string> $cast_to_json some-description
@@ -31,7 +31,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $cast_to_array
  * @property array $cast_to_json
  * @property \Illuminate\Support\Collection $cast_to_collection
- * @property \Illuminate\Support\Collection $cast_to_enum_collection
  * @property string $cast_to_date
  * @property string $cast_to_datetime
  * @property string $cast_to_date_serialization
@@ -84,7 +83,6 @@ class ArrayCastsWithComment extends Model
         'cast_to_array' => 'array',
         'cast_to_json' => 'json',
         'cast_to_collection' => 'collection',
-        'cast_to_enum_collection' => 'collection',
 
         'cast_to_encrypted_array' => 'array',
         'cast_to_encrypted_json' => 'json',

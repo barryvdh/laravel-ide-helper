@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;

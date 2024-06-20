@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Fix return value of query scopes from parent class [#1366 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1366)
 
 ### Changed
+- Update view "version" variable name to avoid potential conflicts
 
 ### Added
  - Add type to pivot when using a custom pivot class [#1518 / d3v2a](https://github.com/barryvdh/laravel-ide-helper/pull/1518)

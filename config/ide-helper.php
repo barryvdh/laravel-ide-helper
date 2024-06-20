@@ -4,21 +4,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Filename & Format
+    | Filename
     |--------------------------------------------------------------------------
     |
-    | The default filename
+    | The default filename.
     |
     */
 
-    'filename'  => '_ide_helper.php',
+    'filename' => '_ide_helper.php',
 
     /*
     |--------------------------------------------------------------------------
     | Models filename
     |--------------------------------------------------------------------------
     |
-    | The default filename for the models helper file
+    | The default filename for the models helper file.
     |
     */
 
@@ -26,7 +26,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Where to write the PhpStorm specific meta file
+    | PhpStorm Meta filename
     |--------------------------------------------------------------------------
     |
     | PhpStorm also supports the directory `.phpstorm.meta.php/` with arbitrary
@@ -41,7 +41,7 @@ return [
     | Fluent helpers
     |--------------------------------------------------------------------------
     |
-    | Set to true to generate commonly used Fluent methods
+    | Set to true to generate commonly used Fluent methods.
     |
     */
 
@@ -66,7 +66,7 @@ return [
     | Write Model Magic methods
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable write magic methods of model
+    | Set to false to disable write magic methods of model.
     |
     */
 
@@ -77,7 +77,7 @@ return [
     | Write Model External Eloquent Builder methods
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable write external eloquent builder methods
+    | Set to false to disable write external eloquent builder methods.
     |
     */
 
@@ -134,7 +134,7 @@ return [
     | for models.
     |
     | glob patterns are supported to easier reach models in sub-directories,
-    | e.g. `app/Services/* /Models` (without the space)
+    | e.g. `app/Services/* /Models` (without the space).
     |
     */
 
@@ -152,7 +152,7 @@ return [
     */
 
     'ignored_models' => [
-
+        // App\MyModel::class,
     ],
 
     /*
@@ -160,7 +160,7 @@ return [
     | Models hooks
     |--------------------------------------------------------------------------
     |
-    | Define which hook classes you want to run for models to add custom information
+    | Define which hook classes you want to run for models to add custom information.
     |
     | Hooks should implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface.
     |
@@ -175,7 +175,7 @@ return [
     | Extra classes
     |--------------------------------------------------------------------------
     |
-    | These implementations are not really extended, but called with magic functions
+    | These implementations are not really extended, but called with magic functions.
     |
     */
 
@@ -197,7 +197,7 @@ return [
     */
 
     'interfaces' => [
-
+        // App\MyInterface::class => App\MyImplementation::class,
     ],
 
     /*
@@ -257,7 +257,7 @@ return [
     |
     | Use the fully qualified (class) name in docBlock,
     | event if class exists in a given file
-    | or there is an import (use className) of a given class
+    | or there is an import (use className) of a given class.
     |
     */
     'force_fqn' => false,

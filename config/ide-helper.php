@@ -26,7 +26,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | PhpStorm Meta filename
+    | PhpStorm meta filename
     |--------------------------------------------------------------------------
     |
     | PhpStorm also supports the directory `.phpstorm.meta.php/` with arbitrary
@@ -49,7 +49,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Factory Builders
+    | Factory builders
     |--------------------------------------------------------------------------
     |
     | Set to true to generate factory generators for better factory()
@@ -63,7 +63,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Write Model Magic methods
+    | Write model magic methods
     |--------------------------------------------------------------------------
     |
     | Set to false to disable write magic methods of model.
@@ -74,10 +74,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Write Model External Eloquent Builder methods
+    | Write model external Eloquent builder methods
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable write external eloquent builder methods.
+    | Set to false to disable write external Eloquent builder methods.
     |
     */
 
@@ -85,7 +85,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Write Model relation count properties
+    | Write model relation count properties
     |--------------------------------------------------------------------------
     |
     | Set to false to disable writing of relation count properties to model DocBlocks.
@@ -96,11 +96,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Write Eloquent Model Mixins
+    | Write Eloquent model mixins
     |--------------------------------------------------------------------------
     |
     | This will add the necessary DocBlock mixins to the model class
-    | contained in the Laravel Framework. This helps the IDE with
+    | contained in the Laravel framework. This helps the IDE with
     | auto-completion.
     |
     | Please be aware that this setting changes a file within the /vendor directory.
@@ -228,7 +228,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Property Casts
+    | Property casts
     |--------------------------------------------------------------------------
     |
     | Cast the given "real type" to the given "type".
@@ -255,9 +255,9 @@ return [
     | Force FQN usage
     |--------------------------------------------------------------------------
     |
-    | Use the fully qualified (class) name in docBlock,
-    | event if class exists in a given file
-    | or there is an import (use className) of a given class.
+    | Use the fully qualified (class) name in DocBlocks,
+    | even if the class exists in the same namespace
+    | or there is an import (use className) of the class.
     |
     */
     'force_fqn' => false,
@@ -279,8 +279,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | Sometimes it's needed to create custom relation types. The key of the array
-    | is the Relationship Method name. The value of the array is the canonical class
-    | name of the Relationship, e.g. `'relationName' => RelationShipClass::class`.
+    | is the relationship method name. The value of the array is the fully-qualified
+    | class name of the relationship, e.g. `'relationName' => RelationShipClass::class`.
     |
     */
     'additional_relation_types' => [],

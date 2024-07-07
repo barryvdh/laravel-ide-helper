@@ -50,6 +50,8 @@ If for some reason you want manually control this:
     }
   }
   ```
+Only if you are using Laravel 10 and **below**:
+
 - Add the following class to the `providers` array in `config/app.php`:
   ```php
   Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,

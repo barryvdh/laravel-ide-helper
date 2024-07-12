@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot;
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
@@ -14,7 +14,7 @@ class Test extends AbstractModelsCommand
         $command = $this->app->make(ModelsCommand::class);
 
         $tester = $this->runCommand($command, [
-            '--write' => true,
+            '--write-mixin' => true,
         ]);
 
         $this->assertSame(0, $tester->getStatusCode());

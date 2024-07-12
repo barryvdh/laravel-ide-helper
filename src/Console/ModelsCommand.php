@@ -1633,7 +1633,7 @@ class ModelsCommand extends Command
     protected function getReflectionNamedType(ReflectionNamedType $paramType): string
     {
         $parameterName = $paramType->getName();
-        if (!$paramType->isBuiltin()) {
+        if (!$paramType->isBuiltin() && $paramType->getName() !== 'static') {
             $parameterName = '\\' . $parameterName;
         }
 

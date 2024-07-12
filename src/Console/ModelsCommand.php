@@ -12,6 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Barryvdh\LaravelIdeHelper\Parsers\PhpDocReturnTypeParser;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -196,7 +197,7 @@ class ModelsCommand extends Command
     protected function getArguments()
     {
         return [
-          ['model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', []],
+            ['model', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Which models to include', []],
         ];
     }
 
@@ -208,20 +209,21 @@ class ModelsCommand extends Command
     protected function getOptions()
     {
         return [
-          ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file'],
-          ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-              'The model dir, supports glob patterns', [], ],
-          ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
-          ['write-mixin', 'M', InputOption::VALUE_NONE,
-              "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
-          ],
-          ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
-          ['reset', 'R', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
-          ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
-              'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
-              'noinspection tags',
-          ],
-          ['ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''],
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the helper file'],
+            ['dir', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'The model dir, supports glob patterns', [], ],
+            ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
+            ['write-mixin', 'M', InputOption::VALUE_NONE,
+                "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
+            ],
+            ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
+            ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
+            ['smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
+            ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
+                'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
+                'noinspection tags',
+            ],
+            ['ignore', 'I', InputOption::VALUE_OPTIONAL, 'Which models to ignore', ''],
         ];
     }
 
@@ -580,10 +582,7 @@ class ModelsCommand extends Command
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
                 $method = $reflection->getName();
                 if (
-                    Str::startsWith($method, 'get') && Str::endsWith(
-                        $method,
-                        'Attribute'
-                    ) && $method !== 'getAttribute'
+                    Str::startsWith($method, 'get') && Str::endsWith($method, 'Attribute') && $method !== 'getAttribute'
                 ) {
                     //Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -599,15 +598,14 @@ class ModelsCommand extends Command
                     $this->setProperty(
                         Str::snake($method),
                         $type,
-                        $types->has('get'),
-                        $types->has('set'),
+                        $types->has('get') ?: null,
+                        $types->has('set') ?: null,
                         $this->getCommentFromDocBlock($reflection)
                     );
                 } elseif (
-                    Str::startsWith($method, 'set') && Str::endsWith(
-                        $method,
-                        'Attribute'
-                    ) && $method !== 'setAttribute'
+                    Str::startsWith($method, 'set') &&
+                    Str::endsWith($method, 'Attribute') &&
+                    $method !== 'setAttribute'
                 ) {
                     //Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
@@ -628,7 +626,7 @@ class ModelsCommand extends Command
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
-                            new \ReflectionClass($model),
+                            new ReflectionClass($model),
                             get_class($model)
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
@@ -712,10 +710,10 @@ class ModelsCommand extends Command
                                 ) {
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
-                                        if (!in_array($pivot,[ Pivot::class, MorphPivot::class])) {
+                                        if (!in_array($pivot, [Pivot::class, MorphPivot::class])) {
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $this->getClassNameInDestinationFile($model,$pivot),
+                                                $this->getClassNameInDestinationFile($model, $pivot),
                                                 true,
                                                 false
                                             );
@@ -1249,6 +1247,13 @@ class ModelsCommand extends Command
         $phpdoc = new DocBlock($reflection, $context);
 
         if ($phpdoc->hasTag('return')) {
+            $returnTag = $phpdoc->getTagsByName('return')[0];
+
+            $typeParser = new PhpDocReturnTypeParser($returnTag->getContent(), $context->getNamespaceAliases());
+            if ($typeAlias = $typeParser->parse()) {
+                return $typeAlias;
+            }
+
             $type = $phpdoc->getTagsByName('return')[0]->getType();
         }
 

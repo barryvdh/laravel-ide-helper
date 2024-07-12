@@ -628,7 +628,7 @@ class ModelsCommand extends Command
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
-                            new \ReflectionClass($model),
+                            new ReflectionClass($model),
                             get_class($model)
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
@@ -712,10 +712,10 @@ class ModelsCommand extends Command
                                 ) {
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
-                                        if (!in_array($pivot,[ Pivot::class, MorphPivot::class])) {
+                                        if (!in_array($pivot, [Pivot::class, MorphPivot::class])) {
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $this->getClassNameInDestinationFile($model,$pivot),
+                                                $this->getClassNameInDestinationFile($model, $pivot),
                                                 true,
                                                 false
                                             );

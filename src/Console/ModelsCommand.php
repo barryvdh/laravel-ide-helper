@@ -758,7 +758,8 @@ class ModelsCommand extends Command
                                         $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
                                         true,
                                         null,
-                                        $comment
+                                        $comment,
+                                        $this->isMorphToRelationNullable($relationObj)
                                     );
                                 } else {
                                     //Single model is returned
@@ -811,6 +812,33 @@ class ModelsCommand extends Command
             }
 
             if (!in_array($foreignKey, $this->foreignKeyConstraintsColumns, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the morphTo relation is nullable
+     *
+     * @param Relation $relationObj
+     *
+     * @return bool
+     */
+    protected function isMorphToRelationNullable(Relation $relationObj): bool
+    {
+        $reflectionObj = new ReflectionObject($relationObj);
+
+        if (!$reflectionObj->hasProperty('foreignKey')) {
+            return false;
+        }
+
+        $fkProp = $reflectionObj->getProperty('foreignKey');
+        $fkProp->setAccessible(true);
+
+        foreach (Arr::wrap($fkProp->getValue($relationObj)) as $foreignKey) {
+            if (isset($this->nullableColumns[$foreignKey])) {
                 return true;
             }
         }

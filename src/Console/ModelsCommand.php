@@ -12,7 +12,7 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
-use Barryvdh\LaravelIdeHelper\helpers\PhpDocTypeParser;
+use Barryvdh\LaravelIdeHelper\Parsers\PhpDocReturnTypeParser;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
@@ -1249,7 +1249,7 @@ class ModelsCommand extends Command
         if ($phpdoc->hasTag('return')) {
             $returnTag = $phpdoc->getTagsByName('return')[0];
 
-            $typeParser = new PhpDocTypeParser($returnTag->getContent(), $context->getNamespaceAliases());
+            $typeParser = new PhpDocReturnTypeParser($returnTag->getContent(), $context->getNamespaceAliases());
             if ($typeAlias = $typeParser->parse()) {
                 return $typeAlias;
             }

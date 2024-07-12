@@ -35,8 +35,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Filesystem\Filesystem;
@@ -612,7 +614,7 @@ class ModelsCommand extends Command
                         $this->setProperty($name, null, null, true, $comment);
                     }
                 } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery' && $method !== 'scope' && $method !== 'scopes') {
-                    //Magic set<name>Attribute
+                    //Magic scope<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (!empty($name)) {
                         $comment = $this->getCommentFromDocBlock($reflection);
@@ -624,8 +626,8 @@ class ModelsCommand extends Command
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
-                            $reflection->getDeclaringClass(),
-                            $reflection->getDeclaringClass()->getName()
+                            new ReflectionClass($model),
+                            get_class($model)
                         );
                         $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }
@@ -706,6 +708,17 @@ class ModelsCommand extends Command
                                         strpos(get_class($relationObj), 'Many') !== false
                                     )
                                 ) {
+                                    if ($relationObj instanceof BelongsToMany) {
+                                        $pivot = get_class($relationObj->newPivot());
+                                        if (!in_array($pivot, [Pivot::class, MorphPivot::class])) {
+                                            $this->setProperty(
+                                                $relationObj->getPivotAccessor(),
+                                                $this->getClassNameInDestinationFile($model, $pivot),
+                                                true,
+                                                false
+                                            );
+                                        }
+                                    }
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);

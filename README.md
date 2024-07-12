@@ -29,7 +29,7 @@ The 3.x branch supports Laravel 10 and 11. For older version, use the 2.x releas
 Require this package with composer using the following command:
 
 ```bash
-composer require --dev scrumble-nl/laravel-ide-helper
+composer require --dev barryvdh/laravel-ide-helper
 ```
 
 > [!NOTE]  

@@ -7,12 +7,14 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fix return value of query scopes from parent class [#1366 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1366)
+- Fix for getSomethingAttribute functions which return a collection with type templating in the phpDoc. [#1567 / stefanScrumble](https://github.com/barryvdh/laravel-ide-helper/pull/1567)
 
 ### Changed
 
 ### Added
  - Add type to pivot when using a custom pivot class [#1518 / d3v2a](https://github.com/barryvdh/laravel-ide-helper/pull/1518)
  - Add support for AsEnumCollection casts [#1557 / Braunson](https://github.com/barryvdh/laravel-ide-helper/pull/1557)
+ - Support for Attribute class in attributes [#1567 / stefanScrumble](https://github.com/barryvdh/laravel-ide-helper/pull/1567)
 
 2024-03-01, 3.0.0
 ------------------

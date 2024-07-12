@@ -11,6 +11,83 @@ use Illuminate\Database\Eloquent\Model;
  * 
  *
  * @property int $id
+ * @property string|null $name
+ * @property string|null $name_read
+ * @property string|null $name_write
+ * @property-read string|null $non_backed_get
+ * @property-write string|null $non_backed_set
+ * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereNameRead($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereNameWrite($value)
+ * @mixin \Eloquent
+ */
+class BackedAttribute extends Model
+{
+    protected function name(): Attribute
+    {
+        return new Attribute(
+            function (?string $name): ?string {
+                return $name;
+            },
+            function (?string $name): ?string {
+                return $name;
+            }
+        );
+    }
+
+    protected function nameRead(): Attribute
+    {
+        return new Attribute(
+            function (?string $name): ?string {
+                return $name;
+            },
+        );
+    }
+
+    protected function nameWrite(): Attribute
+    {
+        return new Attribute(
+            set: function (?string $name): ?string {
+                return $name;
+            },
+        );
+    }
+
+    protected function nonBackedSet(): Attribute
+    {
+        return new Attribute(
+            set: function (?string $name): ?string {
+                return $name;
+            },
+        );
+    }
+
+    protected function nonBackedGet(): Attribute
+    {
+        return new Attribute(
+            get: function (): ?string {
+                return 'test';
+            },
+        );
+    }
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Attributes\Models;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * 
+ *
+ * @property int $id
  * @property int $diverging_type_hinted_get_and_set
  * @property string|null $name
  * @property-read mixed $non_type_hinted_get

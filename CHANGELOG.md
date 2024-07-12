@@ -7,18 +7,14 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fix return value of query scopes from parent class [#1366 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1366)
+- Fix for getSomethingAttribute functions which return a collection with type templating in the phpDoc. [#1567 / stefanScrumble](https://github.com/barryvdh/laravel-ide-helper/pull/1567)
 
 ### Changed
 
 ### Added
  - Add type to pivot when using a custom pivot class [#1518 / d3v2a](https://github.com/barryvdh/laravel-ide-helper/pull/1518)
+ - Support for Attribute class in attributes [#1567 / stefanScrumble](https://github.com/barryvdh/laravel-ide-helper/pull/1567)
 
-2024-01-04, v3.1.0
-------------------
-
-### Fixes
-
-- Fix for getSomethingAttribute functions which return a collection with type templating in the phpDoc. And support for Attribute class in attributes https://github.com/barryvdh/laravel-ide-helper/pull/1567
 
 2024-03-01, 3.0.0
 ------------------

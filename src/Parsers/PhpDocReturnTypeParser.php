@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Barryvdh\LaravelIdeHelper\helpers;
+namespace Barryvdh\LaravelIdeHelper\Parsers;
 
-class PhpDocTypeParser
+class PhpDocReturnTypeParser
 {
     /**
      * @var string
@@ -50,9 +50,9 @@ class PhpDocTypeParser
      * @param string|null $template
      * @return string
      */
-    private function parseTemplate($template): string
+    private function parseTemplate(string|null $template): string
     {
-        if (!$template || $template === '') {
+        if ($template  === null || $template === '') {
             return '';
         }
 
@@ -67,7 +67,6 @@ class PhpDocTypeParser
                 $result .= $type;
                 $result .= $char;
                 $type = '';
-
 
                 continue;
             }

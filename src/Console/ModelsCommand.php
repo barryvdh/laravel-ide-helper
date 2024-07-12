@@ -24,6 +24,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -409,6 +410,7 @@ class ModelsCommand extends Command
                     $realType = '\Carbon\CarbonImmutable';
                     break;
                 case AsCollection::class:
+                case AsEnumCollection::class:
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
                     break;

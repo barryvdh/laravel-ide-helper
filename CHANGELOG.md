@@ -13,8 +13,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
  - Add type to pivot when using a custom pivot class [#1518 / d3v2a](https://github.com/barryvdh/laravel-ide-helper/pull/1518)
+ - Add support for AsEnumCollection casts [#1557 / Braunson](https://github.com/barryvdh/laravel-ide-helper/pull/1557)
  - Support for Attribute class in attributes [#1567 / stefanScrumble](https://github.com/barryvdh/laravel-ide-helper/pull/1567)
-
 
 2024-03-01, 3.0.0
 ------------------
@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
 - Use short types (`int` and `bool` instead of `integer` and `boolean`) [#1524 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1524)
 
 ### Removed
-- Support for Laravel 9 and use of doctrine/dbal [#1512 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1512) 
+- Support for Laravel 9 and use of doctrine/dbal [#1512 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1512)
   With this functionality gone, a few changes have been made:
   - support for custom datatypes has been dropped (config `custom_db_types`) unknown data types default to `string` now and to fix the type, add a proper cast in Eloquent
   - You _might_ have top-level dependency on doctrine/dbal. This may have been in the past due to ide-helper, we suggest to check if you still need it and remove it otherwise
@@ -91,7 +91,7 @@ All notable changes to this project will be documented in this file.
 - Handle PHP 8.1 deprecation warnings when passing `null` to `new \ReflectionClass` [#1351 / mfn](https://github.com/barryvdh/laravel-ide-helper/pull/1351)
 - Fix issue where \Eloquent is not included when using write_mixin [#1352 / Jefemy](https://github.com/barryvdh/laravel-ide-helper/pull/1352)
 - Fix model factory method arguments for Laravel >= 9 [#1361 / wimski](https://github.com/barryvdh/laravel-ide-helper/pull/1361)
-- Improve return type of mock helper methods in tests [#1405 / bentleyo](https://github.com/barryvdh/laravel-ide-helper/pull/1405) 
+- Improve return type of mock helper methods in tests [#1405 / bentleyo](https://github.com/barryvdh/laravel-ide-helper/pull/1405)
 - Fix Castable class if failed to detect it from return types [#1388 / kwarcu](https://github.com/barryvdh/laravel-ide-helper/pull/1388)
 
 ### Added

@@ -2,15 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.0.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.1.0...master)
 --------------
+
+### Fixed
+
+### Changed
+
+### Added
+
+2024-07-12, 3.1.0
+------------------
 
 ### Fixed
 - Fix return value of query scopes from parent class [#1366 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1366)
 - Add static to isBuiltin() check in ide-helper:models [#1541 / bram-pkg](https://github.com/barryvdh/laravel-ide-helper/pull/1541)
 - Fix for getSomethingAttribute functions which return a collection with type templating in the phpDoc. [#1567 / stefanScrumble](https://github.com/barryvdh/laravel-ide-helper/pull/1567)
-
-### Changed
 
 ### Added
  - Add type to pivot when using a custom pivot class [#1518 / d3v2a](https://github.com/barryvdh/laravel-ide-helper/pull/1518)

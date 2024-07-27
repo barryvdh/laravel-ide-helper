@@ -135,7 +135,7 @@ DOC;
  * @param string|array|\Illuminate\Contracts\Database\Query\Expression $columns
  * @param string $boolean
  * @param bool $not
- * @return \Illuminate\Database\Query\Builder|static 
+ * @return \Illuminate\Database\Eloquent\Builder|static 
  * @static 
  */
 DOC;
@@ -147,7 +147,7 @@ DOC;
         $this->assertSame(['$columns', "\$boolean = 'and'", '$not = false'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
         $this->assertSame('$this', $method->getReturn());
-        $this->assertSame('\Illuminate\Database\Query\Builder|static', rtrim($method->getReturnTag()->getType()));
+        $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
     }
 
     /**

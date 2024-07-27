@@ -303,7 +303,7 @@ class Method
 
         if ($tag->getType() === '$this') {
             in_array(ltrim($this->root, '\\'), [EloquentBuilder::class, QueryBuilder::class])
-                ? $tag->setType($this->root . '|static')
+                ? $tag->setType(EloquentBuilder::class . '|static')
                 : $tag->setType($this->root);
         }
     }

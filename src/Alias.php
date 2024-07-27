@@ -18,6 +18,7 @@ use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Facade;
 use ReflectionClass;
 use Throwable;
@@ -340,7 +341,7 @@ class Alias
                         $magic,
                         $this->interfaces,
                         $this->classAliases,
-                        $this->getReplaceReturnTypes()
+                        $this->getReplaceReturnTypes($class)
                     );
                 }
                 $this->usedMethods[] = $magic;
@@ -372,7 +373,7 @@ class Alias
                                 $method->name,
                                 $this->interfaces,
                                 $this->classAliases,
-                                $this->getReplaceReturnTypes()
+                                $this->getReplaceReturnTypes($reflection)
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -396,7 +397,7 @@ class Alias
                             $macro_name,
                             $this->interfaces,
                             $this->classAliases,
-                            $this->getReplaceReturnTypes()
+                            $this->getReplaceReturnTypes($reflection)
                         );
                         $this->usedMethods[] = $macro_name;
                     }
@@ -405,9 +406,17 @@ class Alias
         }
     }
 
-    protected function getReplaceReturnTypes()
+    /**
+     * @param ReflectionClass $class
+     * @return string[]
+     */
+    protected function getReplaceReturnTypes($class)
     {
-        return $this->alias === 'Eloquent' ? ['$this' => EloquentBuilder::class . '|static'] : [];
+        if ($this->alias === 'Eloquent' && in_array($class->getName(), [EloquentBuilder::class, QueryBuilder::class])) {
+            return ['$this' => EloquentBuilder::class . '|static'];
+        }
+
+        return [];
     }
 
     /**

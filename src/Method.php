@@ -46,6 +46,7 @@ class Method
      * @param string|null $methodName
      * @param array $interfaces
      * @param array $classAliases
+     * @param array $replaceReturnTypes
      */
     public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], $replaceReturnTypes = [])
     {

@@ -395,7 +395,8 @@ class Alias
                             $reflection,
                             $macro_name,
                             $this->interfaces,
-                            $this->classAliases
+                            $this->classAliases,
+                            $this->getReplaceReturnTypes()
                         );
                         $this->usedMethods[] = $macro_name;
                     }

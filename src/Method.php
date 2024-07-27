@@ -17,8 +17,6 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class Method
 {
@@ -39,6 +37,7 @@ class Method
     protected $return = null;
     protected $root;
     protected $classAliases;
+    protected $replaceReturnTypes;
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
@@ -48,7 +47,7 @@ class Method
      * @param array $interfaces
      * @param array $classAliases
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [])
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], $replaceReturnTypes = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
@@ -65,6 +64,7 @@ class Method
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
+            $this->setReplaceReturnTypes($replaceReturnTypes);
             $this->normalizeParams($this->phpdoc);
             $this->normalizeReturn($this->phpdoc);
             $this->normalizeDescription($this->phpdoc);
@@ -274,6 +274,15 @@ class Method
         }
     }
 
+    protected function setReplaceReturnTypes($replaceReturnTypes)
+    {
+        if (!array_key_exists('$this', $replaceReturnTypes)) {
+            $replaceReturnTypes['$this'] = $this->root;
+        }
+
+        $this->replaceReturnTypes = $replaceReturnTypes;
+    }
+
     /**
      * Normalize the return tag (make full namespace, replace interfaces)
      *
@@ -301,10 +310,8 @@ class Method
         $tag->setContent($returnValue . ' ' . $tag->getDescription());
         $this->return = $returnValue;
 
-        if ($tag->getType() === '$this') {
-            in_array(ltrim($this->root, '\\'), [EloquentBuilder::class, QueryBuilder::class])
-                ? $tag->setType(EloquentBuilder::class . '|static')
-                : $tag->setType($this->root);
+        if (array_key_exists($tag->getType(), $this->replaceReturnTypes)) {
+            $tag->setType($this->replaceReturnTypes[$tag->getType()]);
         }
     }
 

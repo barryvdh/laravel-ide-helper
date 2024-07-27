@@ -333,7 +333,15 @@ class Alias
 
             if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
-                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces, $this->classAliases);
+                    $this->methods[] = new Method(
+                        $method,
+                        $this->alias,
+                        $class,
+                        $magic,
+                        $this->interfaces,
+                        $this->classAliases,
+                        $this->getReplaceReturnTypes()
+                    );
                 }
                 $this->usedMethods[] = $magic;
             }
@@ -363,7 +371,8 @@ class Alias
                                 $reflection,
                                 $method->name,
                                 $this->interfaces,
-                                $this->classAliases
+                                $this->classAliases,
+                                $this->getReplaceReturnTypes()
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -393,6 +402,11 @@ class Alias
                 }
             }
         }
+    }
+
+    protected function getReplaceReturnTypes()
+    {
+        return $this->alias === 'Eloquent' ? ['$this' => EloquentBuilder::class . '|static'] : [];
     }
 
     /**

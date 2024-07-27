@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests;
 
 use Barryvdh\LaravelIdeHelper\Method;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use PHPUnit\Framework\TestCase;
 
 class MethodTest extends TestCase
@@ -54,11 +55,11 @@ DOC;
     }
 
     /**
-     * Test the output of a class
+     * Test the output of Illuminate\Database\Eloquent\Builder
      */
     public function testEloquentBuilderOutput()
     {
-        $reflectionClass = new \ReflectionClass(Builder::class);
+        $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('upsert');
 
         $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
@@ -76,12 +77,77 @@ DOC;
 DOC;
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('upsert', $method->getName());
-        $this->assertSame('\\' . Builder::class, $method->getDeclaringClass());
+        $this->assertSame('\\' . EloquentBuilder::class, $method->getDeclaringClass());
         $this->assertSame('$values, $uniqueBy, $update', $method->getParams(true));
         $this->assertSame(['$values', '$uniqueBy', '$update'], $method->getParams(false));
         $this->assertSame('$values, $uniqueBy, $update = null', $method->getParamsWithDefault(true));
         $this->assertSame(['$values', '$uniqueBy', '$update = null'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
+        $this->assertSame('int', rtrim($method->getReturnTag()->getType()));
+    }
+
+    /**
+     * Test normalized return type of Illuminate\Database\Eloquent\Builder
+     */
+    public function testEloquentBuilderNormalizedReturnType()
+    {
+        $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
+        $reflectionMethod = $reflectionClass->getMethod('where');
+
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '|static']);
+
+        $output =  <<<'DOC'
+/**
+ * Add a basic where clause to the query.
+ *
+ * @param (\Closure(static): mixed)|string|array|\Illuminate\Contracts\Database\Query\Expression $column
+ * @param mixed $operator
+ * @param mixed $value
+ * @param string $boolean
+ * @return \Illuminate\Database\Eloquent\Builder|static 
+ * @static 
+ */
+DOC;
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('where', $method->getName());
+        $this->assertSame('\\' . EloquentBuilder::class, $method->getDeclaringClass());
+        $this->assertSame(['$column', '$operator', '$value', '$boolean'], $method->getParams(false));
+        $this->assertSame(['$column', "\$operator = null", "\$value = null", "\$boolean = 'and'"], $method->getParamsWithDefault(false));
+        $this->assertTrue($method->shouldReturn());
+        $this->assertSame('$this', $method->getReturn());
+        $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
+    }
+
+    /**
+     * Test normalized return type of Illuminate\Database\Query\Builder
+     */
+    public function testQueryBuilderNormalizedReturnType()
+    {
+        $reflectionClass = new \ReflectionClass(QueryBuilder::class);
+        $reflectionMethod = $reflectionClass->getMethod('whereNull');
+
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '|static']);
+
+        $output =  <<<'DOC'
+/**
+ * Add a "where null" clause to the query.
+ *
+ * @param string|array|\Illuminate\Contracts\Database\Query\Expression $columns
+ * @param string $boolean
+ * @param bool $not
+ * @return \Illuminate\Database\Query\Builder|static 
+ * @static 
+ */
+DOC;
+
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('whereNull', $method->getName());
+        $this->assertSame('\\' . QueryBuilder::class, $method->getDeclaringClass());
+        $this->assertSame(['$columns', '$boolean', '$not'], $method->getParams(false));
+        $this->assertSame(['$columns', "\$boolean = 'and'", '$not = false'], $method->getParamsWithDefault(false));
+        $this->assertTrue($method->shouldReturn());
+        $this->assertSame('$this', $method->getReturn());
+        $this->assertSame('\Illuminate\Database\Query\Builder|static', rtrim($method->getReturnTag()->getType()));
     }
 
     /**

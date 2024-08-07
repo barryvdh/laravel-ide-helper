@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 --------------
 
 ### Fixed
+- Fix type of hashed model property to `string`
 
 ### Changed
 

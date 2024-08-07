@@ -382,6 +382,7 @@ class ModelsCommand extends Command
                     break;
                 case 'decimal':
                 case 'string':
+                case 'hashed':
                     $realType = 'string';
                     break;
                 case 'array':

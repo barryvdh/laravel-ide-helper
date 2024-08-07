@@ -301,21 +301,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Enforce nullable Eloquent relationships
+    | Enforce nullable Eloquent relationships on not null columns
     |--------------------------------------------------------------------------
     |
-    | When set to true, this option enforces nullable Eloquent relationships. However,
-    | this default enforcement can lead to false positives in cases where the application
-    | logic ensures the presence of related records. In such cases, it is recommended to
-    | set this option to false to help avoid erroneous warnings.
+    | When set to true (default), this option enforces nullable Eloquent relationships.
+    | However, in cases where the application logic ensures the presence of related
+    | records it may be desirable to set this option to false to avoid unwanted null warnings.
     |
     | Default: true
-    | * @property int $not_null_column_with_no_foreign_key_constraint
-    | * @property-read BelongsToVariation|null $notNullColumnWithNoForeignKeyConstraint
+    | A not null column with no foreign key constraint will have a "nullable" relationship.
+    |  * @property int $not_null_column_with_no_foreign_key_constraint
+    |  * @property-read BelongsToVariation|null $notNullColumnWithNoForeignKeyConstraint
     |
     | Option: false
-    | * @property int $not_null_column_with_no_foreign_key_constraint
-    | * @property-read BelongsToVariation $notNullColumnWithNoForeignKeyConstraint
+    | A not null column with no foreign key constraint will have a "not nullable" relationship.
+    |  * @property int $not_null_column_with_no_foreign_key_constraint
+    |  * @property-read BelongsToVariation $notNullColumnWithNoForeignKeyConstraint
     |
     */
 

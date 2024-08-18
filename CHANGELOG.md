@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Fix type of hashed model property to `string`
 
 ### Changed
+- Use `numeric` type on fields with `decimal` casts
 
 ### Added
 

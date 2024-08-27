@@ -1349,6 +1349,10 @@ class ModelsCommand extends Command
             $factory = get_class($modelName::newFactory());
         } else {
             $factory = Factory::resolveFactoryName($modelName);
+
+            if (is_object($factory)) {
+                $factory = get_class($factory);
+            }
         }
 
         $factory = '\\' . trim($factory, '\\');

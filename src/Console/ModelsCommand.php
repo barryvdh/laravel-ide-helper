@@ -1351,6 +1351,7 @@ class ModelsCommand extends Command
             $factory = Factory::resolveFactoryName($modelName);
 
             if (is_object($factory)) {
+                /** @psalm-suppress TypeDoesNotContainType */
                 $factory = get_class($factory);
             }
         }

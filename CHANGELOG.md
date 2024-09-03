@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 ### Changed
+- Change resolved return type for `$this` of methods from `Query\Builder` to `Eloquent\Builder|static` [#1575 / pjio](https://github.com/barryvdh/laravel-ide-helper/pull/1575)
+
 
 ### Added
 

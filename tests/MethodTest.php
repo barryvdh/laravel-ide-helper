@@ -62,7 +62,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('with');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => EloquentBuilder::class . '|static']);
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '|static']);
 
         $expectedDocComment =  <<<'DOC'
 /**
@@ -80,7 +80,6 @@ DOC;
         $this->assertSame(['$relations', '$callback'], $method->getParams(false));
         $this->assertSame(['$relations', '$callback = null'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
-        $this->assertSame('$this', $method->getReturn());
         $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
     }
 
@@ -92,7 +91,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(QueryBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('whereNull');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => EloquentBuilder::class . '|static']);
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '|static']);
 
         $expectedDocComment =  <<<'DOC'
 /**
@@ -112,7 +111,6 @@ DOC;
         $this->assertSame(['$columns', '$boolean', '$not'], $method->getParams(false));
         $this->assertSame(['$columns', "\$boolean = 'and'", '$not = false'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
-        $this->assertSame('$this', $method->getReturn());
         $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
     }
 

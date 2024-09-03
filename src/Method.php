@@ -37,7 +37,7 @@ class Method
     protected $return = null;
     protected $root;
     protected $classAliases;
-    protected $replaceReturnTypes;
+    protected $returnTypeNormalizers;
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
@@ -46,13 +46,14 @@ class Method
      * @param string|null $methodName
      * @param array $interfaces
      * @param array $classAliases
-     * @param array $replaceReturnTypes
+     * @param array $returnTypeNormalizers
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], $replaceReturnTypes = [])
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], array $returnTypeNormalizers = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
         $this->classAliases = $classAliases;
+        $this->returnTypeNormalizers = $returnTypeNormalizers;
         $this->name = $methodName ?: $method->name;
         $this->real_name = $method->isClosure() ? $this->name : $method->name;
         $this->initClassDefinedProperties($method, $class);
@@ -65,7 +66,6 @@ class Method
 
         //Normalize the description and inherit the docs from parents/interfaces
         try {
-            $this->setReplaceReturnTypes($replaceReturnTypes);
             $this->normalizeParams($this->phpdoc);
             $this->normalizeReturn($this->phpdoc);
             $this->normalizeDescription($this->phpdoc);
@@ -182,14 +182,6 @@ class Method
     }
 
     /**
-     * @return string|null
-     */
-    public function getReturn()
-    {
-        return $this->return;
-    }
-
-    /**
      * @param DocBlock|null $phpdoc
      * @return ReturnTag|null
      */
@@ -275,17 +267,8 @@ class Method
         }
     }
 
-    protected function setReplaceReturnTypes($replaceReturnTypes)
-    {
-        if (!array_key_exists('$this', $replaceReturnTypes)) {
-            $replaceReturnTypes['$this'] = $this->root;
-        }
-
-        $this->replaceReturnTypes = $replaceReturnTypes;
-    }
-
     /**
-     * Normalize the return tag (make full namespace, replace interfaces)
+     * Normalize the return tag (make full namespace, replace interfaces, resolve $this)
      *
      * @param DocBlock $phpdoc
      */
@@ -302,6 +285,14 @@ class Method
         // Get the expanded type
         $returnValue = $tag->getType();
 
+        if (array_key_exists($returnValue, $this->returnTypeNormalizers)) {
+            $returnValue = $this->returnTypeNormalizers[$returnValue];
+        }
+
+        if ($returnValue === '$this') {
+            $returnValue = $this->root;
+        }
+
         // Replace the interfaces
         foreach ($this->interfaces as $interface => $real) {
             $returnValue = str_replace($interface, $real, $returnValue);
@@ -310,10 +301,6 @@ class Method
         // Set the changed content
         $tag->setContent($returnValue . ' ' . $tag->getDescription());
         $this->return = $returnValue;
-
-        if (array_key_exists($tag->getType(), $this->replaceReturnTypes)) {
-            $tag->setType($this->replaceReturnTypes[$tag->getType()]);
-        }
     }
 
     /**

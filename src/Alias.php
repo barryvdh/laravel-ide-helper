@@ -341,7 +341,7 @@ class Alias
                         $magic,
                         $this->interfaces,
                         $this->classAliases,
-                        $this->getReplaceReturnTypes($class)
+                        $this->getReturnTypeNormalizers($class)
                     );
                 }
                 $this->usedMethods[] = $magic;
@@ -373,7 +373,7 @@ class Alias
                                 $method->name,
                                 $this->interfaces,
                                 $this->classAliases,
-                                $this->getReplaceReturnTypes($reflection)
+                                $this->getReturnTypeNormalizers($reflection)
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -397,7 +397,7 @@ class Alias
                             $macro_name,
                             $this->interfaces,
                             $this->classAliases,
-                            $this->getReplaceReturnTypes($reflection)
+                            $this->getReturnTypeNormalizers($reflection)
                         );
                         $this->usedMethods[] = $macro_name;
                     }
@@ -408,12 +408,12 @@ class Alias
 
     /**
      * @param ReflectionClass $class
-     * @return string[]
+     * @return array<string, string>
      */
-    protected function getReplaceReturnTypes($class)
+    protected function getReturnTypeNormalizers($class)
     {
         if ($this->alias === 'Eloquent' && in_array($class->getName(), [EloquentBuilder::class, QueryBuilder::class])) {
-            return ['$this' => EloquentBuilder::class . '|static'];
+            return ['$this' => '\\' . EloquentBuilder::class . '|static'];
         }
 
         return [];

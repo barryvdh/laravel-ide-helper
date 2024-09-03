@@ -18,7 +18,7 @@ class Macro extends Method
      * @param null                $methodName
      * @param array               $interfaces
      * @param array               $classAliases
-     * @param array               $replaceReturnTypes
+     * @param array               $returnTypeNormalizers
      */
     public function __construct(
         $method,
@@ -27,9 +27,9 @@ class Macro extends Method
         $methodName = null,
         $interfaces = [],
         $classAliases = [],
-        $replaceReturnTypes = []
+        $returnTypeNormalizers = []
     ) {
-        parent::__construct($method, $alias, $class, $methodName, $interfaces, $classAliases, $replaceReturnTypes);
+        parent::__construct($method, $alias, $class, $methodName, $interfaces, $classAliases, $returnTypeNormalizers);
     }
 
     /**

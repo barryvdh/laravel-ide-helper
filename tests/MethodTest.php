@@ -114,7 +114,6 @@ DOC;
         $this->assertSame(['$column', '$operator', '$value', '$boolean'], $method->getParams(false));
         $this->assertSame(['$column', "\$operator = null", "\$value = null", "\$boolean = 'and'"], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
-        $this->assertSame('$this', $method->getReturn());
         $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
     }
 
@@ -146,7 +145,6 @@ DOC;
         $this->assertSame(['$columns', '$boolean', '$not'], $method->getParams(false));
         $this->assertSame(['$columns', "\$boolean = 'and'", '$not = false'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
-        $this->assertSame('$this', $method->getReturn());
         $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
     }
 

@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 - Fix type of hashed model property to `string`
 
 ### Changed
+- Change resolved return type for `$this` of methods from `Query\Builder` to `Eloquent\Builder|static` [#1575 / pjio](https://github.com/barryvdh/laravel-ide-helper/pull/1575)
+
 
 ### Added
 

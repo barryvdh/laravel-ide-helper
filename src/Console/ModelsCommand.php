@@ -410,8 +410,6 @@ class ModelsCommand extends Command
                 case 'immutable_datetime':
                     $realType = '\Carbon\CarbonImmutable';
                     break;
-                case AsCollection::class:
-                case AsEnumCollection::class:
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
                     break;
@@ -435,6 +433,18 @@ class ModelsCommand extends Command
             }
             if ($this->isInboundCast($realType)) {
                 continue;
+            }
+
+            if (Str::startsWith($type, AsCollection::class)) {
+                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?? '\Illuminate\Support\Collection';
+            }
+
+            if (Str::startsWith($type, AsEnumCollection::class)) {
+                $realType = '\Illuminate\Support\Collection';
+                $relatedModel = $this->getTypeInModel($model, $params[0] ?? null);
+                if ($relatedModel) {
+                    $realType = $this->getCollectionTypeHint($realType, $relatedModel);
+                }
             }
 
             $realType = $this->checkForCastableCasts($realType, $params);

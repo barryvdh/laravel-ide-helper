@@ -381,6 +381,8 @@ class ModelsCommand extends Command
                     $realType = 'bool';
                     break;
                 case 'decimal':
+                    $realType = 'numeric';
+                    break;
                 case 'string':
                 case 'hashed':
                     $realType = 'string';

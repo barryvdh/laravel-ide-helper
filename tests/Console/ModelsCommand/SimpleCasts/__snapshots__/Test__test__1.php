@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $cast_to_real
  * @property float $cast_to_float
  * @property float $cast_to_double
- * @property string $cast_to_decimal
+ * @property numeric $cast_to_decimal
  * @property string $cast_to_string
  * @property bool $cast_to_bool
  * @property bool $cast_to_boolean

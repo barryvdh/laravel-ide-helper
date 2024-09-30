@@ -39,5 +39,6 @@ class SimpleCast extends Model
         'cast_to_encrypted_collection' => 'encrypted:collection',
         'cast_to_encrypted_json' => 'encrypted:json',
         'cast_to_encrypted_object' => 'encrypted:object',
+        'cast_to_hashed' => 'hashed',
     ];
 }

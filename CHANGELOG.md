@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### Added
+- Introduce `enforce_nullable_relationships` configuration option to control how nullable Eloquent relationships are enforced during static analysis. This provides flexibility for scenarios where application logic ensures data integrity without relying on database constraints. [#1580 / jeramyhing](https://github.com/barryvdh/laravel-ide-helper/pull/1580)
 
 2024-07-12, 3.1.0
 ------------------

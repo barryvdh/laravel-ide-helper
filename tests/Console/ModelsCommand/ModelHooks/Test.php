@@ -75,10 +75,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property-read string $custom
- * @method static \Illuminate\Database\Eloquent\Builder|Simple custom($custom)
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple custom($custom)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

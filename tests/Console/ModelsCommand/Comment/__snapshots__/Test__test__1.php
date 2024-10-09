@@ -26,11 +26,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Simple|null $relationHasOne Others relations.
  * @property-read Model|\Eloquent $relationMorphTo MorphTo relations.
  * @property-write mixed $first_name Set the user's first name.
- * @method static \Illuminate\Database\Eloquent\Builder|Simple active() Scope a query to only include active users.
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple active() Scope a query to only include active users.
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

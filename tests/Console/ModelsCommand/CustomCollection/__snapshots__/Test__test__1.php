@@ -16,10 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $relation_has_many_count
  * @method static SimpleCollection<int, static> all($columns = ['*'])
  * @method static SimpleCollection<int, static> get($columns = ['*'])
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

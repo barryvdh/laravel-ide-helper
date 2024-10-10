@@ -11,12 +11,12 @@ use Illuminate\Database\Eloquent\Model;
  * 
  *
  * @property int $id
- * @method static Builder|Simple newModelQuery()
- * @method static Builder|Simple newQuery()
- * @method static Builder|Simple query()
- * @method static Builder|Simple whereId($value)
- * @method static Builder|Simple whereTypedVariadic(int ...$values)
- * @method static Builder|Simple whereVariadic(...$values)
+ * @method static Builder<static>|Simple newModelQuery()
+ * @method static Builder<static>|Simple newQuery()
+ * @method static Builder<static>|Simple query()
+ * @method static Builder<static>|Simple whereId($value)
+ * @method static Builder<static>|Simple whereTypedVariadic(int ...$values)
+ * @method static Builder<static>|Simple whereVariadic(...$values)
  * @mixin \Eloquent
  */
 class Simple extends Model

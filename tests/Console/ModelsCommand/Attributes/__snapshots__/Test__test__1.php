@@ -16,13 +16,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $name_write
  * @property-read string|null $non_backed_get
  * @property-write string|null $non_backed_set
- * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute query()
- * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereNameRead($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BackedAttribute whereNameWrite($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BackedAttribute newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BackedAttribute newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BackedAttribute query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BackedAttribute whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BackedAttribute whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BackedAttribute whereNameRead($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BackedAttribute whereNameWrite($value)
  * @mixin \Eloquent
  */
 class BackedAttribute extends Model
@@ -97,10 +97,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read string|null $type_hinted_get
  * @property string|null $type_hinted_get_and_set
  * @property-write string|null $type_hinted_set
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

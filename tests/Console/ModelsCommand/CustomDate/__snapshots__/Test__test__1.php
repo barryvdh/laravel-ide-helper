@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate query()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomDate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomDate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomDate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomDate query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomDate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomDate whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CustomDate extends Model

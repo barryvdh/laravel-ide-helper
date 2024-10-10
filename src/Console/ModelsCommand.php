@@ -553,7 +553,7 @@ class ModelsCommand extends Command
                 $this->setMethod(
                     Str::camel('where_' . $name),
                     $this->getClassNameInDestinationFile($model, $builderClass)
-                    . '|'
+                    . '<static>|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
                     ['$value']
                 );
@@ -632,14 +632,14 @@ class ModelsCommand extends Command
                             new ReflectionClass($model),
                             get_class($model)
                         );
-                        $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
+                        $this->setMethod($name, $builder . '<static>|' . $modelName, $args, $comment);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
                     $this->setMethod(
                         $method,
-                        $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
+                        $builder . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
 
                     if ($this->write_model_external_builder_methods) {
@@ -905,7 +905,7 @@ class ModelsCommand extends Command
     {
         $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
         $builder = $this->getClassNameInDestinationFile($model, $classType);
-        return $builder . '|' . $modelName;
+        return $builder . '<static>|' . $modelName;
     }
 
     /**
@@ -1320,9 +1320,9 @@ class ModelsCommand extends Command
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class);
-            $this->setMethod('withTrashed', $builder . '|' . $modelName, []);
-            $this->setMethod('withoutTrashed', $builder . '|' . $modelName, []);
-            $this->setMethod('onlyTrashed', $builder . '|' . $modelName, []);
+            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, []);
+            $this->setMethod('withoutTrashed', $builder . '<static>|' . $modelName, []);
+            $this->setMethod('onlyTrashed', $builder . '<static>|' . $modelName, []);
         }
     }
 
@@ -1526,7 +1526,7 @@ class ModelsCommand extends Command
 
             $this->setMethod(
                 $builderMethod,
-                $builderClassBasedOnFQCNOption . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                $builderClassBasedOnFQCNOption . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model)),
                 $args
             );
         }

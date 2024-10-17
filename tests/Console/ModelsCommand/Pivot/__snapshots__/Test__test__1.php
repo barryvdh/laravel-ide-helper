@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read CustomPivot $customAccessor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithCustomPivot
  * @property-read int|null $relation_with_custom_pivot_count
- * @method static \Illuminate\Database\Eloquent\Builder|ModelWithPivot newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ModelWithPivot newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ModelWithPivot query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithPivot newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithPivot newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithPivot query()
  * @mixin \Eloquent
  */
 class ModelWithPivot extends Model
@@ -38,9 +38,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * 
  *
- * @method static \Illuminate\Database\Eloquent\Builder|CustomPivot newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomPivot newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomPivot query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPivot newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPivot newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPivot query()
  * @mixin \Eloquent
  */
 class CustomPivot extends Pivot

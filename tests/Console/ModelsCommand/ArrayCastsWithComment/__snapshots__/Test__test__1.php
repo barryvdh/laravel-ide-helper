@@ -28,9 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $cast_to_bool
  * @property string $cast_to_boolean
  * @property string $cast_to_object
- * @property array $cast_to_array
- * @property array $cast_to_json
- * @property \Illuminate\Support\Collection $cast_to_collection
  * @property string $cast_to_date
  * @property string $cast_to_datetime
  * @property string $cast_to_date_serialization
@@ -41,38 +38,38 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $cast_to_timestamp
  * @property string $cast_to_encrypted
  * @property string $cast_to_encrypted_object
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment query()
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToArray($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToBool($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToBoolean($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToCollection($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToCustomDatetime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToDateSerialization($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToDatetime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToDatetimeSerialization($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToDecimal($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToDouble($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToEncrypted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToEncryptedArray($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToEncryptedCollection($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToEncryptedJson($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToEncryptedObject($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToFloat($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToImmutableCustomDatetime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToImmutableDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToImmutableDateSerialization($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToImmutableDatetime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToImmutableDatetimeSerialization($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToInt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToInteger($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToJson($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToObject($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToReal($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToString($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ArrayCastsWithComment whereCastToTimestamp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToArray($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToBool($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToBoolean($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToCollection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToCustomDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToDateSerialization($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToDatetimeSerialization($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToDecimal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToDouble($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToEncrypted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToEncryptedArray($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToEncryptedCollection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToEncryptedJson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToEncryptedObject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToFloat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToImmutableCustomDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToImmutableDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToImmutableDateSerialization($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToImmutableDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToImmutableDatetimeSerialization($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToInt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToInteger($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToJson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToObject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToReal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToString($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ArrayCastsWithComment whereCastToTimestamp($value)
  * @mixin \Eloquent
  */
 class ArrayCastsWithComment extends Model

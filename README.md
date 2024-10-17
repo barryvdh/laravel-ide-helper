@@ -169,11 +169,11 @@ php artisan ide-helper:models "App\Models\Post"
  * @property \Illuminate\Support\Carbon $updated_at
  * @property-read \User $author
  * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post forAuthors(\User ...$authors)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Post newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Post query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Post whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Post forAuthors(\User ...$authors)
  * …
  */
 ```

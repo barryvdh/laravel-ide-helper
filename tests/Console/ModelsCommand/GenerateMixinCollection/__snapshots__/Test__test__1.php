@@ -74,9 +74,9 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCol
  * @property-read \Illuminate\Support\Collection<int, \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateMixinCollection\NonModels\NonModel> $collection_with_non_model_template
  * @property-read \Illuminate\Support\Collection $collection_without_doc_block
  * @property-read \Illuminate\Support\Collection $collection_without_template
- * @method static \Illuminate\Database\Eloquent\Builder|WithCollection newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|WithCollection newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|WithCollection query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WithCollection newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WithCollection newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WithCollection query()
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]

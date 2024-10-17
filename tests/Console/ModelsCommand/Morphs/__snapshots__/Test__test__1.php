@@ -16,13 +16,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int|null $nullable_relation_morph_to_id
  * @property-read Model|\Eloquent|null $nullableRelationMorphTo
  * @property-read Model|\Eloquent $relationMorphTo
- * @method static \Illuminate\Database\Eloquent\Builder|Morphs newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Morphs newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Morphs query()
- * @method static \Illuminate\Database\Eloquent\Builder|Morphs whereNullableRelationMorphToId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Morphs whereNullableRelationMorphToType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Morphs whereRelationMorphToId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Morphs whereRelationMorphToType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs whereNullableRelationMorphToId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs whereNullableRelationMorphToType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs whereRelationMorphToId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs whereRelationMorphToType($value)
  * @mixin \Eloquent
  */
 class Morphs extends Model

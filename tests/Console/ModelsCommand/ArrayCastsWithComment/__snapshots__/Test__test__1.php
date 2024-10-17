@@ -28,9 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $cast_to_bool
  * @property string $cast_to_boolean
  * @property string $cast_to_object
- * @property array $cast_to_array
- * @property array $cast_to_json
- * @property \Illuminate\Support\Collection $cast_to_collection
  * @property string $cast_to_date
  * @property string $cast_to_datetime
  * @property string $cast_to_date_serialization

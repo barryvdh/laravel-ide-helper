@@ -59,27 +59,28 @@ DOC;
     public function testEloquentBuilderOutput()
     {
         $reflectionClass = new \ReflectionClass(Builder::class);
-        $reflectionMethod = $reflectionClass->getMethod('with');
+        $reflectionMethod = $reflectionClass->getMethod('upsert');
 
         $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
 
         $output =  <<<'DOC'
 /**
- * Set the relationships that should be eager loaded.
+ * Insert new records or update the existing ones.
  *
- * @param string|array $relations
- * @param string|\Closure|null $callback
- * @return \Illuminate\Database\Eloquent\Builder|static 
+ * @param array $values
+ * @param array|string $uniqueBy
+ * @param array|null $update
+ * @return int 
  * @static 
  */
 DOC;
         $this->assertSame($output, $method->getDocComment(''));
-        $this->assertSame('with', $method->getName());
+        $this->assertSame('upsert', $method->getName());
         $this->assertSame('\\' . Builder::class, $method->getDeclaringClass());
-        $this->assertSame('$relations, $callback', $method->getParams(true));
-        $this->assertSame(['$relations', '$callback'], $method->getParams(false));
-        $this->assertSame('$relations, $callback = null', $method->getParamsWithDefault(true));
-        $this->assertSame(['$relations', '$callback = null'], $method->getParamsWithDefault(false));
+        $this->assertSame('$values, $uniqueBy, $update', $method->getParams(true));
+        $this->assertSame(['$values', '$uniqueBy', '$update'], $method->getParams(false));
+        $this->assertSame('$values, $uniqueBy, $update = null', $method->getParamsWithDefault(true));
+        $this->assertSame(['$values', '$uniqueBy', '$update = null'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
     }
 

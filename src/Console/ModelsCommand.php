@@ -1014,16 +1014,17 @@ class ModelsCommand extends Command
         $docComment = $serializer->getDocComment($phpdoc);
 
         if ($this->write_mixin) {
+            $prefix = $this->laravel['config']->get('ide-helper.force_fqn', false) ? "\\{$namespace}\\" : "";
             $phpdocMixin = new DocBlock($reflection, new Context($namespace));
             // remove all mixin tags prefixed with IdeHelper
             foreach ($phpdocMixin->getTagsByName('mixin') as $tag) {
-                if (Str::startsWith($tag->getContent(), 'IdeHelper')) {
+                if (Str::startsWith($tag->getContent(), "{$prefix}IdeHelper")) {
                     $phpdocMixin->deleteTag($tag);
                 }
             }
 
             $mixinClassName = "IdeHelper{$classname}";
-            $phpdocMixin->appendTag(Tag::createInstance("@mixin {$mixinClassName}", $phpdocMixin));
+            $phpdocMixin->appendTag(Tag::createInstance("@mixin {$prefix}{$mixinClassName}", $phpdocMixin));
             $mixinDocComment = $serializer->getDocComment($phpdocMixin);
             // remove blank lines if there's no text
             if (!$phpdocMixin->getText()) {

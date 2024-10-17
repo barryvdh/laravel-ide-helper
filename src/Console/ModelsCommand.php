@@ -146,6 +146,11 @@ class ModelsCommand extends Command
     {
         $this->filename = $this->laravel['config']->get('ide-helper.models_filename', '_ide_helper_models.php');
         $filename = $this->option('filename') ?? $this->filename;
+        $db_overrides = $this->laravel['config']->get('ide-helper.db_connection_overrides');
+        if (is_array($db_overrides)) {
+            $db_overrides = array_replace_recursive($this->laravel['config']->get('database.connections'), $db_overrides);
+            $this->laravel['config']->set('database.connections', $db_overrides);
+        }
         $this->write = $this->option('write');
         $this->write_mixin = $this->option('write-mixin');
         $this->dirs = array_merge(

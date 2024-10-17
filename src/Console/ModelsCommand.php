@@ -974,7 +974,13 @@ class ModelsCommand extends Command
                 continue;
             }
             $arguments = implode(', ', $method['arguments']);
-            $tagLine = "@method static {$method['type']} {$name}({$arguments})";
+
+            if (method_exists(\Illuminate\Database\Eloquent\Model::class, $name)) {
+                $tagLine = "@method static {$method['type']} {$name}({$arguments})";
+            } else {
+                $tagLine = "@method {$method['type']} {$name}({$arguments})";
+            }
+
             if ($method['comment'] !== '') {
                 $tagLine .= " {$method['comment']}";
             }

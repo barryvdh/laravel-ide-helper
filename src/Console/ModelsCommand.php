@@ -807,13 +807,15 @@ class ModelsCommand extends Command
         $fkProp = $reflectionObj->getProperty('foreignKey');
         $fkProp->setAccessible(true);
 
+        $enforceNullableRelation = $this->laravel['config']->get('ide-helper.enforce_nullable_relationships', true);
+
         foreach (Arr::wrap($fkProp->getValue($relationObj)) as $foreignKey) {
             if (isset($this->nullableColumns[$foreignKey])) {
                 return true;
             }
 
             if (!in_array($foreignKey, $this->foreignKeyConstraintsColumns, true)) {
-                return true;
+                return $enforceNullableRelation;
             }
         }
 

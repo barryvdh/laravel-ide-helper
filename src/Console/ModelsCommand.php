@@ -671,6 +671,8 @@ class ModelsCommand extends Command
                     $begin = strpos($code, 'function(');
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
 
+                    $customPivots = [];
+
                     foreach (
                         $this->getRelationTypes() as $relation => $impl
                     ) {
@@ -716,20 +718,11 @@ class ModelsCommand extends Command
                                         if (!in_array($pivot, [Pivot::class, MorphPivot::class])) {
                                             $pivot = $this->getClassNameInDestinationFile($model, $pivot);
 
-                                            if ($existingPivot = ($this->properties[$relationObj->getPivotAccessor()] ?? null)) {
-                                                // If the pivot is already set, we need to append the type to it
-                                                $pivot .= '|' . $existingPivot['type'];
+                                            if(isset($customPivots[$relationObj->getPivotAccessor()])){
+                                                $customPivots[$relationObj->getPivotAccessor()][] = $pivot;
                                             } else {
-                                                // pivots are not always set
-                                                $pivot .= '|null';
+                                                $customPivots[$relationObj->getPivotAccessor()] = [$pivot];
                                             }
-
-                                            $this->setProperty(
-                                                $relationObj->getPivotAccessor(),
-                                                $this->getClassNameInDestinationFile($model, $pivot),
-                                                true,
-                                                false
-                                            );
                                         }
                                     }
 
@@ -786,6 +779,15 @@ class ModelsCommand extends Command
                                 }
                             }
                         }
+                    }
+
+                    foreach($customPivots as $pivotAccessor => $pivots){
+                        $this->setProperty(
+                            $pivotAccessor,
+                            implode('|', $pivots) . '|null',
+                            true,
+                            false,
+                        );
                     }
                 }
             }

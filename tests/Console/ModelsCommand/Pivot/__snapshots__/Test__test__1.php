@@ -5,14 +5,23 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models;
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Pivots\CustomPivot;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Pivots\DifferentCustomPivot;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * 
  *
- * @property-read CustomPivot $customAccessor
+ * @property-read DifferentCustomPivot|CustomPivot|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationCustomPivotUsingSameAccessor
+ * @property-read int|null $relation_custom_pivot_using_same_accessor_count
+ * @property-read CustomPivot|null $customAccessor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithCustomPivot
  * @property-read int|null $relation_with_custom_pivot_count
+ * @property-read DifferentCustomPivot|null $differentCustomAccessor
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithDifferentCustomPivot
+ * @property-read int|null $relation_with_different_custom_pivot_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithDifferentCustomPivotUsingSameAccessor
+ * @property-read int|null $relation_with_different_custom_pivot_using_same_accessor_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithPivot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithPivot newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithPivot query()
@@ -25,6 +34,28 @@ class ModelWithPivot extends Model
         return $this->belongsToMany(ModelwithPivot::class)
             ->using(CustomPivot::class)
             ->as('customAccessor');
+    }
+
+
+    public function relationWithDifferentCustomPivot()
+    {
+        return $this->belongsToMany(ModelwithPivot::class)
+            ->using(DifferentCustomPivot::class)
+            ->as('differentCustomAccessor');
+    }
+
+    // without an accessor
+
+    public function relationCustomPivotUsingSameAccessor()
+    {
+        return $this->belongsToMany(ModelwithPivot::class)
+            ->using(CustomPivot::class);
+    }
+
+    public function relationWithDifferentCustomPivotUsingSameAccessor()
+    {
+        return $this->belongsToMany(ModelwithPivot::class)
+            ->using(DifferentCustomPivot::class);
     }
 }
 <?php
@@ -44,5 +75,24 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @mixin \Eloquent
  */
 class CustomPivot extends Pivot
+{
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Pivots;
+
+use Illuminate\Database\Eloquent\Relations\Pivot;
+
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DifferentCustomPivot newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DifferentCustomPivot newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DifferentCustomPivot query()
+ * @mixin \Eloquent
+ */
+class DifferentCustomPivot extends Pivot
 {
 }

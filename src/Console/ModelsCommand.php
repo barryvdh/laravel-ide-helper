@@ -714,14 +714,25 @@ class ModelsCommand extends Command
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
                                         if (!in_array($pivot, [Pivot::class, MorphPivot::class])) {
+                                            $pivot = $this->getClassNameInDestinationFile($model, $pivot);
+
+                                            if ($existingPivot = ($this->properties[$relationObj->getPivotAccessor()] ?? null)) {
+                                                // If the pivot is already set, we need to append the type to it
+                                                $pivot .= '|' . $existingPivot['type'];
+                                            } else {
+                                                // pivots are not always set
+                                                $pivot .= '|null';
+                                            }
+
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $this->getClassNameInDestinationFile($model, $pivot),
+                                                $pivot,
                                                 true,
                                                 false
                                             );
                                         }
                                     }
+
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);

@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.1.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.2.0...master)
+--------------
+
+### Changed
+Add support for multiple pivot types when using the same accessor.
+
+2024-10-18, 3.2.0
 --------------
 
 ### Fixed

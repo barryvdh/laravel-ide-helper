@@ -726,7 +726,7 @@ class ModelsCommand extends Command
 
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $this->getClassNameInDestinationFile($model, $pivot),
+                                                $pivot,
                                                 true,
                                                 false
                                             );

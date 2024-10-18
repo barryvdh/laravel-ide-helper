@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 
  *
- * @property-read \DifferentCustomPivot|\CustomPivot|null $pivot
+ * @property-read DifferentCustomPivot|CustomPivot|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationCustomPivotUsingSameAccessor
  * @property-read int|null $relation_custom_pivot_using_same_accessor_count
- * @property-read \CustomPivot|null $customAccessor
+ * @property-read CustomPivot|null $customAccessor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithCustomPivot
  * @property-read int|null $relation_with_custom_pivot_count
- * @property-read \DifferentCustomPivot|null $differentCustomAccessor
+ * @property-read DifferentCustomPivot|null $differentCustomAccessor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithDifferentCustomPivot
  * @property-read int|null $relation_with_different_custom_pivot_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationWithDifferentCustomPivotUsingSameAccessor

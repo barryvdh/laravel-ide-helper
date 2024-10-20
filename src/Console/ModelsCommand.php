@@ -219,7 +219,7 @@ class ModelsCommand extends Command
             ],
             ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
             ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
-            ['smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
+            ['smart-reset', 'r', InputOption::VALUE_NONE, 'Retained for compatibility, while it no longer has any effect'],
             ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
                 'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
                 'noinspection tags',

@@ -731,7 +731,7 @@ class ModelsCommand extends Command
                                             if ($existingPivot = ($this->properties[$relationObj->getPivotAccessor()] ?? null)) {
                                                 $existingClasses = explode('|', $existingPivot['type']);
 
-                                                if(!in_array($pivot, $existingClasses)) {
+                                                if (!in_array($pivot, $existingClasses)) {
                                                     array_unshift($existingClasses, $pivot);
                                                 }
                                             } else {

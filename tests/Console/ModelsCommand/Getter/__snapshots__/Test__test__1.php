@@ -31,10 +31,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int $attribute_with_int_return_type_and_phpdoc
  * @property-read int $attribute_with_int_return_type
  * @property-read mixed $attribute_without_type
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

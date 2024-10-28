@@ -219,7 +219,7 @@ class ModelsCommand extends Command
             ],
             ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
             ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
-            ['smart-reset', 'r', InputOption::VALUE_NONE, 'Refresh the properties/methods list, but keep the text'],
+            ['smart-reset', 'r', InputOption::VALUE_NONE, 'Retained for compatibility, while it no longer has any effect'],
             ['phpstorm-noinspections', 'p', InputOption::VALUE_NONE,
                 'Add PhpFullyQualifiedNameUsageInspection and PhpUnnecessaryFullyQualifiedNameInspection PHPStorm ' .
                 'noinspection tags',
@@ -412,8 +412,6 @@ class ModelsCommand extends Command
                 case 'immutable_datetime':
                     $realType = '\Carbon\CarbonImmutable';
                     break;
-                case AsCollection::class:
-                case AsEnumCollection::class:
                 case 'collection':
                     $realType = '\Illuminate\Support\Collection';
                     break;
@@ -437,6 +435,18 @@ class ModelsCommand extends Command
             }
             if ($this->isInboundCast($realType)) {
                 continue;
+            }
+
+            if (Str::startsWith($type, AsCollection::class)) {
+                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?? '\Illuminate\Support\Collection';
+            }
+
+            if (Str::startsWith($type, AsEnumCollection::class)) {
+                $realType = '\Illuminate\Support\Collection';
+                $relatedModel = $this->getTypeInModel($model, $params[0] ?? null);
+                if ($relatedModel) {
+                    $realType = $this->getCollectionTypeHint($realType, $relatedModel);
+                }
             }
 
             $realType = $this->checkForCastableCasts($realType, $params);
@@ -555,7 +565,7 @@ class ModelsCommand extends Command
                 $this->setMethod(
                     Str::camel('where_' . $name),
                     $this->getClassNameInDestinationFile($model, $builderClass)
-                    . '|'
+                    . '<static>|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
                     ['$value']
                 );
@@ -634,14 +644,14 @@ class ModelsCommand extends Command
                             new ReflectionClass($model),
                             get_class($model)
                         );
-                        $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
+                        $this->setMethod($name, $builder . '<static>|' . $modelName, $args, $comment);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
                     $this->setMethod(
                         $method,
-                        $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
+                        $builder . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model))
                     );
 
                     if ($this->write_model_external_builder_methods) {
@@ -716,14 +726,25 @@ class ModelsCommand extends Command
                                     if ($relationObj instanceof BelongsToMany) {
                                         $pivot = get_class($relationObj->newPivot());
                                         if (!in_array($pivot, [Pivot::class, MorphPivot::class])) {
+                                            $pivot = $this->getClassNameInDestinationFile($model, $pivot);
+
+                                            if ($existingPivot = ($this->properties[$relationObj->getPivotAccessor()] ?? null)) {
+                                                // If the pivot is already set, we need to append the type to it
+                                                $pivot .= '|' . $existingPivot['type'];
+                                            } else {
+                                                // pivots are not always set
+                                                $pivot .= '|null';
+                                            }
+
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $this->getClassNameInDestinationFile($model, $pivot),
+                                                $pivot,
                                                 true,
                                                 false
                                             );
                                         }
                                     }
+
                                     //Collection or array of models (because Collection is Arrayable)
                                     $relatedClass = '\\' . get_class($relationObj->getRelated());
                                     $collectionClass = $this->getCollectionClass($relatedClass);
@@ -907,7 +928,7 @@ class ModelsCommand extends Command
     {
         $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
         $builder = $this->getClassNameInDestinationFile($model, $classType);
-        return $builder . '|' . $modelName;
+        return $builder . '<static>|' . $modelName;
     }
 
     /**
@@ -926,13 +947,19 @@ class ModelsCommand extends Command
             $reflection->getParentClass()->getInterfaceNames()
         );
 
+        $phpdoc = new DocBlock($reflection, new Context($namespace));
         if ($this->reset) {
-            $phpdoc = new DocBlock('', new Context($namespace));
             $phpdoc->setText(
                 (new DocBlock($reflection, new Context($namespace)))->getText()
             );
-        } else {
-            $phpdoc = new DocBlock($reflection, new Context($namespace));
+            foreach ($phpdoc->getTags() as $tag) {
+                if (
+                    in_array($tag->getName(), ['property', 'property-read', 'property-write', 'method', 'mixin'])
+                    || ($tag->getName() === 'noinspection' && in_array($tag->getContent(), ['PhpUnnecessaryFullyQualifiedNameInspection', 'PhpFullyQualifiedNameUsageInspection']))
+                ) {
+                    $phpdoc->deleteTag($tag);
+                }
+            }
         }
 
         $properties = [];
@@ -1322,9 +1349,9 @@ class ModelsCommand extends Command
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class);
-            $this->setMethod('withTrashed', $builder . '|' . $modelName, []);
-            $this->setMethod('withoutTrashed', $builder . '|' . $modelName, []);
-            $this->setMethod('onlyTrashed', $builder . '|' . $modelName, []);
+            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, []);
+            $this->setMethod('withoutTrashed', $builder . '<static>|' . $modelName, []);
+            $this->setMethod('onlyTrashed', $builder . '<static>|' . $modelName, []);
         }
     }
 
@@ -1528,7 +1555,7 @@ class ModelsCommand extends Command
 
             $this->setMethod(
                 $builderMethod,
-                $builderClassBasedOnFQCNOption . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                $builderClassBasedOnFQCNOption . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model)),
                 $args
             );
         }

@@ -2,16 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.1.0...master)
+[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.2.0...master)
+--------------
+
+### Changed
+- Add support for multiple pivot types when using the same accessor.
+- Smarter reset, keep tags that IDE helper doesn't use
+- Use `numeric` type on fields with `decimal` casts
+
+
+2024-10-18, 3.2.0
 --------------
 
 ### Fixed
 - Fix type of hashed model property to `string`
 
 ### Changed
-- Use `numeric` type on fields with `decimal` casts
+- Add support for EloquentBuilder generics introduced in Laravel 11.15.
+- Drop support for Laravel versions earlier than 11.15.
 
 ### Added
+
+- Add support for AsCollection::using and AsEnumCollection::of casts [#1577 / uno-sw](https://github.com/barryvdh/laravel-ide-helper/pull/1577)
 
 2024-07-12, 3.1.0
 ------------------

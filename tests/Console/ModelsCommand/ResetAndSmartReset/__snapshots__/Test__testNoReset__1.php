@@ -9,12 +9,17 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Text of existing phpdoc
  *
+ * @implements \ArrayAccess
+ * @noinspection PhpUnreachableStatementInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  * @property string $foo
+ * @property-read string $bar
+ * @method fooBar()
  * @property int $id
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

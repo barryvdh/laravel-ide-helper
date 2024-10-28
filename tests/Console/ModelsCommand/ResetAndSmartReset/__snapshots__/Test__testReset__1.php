@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Text of existing phpdoc
  *
+ * @implements \ArrayAccess
+ * @noinspection PhpUnreachableStatementInspection
  * @property int $id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()

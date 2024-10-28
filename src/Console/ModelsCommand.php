@@ -945,13 +945,19 @@ class ModelsCommand extends Command
             $reflection->getParentClass()->getInterfaceNames()
         );
 
+        $phpdoc = new DocBlock($reflection, new Context($namespace));
         if ($this->reset) {
-            $phpdoc = new DocBlock('', new Context($namespace));
             $phpdoc->setText(
                 (new DocBlock($reflection, new Context($namespace)))->getText()
             );
-        } else {
-            $phpdoc = new DocBlock($reflection, new Context($namespace));
+            foreach ($phpdoc->getTags() as $tag) {
+                if (
+                    in_array($tag->getName(), ['property', 'property-read', 'property-write', 'method', 'mixin'])
+                    || ($tag->getName() === 'noinspection' && in_array($tag->getContent(), ['PhpUnnecessaryFullyQualifiedNameInspection', 'PhpFullyQualifiedNameUsageInspection']))
+                ) {
+                    $phpdoc->deleteTag($tag);
+                }
+            }
         }
 
         $properties = [];

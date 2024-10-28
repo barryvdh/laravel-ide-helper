@@ -1,18 +1,21 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## 3.2.1 - 2024-10-28
 
-[Next release](https://github.com/barryvdh/laravel-ide-helper/compare/v3.2.0...master)
---------------
+### What's Changed
+* chore: Fix the description of unused option by @KentarouTakeda in https://github.com/barryvdh/laravel-ide-helper/pull/1600
+* feat(pivot): add support for multiple pivot types when using the same accessor by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1597
+* Add support for `AsCollection::using` and `AsEnumCollection::of` casts by @uno-sw in https://github.com/barryvdh/laravel-ide-helper/pull/1577
+* Smarter reset by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1603
+* feat: use `numeric` type on fields with `decimal` casts by @ekisu in https://github.com/barryvdh/laravel-ide-helper/pull/1583
 
-### Changed
-- Add support for multiple pivot types when using the same accessor.
-- Smarter reset, keep tags that IDE helper doesn't use
-- Use `numeric` type on fields with `decimal` casts
+### New Contributors
+* @uno-sw made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1577
+* @ekisu made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1583
 
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.2.0...v3.2.1
 
-2024-10-18, 3.2.0
---------------
+## 3.2.0 - 2024-10-18
 
 ### Fixed
 - Fix type of hashed model property to `string`
@@ -25,8 +28,7 @@ All notable changes to this project will be documented in this file.
 
 - Add support for AsCollection::using and AsEnumCollection::of casts [#1577 / uno-sw](https://github.com/barryvdh/laravel-ide-helper/pull/1577)
 
-2024-07-12, 3.1.0
-------------------
+## 3.1.0 - 2024-07-12
 
 ### Fixed
 - Fix return value of query scopes from parent class [#1366 / sforward](https://github.com/barryvdh/laravel-ide-helper/pull/1366)
@@ -39,8 +41,7 @@ All notable changes to this project will be documented in this file.
  - Add support for AsEnumCollection casts [#1557 / Braunson](https://github.com/barryvdh/laravel-ide-helper/pull/1557)
  - Support for Attribute class in attributes [#1567 / stefanScrumble](https://github.com/barryvdh/laravel-ide-helper/pull/1567)
 
-2024-03-01, 3.0.0
-------------------
+## 3.0.0 - 2024-03-01
 
 ### Added
 - Support for Laravel 11 [#1520 / KentarouTakeda](https://github.com/barryvdh/laravel-ide-helper/pull/1520)

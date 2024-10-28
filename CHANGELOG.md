@@ -20,6 +20,8 @@ Add support for multiple pivot types when using the same accessor.
 
 ### Added
 
+- Add support for AsCollection::using and AsEnumCollection::of casts [#1577 / uno-sw](https://github.com/barryvdh/laravel-ide-helper/pull/1577)
+
 2024-07-12, 3.1.0
 ------------------
 

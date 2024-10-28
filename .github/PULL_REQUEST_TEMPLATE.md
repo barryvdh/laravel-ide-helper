@@ -13,6 +13,5 @@
 
 ### Checklist
 - [ ] Existing tests have been adapted and/or new tests have been added
-- [ ] Add a CHANGELOG.md entry
 - [ ] Update the README.md
 - [ ] Code style has been fixed via `composer fix-style`

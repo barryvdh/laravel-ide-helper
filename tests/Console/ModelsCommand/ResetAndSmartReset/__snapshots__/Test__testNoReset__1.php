@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Text of existing phpdoc
  *
+ * @implements \ArrayAccess
+ * @noinspection PhpUnreachableStatementInspection
+ * @PhpFullyQualifiedNameUsageInspection PhpUnnecessaryFullyQualifiedNameInspection
  * @property string $foo
  * @property int $id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()

@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Add support for multiple pivot types when using the same accessor.
 - Smarter reset, keep tags that IDE helper doesn't use
+- Use `numeric` type on fields with `decimal` casts
+
 
 2024-10-18, 3.2.0
 --------------

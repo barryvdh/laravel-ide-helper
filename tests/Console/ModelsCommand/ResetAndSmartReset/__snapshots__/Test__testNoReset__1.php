@@ -11,8 +11,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @implements \ArrayAccess
  * @noinspection PhpUnreachableStatementInspection
- * @PhpFullyQualifiedNameUsageInspection PhpUnnecessaryFullyQualifiedNameInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  * @property string $foo
+ * @property-read string $bar
+ * @method fooBar()
  * @property int $id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()

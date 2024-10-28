@@ -11,8 +11,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @implements \ArrayAccess
  * @noinspection PhpUnreachableStatementInspection
- * @PhpFullyQualifiedNameUsageInspection PhpUnnecessaryFullyQualifiedNameInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  * @property string $foo
+ * @property-read string $bar
+ * @method fooBar()
  * @mixin \Eloquent
  */
 class Simple extends Model

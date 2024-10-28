@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @implements \ArrayAccess
  * @noinspection PhpUnreachableStatementInspection
- * @PhpFullyQualifiedNameUsageInspection PhpUnnecessaryFullyQualifiedNameInspection
  * @property int $id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()

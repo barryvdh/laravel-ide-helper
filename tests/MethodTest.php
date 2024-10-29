@@ -94,7 +94,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('where');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '|static']);
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
 
         $output =  <<<'DOC'
 /**
@@ -104,7 +104,7 @@ DOC;
  * @param mixed $operator
  * @param mixed $value
  * @param string $boolean
- * @return \Illuminate\Database\Eloquent\Builder|static 
+ * @return \Illuminate\Database\Eloquent\Builder<static> 
  * @static 
  */
 DOC;
@@ -114,7 +114,7 @@ DOC;
         $this->assertSame(['$column', '$operator', '$value', '$boolean'], $method->getParams(false));
         $this->assertSame(['$column', "\$operator = null", "\$value = null", "\$boolean = 'and'"], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
-        $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
+        $this->assertSame('\Illuminate\Database\Eloquent\Builder<static>', rtrim($method->getReturnTag()->getType()));
     }
 
     /**
@@ -125,7 +125,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(QueryBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('whereNull');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '|static']);
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
 
         $output =  <<<'DOC'
 /**
@@ -134,7 +134,7 @@ DOC;
  * @param string|array|\Illuminate\Contracts\Database\Query\Expression $columns
  * @param string $boolean
  * @param bool $not
- * @return \Illuminate\Database\Eloquent\Builder|static 
+ * @return \Illuminate\Database\Eloquent\Builder<static> 
  * @static 
  */
 DOC;
@@ -145,7 +145,7 @@ DOC;
         $this->assertSame(['$columns', '$boolean', '$not'], $method->getParams(false));
         $this->assertSame(['$columns', "\$boolean = 'and'", '$not = false'], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
-        $this->assertSame('\Illuminate\Database\Eloquent\Builder|static', rtrim($method->getReturnTag()->getType()));
+        $this->assertSame('\Illuminate\Database\Eloquent\Builder<static>', rtrim($method->getReturnTag()->getType()));
     }
 
     /**

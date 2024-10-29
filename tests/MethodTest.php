@@ -112,7 +112,7 @@ DOC;
         $this->assertSame('where', $method->getName());
         $this->assertSame('\\' . EloquentBuilder::class, $method->getDeclaringClass());
         $this->assertSame(['$column', '$operator', '$value', '$boolean'], $method->getParams(false));
-        $this->assertSame(['$column', "\$operator = null", "\$value = null", "\$boolean = 'and'"], $method->getParamsWithDefault(false));
+        $this->assertSame(['$column', '$operator = null', '$value = null', "\$boolean = 'and'"], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
         $this->assertSame('\Illuminate\Database\Eloquent\Builder<static>', rtrim($method->getReturnTag()->getType()));
     }

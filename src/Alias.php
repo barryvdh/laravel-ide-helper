@@ -414,7 +414,7 @@ class Alias
     {
         if ($this->alias === 'Eloquent' && in_array($class->getName(), [EloquentBuilder::class, QueryBuilder::class])) {
             return [
-                '$this' => '\\' . EloquentBuilder::class . ($this->config->get('ide-helper.use_generics_annotations') ? '<static>' : '|static')
+                '$this' => '\\' . EloquentBuilder::class . ($this->config->get('ide-helper.use_generics_annotations') ? '<static>' : '|static'),
             ];
         }
 

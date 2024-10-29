@@ -33,6 +33,12 @@ class ModelWithPivot extends Model
             ->using(CustomPivot::class);
     }
 
+    public function relationCustomPivotUsingSameAccessorAndClass()
+    {
+        return $this->belongsToMany(ModelwithPivot::class)
+            ->using(CustomPivot::class);
+    }
+
     public function relationWithDifferentCustomPivotUsingSameAccessor()
     {
         return $this->belongsToMany(ModelwithPivot::class)

@@ -720,7 +720,7 @@ class ModelsCommand extends Command
                                     $relationReturnType === 'many' ||
                                     (
                                         !$relationReturnType &&
-                                        strpos(get_class($relationObj), 'Many') !== false
+                                        str_contains(get_class($relationObj), 'Many')
                                     )
                                 ) {
                                     if ($relationObj instanceof BelongsToMany) {
@@ -729,16 +729,22 @@ class ModelsCommand extends Command
                                             $pivot = $this->getClassNameInDestinationFile($model, $pivot);
 
                                             if ($existingPivot = ($this->properties[$relationObj->getPivotAccessor()] ?? null)) {
-                                                // If the pivot is already set, we need to append the type to it
-                                                $pivot .= '|' . $existingPivot['type'];
+                                                $existingClasses = explode('|', $existingPivot['type']);
+
+                                                if (!in_array($pivot, $existingClasses)) {
+                                                    array_unshift($existingClasses, $pivot);
+                                                }
                                             } else {
-                                                // pivots are not always set
-                                                $pivot .= '|null';
+                                                // No existing pivot property, so we need to add a null type
+                                                $existingClasses = [$pivot, 'null'];
                                             }
+
+                                            // create a union type of all pivot classes
+                                            $unionType = implode('|', $existingClasses);
 
                                             $this->setProperty(
                                                 $relationObj->getPivotAccessor(),
-                                                $pivot,
+                                                $unionType,
                                                 true,
                                                 false
                                             );

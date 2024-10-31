@@ -19,14 +19,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read BelongsToVariation $notNullColumnWithNoForeignKeyConstraint
  * @property-read BelongsToVariation|null $nullableColumnWithForeignKeyConstraint
  * @property-read BelongsToVariation|null $nullableColumnWithNoForeignKeyConstraint
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation query()
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNotNullColumnWithForeignKeyConstraint($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNotNullColumnWithNoForeignKeyConstraint($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNullableColumnWithForeignKeyConstraint($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BelongsToVariation whereNullableColumnWithNoForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation whereNotNullColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation whereNotNullColumnWithNoForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation whereNullableColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BelongsToVariation whereNullableColumnWithNoForeignKeyConstraint($value)
  * @mixin \Eloquent
  */
 class BelongsToVariation extends Model
@@ -71,14 +71,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read CompositeBelongsToVariation $bothNonNullableWithForeignKeyConstraint
  * @property-read CompositeBelongsToVariation $nonNullableMixedWithoutForeignKeyConstraint
  * @property-read CompositeBelongsToVariation|null $nullableMixedWithForeignKeyConstraint
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation query()
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNotNullColumnWithForeignKeyConstraint($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNotNullColumnWithNoForeignKeyConstraint($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNullableColumnWithForeignKeyConstraint($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompositeBelongsToVariation whereNullableColumnWithNoForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation whereNotNullColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation whereNotNullColumnWithNoForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation whereNullableColumnWithForeignKeyConstraint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompositeBelongsToVariation whereNullableColumnWithNoForeignKeyConstraint($value)
  * @mixin \Eloquent
  */
 class CompositeBelongsToVariation extends Model
@@ -161,10 +161,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read int|null $relation_sample_to_any_relation_type_count
  * @property-read Simple $relationSampleToBadlyNamedNotManyRelation
  * @property-read Simple $relationSampleToManyRelationType
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder|Simple whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
  * @mixin \Eloquent
  */
 class Simple extends Model

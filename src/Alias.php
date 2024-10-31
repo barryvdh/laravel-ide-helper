@@ -18,6 +18,7 @@ use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Facade;
 use ReflectionClass;
 use Throwable;
@@ -333,7 +334,15 @@ class Alias
 
             if (!in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
-                    $this->methods[] = new Method($method, $this->alias, $class, $magic, $this->interfaces, $this->classAliases);
+                    $this->methods[] = new Method(
+                        $method,
+                        $this->alias,
+                        $class,
+                        $magic,
+                        $this->interfaces,
+                        $this->classAliases,
+                        $this->getReturnTypeNormalizers($class)
+                    );
                 }
                 $this->usedMethods[] = $magic;
             }
@@ -363,7 +372,8 @@ class Alias
                                 $reflection,
                                 $method->name,
                                 $this->interfaces,
-                                $this->classAliases
+                                $this->classAliases,
+                                $this->getReturnTypeNormalizers($reflection)
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -386,13 +396,29 @@ class Alias
                             $reflection,
                             $macro_name,
                             $this->interfaces,
-                            $this->classAliases
+                            $this->classAliases,
+                            $this->getReturnTypeNormalizers($reflection)
                         );
                         $this->usedMethods[] = $macro_name;
                     }
                 }
             }
         }
+    }
+
+    /**
+     * @param ReflectionClass $class
+     * @return array<string, string>
+     */
+    protected function getReturnTypeNormalizers($class)
+    {
+        if ($this->alias === 'Eloquent' && in_array($class->getName(), [EloquentBuilder::class, QueryBuilder::class])) {
+            return [
+                '$this' => '\\' . EloquentBuilder::class . ($this->config->get('ide-helper.use_generics_annotations') ? '<static>' : '|static'),
+            ];
+        }
+
+        return [];
     }
 
     /**

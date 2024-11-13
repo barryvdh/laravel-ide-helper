@@ -161,7 +161,7 @@
 
 ### Fixed
 
-- Remove composer dependecy, use copy of ClassMapGenerator [#1313 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1313)
+- Remove composer dependency, use copy of ClassMapGenerator [#1313 / barryvdh](https://github.com/barryvdh/laravel-ide-helper/pull/1313)
 
 ## 2022-01-24, 2.12.1
 
@@ -297,7 +297,7 @@
 ### Added
 
 - Add static return type to builder methods [#924 / dmason30](https://github.com/barryvdh/laravel-ide-helper/pull/924)
-- Add `optonal` to meta generator for PhpStorm [#932 / halaei](https://github.com/barryvdh/laravel-ide-helper/pull/932)
+- Add `optional` to meta generator for PhpStorm [#932 / halaei](https://github.com/barryvdh/laravel-ide-helper/pull/932)
 - Decimal columns as string in Models [#948 / fgibaux](https://github.com/barryvdh/laravel-ide-helper/pull/948)
 - Simplify full namespaces for already included resources [#954 / LANGERGabriel](https://github.com/barryvdh/laravel-ide-helper/pull/954)
 - Make writing relation count properties optional [#969 / AegirLeet](https://github.com/barryvdh/laravel-ide-helper/pull/969)

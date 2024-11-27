@@ -50,7 +50,7 @@ class Generator
         $config,
         /* Illuminate\View\Factory */
         $view,
-        OutputInterface $output = null,
+        ?OutputInterface $output = null,
         $helpers = ''
     ) {
         $this->config = $config;

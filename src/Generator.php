@@ -42,7 +42,7 @@ class Generator
     /**
      * @param \Illuminate\Config\Repository $config
      * @param \Illuminate\View\Factory $view
-     * @param OutputInterface $output
+     * @param ?OutputInterface $output
      * @param string $helpers
      */
     public function __construct(
@@ -50,11 +50,12 @@ class Generator
         $config,
         /* Illuminate\View\Factory */
         $view,
-        OutputInterface $output = null,
+        ?OutputInterface $output = null,
         $helpers = ''
     ) {
         $this->config = $config;
         $this->view = $view;
+        $this->output = $output;
 
         // Find the drivers to add to the extra/interfaces
         $this->detectDrivers();

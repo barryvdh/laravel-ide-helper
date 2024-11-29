@@ -1301,10 +1301,11 @@ class ModelsCommand extends Command
      * Get method return type based on it DocBlock comment
      *
      * @param \ReflectionMethod $reflection
+     * @param ?\Reflector $reflectorForContext
      *
      * @return null|string
      */
-    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, \Reflector $reflectorForContext = null)
+    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, ?\Reflector $reflectorForContext = null)
     {
         $phpDocContext = (new ContextFactory())->createFromReflector($reflectorForContext ?? $reflection);
         $context = new Context(

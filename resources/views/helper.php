@@ -1,8 +1,8 @@
 <?= '<?php' ?>
 <?php
 /**
- * @var \Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_alias_ns
- * @var \Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_extends_ns
+ * @var Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_alias_ns
+ * @var Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_extends_ns
  * @var bool $include_fluent
  * @var string $helpers
  */

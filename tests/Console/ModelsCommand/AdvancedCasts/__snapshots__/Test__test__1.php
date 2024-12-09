@@ -22,13 +22,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime
  * @property int $cast_to_timestamp
  * @property mixed $cast_to_encrypted
- * @property array $cast_to_encrypted_array
- * @property \Illuminate\Support\Collection $cast_to_encrypted_collection
- * @property array $cast_to_encrypted_json
+ * @property array<array-key, mixed> $cast_to_encrypted_array
+ * @property \Illuminate\Support\Collection<array-key, mixed> $cast_to_encrypted_collection
+ * @property array<array-key, mixed> $cast_to_encrypted_json
  * @property object $cast_to_encrypted_object
  * @property \Illuminate\Support\Collection $cast_to_as_collection
  * @property \Illuminate\Support\Collection $cast_to_as_enum_collection
- * @property \ArrayObject $cast_to_as_array_object
+ * @property \ArrayObject<array-key, mixed> $cast_to_as_array_object
  * @property AdvancedCastCollection $cast_to_as_collection_using
  * @property \Illuminate\Support\Collection<int, AdvancedCastEnum> $cast_to_as_enum_collection_of
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdvancedCast newModelQuery()

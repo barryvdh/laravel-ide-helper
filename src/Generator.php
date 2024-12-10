@@ -55,6 +55,7 @@ class Generator
     ) {
         $this->config = $config;
         $this->view = $view;
+        $this->output = $output;
 
         // Find the drivers to add to the extra/interfaces
         $this->detectDrivers();

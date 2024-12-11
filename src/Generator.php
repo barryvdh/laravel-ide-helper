@@ -15,7 +15,6 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Str;
-use Illuminate\Support\Traits\Macroable;
 use PhpParser\Lexer\Emulative;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
@@ -38,6 +37,7 @@ class Generator
     protected $magic = [];
     protected $interfaces = [];
     protected $helpers;
+    protected array $macroableTraits = [];
 
     /**
      * @param \Illuminate\Config\Repository $config
@@ -62,6 +62,7 @@ class Generator
         $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra'), []);
         $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic'), []);
         $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'), []);
+        $this->macroableTraits = array_merge($this->macroableTraits, $this->config->get('ide-helper.macroable_traits'), []);
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
             $interface = '\\' . ltrim($interface, '\\');
@@ -347,8 +348,14 @@ class Generator
             ->filter(function ($class) {
                 $traits = class_uses_recursive($class);
 
-                // Filter only classes with the macroable trait
-                return isset($traits[Macroable::class]);
+                // Filter only classes with a macroable trait
+                foreach ($this->macroableTraits as $trait) {
+                    if (isset($traits[$trait])) {
+                        return true;
+                    }
+                }
+
+                return false;
             })
             ->filter(function ($class) use ($aliases) {
                 $class = Str::start($class, '\\');

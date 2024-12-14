@@ -55,7 +55,7 @@ class MacroTest extends TestCase
     {
         $phpdoc = (new MacroMock())->getPhpDoc(
             new ReflectionFunction(
-                function (int $a = null): int {
+                function (?int $a = null): int {
                     return 0;
                 }
             )
@@ -79,7 +79,7 @@ class MacroTest extends TestCase
                 /**
                  * Test docblock.
                  */
-                function (int $a = null): int {
+                function (?int $a = null): int {
                     return 0;
                 }
             )
@@ -103,7 +103,7 @@ class MacroTest extends TestCase
                 /**
                  * Test docblock.
                  */
-                function (int $a = null) {
+                function (?int $a = null) {
                     return 0;
                 }
             )
@@ -274,7 +274,7 @@ class MacroMock extends Macro
         // no need to call parent
     }
 
-    public function getPhpDoc(ReflectionFunctionAbstract $method, ReflectionClass $class = null): DocBlock
+    public function getPhpDoc(ReflectionFunctionAbstract $method, ?ReflectionClass $class = null): DocBlock
     {
         return (new Macro($method, '', $class ?? $method->getClosureScopeClass()))->phpdoc;
     }

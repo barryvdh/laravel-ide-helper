@@ -201,6 +201,26 @@ return [
     ],
 
     /*
+    |--------------------------------------------------------------------------
+    | Support for custom DB connection information
+    |--------------------------------------------------------------------------
+    |
+    | This setting allow you to override settings in your database config. This is useful for when models may
+    | connection to difference databases i.e., you have a multi-tenancy setup.
+    |
+    | Complete the overrider with the specific entries you wish to override and these will be applied to the
+    | config('database.connections') config array:
+    |
+    | "tenant" => array(
+    |       "database" => "test_tenant_database",
+    |  ),
+    |
+    */
+    'db_connection_overrides' => [
+
+    ],
+
+    /*
      |--------------------------------------------------------------------------
      | Support for camel cased models
      |--------------------------------------------------------------------------

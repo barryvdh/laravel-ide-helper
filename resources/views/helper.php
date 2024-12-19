@@ -14,7 +14,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel <?= $version ?>.
+ * Generated for Laravel <?= $laravel_version ?>.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *

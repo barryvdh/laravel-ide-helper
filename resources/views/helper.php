@@ -49,6 +49,9 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 <?php foreach ($namespaces_by_alias_ns as $namespace => $aliases) : ?>
 namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
+        <?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent') : ?>
+        /** @template TModel of static */
+        <?php endif?>
         <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent') : ?>
             <?php foreach ($alias->getMethods() as $method) : ?>
                 <?= trim($method->getDocComment('            ')) ?>

@@ -23,7 +23,7 @@
  */
 
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
-namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
+namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
         <?= trim($alias->getDocComment('    ')) ?>
         <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
@@ -47,12 +47,12 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 <?php endforeach; ?>
 
 <?php foreach ($namespaces_by_alias_ns as $namespace => $aliases) : ?>
-namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
+namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
-        <?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent') : ?>
+        <?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
         /** @template TModel of static */
         <?php endif?>
-        <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent') : ?>
+        <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
             <?php foreach ($alias->getMethods() as $method) : ?>
                 <?= trim($method->getDocComment('            ')) ?>
             public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)

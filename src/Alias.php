@@ -469,6 +469,35 @@ class Alias
     }
 
     /**
+     * @param $prefix
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function getPhpDocTemplates($prefix = "\t\t")
+    {
+        $templateDoc = new DocBlock('');
+        $serializer = new DocBlockSerializer(1, $prefix);
+
+        foreach ($this->classes as $class) {
+            $reflection = new ReflectionClass($class);
+            $traits = collect($reflection->getTraitNames());
+
+            foreach ($traits as $trait) {
+                $phpdoc = new DocBlock(new ReflectionClass($trait));
+                $templates = $phpdoc->getTagsByName('template');
+
+                /** @var DocBlock\Tag\TemplateTag $template */
+                foreach ($templates as $template) {
+                    $template->setBound('static');
+                    $template->setDocBlock($templateDoc);
+                    $templateDoc->appendTag($template);
+                }
+            }
+        }
+        return $serializer->getDocComment($templateDoc);
+    }
+
+    /**
      * Removes method tags from the doc comment that already appear as functions inside the class.
      * This prevents duplicate function errors in the IDE.
      *

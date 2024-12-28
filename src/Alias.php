@@ -81,7 +81,12 @@ class Alias
         $this->detectExtendsNamespace();
 
         if (!empty($this->namespace)) {
-            $this->classAliases = (new UsesResolver())->loadFromClass($this->root);
+            try {
+                $this->classAliases = (new UsesResolver())->loadFromClass($this->root);
+            } catch (Throwable $e) {
+                $this->classAliases = [];
+            }
+
 
             //Create a DocBlock and serializer instance
             $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace, $this->classAliases));

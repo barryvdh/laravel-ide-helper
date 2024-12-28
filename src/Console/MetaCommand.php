@@ -13,6 +13,9 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Factories;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Filesystem\Filesystem;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -41,10 +44,10 @@ class MetaCommand extends Command
     /** @var \Illuminate\Contracts\Filesystem\Filesystem */
     protected $files;
 
-    /** @var \Illuminate\Contracts\View\Factory */
+    /** @var Factory */
     protected $view;
 
-    /** @var \Illuminate\Contracts\Config\Repository */
+    /** @var Repository */
     protected $config;
 
     protected $methods = [
@@ -63,11 +66,15 @@ class MetaCommand extends Command
 
     /**
      *
-     * @param \Illuminate\Contracts\Filesystem\Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param Filesystem $files
+     * @param Factory $view
+     * @param Repository $config
      */
-    public function __construct($files, $view, $config)
+    public function __construct(
+        Filesystem $files,
+        Factory $view,
+        Repository $config
+    )
     {
         $this->files = $files;
         $this->view = $view;

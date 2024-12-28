@@ -57,13 +57,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function mockFilesystem()
     {
-        $mockFilesystem = Mockery::mock(Filesystem::class);
-
-        $mockFilesystem
-            ->shouldReceive('get')
-            ->andReturnUsing(function ($file) {
-                return file_get_contents($file);
-            });
+        $mockFilesystem = Mockery::mock(Filesystem::class)->makePartial();
 
         $mockFilesystem
             ->shouldReceive('put')

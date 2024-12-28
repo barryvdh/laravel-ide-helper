@@ -64,41 +64,20 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     {
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
-        $localViewFactory = $this->createLocalViewFactory();
 
-        $this->app->singleton(
-            'command.ide-helper.generate',
-            function ($app) use ($localViewFactory) {
-                return new GeneratorCommand($app['config'], $app['files'], $localViewFactory);
-            }
-        );
-
-        $this->app->singleton(
-            'command.ide-helper.models',
-            function ($app) {
-                return new ModelsCommand($app['files']);
-            }
-        );
-
-        $this->app->singleton(
-            'command.ide-helper.meta',
-            function ($app) use ($localViewFactory) {
-                return new MetaCommand($app['files'], $localViewFactory, $app['config']);
-            }
-        );
-
-        $this->app->singleton(
-            'command.ide-helper.eloquent',
-            function ($app) {
-                return new EloquentCommand($app['files']);
-            }
-        );
+        $this->app->when([GeneratorCommand::class, MetaCommand::class])
+            ->needs(\Illuminate\Contracts\View\Factory::class)
+            ->give(function () {
+                return $this->createLocalViewFactory();
+            });
 
         $this->commands(
-            'command.ide-helper.generate',
-            'command.ide-helper.models',
-            'command.ide-helper.meta',
-            'command.ide-helper.eloquent'
+            [
+                GeneratorCommand::class,
+                ModelsCommand::class,
+                MetaCommand::class,
+                EloquentCommand::class,
+             ]
         );
     }
 
@@ -109,7 +88,12 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function provides()
     {
-        return ['command.ide-helper.generate', 'command.ide-helper.models'];
+        return [
+            GeneratorCommand::class,
+            ModelsCommand::class,
+            MetaCommand::class,
+            EloquentCommand::class
+        ];
     }
 
     /**

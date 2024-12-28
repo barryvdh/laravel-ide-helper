@@ -89,6 +89,32 @@ class Generator
             ->render();
     }
 
+    public function generateEloquent()
+    {
+        $aliasesByNamespace = $this->getAliasesByAliasNamespace();
+
+        $eloquentAliases = [];
+        foreach ($aliasesByNamespace as $namespace => $aliases) {
+            foreach ($aliases as $alias) {
+                if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') {
+                    $eloquentAliases[$namespace] = $eloquentAliases[$namespace] ?? [];
+                    $eloquentAliases[$namespace][] = $alias;
+                }
+            }
+        }
+
+        $app = app();
+        return $this->view->make('helper')
+            ->with('namespaces_by_extends_ns', [])
+            ->with('namespaces_by_alias_ns', $eloquentAliases)
+            ->with('real_time_facades', [])
+            ->with('helpers', '')
+            ->with('version', $app->version())
+            ->with('include_fluent', false)
+            ->with('factories', [])
+            ->render();
+    }
+
     protected function detectDrivers()
     {
         $defaultUserModel = config('auth.providers.users.model', config('auth.model', 'App\User'));

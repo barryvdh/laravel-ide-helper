@@ -74,8 +74,7 @@ class MetaCommand extends Command
         Filesystem $files,
         Factory $view,
         Repository $config
-    )
-    {
+    ) {
         $this->files = $files;
         $this->view = $view;
         $this->config = $config;

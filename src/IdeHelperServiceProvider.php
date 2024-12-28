@@ -92,7 +92,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             GeneratorCommand::class,
             ModelsCommand::class,
             MetaCommand::class,
-            EloquentCommand::class
+            EloquentCommand::class,
         ];
     }
 

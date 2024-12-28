@@ -50,7 +50,7 @@ namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
 namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
         <?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
-        /** @template TModel of static */
+        <?= $alias->getPhpDocTemplates('            ') ?>
         <?php endif?>
         <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
             <?php foreach ($alias->getMethods() as $method) : ?>

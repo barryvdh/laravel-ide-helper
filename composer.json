@@ -22,7 +22,7 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "barryvdh/reflection-docblock": "^2.1.2",
+        "barryvdh/reflection-docblock": "^2.2",
         "composer/class-map-generator": "^1.0",
         "illuminate/console": "^11.15",
         "illuminate/database": "^11.15",

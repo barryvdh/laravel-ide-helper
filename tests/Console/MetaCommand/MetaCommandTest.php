@@ -12,13 +12,18 @@ use stdClass;
 
 class MetaCommandTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testCommand(): void
     {
-        $this->mockFilesystem();
-
         /** @var Filesystem|MockInterface $mockFileSystem */
         $mockFileSystem = $this->app->make(Filesystem::class);
-        $this->instance('files', $mockFileSystem);
+        $this->instance(Filesystem::class, $mockFileSystem);
 
         $mockFileSystem
             ->shouldReceive('getRequire')
@@ -49,11 +54,9 @@ class MetaCommandTest extends TestCase
             return new stdClass();
         });
 
-        $this->mockFilesystem();
-
         /** @var Filesystem|MockInterface $mockFileSystem */
         $mockFileSystem = $this->app->make(Filesystem::class);
-        $this->instance('files', $mockFileSystem);
+        $this->instance(Filesystem::class, $mockFileSystem);
 
         $mockFileSystem
             ->shouldReceive('getRequire')

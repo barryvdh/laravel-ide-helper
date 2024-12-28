@@ -9,7 +9,7 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\GeneratorCommand\AbstractGeneratorCo
 
 class Test extends AbstractGeneratorCommand
 {
-    public function test(): void
+    public function testGenerator(): void
     {
         $command = $this->app->make(GeneratorCommand::class);
 
@@ -17,6 +17,19 @@ class Test extends AbstractGeneratorCommand
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertStringContainsString('A new helper file was written to _ide_helper.php', $tester->getDisplay());
+        $this->assertMatchesMockedSnapshot();
+    }
+
+    public function testFilename(): void
+    {
+        $command = $this->app->make(GeneratorCommand::class);
+
+        $tester = $this->runCommand($command, [
+            'filename' => 'foo.php',
+        ]);
+
+        $this->assertSame(0, $tester->getStatusCode());
+        $this->assertStringContainsString('A new helper file was written to foo.php', $tester->getDisplay());
         $this->assertMatchesMockedSnapshot();
     }
 }

@@ -22,5 +22,4 @@ class Test extends AbstractGeneratorCommand
         $this->assertStringNotContainsString('public static function configure($basePath = null)', $this->mockFilesystemOutput);
         $this->assertStringContainsString('class Eloquent extends \Illuminate\Database\Eloquent\Model', $this->mockFilesystemOutput);
     }
-
 }

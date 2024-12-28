@@ -13,7 +13,7 @@ abstract class AbstractGeneratorCommand extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-//        $this->artisan('key:gen');
+        //        $this->artisan('key:gen');
 
         $this->mockFilesystem();
     }

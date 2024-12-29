@@ -192,7 +192,7 @@ class MetaCommand extends Command
             'configs' => $this->loadTemplate('configs')->pluck('name')->filter(),
             'routes' => $this->loadTemplate('routes')->pluck('name')->filter(),
             'views' => $this->loadTemplate('views')->pluck('key')->filter(),
-            
+
         ];
     }
 
@@ -229,7 +229,7 @@ class MetaCommand extends Command
     protected function loadTemplate($name)
     {
         if (!isset($this->templates[$name])) {
-            $file =  __DIR__ . '/../../php-templates/' . basename($name) .'.php';
+            $file =  __DIR__ . '/../../php-templates/' . basename($name) . '.php';
             $this->templates[$name] = $this->files->requireOnce($file);
         }
 

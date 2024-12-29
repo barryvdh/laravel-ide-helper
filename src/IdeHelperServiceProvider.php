@@ -20,10 +20,6 @@ use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\View\Engines\EngineResolver;
-use Illuminate\View\Engines\PhpEngine;
-use Illuminate\View\Factory;
-use Illuminate\View\FileViewFinder;
 
 class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProvider
 {

@@ -13,118 +13,118 @@
 // phpcs:ignoreFile
 
 /**
-* A helper file for Laravel, to provide autocomplete information to your IDE
-* Generated for Laravel <?= app()->version() ?>.
-*
-* This file should not be included in your code, only analyzed by your IDE!
-*
-* @author Barry vd. Heuvel <barryvdh@gmail.com>
-* @see https://github.com/barryvdh/laravel-ide-helper
-*/
+ * A helper file for Laravel, to provide autocomplete information to your IDE
+ * Generated for Laravel <?= app()->version() ?>.
+ *
+ * This file should not be included in your code, only analyzed by your IDE!
+ *
+ * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ * @see https://github.com/barryvdh/laravel-ide-helper
+ */
 <?php
 $s1 = '    ';
-$s2 = $s1 . $s1;
-$s3 = $s1 . $s2;
+$s2 = $s1.$s1;
+$s3 = $s1.$s2;
 ?>
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
-    namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
+namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
-        <?php echo trim($alias->getDocComment($s1)) . "\n{$s1}" . $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
+<?php echo trim($alias->getDocComment($s1)) ."\n{$s1}" . $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach ($alias->getMethods() as $method) : ?>
-            <?= trim($method->getDocComment($s2)) . "\n{$s2}" ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
-            {<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
-                <?= "\n" . $s3?>//Method inherited from <?= $method->getDeclaringClass() ?>
-            <?php endif; ?>
+<?= trim($method->getDocComment($s2)) ."\n{$s2}" ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
+        {<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
+<?= "\n".$s3?>//Method inherited from <?= $method->getDeclaringClass() ?>
+ <?php endif; ?>
 
-            <?php if ($method->isInstanceCall()) : ?>
-                <?= $s3 ?>/** @var <?=$method->getRoot()?> $instance */
-            <?php endif?>
-            <?= $s3 . ($method->shouldReturn() ? 'return ' : '') ?><?= $method->getRootMethodCall() ?>;
-            }
+<?php if ($method->isInstanceCall()) : ?>
+<?= $s3 ?>/** @var <?=$method->getRoot()?> $instance */
+<?php endif?>
+<?= $s3 . ($method->shouldReturn() ? 'return ' : '') ?><?= $method->getRootMethodCall() ?>;
+        }
 
         <?php endforeach; ?>
-        }
-    <?php endforeach; ?>
     }
+    <?php endforeach; ?>
+}
 
 <?php endforeach; ?>
 
 <?php foreach ($namespaces_by_alias_ns as $namespace => $aliases) : ?>
-    namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
-    <?php foreach ($aliases as $alias) : ?>
-        <?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
-            <?= "\n" . $alias->getPhpDocTemplates($s1) . "\n" ?>
-        <?php endif?>
-        <?= $s1 . $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
-            <?php foreach ($alias->getMethods() as $method) : ?>
-                <?= $s2 . trim($method->getDocComment($s2)) . "\n" ?>
-                <?= $s2 ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
-                <?= $s2?>{<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
-                    <?= $s2 ?>//Method inherited from <?= $method->getDeclaringClass() ?>
-                <?php endif; ?>
+namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
+<?php foreach ($aliases as $alias) : ?>
+<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
+<?= "\n".$alias->getPhpDocTemplates($s1) ."\n" ?>
+<?php endif?>
+<?= $s1. $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
+<?php foreach ($alias->getMethods() as $method) : ?>
+<?= $s2 . trim($method->getDocComment($s2))."\n" ?>
+<?= $s2 ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
+<?= $s2?>{<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
+<?= $s2 ?>//Method inherited from <?= $method->getDeclaringClass() ?>
+<?php endif; ?>
 
-                <?php if ($method->isInstanceCall()) : ?>
-                    <?= $s3 ?>/** @var <?=$method->getRoot()?> $instance */
-                <?php endif?>
-                <?= $s3 . ($method->shouldReturn() ? 'return ' : '') ?><?= $method->getRootMethodCall() ?>;
-                <?= $s2 ?>}
+<?php if ($method->isInstanceCall()) : ?>
+<?= $s3 ?>/** @var <?=$method->getRoot()?> $instance */
+<?php endif?>
+<?= $s3 . ($method->shouldReturn() ? 'return ' : '') ?><?= $method->getRootMethodCall() ?>;
+<?= $s2 ?>}
 
-            <?php endforeach; ?>
-        <?php endif; ?>}
-    <?php endforeach; ?>
-    }
+<?php endforeach; ?>
+<?php endif; ?>}
+<?php endforeach; ?>
+}
 
 <?php endforeach; ?>
 
 <?php foreach($real_time_facades as $name): ?>
-    <?php $nested = explode('\\', str_replace('\\' . class_basename($name), '', $name)); ?>
-    namespace <?php echo implode('\\', $nested); ?> {
+<?php $nested = explode('\\', str_replace('\\' . class_basename($name), '', $name)); ?>
+namespace <?php echo implode('\\', $nested); ?> {
     /**
-    * @mixin <?= str_replace('Facades', '', $name) ?>
-    */
+     * @mixin <?= str_replace('Facades', '', $name) ?>
+     */
     class <?= class_basename($name) ?> extends <?= str_replace('Facades', '', $name) ?> {}
-    }
+}
 <?php endforeach; ?>
 
 <?php if ($helpers) : ?>
-    namespace {
+namespace {
     <?= $helpers ?>
-    }
+}
 <?php endif; ?>
 
 <?php if ($include_fluent) : ?>
-    namespace Illuminate\Support {
+namespace Illuminate\Support {
     /**
-    * Methods commonly used in migrations
-    *
-    * @method Fluent after(string $column) Add the after modifier
-    * @method Fluent charset(string $charset) Add the character set modifier
-    * @method Fluent collation(string $collation) Add the collation modifier
-    * @method Fluent comment(string $comment) Add comment
-    * @method Fluent default($value) Add the default modifier
-    * @method Fluent first() Select first row
-    * @method Fluent index(string $name = null) Add the in dex clause
-    * @method Fluent on(string $table) `on` of a foreign key
-    * @method Fluent onDelete(string $action) `on delete` of a foreign key
-    * @method Fluent onUpdate(string $action) `on update` of a foreign key
-    * @method Fluent primary() Add the primary key modifier
-    * @method Fluent references(string $column) `references` of a foreign key
-    * @method Fluent nullable(bool $value = true) Add the nullable modifier
-    * @method Fluent unique(string $name = null) Add unique index clause
-    * @method Fluent unsigned() Add the unsigned modifier
-    * @method Fluent useCurrent() Add the default timestamp value
-    * @method Fluent change() Add the change modifier
-    */
+     * Methods commonly used in migrations
+     *
+     * @method Fluent after(string $column) Add the after modifier
+     * @method Fluent charset(string $charset) Add the character set modifier
+     * @method Fluent collation(string $collation) Add the collation modifier
+     * @method Fluent comment(string $comment) Add comment
+     * @method Fluent default($value) Add the default modifier
+     * @method Fluent first() Select first row
+     * @method Fluent index(string $name = null) Add the in dex clause
+     * @method Fluent on(string $table) `on` of a foreign key
+     * @method Fluent onDelete(string $action) `on delete` of a foreign key
+     * @method Fluent onUpdate(string $action) `on update` of a foreign key
+     * @method Fluent primary() Add the primary key modifier
+     * @method Fluent references(string $column) `references` of a foreign key
+     * @method Fluent nullable(bool $value = true) Add the nullable modifier
+     * @method Fluent unique(string $name = null) Add unique index clause
+     * @method Fluent unsigned() Add the unsigned modifier
+     * @method Fluent useCurrent() Add the default timestamp value
+     * @method Fluent change() Add the change modifier
+     */
     class Fluent {}
-    }
+}
 <?php endif ?>
 
 <?php foreach ($factories as $factory) : ?>
-    namespace <?=$factory->getNamespaceName()?> {
+namespace <?=$factory->getNamespaceName()?> {
     /**
     * @method \Illuminate\Database\Eloquent\Collection|<?=$factory->getShortName()?>[]|<?=$factory->getShortName()?> create($attributes = [])
     * @method \Illuminate\Database\Eloquent\Collection|<?=$factory->getShortName()?>[]|<?=$factory->getShortName()?> make($attributes = [])
     */
     class <?=$factory->getShortName()?>FactoryBuilder extends \Illuminate\Database\Eloquent\FactoryBuilder {}
-    }
+}
 <?php endforeach; ?>

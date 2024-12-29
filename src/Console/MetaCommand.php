@@ -192,7 +192,7 @@ class MetaCommand extends Command
             'configs' => $this->loadTemplate('configs')->pluck('name')->filter(),
             'routes' => $this->loadTemplate('routes')->pluck('name')->filter(),
             'views' => $this->loadTemplate('views')->pluck('key')->filter(),
-            
+            'translations' => $this->loadTemplate('translations')->filter()->keys(),
         ];
     }
 
@@ -217,8 +217,29 @@ class MetaCommand extends Command
             '\route()' => [
                 0 => 'routes',
             ],
+            '\Illuminate\Support\Facades\Route::get()' => [
+                0 => 'routes',
+            ],
+            '\Illuminate\Routing\Router::get()' => [
+                0 => 'routes',
+            ],
             '\view()' => [
                 0 => 'views',
+            ],
+            '\Illuminate\Support\Facades\View::make()' => [
+                0 => 'views',
+            ],
+            '\Illuminate\View\Factory::make()' => [
+                0 => 'views',
+            ],
+            '\__()' => [
+                0 => 'translations',
+            ],
+            '\trans()' => [
+                0 => 'translations',
+            ],
+            '\Illuminate\Contracts\Translation\Translator::get()' => [
+                0 => 'translations',
             ],
         ];
     }

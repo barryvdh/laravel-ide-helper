@@ -9,27 +9,26 @@ function vsCodeFindBladeFiles($path)
     }
 
     foreach (
-        \Symfony\Component\Finder\Finder::create()
+        Symfony\Component\Finder\Finder::create()
             ->files()
-            ->name("*.blade.php")
-            ->in($path)
-        as $file
+            ->name('*.blade.php')
+            ->in($path) as $file
     ) {
         $paths[] = [
-            "path" => str_replace(base_path(DIRECTORY_SEPARATOR), '', $file->getRealPath()),
-            "isVendor" => str_contains($file->getRealPath(), base_path("vendor")),
-            "key" => \Illuminate\Support\Str::of($file->getRealPath())
-                ->replace(realpath($path), "")
-                ->replace(".blade.php", "")
+            'path' => str_replace(base_path(DIRECTORY_SEPARATOR), '', $file->getRealPath()),
+            'isVendor' => str_contains($file->getRealPath(), base_path('vendor')),
+            'key' => Illuminate\Support\Str::of($file->getRealPath())
+                ->replace(realpath($path), '')
+                ->replace('.blade.php', '')
                 ->ltrim(DIRECTORY_SEPARATOR)
-                ->replace(DIRECTORY_SEPARATOR, ".")
+                ->replace(DIRECTORY_SEPARATOR, '.'),
         ];
     }
 
     return $paths;
 }
 $paths = collect(
-    app("view")
+    app('view')
         ->getFinder()
         ->getPaths()
 )->flatMap(function ($path) {
@@ -37,7 +36,7 @@ $paths = collect(
 });
 
 $hints = collect(
-    app("view")
+    app('view')
         ->getFinder()
         ->getHints()
 )->flatMap(function ($paths, $key) {
@@ -45,7 +44,7 @@ $hints = collect(
         return collect(vsCodeFindBladeFiles($path))->map(function ($value) use (
             $key
         ) {
-            return array_merge($value, ["key" => "{$key}::{$value["key"]}"]);
+            return array_merge($value, ['key' => "{$key}::{$value['key']}"]);
         });
     });
 });
@@ -54,9 +53,9 @@ $hints = collect(
     ->merge($hints)
     ->values()
     ->partition(function ($v) {
-        return !$v["isVendor"];
+        return !$v['isVendor'];
     });
 
 return $local
-    ->sortBy("key", SORT_NATURAL)
-    ->merge($vendor->sortBy("key", SORT_NATURAL));
+    ->sortBy('key', SORT_NATURAL)
+    ->merge($vendor->sortBy('key', SORT_NATURAL));

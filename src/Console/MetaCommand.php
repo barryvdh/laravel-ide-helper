@@ -250,7 +250,7 @@ class MetaCommand extends Command
     protected function loadTemplate($name)
     {
         if (!isset($this->templates[$name])) {
-            $file =  __DIR__ . '/../../php-templates/' . basename($name) .'.php';
+            $file =  __DIR__ . '/../../php-templates/' . basename($name) . '.php';
             $this->templates[$name] = $this->files->requireOnce($file);
         }
 

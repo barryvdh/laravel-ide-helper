@@ -1,22 +1,22 @@
 <?php
 
-function vsCodeGetRouterReflection(\Illuminate\Routing\Route $route)
+function vsCodeGetRouterReflection(Illuminate\Routing\Route $route)
 {
     if ($route->getActionName() === 'Closure') {
-        return new \ReflectionFunction($route->getAction()['uses']);
+        return new ReflectionFunction($route->getAction()['uses']);
     }
 
     if (!str_contains($route->getActionName(), '@')) {
-        return new \ReflectionClass($route->getActionName());
+        return new ReflectionClass($route->getActionName());
     }
 
     try {
-        return new \ReflectionMethod($route->getControllerClass(), $route->getActionMethod());
-    } catch (\Throwable $e) {
-        $namespace = app(\Illuminate\Routing\UrlGenerator::class)->getRootControllerNamespace()
+        return new ReflectionMethod($route->getControllerClass(), $route->getActionMethod());
+    } catch (Throwable $e) {
+        $namespace = app(Illuminate\Routing\UrlGenerator::class)->getRootControllerNamespace()
             ?? (app()->getNamespace() . 'Http\Controllers');
 
-        return new \ReflectionMethod(
+        return new ReflectionMethod(
             $namespace . '\\' . ltrim($route->getControllerClass(), '\\'),
             $route->getActionMethod(),
         );
@@ -24,10 +24,10 @@ function vsCodeGetRouterReflection(\Illuminate\Routing\Route $route)
 }
 
 return collect(app('router')->getRoutes()->getRoutes())
-    ->map(function (\Illuminate\Routing\Route $route) {
+    ->map(function (Illuminate\Routing\Route $route) {
         try {
             $reflection = vsCodeGetRouterReflection($route);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $reflection = null;
         }
 
@@ -43,4 +43,4 @@ return collect(app('router')->getRoutes()->getRoutes())
             'line' => $reflection ? $reflection->getStartLine() : null,
         ];
     })
-    ;
+;

@@ -251,12 +251,16 @@ class MetaCommand extends Command
      */
     protected function loadTemplate($name)
     {
-        if (!isset($this->templates[$name])) {
+        if (!isset($this->templateCache[$name])) {
             $file =  __DIR__ . '/../../php-templates/' . basename($name) . '.php';
-            $this->templates[$name] = $this->files->requireOnce($file);
+            $value = $this->files->requireOnce($file) ?: [];
+            if (!$value instanceof Collection) {
+                $value = collect($value);
+            }
+            $this->templateCache[$name] = $value;
         }
 
-        return $this->templates[$name];
+        return $this->templateCache[$name];
     }
 
     /**

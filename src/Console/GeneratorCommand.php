@@ -113,7 +113,12 @@ class GeneratorCommand extends Command
         }
 
         $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
-        $content = $generator->generate();
+        if ($this->option('eloquent')) {
+            $content = $generator->generateEloquent();
+        } else {
+            $content = $generator->generate();
+        }
+
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {
@@ -169,6 +174,7 @@ class GeneratorCommand extends Command
             ['write_mixins', 'W', InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins],
             ['helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'],
             ['memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'],
+            ['eloquent', 'E', InputOption::VALUE_NONE, 'Only write Eloquent methods'],
         ];
     }
 }

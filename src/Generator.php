@@ -11,6 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
@@ -86,6 +87,33 @@ class Generator
             ->with('version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
             ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
+            ->render();
+    }
+
+    public function generateEloquent()
+    {
+        $name = 'Eloquent';
+        $facade = Model::class;
+        $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
+        $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
+        if ($alias->isValid()) {
+            //Add extra methods, from other classes (magic static calls)
+            if (array_key_exists($name, $this->extra)) {
+                $alias->addClass($this->extra[$name]);
+            }
+
+            $eloquentAliases['__root'] = [$alias];
+        }
+
+        $app = app();
+        return $this->view->make('helper')
+            ->with('namespaces_by_extends_ns', [])
+            ->with('namespaces_by_alias_ns', $eloquentAliases)
+            ->with('real_time_facades', [])
+            ->with('helpers', '')
+            ->with('version', $app->version())
+            ->with('include_fluent', false)
+            ->with('factories', [])
             ->render();
     }
 

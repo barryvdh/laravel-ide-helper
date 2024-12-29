@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Barryvdh\LaravelIdeHelper\Tests\Console;
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\EloquentCommand;
 
 use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Tests\TestCase;
@@ -23,7 +23,7 @@ class EloquentCommandTest extends TestCase
         }
 
         $actualContent = null;
-        $mockFilesystem = Mockery::mock(Filesystem::class);
+        $mockFilesystem = Mockery::mock(Filesystem::class)->makePartial();
         $mockFilesystem
             ->shouldReceive('get')
             // We don't care about actual args (filename)

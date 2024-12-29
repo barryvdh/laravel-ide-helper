@@ -8,31 +8,31 @@ function vsCodeGetTranslationsFromFile($file, $path, $namespace)
         $key = "{$namespace}::{$key}";
     }
 
-    $lang = collect(explode(DIRECTORY_SEPARATOR, str_replace($path, "", $file)))
+    $lang = collect(explode(DIRECTORY_SEPARATOR, str_replace($path, '', $file)))
         ->filter()
         ->first();
 
-    $fileLines = \Illuminate\Support\Facades\File::lines($file);
+    $fileLines = Illuminate\Support\Facades\File::lines($file);
     $lines = [];
     $inComment = false;
 
     foreach ($fileLines as $index => $line) {
         $trimmed = trim($line);
 
-        if (substr($trimmed, 0, 2) === "/*") {
+        if (substr($trimmed, 0, 2) === '/*') {
             $inComment = true;
             continue;
         }
 
         if ($inComment) {
-            if (substr($trimmed, -2) !== "*/") {
+            if (substr($trimmed, -2) !== '*/') {
                 continue;
             }
 
             $inComment = false;
         }
 
-        if (substr($trimmed, 0, 2) === "//") {
+        if (substr($trimmed, 0, 2) === '//') {
             continue;
         }
 
@@ -40,18 +40,18 @@ function vsCodeGetTranslationsFromFile($file, $path, $namespace)
     }
 
     return [
-        "k" => $key,
-        "la" => $lang,
-        "vs" => collect(\Illuminate\Support\Arr::dot((\Illuminate\Support\Arr::wrap(__($key, [], $lang)))))
+        'k' => $key,
+        'la' => $lang,
+        'vs' => collect(Illuminate\Support\Arr::dot((Illuminate\Support\Arr::wrap(__($key, [], $lang)))))
             ->map(
-                fn($value, $key) => vsCodeTranslationValue(
+                fn ($value, $key) => vsCodeTranslationValue(
                     $key,
                     $value,
-                    str_replace(base_path(DIRECTORY_SEPARATOR), "", $file),
+                    str_replace(base_path(DIRECTORY_SEPARATOR), '', $file),
                     $lines
                 )
             )
-            ->filter()
+            ->filter(),
     ];
 }
 
@@ -62,7 +62,7 @@ function vsCodeTranslationValue($key, $value, $file, $lines): ?array
     }
 
     $lineNumber = 1;
-    $keys = explode(".", $key);
+    $keys = explode('.', $key);
     $index = 0;
     $currentKey = array_shift($keys);
 
@@ -81,12 +81,12 @@ function vsCodeTranslationValue($key, $value, $file, $lines): ?array
     }
 
     return [
-        "v" => $value,
-        "p" => $file,
-        "li" => $lineNumber,
-        "pa" => preg_match_all("/\:([A-Za-z0-9_]+)/", $value, $matches)
+        'v' => $value,
+        'p' => $file,
+        'li' => $lineNumber,
+        'pa' => preg_match_all("/\:([A-Za-z0-9_]+)/", $value, $matches)
             ? $matches[1]
-            : []
+            : [],
     ];
 }
 
@@ -98,44 +98,44 @@ function vscodeCollectTranslations(string $path, ?string $namespace = null)
         return collect();
     }
 
-    return collect(\Illuminate\Support\Facades\File::allFiles($realPath))->map(
-        fn($file) => vsCodeGetTranslationsFromFile($file, $path, $namespace)
+    return collect(Illuminate\Support\Facades\File::allFiles($realPath))->map(
+        fn ($file) => vsCodeGetTranslationsFromFile($file, $path, $namespace)
     );
 }
 
-$loader = app("translator")->getLoader();
+$loader = app('translator')->getLoader();
 $namespaces = $loader->namespaces();
 
 $reflection = new ReflectionClass($loader);
-$property = $reflection->hasProperty("paths")
-    ? $reflection->getProperty("paths")
-    : $reflection->getProperty("path");
+$property = $reflection->hasProperty('paths')
+    ? $reflection->getProperty('paths')
+    : $reflection->getProperty('path');
 $property->setAccessible(true);
 
-$paths = \Illuminate\Support\Arr::wrap($property->getValue($loader));
+$paths = Illuminate\Support\Arr::wrap($property->getValue($loader));
 
 $default = collect($paths)->flatMap(
-    fn($path) => vscodeCollectTranslations($path)
+    fn ($path) => vscodeCollectTranslations($path)
 );
 
 $namespaced = collect($namespaces)->flatMap(
-    fn($path, $namespace) => vscodeCollectTranslations($path, $namespace)
+    fn ($path, $namespace) => vscodeCollectTranslations($path, $namespace)
 );
 
 $final = [];
 
 foreach ($default->merge($namespaced) as $value) {
-    foreach ($value["vs"] as $key => $v) {
-        $dotKey = "{$value["k"]}.{$key}";
+    foreach ($value['vs'] as $key => $v) {
+        $dotKey = "{$value['k']}.{$key}";
 
         if (!isset($final[$dotKey])) {
             $final[$dotKey] = [];
         }
 
-        $final[$dotKey][$value["la"]] = $v;
+        $final[$dotKey][$value['la']] = $v;
 
-        if ($value["la"] === \Illuminate\Support\Facades\App::currentLocale()) {
-            $final[$dotKey]["default"] = $v;
+        if ($value['la'] === Illuminate\Support\Facades\App::currentLocale()) {
+            $final[$dotKey]['default'] = $v;
         }
     }
 }

@@ -79,7 +79,7 @@ class Generator
     public function generate()
     {
         $app = app();
-        return $this->view->make('helper')
+        return $this->view->make('ide-helper::helper')
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
             ->with('real_time_facades', $this->getRealTimeFacades())
@@ -105,7 +105,7 @@ class Generator
         }
 
         $app = app();
-        return $this->view->make('helper')
+        return $this->view->make('ide-helper::helper')
             ->with('namespaces_by_extends_ns', [])
             ->with('namespaces_by_alias_ns', ['__root' => [$alias]])
             ->with('real_time_facades', [])

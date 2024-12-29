@@ -65,12 +65,6 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
 
-        $this->app->when([GeneratorCommand::class, MetaCommand::class, ModelsCommand::class])
-            ->needs(\Illuminate\Contracts\View\Factory::class)
-            ->give(function () {
-                return $this->createLocalViewFactory();
-            });
-
         $this->commands(
             [
                 GeneratorCommand::class,
@@ -94,21 +88,5 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             MetaCommand::class,
             EloquentCommand::class,
         ];
-    }
-
-    /**
-     * @return Factory
-     */
-    private function createLocalViewFactory()
-    {
-        $resolver = new EngineResolver();
-        $resolver->register('php', function () {
-            return new PhpEngine($this->app['files']);
-        });
-        $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
-        $factory = new Factory($resolver, $finder, $this->app['events']);
-        $factory->addExtension('php', 'php');
-
-        return $factory;
     }
 }

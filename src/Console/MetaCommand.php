@@ -135,7 +135,7 @@ class MetaCommand extends Command
             return gettype($value);
         });
 
-        $content = $this->view->make('meta', [
+        $content = $this->view->make('ide-helper::meta', [
             'bindings' => $bindings,
             'methods' => $this->methods,
             'factories' => $factories,
@@ -191,6 +191,8 @@ class MetaCommand extends Command
         return [
             'configs' => $this->loadTemplate('configs')->pluck('name')->filter(),
             'routes' => $this->loadTemplate('routes')->pluck('name')->filter(),
+            'views' => $this->loadTemplate('views')->pluck('key')->filter(),
+            
         ];
     }
 
@@ -214,6 +216,9 @@ class MetaCommand extends Command
             ],
             '\route()' => [
                 0 => 'routes',
+            ],
+            '\view()' => [
+                0 => 'views',
             ],
         ];
     }

@@ -124,7 +124,7 @@ class MetaCommand extends Command
             'bindings' => $bindings,
             'methods' => $this->methods,
             'factories' => $factories,
-            'expectedArguments' => $this->getExpectedArguments()
+            'expectedArguments' => $this->getExpectedArguments(),
         ])->render();
 
         $filename = $this->option('filename');
@@ -172,8 +172,8 @@ class MetaCommand extends Command
     {
         return [
             'config' => [
-                0 => $this->getConfigHints()
-            ]
+                0 => $this->getConfigHints(),
+            ],
         ];
     }
 

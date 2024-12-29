@@ -68,7 +68,9 @@ namespace PHPSTORM_META {
     <?php if (isset($expectedArguments)) : ?>
     <?php foreach ($expectedArguments as $function => $arguments) : ?>
     <?php foreach ($arguments as $index => $argumentList) : ?>
-expectedArguments(\<?= $function ?>(), <?= $index ?>,<?php foreach ($argumentList as $i => $arg) : ?><?php if($i % 10 == 0) { echo "\n"; } ?><?= var_export($arg, true); ?>,<?php endforeach; ?>
+expectedArguments(\<?= $function ?>(), <?= $index ?>,<?php foreach ($argumentList as $i => $arg) : ?><?php if($i % 10 == 0) {
+    echo "\n";
+} ?><?= var_export($arg, true); ?>,<?php endforeach; ?>
 );
     <?php endforeach; ?>
     <?php endforeach; ?>

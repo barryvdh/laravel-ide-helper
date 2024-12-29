@@ -102,7 +102,7 @@ class Generator
                 $alias->addClass($this->extra[$name]);
             }
 
-            $eloquentAliases['_root'] = [$alias];
+            $eloquentAliases['__root'] = [$alias];
         }
 
         $app = app();

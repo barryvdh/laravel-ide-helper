@@ -84,7 +84,6 @@ class Generator
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
             ->with('real_time_facades', $this->getRealTimeFacades())
             ->with('helpers', $this->helpers)
-            ->with('laravel_version', $app->version())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
             ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
@@ -111,7 +110,6 @@ class Generator
             ->with('namespaces_by_alias_ns', ['__root' => [$alias]])
             ->with('real_time_facades', [])
             ->with('helpers', '')
-            ->with('version', $app->version())
             ->with('include_fluent', false)
             ->with('factories', [])
             ->render();

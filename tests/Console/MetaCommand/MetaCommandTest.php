@@ -27,7 +27,7 @@ class MetaCommandTest extends TestCase
 
         $mockFileSystem
             ->shouldReceive('getRequire')
-            ->andReturnUsing(function ($__path, $__data) {
+            ->andReturnUsing(function ($__path, $__data = []) {
                 return (static function () use ($__path, $__data) {
                     extract($__data, EXTR_SKIP);
 
@@ -60,7 +60,7 @@ class MetaCommandTest extends TestCase
 
         $mockFileSystem
             ->shouldReceive('getRequire')
-            ->andReturnUsing(function ($__path, $__data) {
+            ->andReturnUsing(function ($__path, $__data = []) {
                 return (static function () use ($__path, $__data) {
                     extract($__data, EXTR_SKIP);
 

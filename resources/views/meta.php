@@ -21,6 +21,14 @@ namespace PHPSTORM_META {
     ]));
 <?php endforeach; ?>
 
+<?php foreach ($configMethods as $method) : ?>
+    override(<?= $method ?>, map([
+    <?php foreach ($configValues as $name => $value) : ?>
+        '<?= $name ?>' => '<?= $value ?>',
+    <?php endforeach; ?>
+    ]));
+<?php endforeach; ?>
+
 <?php if (count($factories)) : ?>
     override(\factory(0), map([
         '' => '@FactoryBuilder',
@@ -64,5 +72,21 @@ namespace PHPSTORM_META {
     override(\with(0), type(0));
     override(\tap(0), type(0));
     override(\optional(0), type(0));
+
+    <?php if (isset($expectedArgumentSets)): ?>
+    <?php foreach ($expectedArgumentSets as $name => $argumentsList) : ?>
+    registerArgumentsSet('<?= $name ?>', <?php foreach ($argumentsList as $i => $arg) : ?><?php if($i % 5 == 0) {
+        echo "\n";
+    } ?><?= var_export($arg, true); ?>,<?php endforeach; ?>);
+    <?php endforeach; ?>
+    <?php endif ?>
+
+    <?php if (isset($expectedArguments)) : ?>
+    <?php foreach ($expectedArguments as $function => $arguments) : ?>
+    <?php foreach ($arguments as $index => $argumentSet) : ?>
+expectedArguments(<?= $function ?>, <?= $index ?>, argumentsSet('<?= $argumentSet ?>'));
+    <?php endforeach; ?>
+    <?php endforeach; ?>
+    <?php endif; ?>
 
 }

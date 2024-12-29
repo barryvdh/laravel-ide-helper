@@ -47,7 +47,6 @@ use Illuminate\Database\Schema\Builder;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use phpDocumentor\Reflection\Types\ContextFactory;
@@ -253,7 +252,7 @@ class ModelsCommand extends Command
                 "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
             ],
             ['write-eloquent-helper', 'E', InputOption::VALUE_NONE,
-                "Write Eloquent helper file to _ide_helper.php",
+                'Write Eloquent helper file to _ide_helper.php',
             ],
             ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
             ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],

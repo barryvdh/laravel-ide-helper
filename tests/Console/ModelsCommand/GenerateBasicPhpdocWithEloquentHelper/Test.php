@@ -23,6 +23,6 @@ class Test extends AbstractModelsCommand
         $this->assertStringNotContainsString('Do you want to generate a minimal helper to generate the Eloquent methods?', $tester->getDisplay());
         $this->assertStringContainsString('Eloquent helper was written to _ide_helper.php', $tester->getDisplay());
 
-//        $this->assertMatchesMockedSnapshot();
+        //        $this->assertMatchesMockedSnapshot();
     }
 }

@@ -96,19 +96,19 @@ class Generator
         $facade = Model::class;
         $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
         $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
-        if ($alias->isValid()) {
-            //Add extra methods, from other classes (magic static calls)
-            if (array_key_exists($name, $this->extra)) {
-                $alias->addClass($this->extra[$name]);
-            }
+        if (!$alias->isValid()) {
+            throw new \RuntimeException('Cannot generate Eloquent helper');
+        }
 
-            $eloquentAliases['__root'] = [$alias];
+        //Add extra methods, from other classes (magic static calls)
+        if (array_key_exists($name, $this->extra)) {
+            $alias->addClass($this->extra[$name]);
         }
 
         $app = app();
         return $this->view->make('helper')
             ->with('namespaces_by_extends_ns', [])
-            ->with('namespaces_by_alias_ns', $eloquentAliases)
+            ->with('namespaces_by_alias_ns', ['__root' => [$alias]])
             ->with('real_time_facades', [])
             ->with('helpers', '')
             ->with('version', $app->version())

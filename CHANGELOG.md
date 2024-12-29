@@ -1,5 +1,30 @@
 # Changelog
 
+## v3.4.0 - 2024-12-29
+
+### What's Changed
+
+* fix: add @template TModel of static for Eloquent by @imzyf in https://github.com/barryvdh/laravel-ide-helper/pull/1631
+* Add templates to Eloquent by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1634
+* Update testsuite for Generator, simplify service provider and mock by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1635
+* Add option for only eloquent by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1636
+* Add weak generics for array type objects by @LauJosefsen in https://github.com/barryvdh/laravel-ide-helper/pull/1621
+* Make all "note" in README apply quote style by @hms5232 in https://github.com/barryvdh/laravel-ide-helper/pull/1590
+* Update README.md by @Mtillmann in https://github.com/barryvdh/laravel-ide-helper/pull/1587
+* Rename view var  by @barryvdh and @pb30 in https://github.com/barryvdh/laravel-ide-helper/pull/1637 and https://github.com/barryvdh/laravel-ide-helper/pull/1563
+* Format IDE helper by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1638
+* Add TLDR section, update options by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1639
+
+### New Contributors
+
+* @imzyf made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1631
+* @LauJosefsen made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1621
+* @hms5232 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1590
+* @Mtillmann made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1587
+* @pb30 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1563
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.3.0...v3.4.0
+
 ## v3.3.0 - 2024-12-18
 
 ### What's Changed
@@ -54,10 +79,13 @@
 - Fix type of hashed model property to `string`
 
 ### Changed
-- Update view "version" variable name to avoid potential conflicts
 
+- Update view "version" variable name to avoid potential conflicts
+  
 - Add support for EloquentBuilder generics introduced in Laravel 11.15.
+  
 - Drop support for Laravel versions earlier than 11.15.
+  
 
 ### Added
 

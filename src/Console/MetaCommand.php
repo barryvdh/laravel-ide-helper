@@ -16,6 +16,7 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,6 +64,16 @@ class MetaCommand extends Command
         '\resolve(0)',
         '\Psr\Container\ContainerInterface::get(0)',
     ];
+
+    protected $configMethods = [
+        '\config()',
+        '\Illuminate\Config\Repository::get()',
+        '\Illuminate\Config\Repository::set()',
+        '\Illuminate\Support\Facades\Config::get()',
+        '\Illuminate\Support\Facades\Config::set()',
+    ];
+
+    protected $templateCache = [];
 
     /**
      *
@@ -120,10 +131,17 @@ class MetaCommand extends Command
 
         $this->unregisterClassAutoloadExceptions($ourAutoloader);
 
+        $configValues = $this->loadTemplate('configs')->pluck('value', 'name')->map(function ($value, $key) {
+            return gettype($value);
+        });
+
         $content = $this->view->make('meta', [
             'bindings' => $bindings,
             'methods' => $this->methods,
             'factories' => $factories,
+            'configMethods' => $this->configMethods,
+            'configValues' => $configValues,
+            'expectedArgumentSets' => $this->getExpectedArgumentSets(),
             'expectedArguments' => $this->getExpectedArguments(),
         ])->render();
 
@@ -168,18 +186,49 @@ class MetaCommand extends Command
         return $autoloader;
     }
 
+    protected function getExpectedArgumentSets()
+    {
+        return [
+            'configs' => $this->loadTemplate('configs')->pluck('name')->filter(),
+            'routes' => $this->loadTemplate('routes')->pluck('name')->filter(),
+        ];
+    }
+
     protected function getExpectedArguments()
     {
         return [
-            'config' => [
-                0 => $this->getConfigHints(),
+            '\config()' => [
+                0 => 'configs',
+            ],
+            '\Illuminate\Config\Repository::get()' => [
+                0 => 'configs',
+            ],
+            '\Illuminate\Config\Repository::set()' => [
+                0 => 'configs',
+            ],
+            '\Illuminate\Support\Facades\Config::get()' => [
+                0 => 'configs',
+            ],
+            '\Illuminate\Support\Facades\Config::set()' => [
+                0 => 'configs',
+            ],
+            '\route()' => [
+                0 => 'routes',
             ],
         ];
     }
 
-    protected function getConfigHints()
+    /**
+     * @return Collection
+     */
+    protected function loadTemplate($name)
     {
-        return collect($this->config->all())->dot()->keys()->toArray();
+        if (!isset($this->templates[$name])) {
+            $file =  __DIR__ . '/../../php-templates/' . basename($name) .'.php';
+            $this->templates[$name] = $this->files->requireOnce($file);
+        }
+
+        return $this->templates[$name];
     }
 
     /**

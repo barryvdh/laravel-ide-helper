@@ -51,17 +51,17 @@ class MetaCommand extends Command
     protected $config;
 
     protected $methods = [
-      'new \Illuminate\Contracts\Container\Container',
-      '\Illuminate\Container\Container::makeWith(0)',
-      '\Illuminate\Contracts\Container\Container::get(0)',
-      '\Illuminate\Contracts\Container\Container::make(0)',
-      '\Illuminate\Contracts\Container\Container::makeWith(0)',
-      '\App::get(0)',
-      '\App::make(0)',
-      '\App::makeWith(0)',
-      '\app(0)',
-      '\resolve(0)',
-      '\Psr\Container\ContainerInterface::get(0)',
+        'new \Illuminate\Contracts\Container\Container',
+        '\Illuminate\Container\Container::makeWith(0)',
+        '\Illuminate\Contracts\Container\Container::get(0)',
+        '\Illuminate\Contracts\Container\Container::make(0)',
+        '\Illuminate\Contracts\Container\Container::makeWith(0)',
+        '\App::get(0)',
+        '\App::make(0)',
+        '\App::makeWith(0)',
+        '\app(0)',
+        '\resolve(0)',
+        '\Psr\Container\ContainerInterface::get(0)',
     ];
 
     /**
@@ -108,7 +108,7 @@ class MetaCommand extends Command
                 }
 
                 $reflectionClass = new \ReflectionClass($concrete);
-                if (is_object($concrete) && !$reflectionClass->isAnonymous()) {
+                if (is_object($concrete) && !$reflectionClass->isAnonymous() && $abstract !== get_class($concrete)) {
                     $bindings[$abstract] = get_class($concrete);
                 }
             } catch (\Throwable $e) {
@@ -121,9 +121,10 @@ class MetaCommand extends Command
         $this->unregisterClassAutoloadExceptions($ourAutoloader);
 
         $content = $this->view->make('meta', [
-          'bindings' => $bindings,
-          'methods' => $this->methods,
-          'factories' => $factories,
+            'bindings' => $bindings,
+            'methods' => $this->methods,
+            'factories' => $factories,
+            'expectedArguments' => $this->getExpectedArguments()
         ])->render();
 
         $filename = $this->option('filename');
@@ -165,6 +166,20 @@ class MetaCommand extends Command
         };
         spl_autoload_register($autoloader);
         return $autoloader;
+    }
+
+    protected function getExpectedArguments()
+    {
+        return [
+            'config' => [
+                0 => $this->getConfigHints()
+            ]
+        ];
+    }
+
+    protected function getConfigHints()
+    {
+        return collect($this->config->all())->dot()->keys()->toArray();
     }
 
     /**

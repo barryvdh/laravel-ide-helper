@@ -65,4 +65,12 @@ namespace PHPSTORM_META {
     override(\tap(0), type(0));
     override(\optional(0), type(0));
 
+    <?php if (isset($expectedArguments)) : ?>
+    <?php foreach ($expectedArguments as $function => $arguments) : ?>
+    <?php foreach ($arguments as $index => $argumentList) : ?>
+expectedArguments(\<?= $function ?>(), <?= $index ?>,<?php foreach ($argumentList as $i => $arg) : ?><?php if($i % 10 == 0) { echo "\n"; } ?><?= var_export($arg, true); ?>,<?php endforeach; ?>
+);
+    <?php endforeach; ?>
+    <?php endforeach; ?>
+    <?php endif; ?>
 }

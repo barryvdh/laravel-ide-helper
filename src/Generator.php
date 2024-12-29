@@ -11,6 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
@@ -91,16 +92,17 @@ class Generator
 
     public function generateEloquent()
     {
-        $aliasesByNamespace = $this->getAliasesByAliasNamespace();
-
-        $eloquentAliases = [];
-        foreach ($aliasesByNamespace as $namespace => $aliases) {
-            foreach ($aliases as $alias) {
-                if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') {
-                    $eloquentAliases[$namespace] = $eloquentAliases[$namespace] ?? [];
-                    $eloquentAliases[$namespace][] = $alias;
-                }
+        $name = 'Eloquent';
+        $facade = Model::class;
+        $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : [];
+        $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
+        if ($alias->isValid()) {
+            //Add extra methods, from other classes (magic static calls)
+            if (array_key_exists($name, $this->extra)) {
+                $alias->addClass($this->extra[$name]);
             }
+
+            $eloquentAliases['_root'] = [$alias];
         }
 
         $app = app();

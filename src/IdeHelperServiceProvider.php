@@ -65,7 +65,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
 
-        $this->app->when([GeneratorCommand::class, MetaCommand::class])
+        $this->app->when([GeneratorCommand::class, MetaCommand::class, ModelsCommand::class ])
             ->needs(\Illuminate\Contracts\View\Factory::class)
             ->give(function () {
                 return $this->createLocalViewFactory();

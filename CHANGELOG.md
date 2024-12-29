@@ -54,6 +54,7 @@
 - Fix type of hashed model property to `string`
 
 ### Changed
+- Update view "version" variable name to avoid potential conflicts
 
 - Add support for EloquentBuilder generics introduced in Laravel 11.15.
 - Drop support for Laravel versions earlier than 11.15.

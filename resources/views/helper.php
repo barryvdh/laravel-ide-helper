@@ -23,17 +23,17 @@
 */
 <?php
 $s1 = '    ';
-$s2 = $s1.$s1;
-$s3 = $s1.$s2;
+$s2 = $s1 . $s1;
+$s3 = $s1 . $s2;
 ?>
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
     namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
-        <?php echo trim($alias->getDocComment($s1)) ."\n{$s1}" . $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
+        <?php echo trim($alias->getDocComment($s1)) . "\n{$s1}" . $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach ($alias->getMethods() as $method) : ?>
-            <?= trim($method->getDocComment($s2)) ."\n{$s2}" ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
+            <?= trim($method->getDocComment($s2)) . "\n{$s2}" ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
             {<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
-                <?= "\n".$s3?>//Method inherited from <?= $method->getDeclaringClass() ?>
+                <?= "\n" . $s3?>//Method inherited from <?= $method->getDeclaringClass() ?>
             <?php endif; ?>
 
             <?php if ($method->isInstanceCall()) : ?>
@@ -53,11 +53,11 @@ $s3 = $s1.$s2;
     namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
         <?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
-            <?= "\n".$alias->getPhpDocTemplates($s1) ."\n" ?>
+            <?= "\n" . $alias->getPhpDocTemplates($s1) . "\n" ?>
         <?php endif?>
-        <?= $s1. $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
+        <?= $s1 . $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
             <?php foreach ($alias->getMethods() as $method) : ?>
-                <?= $s2 . trim($method->getDocComment($s2))."\n" ?>
+                <?= $s2 . trim($method->getDocComment($s2)) . "\n" ?>
                 <?= $s2 ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
                 <?= $s2?>{<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
                     <?= $s2 ?>//Method inherited from <?= $method->getDeclaringClass() ?>

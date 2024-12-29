@@ -191,7 +191,7 @@ class MetaCommand extends Command
         return [
             'configs' => $this->loadTemplate('configs')->pluck('name')->filter()->toArray(),
             'routes' => $this->loadTemplate('routes')->pluck('name')->filter()->toArray(),
-            'views' => $this->loadTemplate('views')->pluck('key')->filter()->map(function($value) {
+            'views' => $this->loadTemplate('views')->pluck('key')->filter()->map(function ($value) {
                 return (string) $value;
             })->toArray(),
             'translations' => $this->loadTemplate('translations')->filter()->keys()->toArray(),

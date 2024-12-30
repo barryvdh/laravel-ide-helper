@@ -12,6 +12,8 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Factories;
+use Dotenv\Parser\Entry;
+use Dotenv\Parser\Parser;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
@@ -68,9 +70,7 @@ class MetaCommand extends Command
     protected $configMethods = [
         '\config()',
         '\Illuminate\Config\Repository::get()',
-        '\Illuminate\Config\Repository::set()',
         '\Illuminate\Support\Facades\Config::get()',
-        '\Illuminate\Support\Facades\Config::set()',
     ];
 
     protected $userMethods = [
@@ -202,59 +202,105 @@ class MetaCommand extends Command
     protected function getExpectedArgumentSets()
     {
         return [
+            'auth' => $this->loadTemplate('auth')->keys()->filter()->toArray(),
             'configs' => $this->loadTemplate('configs')->pluck('name')->filter()->toArray(),
+            'middleware' => $this->loadTemplate('middleware')->keys()->filter()->toArray(),
             'routes' => $this->loadTemplate('routes')->pluck('name')->filter()->toArray(),
             'views' => $this->loadTemplate('views')->pluck('key')->filter()->map(function ($value) {
                 return (string) $value;
             })->toArray(),
             'translations' => $this->loadTemplate('translations')->filter()->keys()->toArray(),
+            'env' => $this->getEnv(),
         ];
     }
 
     protected function getExpectedArguments()
     {
         return [
-            '\config()' => [
-                0 => 'configs',
+            [
+                'class' => '\Illuminate\Support\Facades\Gate',
+                'method' => [
+                    'has',
+                    'allows',
+                    'denies',
+                    'check',
+                    'any',
+                    'none',
+                    'authorize',
+                    'inspect',
+                ],
+                'argumentSet' => 'auth',
             ],
-            '\Illuminate\Config\Repository::get()' => [
-                0 => 'configs',
+            [
+                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth'],
+                'method' => ['can', 'cannot'],
+                'argumentSet' => 'auth',
             ],
-            '\Illuminate\Config\Repository::set()' => [
-                0 => 'configs',
+            [
+                'method' => 'config',
+                'argumentSet' => 'configs',
             ],
-            '\Illuminate\Support\Facades\Config::get()' => [
-                0 => 'configs',
+            [
+                'class' => ['\Illuminate\Config\Repository', '\Illuminate\Support\Facades\Config'],
+                'method' => [
+                    'get',
+                    'getMany',
+                    'set',
+                    'string',
+                    'integer',
+                    'boolean',
+                    'float',
+                    'array',
+                    'prepend',
+                    'push',
+                ],
+                'argumentSet' => 'configs',
             ],
-            '\Illuminate\Support\Facades\Config::set()' => [
-                0 => 'configs',
+            [
+                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Routing\Router'],
+                'method' => ['middleware', 'withoutMiddleware'],
+                'argumentSet' => 'middleware',
             ],
-            '\route()' => [
-                0 => 'routes',
+            [
+                'method' => ['route', 'to_route', 'signedRoute'],
+                'argumentSet' => 'routes',
             ],
-            '\Illuminate\Support\Facades\Route::get()' => [
-                0 => 'routes',
+            [
+                'class' => [
+                    '\Illuminate\Support\Facades\Redirect',
+                    '\Illuminate\Support\Facades\URL',
+                    '\Illuminate\Routing\Redirector',
+                    '\Illuminate\Routing\UrlGenerator',
+                ],
+                'method' => ['route', 'signedRoute', 'temporarySignedRoute'],
+                'argumentSet' => 'routes',
             ],
-            '\Illuminate\Routing\Router::get()' => [
-                0 => 'routes',
+            [
+                'method' => 'view',
+                'argumentSet' => 'views',
             ],
-            '\view()' => [
-                0 => 'views',
+            [
+                'class' => ['\Illuminate\Support\Facades\View', '\Illuminate\View\Factory'],
+                'method' => 'make',
+                'argumentSet' => 'views',
             ],
-            '\Illuminate\Support\Facades\View::make()' => [
-                0 => 'views',
+            [
+                'method' => ['__', 'trans'],
+                'argumentSet' => 'translations',
             ],
-            '\Illuminate\View\Factory::make()' => [
-                0 => 'views',
+            [
+                'class' => ['\Illuminate\Contracts\Translation\Translator'],
+                'method' => ['get'],
+                'argumentSet' => 'translations',
             ],
-            '\__()' => [
-                0 => 'translations',
+            [
+                'method' => 'env',
+                'argumentSet' => 'env',
             ],
-            '\trans()' => [
-                0 => 'translations',
-            ],
-            '\Illuminate\Contracts\Translation\Translator::get()' => [
-                0 => 'translations',
+            [
+                'class' => '\Illuminate\Support\Env',
+                'method' => 'get',
+                'argumentSet' => 'env',
             ],
         ];
     }
@@ -288,6 +334,21 @@ class MetaCommand extends Command
         return [
             ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
         ];
+    }
+
+    protected function getEnv()
+    {
+        $envPath = base_path('.env');
+        if (!file_exists($envPath)) {
+            return [];
+        }
+
+        $parser = new Parser();
+        $entries = $parser->parse(file_get_contents($envPath));
+
+        return collect($entries)->map(function (Entry $entry) {
+            return $entry->getName();
+        });
     }
 
     /**

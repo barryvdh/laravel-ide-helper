@@ -13,6 +13,7 @@ namespace Barryvdh\LaravelIdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
+use Barryvdh\Reflection\DocBlock\ContextFactory;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
@@ -82,7 +83,7 @@ class Alias
 
         if (!empty($this->namespace)) {
             try {
-                $this->classAliases = (new UsesResolver())->loadFromClass($this->root);
+                $this->classAliases = (new ContextFactory())->createFromReflector(new \ReflectionClass($this->root))->getNamespaceAliases();
             } catch (Throwable $e) {
                 $this->classAliases = [];
             }

@@ -49,7 +49,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
-use phpDocumentor\Reflection\Types\ContextFactory;
+use Barryvdh\Reflection\DocBlock\ContextFactory;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionObject;

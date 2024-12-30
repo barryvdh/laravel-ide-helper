@@ -19,7 +19,6 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Env;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

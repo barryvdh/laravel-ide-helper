@@ -73,6 +73,15 @@ class MetaCommand extends Command
         '\Illuminate\Support\Facades\Config::set()',
     ];
 
+    protected $userMethods = [
+        '\auth()->user()',
+        '\Illuminate\Contracts\Auth\Guard::user()',
+        '\Illuminate\Support\Facades\Auth::user()',
+        '\request()->user()',
+        '\Illuminate\Http\Request::user()',
+        '\Illuminate\Support\Facades\Request::user()',
+    ];
+
     protected $templateCache = [];
 
     /**
@@ -135,6 +144,8 @@ class MetaCommand extends Command
             return gettype($value);
         });
 
+        $defaultUserModel = $this->config->get('auth.providers.users.model', $this->config->get('auth.model', 'App\User'));
+
         $content = $this->view->make('ide-helper::meta', [
             'bindings' => $bindings,
             'methods' => $this->methods,
@@ -143,6 +154,8 @@ class MetaCommand extends Command
             'configValues' => $configValues,
             'expectedArgumentSets' => $this->getExpectedArgumentSets(),
             'expectedArguments' => $this->getExpectedArguments(),
+            'userModel' => $defaultUserModel,
+            'userMethods' => $this->userMethods,
         ])->render();
 
         $filename = $this->option('filename');

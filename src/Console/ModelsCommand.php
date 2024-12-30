@@ -1571,7 +1571,9 @@ class ModelsCommand extends Command
      */
     protected function getUsedClassNames(ReflectionClass $reflection): array
     {
-        $namespaceAliases = array_flip((new ContextFactory())->createFromReflector($reflection)->getNamespaceAliases());
+        $namespaceAliases = array_flip(array_map(function ($alias) {
+            return ltrim($alias, '\\');
+        }, (new ContextFactory())->createFromReflector($reflection)->getNamespaceAliases()));
         $namespaceAliases[$reflection->getName()] = $reflection->getShortName();
 
         return $namespaceAliases;

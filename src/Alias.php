@@ -488,6 +488,15 @@ class Alias
             $reflection = new ReflectionClass($class);
             $traits = collect($reflection->getTraitNames());
 
+            $phpdoc = new DocBlock($reflection);
+            $templates = $phpdoc->getTagsByName('template');
+            /** @var DocBlock\Tag\TemplateTag $template */
+            foreach ($templates as $template) {
+                $template->setBound('static');
+                $template->setDocBlock($templateDoc);
+                $templateDoc->appendTag($template);
+            }
+
             foreach ($traits as $trait) {
                 $phpdoc = new DocBlock(new ReflectionClass($trait));
                 $templates = $phpdoc->getTagsByName('template');

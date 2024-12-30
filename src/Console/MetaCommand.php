@@ -12,11 +12,14 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Factories;
+use Dotenv\Parser\Entry;
+use Dotenv\Parser\Parser;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Env;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -208,7 +211,7 @@ class MetaCommand extends Command
                 return (string) $value;
             })->toArray(),
             'translations' => $this->loadTemplate('translations')->filter()->keys()->toArray(),
-            'env' => array_keys($_ENV),
+            'env' => $this->getEnv(),
         ];
     }
 
@@ -332,6 +335,16 @@ class MetaCommand extends Command
         return [
             ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
         ];
+    }
+
+    protected function getEnv()
+    {
+        $parser = new Parser();
+        $entries = $parser->parse(file_get_contents(base_path('.env')));
+
+        return collect($entries)->map(function (Entry $entry) {
+            return $entry->getName();
+        });
     }
 
     /**

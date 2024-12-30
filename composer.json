@@ -38,7 +38,8 @@
         "orchestra/testbench": "^9.2",
         "phpunit/phpunit": "^10.5",
         "spatie/phpunit-snapshot-assertions": "^4 || ^5",
-        "vimeo/psalm": "^5.4"
+        "vimeo/psalm": "^5.4",
+        "vlucas/phpdotenv": "^5"
     },
     "suggest": {
         "illuminate/events": "Required for automatic helper generation (^6|^7|^8|^9|^10|^11)."

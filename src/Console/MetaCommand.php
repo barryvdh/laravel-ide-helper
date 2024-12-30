@@ -338,8 +338,13 @@ class MetaCommand extends Command
 
     protected function getEnv()
     {
+        $envPath = base_path('.env');
+        if (!file_exists($envPath)) {
+            return [];
+        }
+
         $parser = new Parser();
-        $entries = $parser->parse(file_get_contents(base_path('.env')));
+        $entries = $parser->parse(file_get_contents($envPath));
 
         return collect($entries)->map(function (Entry $entry) {
             return $entry->getName();

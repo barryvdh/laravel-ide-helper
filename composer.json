@@ -22,14 +22,13 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "barryvdh/reflection-docblock": "^2.2",
+        "barryvdh/reflection-docblock": "^2.3",
         "composer/class-map-generator": "^1.0",
         "illuminate/console": "^11.15",
         "illuminate/database": "^11.15",
         "illuminate/filesystem": "^11.15",
         "illuminate/support": "^11.15",
-        "nikic/php-parser": "^4.18 || ^5",
-        "phpdocumentor/type-resolver": "^1.1.0"
+        "nikic/php-parser": "^4.18 || ^5"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",

@@ -21,6 +21,12 @@ namespace PHPSTORM_META {
     ]));
 <?php endforeach; ?>
 
+<?php foreach ($userMethods as $method) : ?>
+    override(<?= $method ?>, map([
+        '' => \<?= $userModel ?>::class,
+    ]));
+<?php endforeach; ?>
+
 <?php foreach ($configMethods as $method) : ?>
     override(<?= $method ?>, map([
     <?php foreach ($configValues as $name => $value) : ?>

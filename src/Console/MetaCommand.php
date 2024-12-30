@@ -17,7 +17,6 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Env;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -228,16 +227,16 @@ class MetaCommand extends Command
                     'authorize',
                     'inspect',
                 ],
-                'argumentSet' => 'auth'
+                'argumentSet' => 'auth',
             ],
             [
                 'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth'],
                 'method' => ['can', 'cannot'],
-                'argumentSet' => 'auth'
+                'argumentSet' => 'auth',
             ],
             [
                 'method' => 'config',
-                'argumentSet' => 'configs'
+                'argumentSet' => 'configs',
             ],
             [
                 'class' => ['\Illuminate\Config\Repository', '\Illuminate\Support\Facades\Config'],
@@ -253,53 +252,53 @@ class MetaCommand extends Command
                     'prepend',
                     'push',
                 ],
-                'argumentSet' => 'configs'
+                'argumentSet' => 'configs',
             ],
             [
                 'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Routing\Router'],
                 'method' => ['middleware', 'withoutMiddleware'],
-                'argumentSet' => 'middleware'
+                'argumentSet' => 'middleware',
             ],
             [
                 'method' => ['route', 'to_route', 'signedRoute'],
-                'argumentSet' => 'routes'
+                'argumentSet' => 'routes',
             ],
             [
                 'class' => [
                     '\Illuminate\Support\Facades\Redirect',
                     '\Illuminate\Support\Facades\URL',
                     '\Illuminate\Routing\Redirector',
-                    '\Illuminate\Routing\UrlGenerator'
+                    '\Illuminate\Routing\UrlGenerator',
                 ],
                 'method' => ['route', 'signedRoute', 'temporarySignedRoute'],
-                'argumentSet' => 'routes'
+                'argumentSet' => 'routes',
             ],
             [
                 'method' => 'view',
-                'argumentSet' => 'views'
+                'argumentSet' => 'views',
             ],
             [
                 'class' => ['\Illuminate\Support\Facades\View', '\Illuminate\View\Factory'],
                 'method' => 'make',
-                'argumentSet' => 'views'
+                'argumentSet' => 'views',
             ],
             [
                 'method' => ['__', 'trans'],
-                'argumentSet' => 'translations'
+                'argumentSet' => 'translations',
             ],
             [
                 'class' => ['\Illuminate\Contracts\Translation\Translator'],
                 'method' => ['get'],
-                'argumentSet' => 'translations'
+                'argumentSet' => 'translations',
             ],
             [
                 'method' => 'env',
-                'argumentSet' => 'env'
+                'argumentSet' => 'env',
             ],
             [
                 'class' => '\Illuminate\Support\Env',
                 'method' => 'get',
-                'argumentSet' => 'env'
+                'argumentSet' => 'env',
             ],
         ];
     }

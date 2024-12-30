@@ -96,10 +96,10 @@ namespace PHPSTORM_META {
         $functions = [];
         foreach ($classes as $class) {
             foreach ((array) $arguments['method'] as $method) {
-                $functions[] = '\\' . ($class ? ltrim($class, '\\')  . '::' : '') . $method . '()';
+                $functions[] = '\\' . ($class ? ltrim($class, '\\') . '::' : '') . $method . '()';
             }
         }
-    ?>
+        ?>
     <?php foreach ($functions as $function) : ?>
 expectedArguments(<?= $function ?>, <?= $index ?>, argumentsSet('<?= $argumentSet ?>'));
     <?php endforeach; ?>

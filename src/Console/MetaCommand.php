@@ -79,7 +79,7 @@ class MetaCommand extends Command
         '\Illuminate\Support\Facades\Auth::user()',
         '\request()->user()',
         '\Illuminate\Http\Request::user()',
-        '\Illuminate\Support\Facades\Request::user()'
+        '\Illuminate\Support\Facades\Request::user()',
     ];
 
     protected $templateCache = [];

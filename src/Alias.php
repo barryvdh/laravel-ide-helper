@@ -489,7 +489,7 @@ class Alias
         $templateDoc = new DocBlock('');
         $serializer = new DocBlockSerializer(1, $prefix);
 
-        foreach ($this->templateNames as $templateName) {
+        foreach ($this->getTemplateNames() as $templateName) {
             $template = new TemplateTag('template', $templateName);
             $template->setBound('static');
             $template->setDocBlock($templateDoc);

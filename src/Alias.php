@@ -15,8 +15,8 @@ use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\ContextFactory;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
-use Barryvdh\Reflection\DocBlock\Tag\TemplateTag;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
+use Barryvdh\Reflection\DocBlock\Tag\TemplateTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -523,7 +523,7 @@ class Alias
 
             $phpdoc = new DocBlock($reflection);
             $templates = $phpdoc->getTagsByName('template');
-            /** @var DocBlock\Tag\TemplateTag $template */
+            /** @var TemplateTag $template */
             foreach ($templates as $template) {
                 $templateNames[] = $template->getTemplateName();
             }
@@ -532,7 +532,7 @@ class Alias
                 $phpdoc = new DocBlock(new ReflectionClass($trait));
                 $templates = $phpdoc->getTagsByName('template');
 
-                /** @var DocBlock\Tag\TemplateTag $template */
+                /** @var TemplateTag $template */
                 foreach ($templates as $template) {
                     $templateNames[] = $template->getTemplateName();
                 }

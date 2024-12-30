@@ -88,8 +88,19 @@ namespace PHPSTORM_META {
     <?php endif ?>
 
     <?php if (isset($expectedArguments)) : ?>
-    <?php foreach ($expectedArguments as $function => $arguments) : ?>
-    <?php foreach ($arguments as $index => $argumentSet) : ?>
+    <?php foreach ($expectedArguments as $arguments) : ?>
+    <?php
+        $classes = isset($arguments['class']) ? (array) $arguments['class'] : [null];
+        $index = $arguments['index'] ?? 0;
+        $argumentSet = $arguments['argumentSet'];
+        $functions = [];
+        foreach ($classes as $class) {
+            foreach ((array) $arguments['method'] as $method) {
+                $functions[] = '\\' . ($class ? ltrim($class, '\\')  . '::' : '') . $method . '()';
+            }
+        }
+    ?>
+    <?php foreach ($functions as $function) : ?>
 expectedArguments(<?= $function ?>, <?= $index ?>, argumentsSet('<?= $argumentSet ?>'));
     <?php endforeach; ?>
     <?php endforeach; ?>

@@ -83,7 +83,7 @@ class Alias
 
         if (!empty($this->namespace)) {
             try {
-                $this->classAliases = (new ContextFactory())->createFromReflector(new \ReflectionClass($this->root))->getNamespaceAliases();
+                $this->classAliases = (new ContextFactory())->createFromReflector(new ReflectionClass($this->root))->getNamespaceAliases();
             } catch (Throwable $e) {
                 $this->classAliases = [];
             }

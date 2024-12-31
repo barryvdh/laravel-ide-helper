@@ -16,6 +16,7 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\ContextFactory;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
+use Barryvdh\Reflection\DocBlock\Tag\TemplateTag;
 use Closure;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -47,6 +48,9 @@ class Alias
 
     /** @var ConfigRepository  */
     protected $config;
+
+    /** @var string[] */
+    protected $templateNames;
 
     /**
      * @param ConfigRepository $config
@@ -347,7 +351,8 @@ class Alias
                         $magic,
                         $this->interfaces,
                         $this->classAliases,
-                        $this->getReturnTypeNormalizers($class)
+                        $this->getReturnTypeNormalizers($class),
+                        $this->getTemplateNames()
                     );
                 }
                 $this->usedMethods[] = $magic;
@@ -379,7 +384,8 @@ class Alias
                                 $method->name,
                                 $this->interfaces,
                                 $this->classAliases,
-                                $this->getReturnTypeNormalizers($reflection)
+                                $this->getReturnTypeNormalizers($reflection),
+                                $this->getTemplateNames(),
                             );
                         }
                         $this->usedMethods[] = $method->name;
@@ -477,39 +483,62 @@ class Alias
     /**
      * @param $prefix
      * @return string
-     * @throws \ReflectionException
      */
     public function getPhpDocTemplates($prefix = "\t\t")
     {
         $templateDoc = new DocBlock('');
         $serializer = new DocBlockSerializer(1, $prefix);
 
+        foreach ($this->getTemplateNames() as $templateName) {
+            $template = new TemplateTag('template', $templateName);
+            $template->setBound('static');
+            $template->setDocBlock($templateDoc);
+            $templateDoc->appendTag($template);
+        }
+
+        return $serializer->getDocComment($templateDoc);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTemplateNames()
+    {
+        if (!isset($this->templateNames)) {
+            $this->detectTemplateNames();
+        }
+        return $this->templateNames;
+    }
+
+    /**
+     * @return void
+     * @throws \ReflectionException
+     */
+    protected function detectTemplateNames()
+    {
+        $templateNames = [];
         foreach ($this->classes as $class) {
             $reflection = new ReflectionClass($class);
             $traits = collect($reflection->getTraitNames());
 
             $phpdoc = new DocBlock($reflection);
             $templates = $phpdoc->getTagsByName('template');
-            /** @var DocBlock\Tag\TemplateTag $template */
+            /** @var TemplateTag $template */
             foreach ($templates as $template) {
-                $template->setBound('static');
-                $template->setDocBlock($templateDoc);
-                $templateDoc->appendTag($template);
+                $templateNames[] = $template->getTemplateName();
             }
 
             foreach ($traits as $trait) {
                 $phpdoc = new DocBlock(new ReflectionClass($trait));
                 $templates = $phpdoc->getTagsByName('template');
 
-                /** @var DocBlock\Tag\TemplateTag $template */
+                /** @var TemplateTag $template */
                 foreach ($templates as $template) {
-                    $template->setBound('static');
-                    $template->setDocBlock($templateDoc);
-                    $templateDoc->appendTag($template);
+                    $templateNames[] = $template->getTemplateName();
                 }
             }
         }
-        return $serializer->getDocComment($templateDoc);
+        $this->templateNames = $templateNames;
     }
 
     /**

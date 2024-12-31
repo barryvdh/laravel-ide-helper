@@ -39,6 +39,9 @@ class Method
     protected $classAliases;
     protected $returnTypeNormalizers;
 
+    /** @var string[] */
+    protected $templateNames = [];
+
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
      * @param string $alias
@@ -47,8 +50,9 @@ class Method
      * @param array $interfaces
      * @param array $classAliases
      * @param array $returnTypeNormalizers
+     * @param string[] $templateNames
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], array $returnTypeNormalizers = [])
+    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], array $returnTypeNormalizers = [], array $templateNames = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
@@ -56,6 +60,7 @@ class Method
         $this->returnTypeNormalizers = $returnTypeNormalizers;
         $this->name = $methodName ?: $method->name;
         $this->real_name = $method->isClosure() ? $this->name : $method->name;
+        $this->templateNames = $templateNames;
         $this->initClassDefinedProperties($method, $class);
 
         //Reference the 'real' function in the declaring class
@@ -84,7 +89,7 @@ class Method
      */
     protected function initPhpDoc($method)
     {
-        $this->phpdoc = new DocBlock($method, new Context($this->namespace, $this->classAliases));
+        $this->phpdoc = new DocBlock($method, new Context($this->namespace, $this->classAliases, generics: $this->templateNames));
     }
 
     /**
@@ -386,7 +391,7 @@ class Method
         }
         if ($method) {
             $namespace = $method->getDeclaringClass()->getNamespaceName();
-            $phpdoc = new DocBlock($method, new Context($namespace, $this->classAliases));
+            $phpdoc = new DocBlock($method, new Context($namespace, $this->classAliases, generics: $this->templateNames));
 
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
                 //Not at the end yet, try another parent/interface..

@@ -193,6 +193,29 @@ DOC;
         $this->assertSame([], $method->getParamsWithDefault(false));
         $this->assertTrue($method->shouldReturn());
     }
+
+    public function testEloquentBuilderWithTemplates()
+    {
+        $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
+        $reflectionMethod = $reflectionClass->getMethod('firstOr');
+
+        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], [], ['TModel']);
+
+        $output =  <<<'DOC'
+/**
+ * Execute the query and get the first result or call a callback.
+ *
+ * @template TValue
+ * @param (\Closure(): TValue)|list<string> $columns
+ * @param (\Closure(): TValue)|null $callback
+ * @return TModel|TValue 
+ * @static 
+ */
+DOC;
+        $this->assertSame($output, $method->getDocComment(''));
+        $this->assertSame('firstOr', $method->getName());
+        $this->assertSame('\\' . EloquentBuilder::class, $method->getDeclaringClass());
+    }
 }
 
 class ExampleClass

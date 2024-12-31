@@ -66,6 +66,21 @@ class AliasTest extends TestCase
         $this->assertNotNull($this->getAliasMacro($alias, EloquentBuilder::class, $macro));
     }
 
+    /**
+     * @covers ::detectTemplateNames
+     */
+    public function testTemplateNamesAreDetected(): void
+    {
+        // Mock
+        $alias = new AliasMock();
+
+        // Prepare
+        $alias->setClasses([EloquentBuilder::class]);
+
+        // Test
+        $this->assertSame(['TModel', 'TValue'], $alias->getTemplateNames());
+    }
+
     protected function getAliasMacro(Alias $alias, string $class, string $method): ?Macro
     {
         return Arr::first(
@@ -82,6 +97,7 @@ class AliasTest extends TestCase
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ * @template TValue
  */
 class AliasMock extends Alias
 {

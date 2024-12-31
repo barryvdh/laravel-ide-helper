@@ -512,7 +512,7 @@ class Alias
 
     /**
      * @return void
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     protected function detectTemplateNames()
     {

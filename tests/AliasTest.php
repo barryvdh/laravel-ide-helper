@@ -7,7 +7,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 use Barryvdh\LaravelIdeHelper\Alias;
 use Barryvdh\LaravelIdeHelper\Macro;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
 
 /**

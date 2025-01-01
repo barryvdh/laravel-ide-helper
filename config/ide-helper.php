@@ -344,8 +344,8 @@ return [
     |
     */
     'macroable_traits' => [
-        \Filament\Support\Concerns\Macroable::class,
-        \Spatie\Macroable\Macroable::class,
+        Filament\Support\Concerns\Macroable::class,
+        Spatie\Macroable\Macroable::class,
     ],
 
 ];

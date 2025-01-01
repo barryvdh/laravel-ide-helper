@@ -35,6 +35,7 @@ class Generator
     protected $magic = [];
     protected $interfaces = [];
     protected $helpers;
+    protected array $macroableTraits = [];
 
     /**
      * @param \Illuminate\Config\Repository $config
@@ -341,7 +342,7 @@ class Generator
                 continue;
             }
 
-            $aliases[] = new Alias($this->config, $class, $class, [], $this->interfaces);
+            $aliases[] = new Alias($this->config, $class, $class, [], $this->interfaces, true);
         }
     }
 
@@ -363,8 +364,18 @@ class Generator
             ->filter(function ($class) {
                 $traits = class_uses_recursive($class);
 
-                // Filter only classes with the macroable trait
-                return isset($traits[Macroable::class]);
+                if (isset($traits[Macroable::class])) {
+                    return true;
+                }
+
+                // Filter only classes with a macroable trait
+                foreach ($this->config->get('ide-helper.macroable_traits', []) as $trait) {
+                    if (isset($traits[$trait])) {
+                        return true;
+                    }
+                }
+
+                return false;
             })
             ->filter(function ($class) use ($aliases) {
                 $class = Str::start($class, '\\');

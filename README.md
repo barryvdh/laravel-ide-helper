@@ -115,6 +115,8 @@ Str::macro('concat', function(string $str1, string $str2) : string {
 });
 ```
 
+You can add any custom Macroable traits to detect in the `macroable_traits` config option.
+
 ### Automatic PHPDocs for models
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate

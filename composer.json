@@ -22,14 +22,12 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "barryvdh/reflection-docblock": "^2.1.2",
+        "barryvdh/reflection-docblock": "^2.3",
         "composer/class-map-generator": "^1.0",
         "illuminate/console": "^11.15",
         "illuminate/database": "^11.15",
         "illuminate/filesystem": "^11.15",
-        "illuminate/support": "^11.15",
-        "nikic/php-parser": "^4.18 || ^5",
-        "phpdocumentor/type-resolver": "^1.1.0"
+        "illuminate/support": "^11.15"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
@@ -40,7 +38,8 @@
         "orchestra/testbench": "^9.2",
         "phpunit/phpunit": "^10.5",
         "spatie/phpunit-snapshot-assertions": "^4 || ^5",
-        "vimeo/psalm": "^5.4"
+        "vimeo/psalm": "^5.4",
+        "vlucas/phpdotenv": "^5"
     },
     "suggest": {
         "illuminate/events": "Required for automatic helper generation (^6|^7|^8|^9|^10|^11)."
@@ -65,7 +64,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.2-dev"
+            "dev-master": "3.5-dev"
         },
         "laravel": {
             "providers": [

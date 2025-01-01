@@ -33,41 +33,26 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
-> [!NOTE]  
-> If you encounter version conflicts with doctrine/dbal, please try:
-> `composer require --dev barryvdh/laravel-ide-helper --with-all-dependencies`
- 
-This package makes use of [Laravels package auto-discovery mechanism](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518), which means if you don't install dev dependencies in production, it also won't be loaded.
-
-If for some reason you want manually control this:
-- add the package to the `extra.laravel.dont-discover` key in `composer.json`, e.g.
-  ```json
-  "extra": {
-    "laravel": {
-      "dont-discover": [
-        "barryvdh/laravel-ide-helper"
-      ]
-    }
-  }
-  ```
-- Add the following class to the `providers` array in `config/app.php`:
-  ```php
-  Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-  ```
-  If you want to manually load it only in non-production environments, instead you can add this to your `AppServiceProvider` with the `register()` method:
-  ```php
-  public function register()
-  {
-      if ($this->app->isLocal()) {
-          $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
-      }
-      // ...
-  }
-  ```
-
-> Note: Avoid caching the configuration in your development environment, it may cause issues after installing this package; respectively clear the cache beforehand via `php artisan cache:clear` if you encounter problems when running the commands
 
 ## Usage
+
+### TL;DR
+
+Run this to generate autocompletion for Facades. This creates _ide_helper.php
+
+```
+php artisan ide-helper:generate
+```
+
+Run this to add phpdocs for your models. Add -RW to Reset existing phpdocs and Write to the models directly.
+```
+php artisan ide-helper:models -RW
+```
+
+If you don't want the full _ide_helper.php file, you can run add `--write-eloquent-helper` to the model command to generate small version, which is required for the `@mixin \Eloquent` to be able to add the QueryBuilder methods.
+
+If you don't want to add all the phpdocs to your Models directly, you can use `--nowrite` to create a seperate file. The  `--write-mixin` option can be used to only add a `@mixin` to your models, but add the generated phpdocs in a seperate file. This avoids having the results marked as duplicate.
+
 
 _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
 
@@ -76,7 +61,7 @@ _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome
 - `php artisan ide-helper:meta` - [PhpStorm Meta file](#phpstorm-meta-for-container-instances)
 
 
-Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice
+> Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice
 
 ### Automatic PHPDoc generation for Laravel Facades
 
@@ -85,8 +70,6 @@ You can now re-generate the docs yourself (for future updates)
 ```bash
 php artisan ide-helper:generate
 ```
-
-Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating.
 
 This will generate the file `_ide_helper.php` which is expected to be additionally parsed by your IDE for autocomplete. You can use the config `filename` to change its name.
 
@@ -115,7 +98,7 @@ You can use an in-memory SQLite driver by adding the `-M` option.
 
 If you use [real-time facades](https://laravel.com/docs/master/facades#real-time-facades) in your app, those will also be included in the generated file using a `@mixin` annotation and extending the original class underneath the facade. 
 
-**Note**: this feature uses the generated real-time facades files in the `storage/framework/cache` folder. Those files are generated on-demand as you use the real-time facade, so if the framework has not generated that first, it will not be included in the helper file. Run the route/command/code first and then regenerate the helper file and this time the real-time facade will be included in it.
+> **Note**: this feature uses the generated real-time facades files in the `storage/framework/cache` folder. Those files are generated on-demand as you use the real-time facade, so if the framework has not generated that first, it will not be included in the helper file. Run the route/command/code first and then regenerate the helper file and this time the real-time facade will be included in it.
 
 You can choose to include helper files. This is not enabled by default, but you can override it with the `--helpers (-H)` option.
 The `Illuminate/Support/helpers.php` is already set up, but you can add/remove your own files in the config file.
@@ -150,6 +133,8 @@ writing the rest in (`_ide_helper_models.php`).
 The class name will be different from the model, avoiding the IDE duplicate annoyance.
 
 > Please make sure to back up your models, before writing the info.
+
+> You need the _ide_helper.php file to add the QueryBuilder methods. You can add --write-eloquent-helper/-E to generate a minimal version. If this file does not exist, you will be prompted for it.
 
 Writing to the models should keep the existing comments and only append new properties/methods. It will not update changed properties/methods.
 
@@ -384,7 +369,7 @@ app(App\SomeClass::class);
 ```
 
 > Note: You might need to restart PhpStorm and make sure `.phpstorm.meta.php` is indexed.
->
+
 > Note: When you receive a FatalException: class not found, check your config
 > (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
 

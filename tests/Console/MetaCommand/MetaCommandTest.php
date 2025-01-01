@@ -12,17 +12,22 @@ use stdClass;
 
 class MetaCommandTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testCommand(): void
     {
-        $this->mockFilesystem();
-
         /** @var Filesystem|MockInterface $mockFileSystem */
         $mockFileSystem = $this->app->make(Filesystem::class);
-        $this->instance('files', $mockFileSystem);
+        $this->instance(Filesystem::class, $mockFileSystem);
 
         $mockFileSystem
             ->shouldReceive('getRequire')
-            ->andReturnUsing(function ($__path, $__data) {
+            ->andReturnUsing(function ($__path, $__data = []) {
                 return (static function () use ($__path, $__data) {
                     extract($__data, EXTR_SKIP);
 
@@ -49,15 +54,13 @@ class MetaCommandTest extends TestCase
             return new stdClass();
         });
 
-        $this->mockFilesystem();
-
         /** @var Filesystem|MockInterface $mockFileSystem */
         $mockFileSystem = $this->app->make(Filesystem::class);
-        $this->instance('files', $mockFileSystem);
+        $this->instance(Filesystem::class, $mockFileSystem);
 
         $mockFileSystem
             ->shouldReceive('getRequire')
-            ->andReturnUsing(function ($__path, $__data) {
+            ->andReturnUsing(function ($__path, $__data = []) {
                 return (static function () use ($__path, $__data) {
                     extract($__data, EXTR_SKIP);
 

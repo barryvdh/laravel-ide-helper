@@ -12,13 +12,16 @@
 namespace Barryvdh\LaravelIdeHelper\Console;
 
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Barryvdh\LaravelIdeHelper\Generator;
 use Barryvdh\LaravelIdeHelper\Parsers\PhpDocReturnTypeParser;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Context;
+use Barryvdh\Reflection\DocBlock\ContextFactory;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
@@ -46,7 +49,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\Types\ContextFactory;
+use Illuminate\View\Factory as ViewFactory;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionObject;
@@ -81,6 +84,14 @@ class ModelsCommand extends Command
      * @var Filesystem $files
      */
     protected $files;
+
+    /**
+     * @var Repository
+     */
+    protected $config;
+
+    /** @var ViewFactory */
+    protected $view;
 
     /**
      * The console command name.
@@ -131,10 +142,12 @@ class ModelsCommand extends Command
     /**
      * @param Filesystem $files
      */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, Repository $config, ViewFactory $view)
     {
-        parent::__construct();
+        $this->config = $config;
         $this->files = $files;
+        $this->view = $view;
+        parent::__construct();
     }
 
     /**
@@ -187,6 +200,27 @@ class ModelsCommand extends Command
                 $this->error("Failed to write model information to $filename");
             }
         }
+
+        $helperFilename = $this->config->get('ide-helper.filename');
+        $writeHelper = $this->option('write-eloquent-helper');
+
+        if (!$writeHelper && !$this->files->exists($helperFilename) && ($this->write || $this->write_mixin)) {
+            if ($this->confirm("{$helperFilename} does not exist.
+            Do you want to generate a minimal helper to generate the Eloquent methods?")) {
+                $writeHelper = true;
+            }
+        }
+
+        if ($writeHelper) {
+            $generator = new Generator($this->config, $this->view, $this->getOutput());
+            $content = $generator->generateEloquent();
+            $written = $this->files->put($helperFilename, $content);
+            if ($written !== false) {
+                $this->info("Eloquent helper was written to $helperFilename");
+            } else {
+                $this->error("Failed to write eloquent helper to $helperFilename");
+            }
+        }
     }
 
 
@@ -216,6 +250,9 @@ class ModelsCommand extends Command
             ['write', 'W', InputOption::VALUE_NONE, 'Write to Model file'],
             ['write-mixin', 'M', InputOption::VALUE_NONE,
                 "Write models to {$this->filename} and adds @mixin to each model, avoiding IDE duplicate declaration warnings",
+            ],
+            ['write-eloquent-helper', 'E', InputOption::VALUE_NONE,
+                'Write Eloquent helper file to _ide_helper.php',
             ],
             ['nowrite', 'N', InputOption::VALUE_NONE, 'Don\'t write to Model file'],
             ['reset', 'R', InputOption::VALUE_NONE, 'Remove the original phpdocs instead of appending'],
@@ -389,7 +426,7 @@ class ModelsCommand extends Command
                     break;
                 case 'array':
                 case 'json':
-                    $realType = 'array';
+                    $realType = 'array<array-key, mixed>';
                     break;
                 case 'object':
                     $realType = 'object';
@@ -413,10 +450,10 @@ class ModelsCommand extends Command
                     $realType = '\Carbon\CarbonImmutable';
                     break;
                 case 'collection':
-                    $realType = '\Illuminate\Support\Collection';
+                    $realType = '\Illuminate\Support\Collection<array-key, mixed>';
                     break;
                 case AsArrayObject::class:
-                    $realType = '\ArrayObject';
+                    $realType = '\ArrayObject<array-key, mixed>';
                     break;
                 default:
                     // In case of an optional custom cast parameter , only evaluate
@@ -1534,7 +1571,9 @@ class ModelsCommand extends Command
      */
     protected function getUsedClassNames(ReflectionClass $reflection): array
     {
-        $namespaceAliases = array_flip((new ContextFactory())->createFromReflector($reflection)->getNamespaceAliases());
+        $namespaceAliases = array_flip(array_map(function ($alias) {
+            return ltrim($alias, '\\');
+        }, (new ContextFactory())->createFromReflector($reflection)->getNamespaceAliases()));
         $namespaceAliases[$reflection->getName()] = $reflection->getShortName();
 
         return $namespaceAliases;

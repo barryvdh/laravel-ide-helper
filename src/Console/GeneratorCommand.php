@@ -14,7 +14,9 @@ namespace Barryvdh\LaravelIdeHelper\Console;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Barryvdh\LaravelIdeHelper\Generator;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\View\Factory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -45,7 +47,7 @@ class GeneratorCommand extends Command
     /** @var Filesystem */
     protected $files;
 
-    /** @var \Illuminate\View\Factory */
+    /** @var Factory */
     protected $view;
 
     protected $onlyExtend;
@@ -55,14 +57,12 @@ class GeneratorCommand extends Command
      *
      * @param \Illuminate\Config\Repository $config
      * @param Filesystem $files
-     * @param \Illuminate\View\Factory $view
+     * @param Factory $view
      */
     public function __construct(
-        /*ConfigRepository */
-        $config,
+        Repository $config,
         Filesystem $files,
-        /* Illuminate\View\Factory */
-        $view
+        Factory $view
     ) {
         $this->config = $config;
         $this->files = $files;
@@ -113,7 +113,12 @@ class GeneratorCommand extends Command
         }
 
         $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
-        $content = $generator->generate();
+        if ($this->option('eloquent')) {
+            $content = $generator->generateEloquent();
+        } else {
+            $content = $generator->generate();
+        }
+
         $written = $this->files->put($filename, $content);
 
         if ($written !== false) {
@@ -169,6 +174,7 @@ class GeneratorCommand extends Command
             ['write_mixins', 'W', InputOption::VALUE_OPTIONAL, 'Write mixins to Laravel Model?', $writeMixins],
             ['helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'],
             ['memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'],
+            ['eloquent', 'E', InputOption::VALUE_NONE, 'Only write Eloquent methods'],
         ];
     }
 }

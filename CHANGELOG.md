@@ -1,5 +1,50 @@
 # Changelog
 
+## v3.4.0 - 2024-12-29
+
+### What's Changed
+
+* fix: add @template TModel of static for Eloquent by @imzyf in https://github.com/barryvdh/laravel-ide-helper/pull/1631
+* Add templates to Eloquent by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1634
+* Update testsuite for Generator, simplify service provider and mock by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1635
+* Add option for only eloquent by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1636
+* Add weak generics for array type objects by @LauJosefsen in https://github.com/barryvdh/laravel-ide-helper/pull/1621
+* Make all "note" in README apply quote style by @hms5232 in https://github.com/barryvdh/laravel-ide-helper/pull/1590
+* Update README.md by @Mtillmann in https://github.com/barryvdh/laravel-ide-helper/pull/1587
+* Rename view var  by @barryvdh and @pb30 in https://github.com/barryvdh/laravel-ide-helper/pull/1637 and https://github.com/barryvdh/laravel-ide-helper/pull/1563
+* Format IDE helper by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1638
+* Add TLDR section, update options by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1639
+
+### New Contributors
+
+* @imzyf made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1631
+* @LauJosefsen made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1621
+* @hms5232 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1590
+* @Mtillmann made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1587
+* @pb30 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1563
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.3.0...v3.4.0
+
+## v3.3.0 - 2024-12-18
+
+### What's Changed
+
+* Feature: Add Config Option to Enforce Nullable Relationships by @jeramyhing in https://github.com/barryvdh/laravel-ide-helper/pull/1580
+* Improve replacement of return type for methods from Query\Builder by @pjio in https://github.com/barryvdh/laravel-ide-helper/pull/1575
+* Update CHANGELOG.md, fix typo(s) by @NicholasWilsonDEV in https://github.com/barryvdh/laravel-ide-helper/pull/1613
+* Fixed PHP 8.4 deprecation warning by @eusonlito in https://github.com/barryvdh/laravel-ide-helper/pull/1622
+* Fix PHP 8.4 deprecations by @JeppeKnockaert in https://github.com/barryvdh/laravel-ide-helper/pull/1618
+* Assign $output method parameter to $this->output on Generator by @eusonlito in https://github.com/barryvdh/laravel-ide-helper/pull/1623
+
+### New Contributors
+
+* @jeramyhing made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1580
+* @pjio made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1575
+* @NicholasWilsonDEV made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1613
+* @eusonlito made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1622
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.2.2...v3.3.0
+
 ## v3.2.2 - 2024-10-29
 
 ### What’s Changed
@@ -35,13 +80,19 @@
 
 ### Changed
 
+- Update view "version" variable name to avoid potential conflicts
+  
 - Add support for EloquentBuilder generics introduced in Laravel 11.15.
+  
 - Drop support for Laravel versions earlier than 11.15.
+  
 
 ### Added
-- Introduce `enforce_nullable_relationships` configuration option to control how nullable Eloquent relationships are enforced during static analysis. This provides flexibility for scenarios where application logic ensures data integrity without relying on database constraints. [#1580 / jeramyhing](https://github.com/barryvdh/laravel-ide-helper/pull/1580)
 
+- Introduce `enforce_nullable_relationships` configuration option to control how nullable Eloquent relationships are enforced during static analysis. This provides flexibility for scenarios where application logic ensures data integrity without relying on database constraints. [#1580 / jeramyhing](https://github.com/barryvdh/laravel-ide-helper/pull/1580)
+  
 - Add support for AsCollection::using and AsEnumCollection::of casts [#1577 / uno-sw](https://github.com/barryvdh/laravel-ide-helper/pull/1577)
+  
 
 ## 3.1.0 - 2024-07-12
 

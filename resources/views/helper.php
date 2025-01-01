@@ -14,31 +14,34 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel <?= $version ?>.
+ * Generated for Laravel <?= app()->version() ?>.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
-
+<?php
+$s1 = '    ';
+$s2 = $s1 . $s1;
+$s3 = $s1 . $s2;
+?>
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
-namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
+namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
-        <?= trim($alias->getDocComment('    ')) ?>
-        <?= $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
+<?php echo trim($alias->getDocComment($s1)) . "\n{$s1}" . $alias->getClassType() ?> <?= $alias->getExtendsClass() ?> {
         <?php foreach ($alias->getMethods() as $method) : ?>
-            <?= trim($method->getDocComment('        ')) ?>
-        public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
+<?= trim($method->getDocComment($s2)) . "\n{$s2}" ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
         {<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
-            //Method inherited from <?= $method->getDeclaringClass() ?>
-         <?php endif; ?>
+<?= "\n" . $s3?>//Method inherited from <?= $method->getDeclaringClass() ?>
+ <?php endif; ?>
 
-            <?php if ($method->isInstanceCall()) : ?>
-            /** @var <?=$method->getRoot()?> $instance */
-            <?php endif?>
-            <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;
+<?php if ($method->isInstanceCall()) : ?>
+<?= $s3 ?>/** @var <?=$method->getRoot()?> $instance */
+<?php endif?>
+<?= $s3 . ($method->shouldReturn() ? 'return ' : '') ?><?= $method->getRootMethodCall() ?>;
         }
+
         <?php endforeach; ?>
     }
     <?php endforeach; ?>
@@ -47,24 +50,28 @@ namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
 <?php endforeach; ?>
 
 <?php foreach ($namespaces_by_alias_ns as $namespace => $aliases) : ?>
-namespace <?= $namespace == '__root' ? '' : trim($namespace, '\\') ?> {
-    <?php foreach ($aliases as $alias) : ?>
-        <?= $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() == '\Illuminate\Database\Eloquent') : ?>
-            <?php foreach ($alias->getMethods() as $method) : ?>
-                <?= trim($method->getDocComment('            ')) ?>
-            public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
-            {<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
-                //Method inherited from <?= $method->getDeclaringClass() ?>
-             <?php endif; ?>
+namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
+<?php foreach ($aliases as $alias) : ?>
+<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
+<?= "\n" . $alias->getPhpDocTemplates($s1) . "\n" ?>
+<?php endif?>
+<?= $s1 . $alias->getClassType() ?> <?= $alias->getShortName() ?> extends <?= $alias->getExtends() ?> {<?php if ($alias->getExtendsNamespace() === '\Illuminate\Database\Eloquent') : ?>
+<?php foreach ($alias->getMethods() as $method) : ?>
+<?= $s2 . trim($method->getDocComment($s2)) . "\n" ?>
+<?= $s2 ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
+<?= $s2?>{<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
+<?= $s2 ?>//Method inherited from <?= $method->getDeclaringClass() ?>
+<?php endif; ?>
 
-                <?php if ($method->isInstanceCall()) : ?>
-                /** @var <?=$method->getRoot()?> $instance */
-                <?php endif?>
-                <?= $method->shouldReturn() ? 'return ' : '' ?><?= $method->getRootMethodCall() ?>;
-            }
-            <?php endforeach; ?>
-        <?php endif; ?>}
-    <?php endforeach; ?>
+<?php if ($method->isInstanceCall()) : ?>
+<?= $s3 ?>/** @var <?=$method->getRoot()?> $instance */
+<?php endif?>
+<?= $s3 . ($method->shouldReturn() ? 'return ' : '') ?><?= $method->getRootMethodCall() ?>;
+<?= $s2 ?>}
+
+<?php endforeach; ?>
+<?php endif; ?>}
+<?php endforeach; ?>
 }
 
 <?php endforeach; ?>

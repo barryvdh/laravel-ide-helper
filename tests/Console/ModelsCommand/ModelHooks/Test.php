@@ -36,7 +36,7 @@ class Test extends AbstractModelsCommand
     {
         $actualContent = null;
 
-        $mockFilesystem = Mockery::mock(Filesystem::class);
+        $mockFilesystem = Mockery::mock(Filesystem::class)->makePartial();
         $mockFilesystem
             ->shouldReceive('get')
             ->andReturn(file_get_contents(__DIR__ . '/Models/Simple.php'))

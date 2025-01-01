@@ -83,7 +83,7 @@ class Macro extends Method
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
         }
 
-        $class = ltrim($this->declaringClassName, "\\");
+        $class = ltrim($this->declaringClassName, '\\');
         if (!$this->phpdoc->hasTag('return') && isset($this->macroDefaults[$class])) {
             $type = $this->macroDefaults[$class];
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));

@@ -11,7 +11,8 @@
         "netbeans",
         "sublime",
         "codeintel",
-        "phpdoc"
+        "phpdoc",
+        "dev"
     ],
     "authors": [
         {

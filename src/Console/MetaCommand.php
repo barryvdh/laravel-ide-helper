@@ -232,18 +232,14 @@ class MetaCommand extends Command
                 'argumentSet' => 'auth',
             ],
             [
-                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth'],
+                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth', 'Illuminate\Foundation\Auth\Access\Authorizable'],
                 'method' => ['can', 'cannot'],
                 'argumentSet' => 'auth',
             ],
             [
-                'method' => 'config',
-                'argumentSet' => 'configs',
-            ],
-            [
                 'class' => ['\Illuminate\Config\Repository', '\Illuminate\Support\Facades\Config'],
                 'method' => [
-                    'get',
+//                    'get',    // config() and Config::Get() are added with return type hints already
                     'getMany',
                     'set',
                     'string',

@@ -6,7 +6,8 @@ return collect(Illuminate\Support\Facades\Gate::abilities())
 
         $policyClass = null;
 
-        if (get_class($reflection->getClosureThis()) === Illuminate\Auth\Access\Gate::class) {
+        $closureThis = $reflection->getClosureThis();
+        if ($closureThis && get_class($closureThis) === Illuminate\Auth\Access\Gate::class) {
             $vars = $reflection->getClosureUsedVariables();
 
             if (isset($vars['callback'])) {

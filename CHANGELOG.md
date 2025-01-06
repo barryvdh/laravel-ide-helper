@@ -1,5 +1,28 @@
 # Changelog
 
+## v3.5.0 - 2025-01-06
+
+### What's Changed
+
+* Add phpstorm meta argument hints by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1640
+* Add meta override for user return types by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1642
+* Use forked ContextFactory by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1643
+* Remove php parser by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1644
+* Also add eloquent template tags from base class by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1645
+* Add more metadata by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1646
+* Fixed generating PHPDoc for methods with class templates by @chack1172 in https://github.com/barryvdh/laravel-ide-helper/pull/1647
+* Feat guess macro types by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1648
+* Allow adding custom Macroable classes. by @mathieutu in https://github.com/barryvdh/laravel-ide-helper/pull/1629
+* Add special `dev` to composer keywords by @jnoordsij in https://github.com/barryvdh/laravel-ide-helper/pull/1649
+
+### New Contributors
+
+* @chack1172 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1647
+* @mathieutu made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1629
+* @jnoordsij made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1649
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.4.0...v3.5.0
+
 ## v3.4.0 - 2024-12-29
 
 ### What's Changed

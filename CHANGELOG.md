@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.5.2 - 2025-01-06
+
+### Fixes
+
+Fix empty/anonymous closure in meta command.
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.5.1...v3.5.2
+
 ## v3.5.1 - 2025-01-06
 
 ### What's Changed

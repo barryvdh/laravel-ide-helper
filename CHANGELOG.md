@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.5.1 - 2025-01-06
+
+### What's Changed
+
+* Remove duplicate config, fix ->can() by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1650
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.5.0...v3.5.1
+
 ## v3.5.0 - 2025-01-06
 
 ### What's Changed

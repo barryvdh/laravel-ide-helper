@@ -819,10 +819,14 @@ class ModelsCommand extends Command
                                         $relation === 'morphTo'
                                     )
                                 ) {
+                                    $matches = [];
+                                    $returnType = $this->getReturnTypeFromDocBlock($reflection);
+                                    preg_match('/MorphTo<(.+?)(?:,|>)/i', $returnType, $matches);
+
                                     // Model isn't specified because relation is polymorphic
                                     $this->setProperty(
                                         $method,
-                                        $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
+                                        $matches[1] ?? $this->getClassNameInDestinationFile($model, Model::class) . '|\Eloquent',
                                         true,
                                         null,
                                         $comment,

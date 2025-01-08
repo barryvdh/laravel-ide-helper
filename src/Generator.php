@@ -80,7 +80,7 @@ class Generator
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
             ->with('real_time_facades', $this->getRealTimeFacades())
-            ->with('helpers', $this->helpers)
+            ->with('helpers', $this->detectHelpers())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
             ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
@@ -110,6 +110,24 @@ class Generator
             ->with('include_fluent', false)
             ->with('factories', [])
             ->render();
+    }
+
+    protected function detectHelpers()
+    {
+        $helpers = $this->helpers;
+
+        $replacements = [
+            '($guard is null ? \Illuminate\Contracts\Auth\Factory : \Illuminate\Contracts\Auth\StatefulGuard)' => '\\Auth',
+        ];
+        foreach ($replacements as $search => $replace) {
+            $helpers = Str::replace(
+                "@return {$search}",
+                "@return $replace|$search",
+                $helpers
+            );
+        }
+
+        return $helpers;
     }
 
     protected function detectDrivers()

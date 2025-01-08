@@ -403,9 +403,15 @@ class Alias
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
                     if (!in_array($macro_name, $this->usedMethods)) {
+                        try {
+                            $method = $this->getMacroFunction($macro_func);
+                        } catch (\Throwable $e) {
+                            // Invalid method, skip
+                            continue;
+                        }
                         // Add macros
                         $this->methods[] = new Macro(
-                            $this->getMacroFunction($macro_func),
+                            $method,
                             $this->alias,
                             $reflection,
                             $macro_name,

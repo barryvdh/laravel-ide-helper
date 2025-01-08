@@ -232,7 +232,7 @@ class MetaCommand extends Command
                 'argumentSet' => 'auth',
             ],
             [
-                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth', 'Illuminate\Foundation\Auth\Access\Authorizable', 'Illuminate\Contracts\Auth\Access\Authorizable'],
+                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth', 'Illuminate\Foundation\Auth\Access\Authorizable'],
                 'method' => ['can', 'cannot', 'cant'],
                 'argumentSet' => 'auth',
             ],

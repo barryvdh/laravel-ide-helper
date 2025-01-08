@@ -405,7 +405,7 @@ class Alias
                     if (!in_array($macro_name, $this->usedMethods)) {
                         try {
                             $method = $this->getMacroFunction($macro_func);
-                        } catch (\Throwable $e) {
+                        } catch (Throwable $e) {
                             // Invalid method, skip
                             continue;
                         }

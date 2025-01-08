@@ -237,7 +237,7 @@ class MetaCommand extends Command
                 'argumentSet' => 'auth',
             ],
             [
-                'class' => [ 'Illuminate\Contracts\Auth\Access\Authorizable'],
+                'class' => ['Illuminate\Contracts\Auth\Access\Authorizable'],
                 'method' => ['can'],
                 'argumentSet' => 'auth',
             ],
@@ -317,7 +317,7 @@ class MetaCommand extends Command
                 $value = $this->files->requireOnce($file) ?: [];
             } catch (\Throwable $e) {
                 $value = [];
-                $this->warn('Cannot load template for ' . $name .': '.$e->getMessage());
+                $this->warn('Cannot load template for ' . $name . ': ' . $e->getMessage());
             }
 
             if (!$value instanceof Collection) {

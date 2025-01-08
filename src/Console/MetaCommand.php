@@ -232,8 +232,13 @@ class MetaCommand extends Command
                 'argumentSet' => 'auth',
             ],
             [
-                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth', 'Illuminate\Foundation\Auth\Access\Authorizable'],
-                'method' => ['can', 'cannot'],
+                'class' => ['\Illuminate\Support\Facades\Route', '\Illuminate\Support\Facades\Auth', 'Illuminate\Foundation\Auth\Access\Authorizable', 'Illuminate\Contracts\Auth\Access\Authorizable'],
+                'method' => ['can', 'cannot', 'cant'],
+                'argumentSet' => 'auth',
+            ],
+            [
+                'class' => [ 'Illuminate\Contracts\Auth\Access\Authorizable'],
+                'method' => ['can'],
                 'argumentSet' => 'auth',
             ],
             [
@@ -308,7 +313,13 @@ class MetaCommand extends Command
     {
         if (!isset($this->templateCache[$name])) {
             $file =  __DIR__ . '/../../php-templates/' . basename($name) . '.php';
-            $value = $this->files->requireOnce($file) ?: [];
+            try {
+                $value = $this->files->requireOnce($file) ?: [];
+            } catch (\Throwable $e) {
+                $value = [];
+                $this->warn('Cannot load template for ' . $name .': '.$e->getMessage());
+            }
+
             if (!$value instanceof Collection) {
                 $value = collect($value);
             }

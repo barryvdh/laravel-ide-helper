@@ -117,11 +117,13 @@ class Generator
         $helpers = $this->helpers;
 
         $replacements = [
-            '($guard is null ? \Illuminate\Contracts\Auth\Factory : \Illuminate\Contracts\Auth\StatefulGuard)' => '\\Auth'
+            '($guard is null ? \Illuminate\Contracts\Auth\Factory : \Illuminate\Contracts\Auth\StatefulGuard)' => '\\Auth',
         ];
         foreach ($replacements as $search => $replace) {
-            $helpers= Str::replace(
-                "@return {$search}", "@return $replace|$search", $helpers
+            $helpers = Str::replace(
+                "@return {$search}",
+                "@return $replace|$search",
+                $helpers
             );
         }
 

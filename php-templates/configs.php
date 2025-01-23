@@ -72,7 +72,7 @@ function vsCodeGetConfigValue($value, $key, $configPaths)
                 $key = collect(explode('.', $key));
                 $key->pop();
                 $key = $key->implode('.');
-                $value = 'array(...)';
+                $value = [];
             }
 
             $nextKey = $keysToFind->shift();

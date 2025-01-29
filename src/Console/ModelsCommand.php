@@ -628,6 +628,10 @@ class ModelsCommand extends Command
                     )
                 );
             });
+            // https://github.com/barryvdh/laravel-ide-helper/issues/1664
+            $reflections = array_filter($reflections, function (\ReflectionMethod $methodReflection) {
+                return !($methodReflection->getName() === 'getUseFactoryAttribute');
+            });
             sort($reflections);
             foreach ($reflections as $reflection) {
                 $type = $this->getReturnTypeFromReflection($reflection);

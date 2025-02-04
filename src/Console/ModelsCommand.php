@@ -826,7 +826,7 @@ class ModelsCommand extends Command
                                     $matches = [];
                                     $returnType = $this->getReturnTypeFromDocBlock($reflection);
                                     if ($returnType !== null) {
-                                        preg_match('/MorphTo<(.+?)(?:,|>)/i', $returnType, $matches);
+                                        preg_match('/MorphTo<(?:contravariant\s+)?(.+?)(?:,|>)/i', $returnType, $matches);
                                     }
 
                                     // Model isn't specified because relation is polymorphic

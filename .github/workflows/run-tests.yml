@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, windows-2019]
         php: [8.4, 8.3, 8.2]
-        laravel: [^11.15]
+        laravel: [~11.15, 12.x]
         stability: [prefer-lowest, prefer-stable]
     steps:
     - name: Set git to use LF

@@ -453,7 +453,7 @@ class ModelsCommand extends Command
                     $realType = '\Illuminate\Support\Collection<array-key, mixed>';
                     break;
                 case AsArrayObject::class:
-                    $realType = '\ArrayObject<array-key, mixed>';
+                    $realType = '\Illuminate\Database\Eloquent\Casts\ArrayObject<array-key, mixed>';
                     break;
                 default:
                     // In case of an optional custom cast parameter , only evaluate

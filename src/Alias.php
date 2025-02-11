@@ -36,6 +36,7 @@ class Alias
     protected $classType = 'class';
     protected $short;
     protected $namespace = '__root';
+    protected $parentClass;
     protected $root = null;
     protected $classes = [];
     protected $methods = [];
@@ -87,6 +88,7 @@ class Alias
         $this->detectNamespace();
         $this->detectClassType();
         $this->detectExtendsNamespace();
+        $this->detectParentClass();
 
         if (!empty($this->namespace)) {
             try {
@@ -169,6 +171,25 @@ class Alias
     public function getExtendsNamespace()
     {
         return $this->extendsNamespace;
+    }
+
+    /**
+     * Get the parent class of the class which this alias extends
+     *
+     * @return null|string
+     */
+    public function getParentClass()
+    {
+        return $this->parentClass;
+    }
+
+    /**
+     * Check if this class should extend the parent class
+     */
+    public function shouldExtendParentClass()
+    {
+        return $this->parentClass
+            && $this->getExtendsNamespace() !== '\\Illuminate\\Support\\Facades';
     }
 
     /**
@@ -266,6 +287,18 @@ class Alias
             $this->extendsClass = array_pop($nsParts);
             $this->extendsNamespace = implode('\\', $nsParts);
         }
+    }
+
+    /**
+     * Detect the parent class
+     */
+    protected function detectParentClass()
+    {
+        $reflection = new ReflectionClass($this->root);
+
+        $parentClass = $reflection->getParentClass();
+
+        $this->parentClass = $parentClass ? '\\' . $parentClass->getName() : null;
     }
 
     /**

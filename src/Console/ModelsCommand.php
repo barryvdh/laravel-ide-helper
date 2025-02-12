@@ -637,6 +637,7 @@ class ModelsCommand extends Command
                 $type = $this->getReturnTypeFromReflection($reflection);
                 $isAttribute = is_a($type, '\Illuminate\Database\Eloquent\Casts\Attribute', true);
                 $method = $reflection->getName();
+                $includeCamelCaseAttributeVersion = $this->laravel['config']->get('ide-helper.model_include_camel_case_attribute_version', false);
                 if (
                     Str::startsWith($method, 'get') && Str::endsWith($method, 'Attribute') && $method !== 'getAttribute'
                 ) {
@@ -647,6 +648,9 @@ class ModelsCommand extends Command
                         $type = $this->getTypeInModel($model, $type);
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null, $comment);
+                        if ($includeCamelCaseAttributeVersion) {
+                            $this->setProperty(Str::camel($name), $type, true, null, $comment);
+                        }
                     }
                 } elseif ($isAttribute) {
                     $types = $this->getAttributeTypes($model, $reflection);
@@ -658,6 +662,15 @@ class ModelsCommand extends Command
                         $types->has('set') ?: null,
                         $this->getCommentFromDocBlock($reflection)
                     );
+                    if ($includeCamelCaseAttributeVersion && $types->has('get')) {
+                        $this->setProperty(
+                            Str::camel($method),
+                            $type,
+                            true,
+                            null,
+                            $this->getCommentFromDocBlock($reflection)
+                        );
+                    }
                 } elseif (
                     Str::startsWith($method, 'set') &&
                     Str::endsWith($method, 'Attribute') &&

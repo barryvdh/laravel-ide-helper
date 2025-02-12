@@ -50,7 +50,7 @@ class Simple extends Model
     }
     public function getBoolValueAttribute(): bool
     {
-        return (bool) rand(0,1);
+        return (bool) rand(0, 1);
     }
 
     public function arrayValue(): Attribute
@@ -68,7 +68,8 @@ class Simple extends Model
     public function voidValue(): Attribute
     {
         return new Attribute(
-            set: function (): void {}
+            set: function (): void {
+            }
         );
     }
 }

@@ -1048,6 +1048,11 @@ class ModelsCommand extends Command
 
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");
             $tag = Tag::createInstance($tagLine, $phpdoc);
+
+            if ($this->tagExists($phpdoc, $tag)) {
+                continue;
+            }
+
             $phpdoc->appendTag($tag);
         }
 
@@ -1761,5 +1766,20 @@ class ModelsCommand extends Command
                 $this->foreignKeyConstraintsColumns[] = $columnName;
             }
         }
+    }
+
+    /**
+     * @param DocBlock $phpdoc
+     * @param Tag $tag
+     */
+    public function tagExists($phpdoc, $tag): bool
+    {
+        foreach ($phpdoc->getTags() as $originalTag) {
+            if ($originalTag->getContent() == $tag->getContent()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

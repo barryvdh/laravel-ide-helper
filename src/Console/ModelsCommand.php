@@ -114,6 +114,7 @@ class ModelsCommand extends Command
 
     protected $write_model_magic_where;
     protected $write_model_relation_count_properties;
+    protected $write_model_relation_exists_properties;
     protected $properties = [];
     protected $methods = [];
     protected $write = false;
@@ -173,6 +174,8 @@ class ModelsCommand extends Command
         $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
+        $this->write_model_relation_exists_properties =
+            $this->laravel['config']->get('ide-helper.write_model_relation_exists_properties', true);
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
@@ -810,6 +813,15 @@ class ModelsCommand extends Command
                                     if ($this->write_model_relation_count_properties) {
                                         $this->setProperty(
                                             Str::snake($method) . '_count',
+                                            'int|null',
+                                            true,
+                                            false
+                                            // What kind of comments should be added to the relation count here?
+                                        );
+                                    }
+                                    if ($this->write_model_relation_exists_properties) {
+                                        $this->setProperty(
+                                            Str::snake($method) . '_exists',
                                             'int|null',
                                             true,
                                             false

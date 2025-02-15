@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Dynamic> $regularHasMany
  * @property-read int|null $regular_has_many_count
+ * @property-read bool|null $regular_has_many_exists
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dynamic newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dynamic newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dynamic query()

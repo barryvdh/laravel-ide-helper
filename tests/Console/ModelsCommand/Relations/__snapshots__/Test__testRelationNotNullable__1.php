@@ -139,26 +139,34 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read AnotherModel $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
+ * @property-read bool|null $relation_belongs_to_many_exists
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToManyWithSub
  * @property-read int|null $relation_belongs_to_many_with_sub_count
+ * @property-read bool|null $relation_belongs_to_many_with_sub_exists
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToManyWithSubAnother
  * @property-read int|null $relation_belongs_to_many_with_sub_another_count
+ * @property-read bool|null $relation_belongs_to_many_with_sub_another_exists
  * @property-read AnotherModel $relationBelongsToSameNameAsColumn
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationHasMany
  * @property-read int|null $relation_has_many_count
+ * @property-read bool|null $relation_has_many_exists
  * @property-read Simple|null $relationHasOne
  * @property-read Simple $relationHasOneWithDefault
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationMorphMany
  * @property-read int|null $relation_morph_many_count
+ * @property-read bool|null $relation_morph_many_exists
  * @property-read Simple|null $relationMorphOne
  * @property-read Model|\Eloquent $relationMorphTo
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
+ * @property-read bool|null $relation_morphed_by_many_exists
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleRelationType
  * @property-read int|null $relation_sample_relation_type_count
+ * @property-read boo|null $relation_sample_relation_type_exists
  * @property-read Model|\Eloquent $relationSampleToAnyMorphedRelationType
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleToAnyRelationType
  * @property-read int|null $relation_sample_to_any_relation_type_count
+ * @property-read bool|null $relation_sample_to_any_relation_type_exists
  * @property-read Simple $relationSampleToBadlyNamedNotManyRelation
  * @property-read Simple $relationSampleToManyRelationType
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()

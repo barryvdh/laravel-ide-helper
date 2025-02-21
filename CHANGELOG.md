@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.5.5 - 2025-02-21
+
+### What's Changed
+
+* Fix for incorrect config item types in meta file by @eldair in https://github.com/barryvdh/laravel-ide-helper/pull/1662
+* Prevent generation of incorrect property annotation by @skyler544 in https://github.com/barryvdh/laravel-ide-helper/pull/1665
+* Fix MorphTo Model Doc Generation by @yparitcher in https://github.com/barryvdh/laravel-ide-helper/pull/1668
+* Laravel 12 support by @jonnott in https://github.com/barryvdh/laravel-ide-helper/pull/1672
+
+### New Contributors
+
+* @eldair made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1662
+* @skyler544 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1665
+* @yparitcher made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1668
+* @jonnott made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1672
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.5.4...v3.5.5
+
 ## v3.5.4 - 2025-01-14
 
 ### What's Changed

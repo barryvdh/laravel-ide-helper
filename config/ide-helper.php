@@ -349,4 +349,19 @@ return [
         Spatie\Macroable\Macroable::class,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Include camel case attribute version
+    |--------------------------------------------------------------------------
+    |
+    | Generate camel camel case version for attributes
+    | When model attribute is defined as either one of these
+    | - getSomeValueAttribute()
+    | - someValue(): Attribute
+    | include both of these in the DocBlock:
+    | - $some_value
+    | - $someValue
+    |
+    */
+    'model_include_camel_case_attribute_version' => false,
 ];

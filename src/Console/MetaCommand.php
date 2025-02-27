@@ -192,10 +192,19 @@ class MetaCommand extends Command
      */
     protected function registerClassAutoloadExceptions(): callable
     {
-        $autoloader = function ($class) {
+        $aliases = array_filter([...$this->getAbstracts(), 'config'], fn ($abstract) => !str_contains($abstract, '\\'));
+
+        $autoloader = function ($class) use ($aliases) {
+            // ignore aliases as they're meant to be resolved elsewhere
+            if (in_array($class, $aliases, true)) {
+                return;
+            }
+
             throw new \ReflectionException("Class '$class' not found.");
         };
+
         spl_autoload_register($autoloader);
+
         return $autoloader;
     }
 

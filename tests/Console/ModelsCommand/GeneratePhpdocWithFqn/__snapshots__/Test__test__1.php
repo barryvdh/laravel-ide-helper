@@ -166,7 +166,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder<static>|Post whereUuidNullable($value)
  * @method static EloquentBuilder<static>|Post whereYearNotNullable($value)
  * @method static EloquentBuilder<static>|Post whereYearNullable($value)
- * @method static EloquentBuilder<static>|Post withTrashed()
+ * @method static EloquentBuilder<static>|Post withTrashed(bool $withTrashed = true)
  * @method static EloquentBuilder<static>|Post withoutTrashed()
  * @mixin Eloquent
  */

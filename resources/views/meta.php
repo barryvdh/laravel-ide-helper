@@ -81,7 +81,7 @@ namespace PHPSTORM_META {
 
     <?php if (isset($expectedArgumentSets)): ?>
     <?php foreach ($expectedArgumentSets as $name => $argumentsList) : ?>
-    registerArgumentsSet('<?= $name ?>', <?php foreach ($argumentsList as $i => $arg) : ?><?php if($i % 5 == 0) {
+    registerArgumentsSet('<?= $name ?>', <?php foreach ($argumentsList as $i => $arg) : ?><?php if ($i % 5 == 0) {
         echo "\n";
     } ?><?= var_export($arg, true); ?>,<?php endforeach; ?>);
     <?php endforeach; ?>

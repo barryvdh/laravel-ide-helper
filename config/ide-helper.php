@@ -66,7 +66,7 @@ return [
     | Write model query methods
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable the 'query()', 'newQuery()' and 'newModelQuery()' methods.
+    | Set to false to disable generated docs for the 'query()', 'newQuery()' and 'newModelQuery()' methods.
     |
     */
 

@@ -691,8 +691,7 @@ class ModelsCommand extends Command
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])
                 ) {
-                    if($this->laravel['config']->get('ide-helper.write_query_methods', true)){
-
+                    if ($this->laravel['config']->get('ide-helper.write_query_methods', true)) {
                         $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
                         $this->setMethod(

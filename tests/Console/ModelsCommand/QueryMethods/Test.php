@@ -6,7 +6,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryMethods;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
-use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryMethods\Models\Post;
 
 class Test extends AbstractModelsCommand
 {

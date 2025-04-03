@@ -669,8 +669,8 @@ class ModelsCommand extends Command
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $this->setProperty($name, null, null, true, $comment);
                     }
-                } elseif (!empty($reflection->getAttributes('\Illuminate\Database\Eloquent\Attributes\Scope')) || (Str::startsWith($method, 'scope') && $method !== 'scopeQuery' && $method !== 'scope' && $method !== 'scopes')) {
-                    $scopeUsingAttribute = !empty($reflection->getAttributes('\Illuminate\Database\Eloquent\Attributes\Scope'));
+                } elseif (!empty($reflection->getAttributes('Illuminate\Database\Eloquent\Attributes\Scope')) || (Str::startsWith($method, 'scope') && $method !== 'scopeQuery' && $method !== 'scope' && $method !== 'scopes')) {
+                    $scopeUsingAttribute = !empty($reflection->getAttributes('Illuminate\Database\Eloquent\Attributes\Scope'));
 
                     //Magic scope<name>Attribute
                     $name = $scopeUsingAttribute ? $method : Str::camel(substr($method, 5));

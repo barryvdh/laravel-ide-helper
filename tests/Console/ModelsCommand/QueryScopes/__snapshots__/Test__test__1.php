@@ -26,7 +26,8 @@ class Comment extends Model
      * @return void
      */
     #[Scope]
-    protected function local(Builder $query): void {
+    protected function local(Builder $query): void
+    {
         $query->where('ip_address', '127.0.0.1');
     }
 
@@ -35,7 +36,8 @@ class Comment extends Model
      * @param Builder $query
      * @return void
      */
-    protected function scopeSystem(Builder $query): void {
+    protected function scopeSystem(Builder $query): void
+    {
         $query->where('system', true);
     }
 }

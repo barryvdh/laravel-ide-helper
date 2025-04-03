@@ -29,7 +29,7 @@ $s3 = $s1 . $s2;
 <?php foreach ($namespaces_by_extends_ns as $namespace => $aliases) : ?>
 namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
     <?php foreach ($aliases as $alias) : ?>
-<?php echo trim($alias->getDocComment($s1)) . "\n{$s1}" . $alias->getClassType() ?> <?= $alias->getExtendsClass() ?><?php if ($alias->shouldExtendParentClass()): ?> extends <?= $alias->getParentClass() ?><?php endif; ?> {
+<?php echo trim($alias->getDocComment($s1)) . "\n{$s1}" . $alias->getClassType() ?> <?= $alias->getExtendsClass() ?><?php if($alias->shouldExtendParentClass()): ?> extends <?= $alias->getParentClass() ?><?php endif; ?> {
         <?php foreach ($alias->getMethods() as $method) : ?>
 <?= trim($method->getDocComment($s2)) . "\n{$s2}" ?>public static function <?= $method->getName() ?>(<?= $method->getParamsWithDefault() ?>)
         {<?php if ($method->getDeclaringClass() !== $method->getRoot()) : ?>
@@ -76,7 +76,7 @@ namespace <?= $namespace === '__root' ? '' : trim($namespace, '\\') ?> {
 
 <?php endforeach; ?>
 
-<?php foreach ($real_time_facades as $name): ?>
+<?php foreach($real_time_facades as $name): ?>
 <?php $nested = explode('\\', str_replace('\\' . class_basename($name), '', $name)); ?>
 namespace <?php echo implode('\\', $nested); ?> {
     /**

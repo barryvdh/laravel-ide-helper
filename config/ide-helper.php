@@ -34,6 +34,7 @@ return [
     | `.phpstorm.meta.php/laravel_ide_Helper.php'.
     |
     */
+    
     'meta_filename' => '.phpstorm.meta.php',
 
     /*
@@ -225,6 +226,7 @@ return [
      | Note, it is currently an all-or-nothing option.
      |
      */
+    
     'model_camel_case_properties' => false,
 
     /*
@@ -235,6 +237,7 @@ return [
     | Cast the given "real type" to the given "type".
     |
     */
+    
     'type_overrides' => [
         'integer' => 'int',
         'boolean' => 'bool',
@@ -249,6 +252,7 @@ return [
     | magic methods and properties.
     |
     */
+    
     'include_class_docblocks' => false,
 
     /*
@@ -261,6 +265,7 @@ return [
     | or there is an import (use className) of the class.
     |
     */
+    
     'force_fqn' => false,
 
     /*
@@ -272,6 +277,7 @@ return [
     | e.g. `Collection<User>` instead of `Collection|User[]`.
     |
     */
+    
     'use_generics_annotations' => true,
 
     /*
@@ -284,6 +290,7 @@ return [
     | class name of the relationship, e.g. `'relationName' => RelationShipClass::class`.
     |
     */
+    
     'additional_relation_types' => [],
 
     /*
@@ -298,6 +305,7 @@ return [
     | e.g. `'relationName' => 'many'`.
     |
     */
+    
     'additional_relation_return_types' => [],
 
     /*
@@ -331,6 +339,7 @@ return [
     | The specified commands should run after migrations are finished running.
     |
     */
+    
     'post_migrate' => [
         // 'ide-helper:models --nowrite',
     ],
@@ -344,6 +353,7 @@ return [
     | You can add any custom trait that behaves like the original Laravel one.
     |
     */
+    
     'macroable_traits' => [
         Filament\Support\Concerns\Macroable::class,
         Spatie\Macroable\Macroable::class,

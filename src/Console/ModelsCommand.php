@@ -1190,6 +1190,10 @@ class ModelsCommand extends Command
                     //$default = $default;
                 } elseif ($default instanceof \UnitEnum) {
                     $default = '\\' . get_class($default) . '::' . $default->name;
+                } elseif (is_object($default)) {
+                    // Handle object initializers
+                    $reflection = new \ReflectionObject($default);
+                    $default = 'new \\' . $reflection->getName() . '()';
                 } else {
                     $default = "'" . trim($default) . "'";
                 }

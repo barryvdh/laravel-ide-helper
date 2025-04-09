@@ -1186,7 +1186,7 @@ class ModelsCommand extends Command
                     $default = '[]';
                 } elseif (is_null($default)) {
                     $default = 'null';
-                } elseif (is_int($default)) {
+                } elseif (is_int($default) || is_float($default)) {
                     //$default = $default;
                 } elseif ($default instanceof \UnitEnum) {
                     $default = '\\' . get_class($default) . '::' . $default->name;

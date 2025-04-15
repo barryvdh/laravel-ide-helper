@@ -6,6 +6,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCas
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastableReturnsAnonymousCaster;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastableReturnsCustomCaster;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastableWithGenericObjectType;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastableWithGenericSelfType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastableWithoutReturnType;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CustomCasterWithDocblockReturnFqn;
@@ -39,6 +41,8 @@ class CustomCast extends Model
         'casted_property_with_static_return_docblock' => SelfCastingCasterWithStaticDocblockReturn::class,
         'casted_property_with_this_return_docblock' => SelfCastingCasterWithThisDocblockReturn::class,
         'casted_property_with_castable' => CastableReturnsCustomCaster::class,
+        'casted_property_with_generic_object_type' => CastableWithGenericObjectType::class,
+        'casted_property_with_generic_self_type' => CastableWithGenericSelfType::class,
         'casted_property_with_anonymous_cast' => CastableReturnsAnonymousCaster::class,
         'casted_property_without_return_type' => CastableWithoutReturnType::class,
         'extended_casted_property_with_static_return_docblock' => ExtendedSelfCastingCasterWithStaticDocblockReturn::class,

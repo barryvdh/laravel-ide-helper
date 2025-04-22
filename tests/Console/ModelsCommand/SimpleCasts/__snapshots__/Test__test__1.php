@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime
  * @property \Carbon\CarbonImmutable $cast_to_immutable_datetime_serialization
  * @property int $cast_to_timestamp
- * @property mixed $cast_to_encrypted
+ * @property string $cast_to_encrypted
  * @property array<array-key, mixed> $cast_to_encrypted_array
  * @property \Illuminate\Support\Collection<array-key, mixed> $cast_to_encrypted_collection
  * @property array<array-key, mixed> $cast_to_encrypted_json

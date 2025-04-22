@@ -1498,6 +1498,12 @@ class ModelsCommand extends Command
             return $type;
         }
 
+        // Try to extract type from any generic CastsAttributes<TGet, TSet> annotation.
+        $genericType = $this->getReturnTypeFromDocBlockForCastAttributes($reflection);
+        if ($genericType !== null) {
+            return $genericType;
+        }
+
         $cast = call_user_func([$type, 'castUsing'], $params);
 
         if (is_string($cast) && !is_object($cast)) {
@@ -1511,6 +1517,39 @@ class ModelsCommand extends Command
         return $this->getReturnTypeFromReflection($methodReflection) ??
             $this->getReturnTypeFromDocBlock($methodReflection, $reflection) ??
             $type;
+    }
+
+    /**
+     * Extracts TGet from a generic CastsAttributes<TGet, TSet> PHPDoc annotation.
+     *
+     * @param ReflectionClass $classReflection The class containing the method
+     * @return string|null The extracted type or null if not found
+     */
+    protected function getReturnTypeFromDocBlockForCastAttributes(ReflectionClass $classReflection): ?string
+    {
+        $methodReflection = $classReflection->getMethod('castUsing');
+        $docBlock = $this->getReturnTypeFromDocBlock($methodReflection, $classReflection);
+
+        // Look for CastsAttributes<TGet, TSet> pattern in the docblock
+        if ($docBlock && preg_match('/CastsAttributes\s*<\s*([^,>]+)\s*,\s*([^,>]+)\s*>/', $docBlock, $matches)) {
+            $getType = $matches[1];
+            return $this->normalizeSelfType($getType, $classReflection->getName());
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $selfType The return type to normalize
+     * @param string $intoType The class type to use for self references
+     */
+    protected function normalizeSelfType(string $selfType, string $intoType): string
+    {
+        if ($selfType === 'static' || $selfType === '$this' || $selfType === 'self') {
+            return $intoType;
+        }
+
+        return $selfType;
     }
 
     /**

@@ -47,8 +47,6 @@ class Alias
     protected $phpdoc = null;
     protected $classAliases = [];
 
-    protected $isMacroable = false;
-
     /** @var ConfigRepository  */
     protected $config;
 
@@ -63,13 +61,12 @@ class Alias
      * @param array            $magicMethods
      * @param array            $interfaces
      */
-    public function __construct($config, $alias, $facade, $magicMethods = [], $interfaces = [], $isMacroable = false)
+    public function __construct($config, $alias, $facade, $magicMethods = [], $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
         $this->interfaces = $interfaces;
         $this->config = $config;
-        $this->isMacroable = $isMacroable;
 
         // Make the class absolute
         $facade = '\\' . ltrim($facade, '\\');
@@ -431,7 +428,7 @@ class Alias
 
             // Check if the class is macroable
             // (Eloquent\Builder is also macroable but doesn't use Macroable trait)
-            if ($this->isMacroable || $class === EloquentBuilder::class) {
+            if ($class === EloquentBuilder::class || Generator::hasMacroableTrait(array_flip($reflection->getTraitNames()))) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {

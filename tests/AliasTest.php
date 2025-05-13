@@ -7,6 +7,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests;
 use Barryvdh\LaravelIdeHelper\Alias;
 use Barryvdh\LaravelIdeHelper\Macro;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
 
 /**
@@ -18,13 +19,38 @@ class AliasTest extends TestCase
     /**
      * @covers ::detectMethods
      */
+    public function testDetectMethodsMacroableMacros(): void
+    {
+        // Mock
+        $macro = __FUNCTION__;
+        $alias = new AliasMock();
+
+        // Macros
+        Builder::macro(
+            $macro,
+            function () {
+                // empty
+            }
+        );
+
+        // Prepare
+        $alias->setClasses([Builder::class]);
+        $alias->detectMethods();
+
+        // Test
+        $this->assertNotNull($this->getAliasMacro($alias, Builder::class, $macro));
+    }
+
+    /**
+     * @covers ::detectMethods
+     */
     public function testDetectMethodsEloquentBuilderMacros(): void
     {
         // Mock
         $macro = __FUNCTION__;
         $alias = new AliasMock();
 
-        // Macrosx
+        // Macros
         EloquentBuilder::macro(
             $macro,
             function () {

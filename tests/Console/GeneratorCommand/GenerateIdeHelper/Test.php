@@ -13,8 +13,10 @@ class Test extends AbstractGeneratorCommand
 {
     public function testGenerator(): void
     {
-        Arr::macro('arr_custom_macro',function(){});
-        DB::macro('db_custom_macro',function(){});
+        Arr::macro('arr_custom_macro', function () {
+        });
+        DB::macro('db_custom_macro', function () {
+        });
 
         $command = $this->app->make(GeneratorCommand::class);
 

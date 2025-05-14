@@ -30,6 +30,7 @@ class Alias
     protected $alias;
     /** @psalm-var class-string $facade */
     protected $facade;
+    protected $isLaravelFacade = false;
     protected $extends = null;
     protected $extendsClass = null;
     protected $extendsNamespace = null;
@@ -82,6 +83,7 @@ class Alias
         }
 
         $this->valid = true;
+        $this->isLaravelFacade = is_subclass_of($facade, Facade::class);
 
         $this->addClass($this->root);
         $this->detectFake();
@@ -242,11 +244,7 @@ class Alias
     {
         $facade = $this->facade;
 
-        if (!is_subclass_of($facade, Facade::class)) {
-            return;
-        }
-
-        if (!method_exists($facade, 'fake')) {
+        if (!$this->isLaravelFacade || !method_exists($facade, 'fake')) {
             return;
         }
 
@@ -412,7 +410,7 @@ class Alias
                     if (!in_array($method->name, $this->usedMethods)) {
                         // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
-                        if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
+                        if (!$this->isLaravelFacade && substr($method->name, 0, 2) !== '__') {
                             $this->methods[] = new Method(
                                 $method,
                                 $this->alias,

@@ -822,7 +822,7 @@ class ModelsCommand extends Command
                                     if ($this->write_model_relation_exists_properties) {
                                         $this->setProperty(
                                             Str::snake($method) . '_exists',
-                                            'int|null',
+                                            'bool|null',
                                             true,
                                             false
                                             // What kind of comments should be added to the relation count here?

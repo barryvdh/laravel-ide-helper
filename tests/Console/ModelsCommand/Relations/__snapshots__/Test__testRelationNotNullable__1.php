@@ -162,7 +162,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read bool|null $relation_morphed_by_many_exists
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleRelationType
  * @property-read int|null $relation_sample_relation_type_count
- * @property-read boo|null $relation_sample_relation_type_exists
+ * @property-read bool|null $relation_sample_relation_type_exists
  * @property-read Model|\Eloquent $relationSampleToAnyMorphedRelationType
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleToAnyRelationType
  * @property-read int|null $relation_sample_to_any_relation_type_count

@@ -289,6 +289,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default return types for macros
+    |--------------------------------------------------------------------------
+    |
+    | Define default return types for macros without explicit return types.
+    | e.g. `\Illuminate\Database\Query\Builder::class => 'static'`,
+    |      `\Illuminate\Support\Str::class => 'string'`
+    |
+    */
+    'macro_default_return_types' => [
+        Illuminate\Http\Client\Factory::class => Illuminate\Http\Client\PendingRequest::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Additional relation types
     |--------------------------------------------------------------------------
     |

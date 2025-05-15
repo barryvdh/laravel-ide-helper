@@ -18,6 +18,7 @@ class Test extends AbstractGeneratorCommand
         DB::macro('db_custom_macro', function () {
         });
         $this->app['config']->set('ide-helper.include_complete_stubs', [Arr::class]);
+        $this->app['config']->set('ide-helper.macro_default_return_types', [Arr::class => 'Custom_Fake_Class']);
 
         $command = $this->app->make(GeneratorCommand::class);
 
@@ -27,6 +28,7 @@ class Test extends AbstractGeneratorCommand
 
         $this->assertStringContainsString('A new helper file was written to _ide_helper.php', $tester->getDisplay());
         $this->assertStringContainsString('public static function configure($basePath = null)', $this->mockFilesystemOutput);
+        $this->assertStringContainsString('* @return \Custom_Fake_Class', $this->mockFilesystemOutput);
         $this->assertStringContainsString('public static function arr_custom_macro()', $this->mockFilesystemOutput);
         $this->assertStringContainsString('public static function db_custom_macro()', $this->mockFilesystemOutput);
         $this->assertStringContainsString('return \Illuminate\Support\Arr::add', $this->mockFilesystemOutput);

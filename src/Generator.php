@@ -57,9 +57,13 @@ class Generator
         // Find the drivers to add to the extra/interfaces
         $this->detectDrivers();
 
-        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra'), []);
-        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic'), []);
-        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'), []);
+        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra', []));
+        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic', []));
+        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces', []));
+        Macro::setDefaultReturnTypes($this->config->get('ide-helper.macro_default_return_types', [
+            \Illuminate\Http\Client\Factory::class => \Illuminate\Http\Client\PendingRequest::class,
+        ]));
+
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
             $interface = '\\' . ltrim($interface, '\\');

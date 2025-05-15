@@ -63,7 +63,7 @@ class Generator
         Macro::setDefaultReturnTypes($this->config->get('ide-helper.macro_default_return_types', [
             \Illuminate\Http\Client\Factory::class => \Illuminate\Http\Client\PendingRequest::class,
         ]));
-        
+
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
             $interface = '\\' . ltrim($interface, '\\');

@@ -285,7 +285,7 @@ return [
     |
     */
     'macro_default_return_types' => [
-        \Illuminate\Http\Client\Factory::class => \Illuminate\Http\Client\PendingRequest::class,
+        Illuminate\Http\Client\Factory::class => Illuminate\Http\Client\PendingRequest::class,
     ],
 
     /*

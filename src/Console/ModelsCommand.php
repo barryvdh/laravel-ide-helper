@@ -475,7 +475,11 @@ class ModelsCommand extends Command
             }
 
             if (Str::startsWith($type, AsCollection::class)) {
-                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?? '\Illuminate\Support\Collection';
+                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?: '\Illuminate\Support\Collection';
+                $relatedModel = $this->getTypeInModel($model, $params[1] ?? null);
+                if ($relatedModel) {
+                    $realType = $this->getCollectionTypeHint($realType, $relatedModel);
+                }
             }
 
             if (Str::startsWith($type, AsEnumCollection::class)) {

@@ -52,9 +52,4 @@ abstract class AbstractModelsCommand extends TestCase
         // Don't override integer -> int for tests
         $config->set('ide-helper.type_overrides', []);
     }
-
-    protected function assertMatchesMockedSnapshot()
-    {
-        $this->assertMatchesSnapshot($this->mockFilesystemOutput, new SnapshotPhpDriver());
-    }
 }

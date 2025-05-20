@@ -27,9 +27,4 @@ abstract class AbstractGeneratorCommand extends TestCase
     {
         return [IdeHelperServiceProvider::class];
     }
-
-    protected function assertMatchesMockedSnapshot()
-    {
-        $this->assertMatchesSnapshot($this->mockFilesystemOutput, new SnapshotPhpDriver());
-    }
 }

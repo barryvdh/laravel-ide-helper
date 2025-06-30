@@ -79,6 +79,17 @@ class Generator
     public function generate()
     {
         $app = app();
+        $aliases = $this->getAliases();
+        
+        // Handle Request class specially if complete stubs are enabled
+        if ($this->config->get('ide-helper.include_complete_request_stubs', true)) {
+            foreach ($aliases as $alias) {
+                if ($alias->getExtends() === 'Illuminate\Http\Request') {
+                    $this->addCompleteRequestMethods($alias);
+                }
+            }
+        }
+
         return $this->view->make('ide-helper::helper')
             ->with('namespaces_by_extends_ns', $this->getAliasesByExtendsNamespace())
             ->with('namespaces_by_alias_ns', $this->getAliasesByAliasNamespace())
@@ -396,5 +407,60 @@ class Generator
                     return $alias->getExtends() === $class;
                 });
             });
+    }
+
+    /**
+     * Add complete Request class methods to the alias
+     *
+     * @param Alias $alias
+     * @return void
+     */
+    protected function addCompleteRequestMethods(Alias $alias)
+    {
+        $methods = [
+            'input' => 'mixed',
+            'route' => 'mixed',
+            'file' => 'mixed',
+            'hasFile' => 'bool',
+            'all' => 'array',
+            'only' => 'array',
+            'except' => 'array',
+            'query' => 'mixed',
+            'cookie' => 'mixed',
+            'header' => 'mixed',
+            'server' => 'mixed',
+            'session' => 'mixed',
+            'old' => 'mixed',
+            'flash' => 'void',
+            'flashOnly' => 'void',
+            'flashExcept' => 'void',
+            'flush' => 'void',
+            'merge' => 'void',
+            'replace' => 'void',
+            'json' => 'mixed',
+            'isJson' => 'bool',
+            'wantsJson' => 'bool',
+            'is' => 'bool',
+            'routeIs' => 'bool',
+            'fullUrl' => 'string',
+            'url' => 'string',
+            'path' => 'string',
+            'decodedPath' => 'string',
+            'root' => 'string',
+            'method' => 'string',
+            'isMethod' => 'bool',
+            'bearerToken' => 'string',
+            'ip' => 'string',
+            'ips' => 'array',
+            'userAgent' => 'string',
+            'secure' => 'bool',
+            'ajax' => 'bool',
+            'pjax' => 'bool',
+            'prefetch' => 'bool',
+        ];
+
+        foreach ($methods as $method => $returnType) {
+            $alias->addMethod($method, [], $returnType);
+        }
     }
 }

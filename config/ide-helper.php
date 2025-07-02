@@ -49,6 +49,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Complete stub generation
+    |--------------------------------------------------------------------------
+    |
+    | Set to true to generate complete class stubs including all methods,
+    | can also detail the classes with an array; e.g.
+    | `[\Illuminate\Http\Request::class]`
+    |
+    */
+
+    'include_complete_stubs' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Factory builders
     |--------------------------------------------------------------------------
     |

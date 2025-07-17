@@ -9,8 +9,6 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Pivots\Di
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property-read DifferentCustomPivot|CustomPivot|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ModelWithPivot> $relationCustomPivotUsingSameAccessor
  * @property-read int|null $relation_custom_pivot_using_same_accessor_count
@@ -75,8 +73,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Piv
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPivot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPivot newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPivot query()
@@ -94,8 +90,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Pivot\Models\Piv
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DifferentCustomPivot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DifferentCustomPivot newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DifferentCustomPivot query()

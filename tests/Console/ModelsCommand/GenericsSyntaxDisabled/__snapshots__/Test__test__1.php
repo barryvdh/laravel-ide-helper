@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * 
- *
  * @property int $id
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $regularBelongsToMany
  * @property-read int|null $regular_belongs_to_many_count

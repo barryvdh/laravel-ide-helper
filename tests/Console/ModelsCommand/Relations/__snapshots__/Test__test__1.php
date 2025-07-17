@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
- *
  * @property int $id
  * @property int $not_null_column_with_foreign_key_constraint
  * @property int $not_null_column_with_no_foreign_key_constraint
@@ -61,8 +59,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
- *
  * @property int $id
  * @property int $not_null_column_with_foreign_key_constraint
  * @property int $not_null_column_with_no_foreign_key_constraint
@@ -132,8 +128,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
- * 
- *
  * @property int $id
  * @property-read Simple|null $relationBelongsTo
  * @property-read AnotherModel|null $relationBelongsToInAnotherNamespace

@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 
- *
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Dynamic> $regularHasMany
  * @property-read int|null $regular_has_many_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dynamic newModelQuery()

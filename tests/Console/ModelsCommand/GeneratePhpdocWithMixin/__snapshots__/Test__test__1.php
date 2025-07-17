@@ -45,8 +45,6 @@ class Post extends Model
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- * 
- *
  * @property $someProp
  * @method someMethod(string $method)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FinalPost newModelQuery()
@@ -60,8 +58,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- * 
- *
  * @property $someProp
  * @method someMethod(string $method)
  * @property int $id

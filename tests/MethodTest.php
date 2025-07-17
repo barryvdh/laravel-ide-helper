@@ -36,12 +36,10 @@ class MethodTest extends TestCase
 
         $output = <<<'DOC'
 /**
- * 
- *
  * @param string $last
  * @param string $first
  * @param string $middle
- * @static 
+ * @static
  */
 DOC;
         $this->assertSame($output, $method->getDocComment(''));
@@ -71,8 +69,8 @@ DOC;
  * @param array $values
  * @param array|string $uniqueBy
  * @param array|null $update
- * @return int 
- * @static 
+ * @return int
+ * @static
  */
 DOC;
         $this->assertSame($output, $method->getDocComment(''));
@@ -104,8 +102,8 @@ DOC;
  * @param mixed $operator
  * @param mixed $value
  * @param string $boolean
- * @return \Illuminate\Database\Eloquent\Builder<static> 
- * @static 
+ * @return \Illuminate\Database\Eloquent\Builder<static>
+ * @static
  */
 DOC;
         $this->assertSame($output, $method->getDocComment(''));
@@ -134,8 +132,8 @@ DOC;
  * @param string|array|\Illuminate\Contracts\Database\Query\Expression $columns
  * @param string $boolean
  * @param bool $not
- * @return \Illuminate\Database\Eloquent\Builder<static> 
- * @static 
+ * @return \Illuminate\Database\Eloquent\Builder<static>
+ * @static
  */
 DOC;
 
@@ -177,10 +175,8 @@ DOC;
 
         $output = <<<'DOC'
 /**
- * 
- *
- * @return \Illuminate\Foundation\Application 
- * @static 
+ * @return \Illuminate\Foundation\Application
+ * @static
  */
 DOC;
 
@@ -208,8 +204,8 @@ DOC;
  * @template TValue
  * @param (\Closure(): TValue)|list<string> $columns
  * @param (\Closure(): TValue)|null $callback
- * @return TModel|TValue 
- * @static 
+ * @return TModel|TValue
+ * @static
  */
 DOC;
         $this->assertSame($output, $method->getDocComment(''));

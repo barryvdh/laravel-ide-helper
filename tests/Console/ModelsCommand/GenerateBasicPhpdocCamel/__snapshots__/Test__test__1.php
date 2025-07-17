@@ -7,8 +7,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhp
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property int $id
  * @property string|null $charNullable
  * @property string $charNotNullable

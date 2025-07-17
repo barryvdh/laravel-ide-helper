@@ -242,13 +242,11 @@ class MacroTest extends TestCase
         $macro = new Macro($reflectionMethod, 'URL', new ReflectionClass(UrlGenerator::class), 'macroName');
         $output = <<<'DOC'
 /**
- * 
- *
  * @param string $foo
  * @param int $bar
- * @return string 
+ * @return string
  * @see \Barryvdh\LaravelIdeHelper\Tests\UrlGeneratorMacroClass::__invoke()
- * @static 
+ * @static
  */
 DOC;
         $this->assertSame($output, $macro->getDocComment(''));

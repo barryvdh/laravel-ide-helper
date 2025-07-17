@@ -7,8 +7,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ArrayCastsWithCo
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property array<int, string>|null $cast_to_array -- These three should not be duplicated
  * @property array<int, string> $cast_to_json some-description
  * @property \Illuminate\Support\Collection<int, string> $cast_to_collection some-description

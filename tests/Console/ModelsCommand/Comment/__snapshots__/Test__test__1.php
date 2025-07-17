@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * 
- *
  * @property int $id
  * @property string $both_same_name I'm a getter
  * @property string $both_without_getter_comment

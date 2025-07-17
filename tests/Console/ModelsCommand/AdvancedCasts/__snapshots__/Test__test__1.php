@@ -13,8 +13,6 @@ use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property \Illuminate\Support\Carbon $cast_to_date_serialization
  * @property \Illuminate\Support\Carbon $cast_to_datetime_serialization
  * @property \Illuminate\Support\Carbon $cast_to_custom_datetime

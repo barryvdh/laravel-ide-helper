@@ -1,6 +1,4 @@
 /**
- * 
- *
  * @mixin \Eloquent
  * @mixin \Illuminate\Database\Eloquent\Builder
  * @mixin \Illuminate\Database\Query\Builder

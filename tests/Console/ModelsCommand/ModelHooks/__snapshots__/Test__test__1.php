@@ -7,8 +7,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Model
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property int $id
  * @property-read string $custom
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple custom($custom)

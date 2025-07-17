@@ -8,8 +8,6 @@ use DateTime;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property int $id
  * @property-read int|null $attribute_return_type_int_or_null
  * @property-read array $attribute_returns_array

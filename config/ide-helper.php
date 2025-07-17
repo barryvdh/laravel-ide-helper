@@ -85,14 +85,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Write model relation count properties
+    | Write model relation count and exists properties
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable writing of relation count properties to model DocBlocks.
+    | Set to false to disable writing of relation count and exists properties
+    | to model DocBlocks.
     |
     */
 
     'write_model_relation_count_properties' => true,
+    'write_model_relation_exists_properties' => false,
 
     /*
     |--------------------------------------------------------------------------

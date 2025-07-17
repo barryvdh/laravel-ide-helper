@@ -88,6 +88,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Post> $posts
  * @property-read int|null $posts_count
+ * @property-read bool|null $posts_exists
  * @method static EloquentBuilder<static>|Post newModelQuery()
  * @method static EloquentBuilder<static>|Post newQuery()
  * @method static EloquentBuilder<static>|Post null(string $unusedParam)

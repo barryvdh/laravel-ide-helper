@@ -51,6 +51,8 @@ abstract class AbstractModelsCommand extends TestCase
 
         // Don't override integer -> int for tests
         $config->set('ide-helper.type_overrides', []);
+
+        $config->set('ide-helper.write_model_relation_exists_properties', true);
     }
 
     protected function assertMatchesMockedSnapshot()

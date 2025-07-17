@@ -175,7 +175,7 @@ class ModelsCommand extends Command
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
         $this->write_model_relation_exists_properties =
-            $this->laravel['config']->get('ide-helper.write_model_relation_exists_properties', true);
+            $this->laravel['config']->get('ide-helper.write_model_relation_exists_properties', false);
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do

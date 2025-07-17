@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\GeneratorCommand;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
-use Barryvdh\LaravelIdeHelper\Tests\SnapshotPhpDriver;
 use Barryvdh\LaravelIdeHelper\Tests\TestCase;
 
 abstract class AbstractGeneratorCommand extends TestCase

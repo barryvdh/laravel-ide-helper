@@ -1411,7 +1411,7 @@ class ModelsCommand extends Command
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class);
-            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, []);
+            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, ['bool $withTrashed = true']);
             $this->setMethod('withoutTrashed', $builder . '<static>|' . $modelName, []);
             $this->setMethod('onlyTrashed', $builder . '<static>|' . $modelName, []);
         }

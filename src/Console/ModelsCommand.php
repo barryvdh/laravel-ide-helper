@@ -410,9 +410,6 @@ class ModelsCommand extends Command
             $params = [];
 
             switch ($type) {
-                case 'encrypted':
-                    $realType = 'mixed';
-                    break;
                 case 'boolean':
                 case 'bool':
                     $realType = 'bool';
@@ -420,6 +417,7 @@ class ModelsCommand extends Command
                 case 'decimal':
                     $realType = 'numeric';
                     break;
+                case 'encrypted':
                 case 'string':
                 case 'hashed':
                     $realType = 'string';

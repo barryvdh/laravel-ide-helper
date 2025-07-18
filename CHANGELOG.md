@@ -1,5 +1,37 @@
 # Changelog
 
+## v3.6.0 - 2025-07-18
+
+### What's Changed
+
+* fix: Change AsArrayObject cast to be Laravel's ArrayObject by @wsamoht in https://github.com/barryvdh/laravel-ide-helper/pull/1675
+* Add extends declaration for Macroable classes to fix missing inherited methods by @KentarouTakeda in https://github.com/barryvdh/laravel-ide-helper/pull/1674
+* fix(meta): ignore aliases in the autoloader (Fixes #1671) by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1686
+* feat(ModelsCommand): add support for the new Scope attribute by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1694
+* fix type change for scope default float parameter by @nivseb in https://github.com/barryvdh/laravel-ide-helper/pull/1697
+* Revert #1629 - *Allow adding custom Macroable classes* by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1707
+* Configurable macro return type defaults by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1711
+* docs(readme): add Laravel 12 support information by @SantosVilanculos in https://github.com/barryvdh/laravel-ide-helper/pull/1717
+* Add multi-level directory support for translation files by @RosiersRobin in https://github.com/barryvdh/laravel-ide-helper/pull/1718
+* Support `AsCollection::of($map)`, `AsCollection::using($class, $map)` by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1714
+* fix: Fixed wrong doc for SoftDeletes `withTrashed` method by @eldair in https://github.com/barryvdh/laravel-ide-helper/pull/1688
+* Support other OS on tests by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1715
+* Fix tests on windows by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1720
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 in the deps group by @dependabot[bot] in https://github.com/barryvdh/laravel-ide-helper/pull/1719
+* Update .gitattributes - avoid all `.php-cs-fixer` files on vendor by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1708
+* fix(ModelsCommand): use 'string' as realType for 'encrypted' casts by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1698
+* Trim strings and bump reflection docblock by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1721
+* Add magic *_exists properties by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1712
+
+### New Contributors
+
+* @wsamoht made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1675
+* @nivseb made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1697
+* @SantosVilanculos made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1717
+* @RosiersRobin made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1718
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.5.5...v3.6.0
+
 ## v3.5.5 - 2025-02-21
 
 ### What's Changed

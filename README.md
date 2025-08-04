@@ -212,7 +212,7 @@ If for some reason it's undesired to have them generated (one for each column), 
 
 #### Magic `*_count` and `*_exists` properties
 
-You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) and [`::withExists`](https://laravel.com/docs/master/eloquent-relationships#other-aggregate-functions) methodsto count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columname>_count` and `<columname>_exists` convention.
+You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) and [`::withExists`](https://laravel.com/docs/master/eloquent-relationships#other-aggregate-functions) methods to count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columname>_count` and `<columname>_exists` convention.
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` and `write_model_relation_exists_properties` to `false`.
 

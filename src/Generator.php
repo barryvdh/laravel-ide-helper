@@ -359,6 +359,14 @@ class Generator
         foreach ($macroable as $class) {
             $reflection = new ReflectionClass($class);
 
+            if ($reflection->hasMethod('getFacadeRoot')
+                && $reflection->getMethod('getFacadeRoot')->isStatic()
+            ) {
+                $method = $reflection->getMethod('getFacadeRoot');
+                $root = $method->invoke(null);
+                $reflection = new ReflectionClass($root);
+            }
+
             if (!$reflection->getStaticProperties()['macros']) {
                 continue;
             }
@@ -385,8 +393,10 @@ class Generator
             ->filter(function ($class) {
                 $traits = class_uses_recursive($class);
 
+                $facadeAccessorIsMacroable = $this->facadeAccessorIsMacroable($class);
+
                 // Filter only classes with the macroable trait
-                return isset($traits[Macroable::class]);
+                return isset($traits[Macroable::class]) || $facadeAccessorIsMacroable;
             })
             ->filter(function ($class) use ($aliases) {
                 $class = Str::start($class, '\\');
@@ -396,5 +406,32 @@ class Generator
                     return $alias->getExtends() === $class;
                 });
             });
+    }
+
+    /**
+     * @param class-string $class
+     */
+    protected function facadeAccessorIsMacroable(string $class): bool
+    {
+        if (!is_subclass_of($class, Facade::class)) {
+            return false;
+        }
+
+        $reflection = new ReflectionClass($class);
+        if (!$reflection->hasMethod('getFacadeAccessor')
+            || !$reflection->getMethod('getFacadeAccessor')->isStatic()
+        ) {
+            return false;
+        }
+
+        $facadeAccessor = $reflection->getMethod('getFacadeAccessor')->invoke(null);
+        $abstract = app()->getAlias($facadeAccessor);
+        if (!class_exists($abstract)) {
+            return false;
+        }
+
+        $traits = class_uses_recursive($abstract);
+
+        return isset($traits[Macroable::class]);
     }
 }

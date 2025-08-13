@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests;
 
+use Barryvdh\LaravelIdeHelper\Generator;
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Barryvdh\LaravelIdeHelper\Macro;
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -259,6 +267,48 @@ DOC;
         $this->assertTrue($macro->shouldReturn());
         $this->assertSame('$instance->__invoke($foo, $bar)', $macro->getRootMethodCall());
     }
+
+    public function testFacadeWithMacroableAccessorGeneratesMethodsOnBothClasses(): void
+    {
+        View::addLocation(__DIR__ . '/../resources/views');
+        $this->app->register(MyServiceProvider::class);
+        AliasLoader::getInstance()->setAliases([
+            'MyFacade' => MyFacade::class,
+        ]);
+        Request::flushMacros();
+
+        $generator = new Generator($this->app['config'], $this->app['view'], null, false);
+        $content = $generator->generate();
+
+        $namespacePattern = 'namespace Barryvdh\\\\LaravelIdeHelper\\\\Tests';
+        $serviceClassPattern = "/$namespacePattern\s*{.*?\s*class MyService\s*{.*?public static function myMethod\(\)/s";
+        $facadeClassPattern = "/$namespacePattern\s*{.*?\s*class MyFacade\s*{.*?public static function myMethod\(\)/s";
+
+        // Assert that the myMethod definition exists inside the namespaced MyService class block.
+        $this->assertMatchesRegularExpression(
+            $serviceClassPattern,
+            $content,
+            'The helper file should contain the myMethod() definition for the MyService class within its namespace.'
+        );
+
+        // Assert that the myMethod definition ALSO exists inside the namespaced MyFacade class block.
+        $this->assertMatchesRegularExpression(
+            $facadeClassPattern,
+            $content,
+            'The helper file should contain the myMethod() definition for the MyFacade class within its namespace.'
+        );
+
+        // Additionally, check for the correct fully-qualified method body in one of the definitions.
+        $this->assertStringContainsString(
+            'return \Barryvdh\LaravelIdeHelper\Tests\MyService::myMethod();',
+            $content
+        );
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [IdeHelperServiceProvider::class];
+    }
 }
 
 /**
@@ -291,5 +341,36 @@ class UrlGeneratorMacroClass
     public function __invoke(string $foo, int $bar = 0): string
     {
         return '';
+    }
+}
+
+class MyService
+{
+    use Macroable;
+}
+
+class MyFacade extends Facade
+{
+    protected static function getFacadeAccessor(): string
+    {
+        return MyService::class;
+    }
+}
+
+class MyServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->singleton(MyService::class, fn () => new MyService());
+    }
+
+    public function boot(): void
+    {
+        MyFacade::macro(
+            'myMethod',
+            function (): string {
+                return 'Walter was here';
+            },
+        );
     }
 }

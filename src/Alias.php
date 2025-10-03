@@ -31,6 +31,7 @@ class Alias
     protected $alias;
     /** @psalm-var class-string $facade */
     protected $facade;
+    protected $completeStub = false;
     protected $extends = null;
     protected $extendsClass = null;
     protected $extendsNamespace = null;
@@ -80,6 +81,10 @@ class Alias
         }
 
         $this->valid = true;
+        $this->completeStub = $config->get('ide-helper.include_complete_stubs', false);
+        if(is_array($this->completeStub)) {
+            $this->completeStub = in_array(ltrim($this->root, '\\'), $this->completeStub);
+        }
 
         $this->addClass($this->root);
         $this->detectFake();
@@ -410,7 +415,7 @@ class Alias
                     if (!in_array($method->name, $this->usedMethods)) {
                         // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
-                        if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
+                        if (($this->extends !== $class || $this->completeStub) && substr($method->name, 0, 2) !== '__') {
                             $this->methods[] = new Method(
                                 $method,
                                 $this->alias,

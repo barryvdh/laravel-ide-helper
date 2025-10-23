@@ -49,6 +49,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Request stub generation
+    |--------------------------------------------------------------------------
+    |
+    | Set to true to generate complete Request class stubs including all methods.
+    | This helps prevent conflicts with PHP Intelephense extension.
+    |
+    */
+
+    'include_complete_request_stubs' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Factory builders
     |--------------------------------------------------------------------------
     |

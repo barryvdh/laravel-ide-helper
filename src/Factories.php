@@ -16,7 +16,6 @@ class Factories
             $factory = app(Factory::class);
 
             $definitions = (new ReflectionClass(Factory::class))->getProperty('definitions');
-            $definitions->setAccessible(true);
 
             foreach ($definitions->getValue($factory) as $factory_target => $config) {
                 try {

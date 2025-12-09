@@ -9,6 +9,7 @@ use Barryvdh\LaravelIdeHelper\Macro;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @internal
@@ -67,6 +68,22 @@ class AliasTest extends TestCase
     }
 
     /**
+     * @covers ::detectFake
+     */
+    public function testNoExceptionOnRequiredFakeParameters(): void
+    {
+        // Mock
+        $alias = new AliasMock();
+
+        // Prepare
+        $alias->setFacade(MockFacade::class);
+        $this->expectNotToPerformAssertions();
+
+        // Test
+        $alias->detectFake();
+    }
+
+    /**
      * @covers ::detectTemplateNames
      */
     public function testTemplateNamesAreDetected(): void
@@ -117,5 +134,27 @@ class AliasMock extends Alias
     public function detectMethods()
     {
         parent::detectMethods();
+    }
+
+    public function detectFake()
+    {
+        parent::detectFake();
+    }
+
+    public function setFacade(string $facade)
+    {
+        $this->facade = $facade;
+    }
+}
+
+class MockFacade extends Facade
+{
+    protected static function getFacadeAccessor()
+    {
+        return '';
+    }
+
+    public static function fake(string $test1, $test2 = null)
+    {
     }
 }

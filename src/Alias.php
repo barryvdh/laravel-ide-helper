@@ -256,6 +256,8 @@ class Alias
             if ($fake !== $real) {
                 $this->addClass(get_class($fake));
             }
+        } catch (Throwable $throwable) {
+            // Ignore error
         } finally {
             $facade::swap($real);
         }

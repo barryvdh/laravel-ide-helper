@@ -151,7 +151,7 @@ class MockFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return '';
+        return 'Illuminate\Foundation\Exceptions\Handler';
     }
 
     public static function fake(string $test1, $test2 = null)

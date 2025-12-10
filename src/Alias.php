@@ -239,27 +239,26 @@ class Alias
     protected function detectFake()
     {
         $facade = $this->facade;
-    
+
         if (!is_subclass_of($facade, Facade::class)) {
             return;
         }
-    
+
         if (!method_exists($facade, 'fake')) {
             return;
         }
-    
+
         $reflection = new \ReflectionMethod($facade, 'fake');
-    
         if ($reflection->getNumberOfRequiredParameters() > 0) {
             return;
         }
-    
+
         $real = $facade::getFacadeRoot();
-    
+
         try {
             $facade::fake();
             $fake = $facade::getFacadeRoot();
-    
+
             if ($fake !== $real) {
                 $this->addClass(get_class($fake));
             }

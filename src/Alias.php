@@ -248,16 +248,20 @@ class Alias
             return;
         }
 
+        $reflection = new \ReflectionMethod($facade, 'fake');
+        if ($reflection->getNumberOfRequiredParameters() > 0) {
+            return;
+        }
+
         $real = $facade::getFacadeRoot();
 
         try {
             $facade::fake();
             $fake = $facade::getFacadeRoot();
+
             if ($fake !== $real) {
                 $this->addClass(get_class($fake));
             }
-        } catch (Throwable $throwable) {
-            // Ignore error
         } finally {
             $facade::swap($real);
         }

@@ -124,7 +124,6 @@ $reflection = new ReflectionClass($loader);
 $property = $reflection->hasProperty('paths')
     ? $reflection->getProperty('paths')
     : $reflection->getProperty('path');
-$property->setAccessible(true);
 
 $paths = Illuminate\Support\Arr::wrap($property->getValue($loader));
 

@@ -584,6 +584,8 @@ class ModelsCommand extends Command
                     'float', 'real', 'float4',
                     'double', 'float8' => 'float',
 
+                    'decimal', 'numeric' => 'numeric',
+
                     default => 'string',
                 };
             }

@@ -1,5 +1,27 @@
 # Changelog
 
+## v3.6.1 - 2025-12-10
+
+### What's Changed
+
+* Fix `methodsto` typo in README by @peterchrjoergensen in https://github.com/barryvdh/laravel-ide-helper/pull/1723
+* Bump actions/checkout from 4 to 5 in the deps group by @dependabot[bot] in https://github.com/barryvdh/laravel-ide-helper/pull/1731
+* Fix typos in documentation and code comments by @kei1111 in https://github.com/barryvdh/laravel-ide-helper/pull/1733
+* Add php 8.5 support by @sergiy-petrov in https://github.com/barryvdh/laravel-ide-helper/pull/1735
+* Fix alias fake error by @WentTheFox in https://github.com/barryvdh/laravel-ide-helper/pull/1745
+* Remove calls to PHP 8.5-deprecated `setAccessible` by @jnoordsij in https://github.com/barryvdh/laravel-ide-helper/pull/1744
+* Bump the deps group across 1 directory with 2 updates by @dependabot[bot] in https://github.com/barryvdh/laravel-ide-helper/pull/1743
+* Add support for `decimal` column type by @BrainStone in https://github.com/barryvdh/laravel-ide-helper/pull/1739
+
+### New Contributors
+
+* @peterchrjoergensen made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1723
+* @kei1111 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1733
+* @WentTheFox made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1745
+* @BrainStone made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1739
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.6.0...v3.6.1
+
 ## v3.6.0 - 2025-07-18
 
 ### What's Changed

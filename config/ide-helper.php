@@ -341,6 +341,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Make soft deletable relations nullable
+    |--------------------------------------------------------------------------
+    |
+    | When set to true (default), relationships to models using SoftDeletes trait
+    | will be marked as nullable. This is because soft-deleted records are excluded
+    | from queries by default, meaning even non-nullable foreign keys can return
+    | null when the related model is soft-deleted.
+    |
+    | Default: true
+    | A relationship to a soft-deletable model will include |null in the type:
+    |  * @property-read Team|null $team
+    |
+    | Option: false
+    | A relationship to a soft-deletable model will NOT include |null (unless
+    | nullable for other reasons such as nullable foreign key column):
+    |  * @property-read Team $team
+    |
+    */
+
+    'soft_deletes_force_nullable' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Run artisan commands after migrations to generate model helpers
     |--------------------------------------------------------------------------
     |

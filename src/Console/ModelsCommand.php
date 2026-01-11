@@ -911,7 +911,29 @@ class ModelsCommand extends Command
             }
         }
 
+        if ($this->relatedModelUsesSoftDeletes($relationObj)) {
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Check if the related model uses the SoftDeletes trait
+     *
+     * @param Relation $relationObj
+     *
+     * @return bool
+     */
+    protected function relatedModelUsesSoftDeletes(Relation $relationObj): bool
+    {
+        if (!$this->laravel['config']->get('ide-helper.soft_deletes_force_nullable', true)) {
+            return false;
+        }
+
+        $relatedModel = $relationObj->getRelated();
+
+        return in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', class_uses_recursive($relatedModel));
     }
 
     /**

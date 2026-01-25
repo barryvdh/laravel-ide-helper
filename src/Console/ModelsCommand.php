@@ -1661,7 +1661,8 @@ class ModelsCommand extends Command
             $type = implode('|', $types);
 
             if ($paramType->allowsNull()) {
-                if (count($types) == 1) {
+                // Use ?Type syntax only for single named types, not for intersection types
+                if (count($types) == 1 && !str_starts_with($type, '(')) {
                     $type = '?' . $type;
                 } else {
                     $type .= '|null';
@@ -1734,22 +1735,51 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    protected function extractReflectionTypes(ReflectionType $reflection_type)
+    protected function extractReflectionTypes(ReflectionType $reflection_type): array
     {
         if ($reflection_type instanceof ReflectionNamedType) {
-            $types[] = $this->getReflectionNamedType($reflection_type);
-        } else {
-            $types = [];
-            foreach ($reflection_type->getTypes() as $named_type) {
-                if ($named_type->getName() === 'null') {
+            return [$this->getReflectionNamedType($reflection_type)];
+        }
+
+        if ($reflection_type instanceof \ReflectionIntersectionType) {
+            return [$this->formatIntersectionType($reflection_type)];
+        }
+
+        if ($reflection_type instanceof \ReflectionUnionType) {
+            return $this->extractUnionTypes($reflection_type);
+        }
+
+        // Unknown type - return empty array as fallback
+        return [];
+    }
+
+    protected function extractUnionTypes(\ReflectionUnionType $union_type): array
+    {
+        $types = [];
+
+        foreach ($union_type->getTypes() as $inner_type) {
+            if ($inner_type instanceof ReflectionNamedType) {
+                if ($inner_type->getName() === 'null') {
                     continue;
                 }
-
-                $types[] = $this->getReflectionNamedType($named_type);
+                $types[] = $this->getReflectionNamedType($inner_type);
+            } elseif ($inner_type instanceof \ReflectionIntersectionType) {
+                $types[] = $this->formatIntersectionType($inner_type);
             }
+            // ReflectionUnionType cannot be nested per PHP's DNF rules
         }
 
         return $types;
+    }
+
+    protected function formatIntersectionType(\ReflectionIntersectionType $intersection_type): string
+    {
+        $parts = [];
+        foreach ($intersection_type->getTypes() as $type) {
+            $parts[] = $this->getReflectionNamedType($type);
+        }
+
+        return '(' . implode('&', $parts) . ')';
     }
 
     protected function getReflectionNamedType(ReflectionNamedType $paramType): string

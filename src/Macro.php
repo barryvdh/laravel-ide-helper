@@ -93,15 +93,46 @@ class Macro extends Method
 
     protected function concatReflectionTypes(?\ReflectionType $type): string
     {
-        /** @psalm-suppress UndefinedClass */
-        $returnTypes = $type instanceof \ReflectionUnionType
-            ? $type->getTypes()
-            : [$type];
+        if ($type instanceof \ReflectionNamedType) {
+            return $type->getName();
+        }
 
-        return Collection::make($returnTypes)
+        if ($type instanceof \ReflectionIntersectionType) {
+            return $this->formatIntersectionType($type);
+        }
+
+        if ($type instanceof \ReflectionUnionType) {
+            return $this->formatUnionType($type);
+        }
+
+        // Unknown or null type
+        return '';
+    }
+
+    protected function formatUnionType(\ReflectionUnionType $type): string
+    {
+        return Collection::make($type->getTypes())
+            ->map(function (\ReflectionType $inner) {
+                if ($inner instanceof \ReflectionNamedType) {
+                    return $inner->getName();
+                }
+                if ($inner instanceof \ReflectionIntersectionType) {
+                    return $this->formatIntersectionType($inner);
+                }
+                // ReflectionUnionType cannot be nested per PHP's DNF rules
+                return null;
+            })
             ->filter()
-            ->map->getName()
             ->implode('|');
+    }
+
+    protected function formatIntersectionType(\ReflectionIntersectionType $type): string
+    {
+        $parts = Collection::make($type->getTypes())
+            ->map(fn (\ReflectionNamedType $t) => $t->getName())
+            ->toArray();
+
+        return '(' . implode('&', $parts) . ')';
     }
 
     protected function addLocationToPhpDoc()

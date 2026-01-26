@@ -103,7 +103,7 @@ class DnfTypeModel extends Model
      */
     public function getMultipleIntersectionsNoNullAttribute(): (Countable&Iterator)|(ArrayAccess&Stringable)|(Traversable&Countable)
     {
-        return new class implements Countable, Iterator {
+        return new class () implements Countable, Iterator {
             public function count(): int
             {
                 return 0;
@@ -143,7 +143,7 @@ class DnfTypeModel extends Model
      */
     public function getPureIntersectionAttribute(): Countable&Iterator
     {
-        return new class implements Countable, Iterator {
+        return new class () implements Countable, Iterator {
             public function count(): int
             {
                 return 0;

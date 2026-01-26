@@ -207,6 +207,63 @@ class MacroTest extends TestCase
         $this->assertEquals('@return \Stringable|string|null', $this->tagsToString($phpdoc, 'return'));
     }
 
+    public function testInitPhpDocParamsWithDnfTypes(): void
+    {
+        $phpdoc = (new MacroMock())->getPhpDoc(eval(<<<'PHP'
+            return new ReflectionFunction(
+                /**
+                 * Test docblock with DNF types.
+                 */
+                function ((\Countable&\Iterator)|null $a): (\Countable&\Iterator)|\stdClass|null {
+                    return $a;
+                }
+            );
+        PHP));
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock with DNF types', $phpdoc->getText());
+        $this->assertEquals('@param (Countable&Iterator)|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@return (Countable&Iterator)|\stdClass|null', $this->tagsToString($phpdoc, 'return'));
+    }
+
+    public function testInitPhpDocParamsWithPureIntersectionType(): void
+    {
+        $phpdoc = (new MacroMock())->getPhpDoc(eval(<<<'PHP'
+            return new ReflectionFunction(
+                /**
+                 * Test docblock with pure intersection type.
+                 */
+                function (\Countable&\Iterator $a): \Countable&\Iterator {
+                    return $a;
+                }
+            );
+        PHP));
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock with pure intersection type', $phpdoc->getText());
+        $this->assertEquals('@param (Countable&Iterator) $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@return (Countable&Iterator)', $this->tagsToString($phpdoc, 'return'));
+    }
+
+    public function testInitPhpDocParamsWithMultipleIntersections(): void
+    {
+        $phpdoc = (new MacroMock())->getPhpDoc(eval(<<<'PHP'
+            return new ReflectionFunction(
+                /**
+                 * Test docblock with multiple intersection segments.
+                 */
+                function ((\Countable&\Iterator)|(\ArrayAccess&\Stringable) $a): (\Countable&\Iterator)|(\ArrayAccess&\Stringable)|null {
+                    return $a;
+                }
+            );
+        PHP));
+
+        $this->assertNotNull($phpdoc);
+        $this->assertStringContainsString('Test docblock with multiple intersection segments', $phpdoc->getText());
+        $this->assertEquals('@param (Countable&Iterator)|(ArrayAccess&Stringable) $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@return (Countable&Iterator)|(ArrayAccess&Stringable)|null', $this->tagsToString($phpdoc, 'return'));
+    }
+
     protected function tagsToString(DocBlock $docBlock, string $name)
     {
         $tags = $docBlock->getTagsByName($name);

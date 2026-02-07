@@ -1,4 +1,16 @@
 <?= '<?php' ?>
+<?php
+/**
+ * @var array $bindings
+ * @var string[] $methods
+ * @var string[] $configMethods
+ * @var Illuminate\Support\Collection $configValues
+ * @var array<string, array> $expectedArgumentSets
+ * @var array $expectedArguments
+ * @var string[] $userMethods
+ * @var string $userModel/
+ * */
+?>
 
 /* @noinspection ALL */
 // @formatter:off
@@ -35,15 +47,6 @@ namespace PHPSTORM_META {
     ]));
 <?php endforeach; ?>
 
-<?php if (count($factories)) : ?>
-    override(\factory(0), map([
-        '' => '@FactoryBuilder',
-    <?php foreach ($factories as $factory) : ?>
-        '<?= $factory->getName() ?>' => \<?= $factory->getName() ?>FactoryBuilder::class,
-    <?php endforeach; ?>
-    ]));
-<?php endif; ?>
-
     override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::mock(0), map(["" => "@&\Mockery\MockInterface"]));
     override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::partialMock(0), map(["" => "@&\Mockery\MockInterface"]));
     override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::instance(0), type(1));
@@ -79,7 +82,7 @@ namespace PHPSTORM_META {
     override(\tap(0), type(0));
     override(\optional(0), type(0));
 
-    <?php if (isset($expectedArgumentSets)): ?>
+    <?php if ($expectedArgumentSets): ?>
     <?php foreach ($expectedArgumentSets as $name => $argumentsList) : ?>
     registerArgumentsSet('<?= $name ?>', <?php foreach ($argumentsList as $i => $arg) : ?><?php if ($i % 5 == 0) {
         echo "\n";
@@ -87,7 +90,7 @@ namespace PHPSTORM_META {
     <?php endforeach; ?>
     <?php endif ?>
 
-    <?php if (isset($expectedArguments)) : ?>
+    <?php if ($expectedArguments) : ?>
     <?php foreach ($expectedArguments as $arguments) : ?>
     <?php
         $classes = isset($arguments['class']) ? (array) $arguments['class'] : [null];

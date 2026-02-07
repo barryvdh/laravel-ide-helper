@@ -1133,6 +1133,7 @@ class ModelsCommand extends Command
 
         $serializer = new DocBlockSerializer();
         $docComment = $serializer->getDocComment($phpdoc);
+        $mixinClassName = null;
 
         if ($this->write_mixin) {
             $phpdocMixin = new DocBlock($reflection, new Context($namespace));
@@ -1680,7 +1681,7 @@ class ModelsCommand extends Command
 
         preg_match(
             '/@param ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
-            $docComment ?? '',
+            $docComment,
             $matches
         );
         $type = $matches[1] ?? '';

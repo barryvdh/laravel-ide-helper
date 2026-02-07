@@ -325,9 +325,8 @@ class Alias
     /**
      * Get the real root of a facade
      *
-     * @return bool|string
      */
-    protected function detectRoot()
+    protected function detectRoot(): void
     {
         $facade = $this->facade;
 
@@ -386,7 +385,6 @@ class Alias
                 if ($class !== $this->root) {
                     $this->methods[] = new Method(
                         $method,
-                        $this->alias,
                         $class,
                         $magic,
                         $this->interfaces,
@@ -403,7 +401,6 @@ class Alias
     /**
      * Get the methods for one or multiple classes.
      *
-     * @return string
      */
     protected function detectMethods()
     {
@@ -419,7 +416,6 @@ class Alias
                         if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
                             $this->methods[] = new Method(
                                 $method,
-                                $this->alias,
                                 $reflection,
                                 $method->name,
                                 $this->interfaces,
@@ -449,7 +445,6 @@ class Alias
                         // Add macros
                         $this->methods[] = new Macro(
                             $method,
-                            $this->alias,
                             $reflection,
                             $macro_name,
                             $this->interfaces,

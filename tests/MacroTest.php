@@ -284,7 +284,7 @@ class MacroTest extends TestCase
     {
         $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
 
-        $macro = new Macro($reflectionMethod, UrlGenerator::class, new ReflectionClass(UrlGenerator::class), 'macroName');
+        $macro = new Macro($reflectionMethod, new ReflectionClass(UrlGenerator::class), 'macroName');
 
         $this->assertInstanceOf(Macro::class, $macro);
     }
@@ -296,7 +296,7 @@ class MacroTest extends TestCase
     {
         $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
 
-        $macro = new Macro($reflectionMethod, 'URL', new ReflectionClass(UrlGenerator::class), 'macroName');
+        $macro = new Macro($reflectionMethod, new ReflectionClass(UrlGenerator::class), 'macroName');
         $output = <<<'DOC'
 /**
  * @param string $foo
@@ -331,7 +331,7 @@ class MacroMock extends Macro
 
     public function getPhpDoc(ReflectionFunctionAbstract $method, ?ReflectionClass $class = null): DocBlock
     {
-        return (new Macro($method, '', $class ?? $method->getClosureScopeClass()))->phpdoc;
+        return (new Macro($method, $class ?? $method->getClosureScopeClass()))->phpdoc;
     }
 }
 

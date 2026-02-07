@@ -44,7 +44,6 @@ class Method
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
-     * @param string $alias
      * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
@@ -52,7 +51,7 @@ class Method
      * @param array $returnTypeNormalizers
      * @param string[] $templateNames
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], array $returnTypeNormalizers = [], array $templateNames = [])
+    public function __construct($method, $class, $methodName = null, $interfaces = [], array $classAliases = [], array $returnTypeNormalizers = [], array $templateNames = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;

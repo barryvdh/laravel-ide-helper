@@ -11,7 +11,6 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\LaravelIdeHelper\Factories;
 use Dotenv\Parser\Entry;
 use Dotenv\Parser\Parser;
 use Illuminate\Console\Command;

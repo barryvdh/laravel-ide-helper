@@ -60,7 +60,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('upsert');
 
-        $method = new Method($reflectionMethod,  $reflectionClass);
+        $method = new Method($reflectionMethod, $reflectionClass);
 
         $output =  <<<'DOC'
 /**
@@ -92,7 +92,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('where');
 
-        $method = new Method($reflectionMethod,  $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
+        $method = new Method($reflectionMethod, $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
 
         $output =  <<<'DOC'
 /**
@@ -123,7 +123,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(QueryBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('whereNull');
 
-        $method = new Method($reflectionMethod,  $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
+        $method = new Method($reflectionMethod, $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
 
         $output =  <<<'DOC'
 /**
@@ -195,7 +195,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('firstOr');
 
-        $method = new Method($reflectionMethod,  $reflectionClass, null, [], [], [], ['TModel']);
+        $method = new Method($reflectionMethod, $reflectionClass, null, [], [], [], ['TModel']);
 
         $output =  <<<'DOC'
 /**

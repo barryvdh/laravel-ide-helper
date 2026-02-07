@@ -296,7 +296,7 @@ class MacroTest extends TestCase
     {
         $reflectionMethod = new \ReflectionMethod(UrlGeneratorMacroClass::class, '__invoke');
 
-        $macro = new Macro($reflectionMethod,  new ReflectionClass(UrlGenerator::class), 'macroName');
+        $macro = new Macro($reflectionMethod, new ReflectionClass(UrlGenerator::class), 'macroName');
         $output = <<<'DOC'
 /**
  * @param string $foo

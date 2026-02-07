@@ -76,6 +76,7 @@
     },
     "scripts": {
         "analyze": "phpstan",
+        "analyze-set-baseline": "phpstan --generate-baseline",
         "check-style": [
             "php-cs-fixer fix --diff --diff-format=udiff --dry-run",
             "php-cs-fixer fix --diff --diff-format=udiff --dry-run --config=.php_cs.tests.php"
@@ -84,7 +85,6 @@
             "php-cs-fixer fix",
             "php-cs-fixer fix --config=.php-cs-fixer.tests.php"
         ],
-        "analyze-set-baseline": "phpstan --generate-baseline",
         "test": "phpunit",
         "test-ci": "phpunit -d --without-creating-snapshots",
         "test-regenerate": "phpunit -d --update-snapshots"

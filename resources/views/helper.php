@@ -3,6 +3,7 @@
 /**
  * @var Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_alias_ns
  * @var Barryvdh\LaravelIdeHelper\Alias[][] $namespaces_by_extends_ns
+ * @var string[] $real_time_facades
  * @var bool $include_fluent
  * @var string $helpers
  */
@@ -119,12 +120,3 @@ namespace Illuminate\Support {
 }
 <?php endif ?>
 
-<?php foreach ($factories as $factory) : ?>
-namespace <?=$factory->getNamespaceName()?> {
-    /**
-    * @method \Illuminate\Database\Eloquent\Collection|<?=$factory->getShortName()?>[]|<?=$factory->getShortName()?> create($attributes = [])
-    * @method \Illuminate\Database\Eloquent\Collection|<?=$factory->getShortName()?>[]|<?=$factory->getShortName()?> make($attributes = [])
-    */
-    class <?=$factory->getShortName()?>FactoryBuilder extends \Illuminate\Database\Eloquent\FactoryBuilder {}
-}
-<?php endforeach; ?>

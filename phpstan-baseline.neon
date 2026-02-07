@@ -1,0 +1,67 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^File ends with a trailing whitespace\. This may cause problems when running the code in the web browser\. Remove the closing \?\> mark or remove the whitespace\.$#'
+			identifier: whitespace.fileEnd
+			count: 1
+			path: resources/views/helper.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Contracts\\Filesystem\\Filesystem\:\:requireOnce\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/MetaCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Contracts\\Foundation\\Application\:\:getBindings\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/MetaCommand.php
+
+		-
+			message: '#^Call to an undefined method Barryvdh\\Reflection\\DocBlock\\Tag\:\:getMethodName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/ModelsCommand.php
+
+		-
+			message: '#^Call to an undefined method Barryvdh\\Reflection\\DocBlock\\Tag\:\:getType\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/ModelsCommand.php
+
+		-
+			message: '#^Call to an undefined method Barryvdh\\Reflection\\DocBlock\\Tag\:\:getVariableName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/ModelsCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Support\\Optional\:\:getNumberOfParameters\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/ModelsCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Support\\Optional\:\:getParameters\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/ModelsCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Support\\Optional\:\:getReturnType\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Console/ModelsCommand.php
+
+		-
+			message: '#^Call to an undefined static method Illuminate\\Database\\Eloquent\\Model\:\:newFactory\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: src/Console/ModelsCommand.php
+
+		-
+			message: '#^Call to an undefined method ReflectionFunctionAbstract\:\:getDeclaringClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Method.php

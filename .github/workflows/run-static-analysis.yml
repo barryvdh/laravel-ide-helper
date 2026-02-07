@@ -25,4 +25,4 @@ jobs:
               run: composer install --prefer-dist --no-progress --no-suggest
 
             - name: Analyze
-              run: composer analyze
+              run: vendor/bin/phpstan --no-progress --error-format=github

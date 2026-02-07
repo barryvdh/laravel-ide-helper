@@ -15,7 +15,6 @@ class Macro extends Method
      * Macro constructor.
      *
      * @param \ReflectionFunctionAbstract $method
-     * @param string              $alias
      * @param \ReflectionClass    $class
      * @param null                $methodName
      * @param array               $interfaces
@@ -24,14 +23,13 @@ class Macro extends Method
      */
     public function __construct(
         $method,
-        $alias,
         $class,
         $methodName = null,
         $interfaces = [],
         $classAliases = [],
         $returnTypeNormalizers = []
     ) {
-        parent::__construct($method, $alias, $class, $methodName, $interfaces, $classAliases, $returnTypeNormalizers);
+        parent::__construct($method, $class, $methodName, $interfaces, $classAliases, $returnTypeNormalizers);
     }
 
     public static function setDefaultReturnTypes(array $map = [])
@@ -75,8 +73,8 @@ class Macro extends Method
 
             $type = $this->concatReflectionTypes($return);
 
-            /** @psalm-suppress UndefinedClass */
             if (!$return instanceof \ReflectionUnionType) {
+                /** @phpstan-ignore method.notFound */
                 $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
                 $type .= $return->allowsNull() ? '|null' : '';
             }

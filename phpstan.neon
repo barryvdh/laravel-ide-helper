@@ -1,0 +1,10 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+
+parameters:
+    level: 2
+    paths:
+        - src
+        - resources/views
+    excludePaths:
+

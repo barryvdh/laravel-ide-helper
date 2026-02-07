@@ -19,7 +19,7 @@ class MethodTest extends TestCase
         $reflectionClass = new \ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
-        $method = new Method($reflectionMethod, 'Example', $reflectionClass);
+        $method = new Method($reflectionMethod, $reflectionClass);
 
         $this->assertInstanceOf(Method::class, $method);
     }
@@ -32,7 +32,7 @@ class MethodTest extends TestCase
         $reflectionClass = new \ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
-        $method = new Method($reflectionMethod, 'Example', $reflectionClass);
+        $method = new Method($reflectionMethod, $reflectionClass);
 
         $output = <<<'DOC'
 /**
@@ -60,7 +60,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('upsert');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass);
+        $method = new Method($reflectionMethod,  $reflectionClass);
 
         $output =  <<<'DOC'
 /**
@@ -92,7 +92,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('where');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
+        $method = new Method($reflectionMethod,  $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
 
         $output =  <<<'DOC'
 /**
@@ -123,7 +123,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(QueryBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('whereNull');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
+        $method = new Method($reflectionMethod,  $reflectionClass, null, [], [], ['$this' => '\\' . EloquentBuilder::class . '<static>']);
 
         $output =  <<<'DOC'
 /**
@@ -154,7 +154,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setSpecialChars');
 
-        $method = new Method($reflectionMethod, 'Example', $reflectionClass);
+        $method = new Method($reflectionMethod, $reflectionClass);
         $this->assertSame('$chars', $method->getParams(true));
         $this->assertSame(['$chars'], $method->getParams(false));
         $this->assertSame('$chars = \'$\\\'\\\\\'', $method->getParamsWithDefault(true));
@@ -169,7 +169,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('getApplication');
 
-        $method = new Method($reflectionMethod, 'Example', $reflectionClass, null, [], [
+        $method = new Method($reflectionMethod, $reflectionClass, null, [], [
             'Application' => '\\Illuminate\\Foundation\\Application',
         ]);
 
@@ -195,7 +195,7 @@ DOC;
         $reflectionClass = new \ReflectionClass(EloquentBuilder::class);
         $reflectionMethod = $reflectionClass->getMethod('firstOr');
 
-        $method = new Method($reflectionMethod, 'Builder', $reflectionClass, null, [], [], [], ['TModel']);
+        $method = new Method($reflectionMethod,  $reflectionClass, null, [], [], [], ['TModel']);
 
         $output =  <<<'DOC'
 /**

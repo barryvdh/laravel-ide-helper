@@ -108,9 +108,6 @@ class MetaCommand extends Command
      */
     public function handle()
     {
-        // Needs to run before exception handler is registered
-        $factories = $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [];
-
         $ourAutoloader = $this->registerClassAutoloadExceptions();
 
         $bindings = [];
@@ -149,7 +146,6 @@ class MetaCommand extends Command
         $content = $this->view->make('ide-helper::meta', [
             'bindings' => $bindings,
             'methods' => $this->methods,
-            'factories' => $factories,
             'configMethods' => $this->configMethods,
             'configValues' => $configValues,
             'expectedArgumentSets' => $this->getExpectedArgumentSets(),

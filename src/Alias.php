@@ -22,6 +22,7 @@ use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
 use Throwable;
 
@@ -47,8 +48,6 @@ class Alias
     protected $phpdoc = null;
     protected $classAliases = [];
 
-    protected $isMacroable = false;
-
     /** @var ConfigRepository  */
     protected $config;
 
@@ -63,13 +62,12 @@ class Alias
      * @param array            $magicMethods
      * @param array            $interfaces
      */
-    public function __construct($config, $alias, $facade, $magicMethods = [], $interfaces = [], $isMacroable = false)
+    public function __construct($config, $alias, $facade, $magicMethods = [], $interfaces = [])
     {
         $this->alias = $alias;
         $this->magicMethods = $magicMethods;
         $this->interfaces = $interfaces;
         $this->config = $config;
-        $this->isMacroable = $isMacroable;
 
         // Make the class absolute
         $facade = '\\' . ltrim($facade, '\\');
@@ -250,11 +248,17 @@ class Alias
             return;
         }
 
+        $reflection = new \ReflectionMethod($facade, 'fake');
+        if ($reflection->getNumberOfRequiredParameters() > 0) {
+            return;
+        }
+
         $real = $facade::getFacadeRoot();
 
         try {
             $facade::fake();
             $fake = $facade::getFacadeRoot();
+
             if ($fake !== $real) {
                 $this->addClass(get_class($fake));
             }
@@ -321,9 +325,8 @@ class Alias
     /**
      * Get the real root of a facade
      *
-     * @return bool|string
      */
-    protected function detectRoot()
+    protected function detectRoot(): void
     {
         $facade = $this->facade;
 
@@ -382,7 +385,6 @@ class Alias
                 if ($class !== $this->root) {
                     $this->methods[] = new Method(
                         $method,
-                        $this->alias,
                         $class,
                         $magic,
                         $this->interfaces,
@@ -399,7 +401,6 @@ class Alias
     /**
      * Get the methods for one or multiple classes.
      *
-     * @return string
      */
     protected function detectMethods()
     {
@@ -415,7 +416,6 @@ class Alias
                         if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
                             $this->methods[] = new Method(
                                 $method,
-                                $this->alias,
                                 $reflection,
                                 $method->name,
                                 $this->interfaces,
@@ -431,7 +431,7 @@ class Alias
 
             // Check if the class is macroable
             // (Eloquent\Builder is also macroable but doesn't use Macroable trait)
-            if ($this->isMacroable || $class === EloquentBuilder::class) {
+            if ($class === EloquentBuilder::class || in_array(Macroable::class, $reflection->getTraitNames())) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
@@ -445,7 +445,6 @@ class Alias
                         // Add macros
                         $this->methods[] = new Macro(
                             $method,
-                            $this->alias,
                             $reflection,
                             $macro_name,
                             $this->interfaces,

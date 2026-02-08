@@ -49,20 +49,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Factory builders
-    |--------------------------------------------------------------------------
-    |
-    | Set to true to generate factory generators for better factory()
-    | method auto-completion.
-    |
-    | Deprecated for Laravel 8 or latest.
-    |
-    */
-
-    'include_factory_builders' => false,
-
-    /*
-    |--------------------------------------------------------------------------
     | Write model query methods
     |--------------------------------------------------------------------------
     |
@@ -71,7 +57,7 @@ return [
     */
 
     'write_query_methods' => true,
-
+ 
     /*
     |--------------------------------------------------------------------------
     | Write model magic methods
@@ -96,14 +82,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Write model relation count properties
+    | Write model relation count and exists properties
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable writing of relation count properties to model DocBlocks.
+    | Set to false to disable writing of relation count and exists properties
+    | to model DocBlocks.
     |
     */
 
     'write_model_relation_count_properties' => true,
+    'write_model_relation_exists_properties' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -287,6 +275,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default return types for macros
+    |--------------------------------------------------------------------------
+    |
+    | Define default return types for macros without explicit return types.
+    | e.g. `\Illuminate\Database\Query\Builder::class => 'static'`,
+    |      `\Illuminate\Support\Str::class => 'string'`
+    |
+    */
+    'macro_default_return_types' => [
+        Illuminate\Http\Client\Factory::class => Illuminate\Http\Client\PendingRequest::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Additional relation types
     |--------------------------------------------------------------------------
     |
@@ -336,6 +338,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Make soft deletable relations nullable
+    |--------------------------------------------------------------------------
+    |
+    | When set to true (default), relationships to models using SoftDeletes trait
+    | will be marked as nullable. This is because soft-deleted records are excluded
+    | from queries by default, meaning even non-nullable foreign keys can return
+    | null when the related model is soft-deleted.
+    |
+    | Default: true
+    | A relationship to a soft-deletable model will include |null in the type:
+    |  * @property-read Team|null $team
+    |
+    | Option: false
+    | A relationship to a soft-deletable model will NOT include |null (unless
+    | nullable for other reasons such as nullable foreign key column):
+    |  * @property-read Team $team
+    |
+    */
+
+    'soft_deletes_force_nullable' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Run artisan commands after migrations to generate model helpers
     |--------------------------------------------------------------------------
     |
@@ -344,20 +369,6 @@ return [
     */
     'post_migrate' => [
         // 'ide-helper:models --nowrite',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Macroable Traits
-    |--------------------------------------------------------------------------
-    |
-    | Define which traits should be considered capable of adding Macro.
-    | You can add any custom trait that behaves like the original Laravel one.
-    |
-    */
-    'macroable_traits' => [
-        Filament\Support\Concerns\Macroable::class,
-        Spatie\Macroable\Macroable::class,
     ],
 
 ];

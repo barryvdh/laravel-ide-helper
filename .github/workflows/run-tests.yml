@@ -20,19 +20,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-2019]
-        php: [8.4, 8.3, 8.2]
+        os: [ubuntu-latest]
+        php: [8.5, 8.4, 8.3, 8.2]
         laravel: [~11.15, 12.x]
         stability: [prefer-lowest, prefer-stable]
+        include:
+          - os: windows-latest
+            php: 8.3
+            laravel: 12.x
+            stability: prefer-stable
     steps:
     - name: Set git to use LF
-      if: ${{ matrix.os == 'windows-2019' }}
+      if: ${{ matrix.os == 'windows-latest' }}
       run: |
         git config --global core.autocrlf false
         git config --global core.eol lf
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2

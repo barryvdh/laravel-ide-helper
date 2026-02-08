@@ -9,8 +9,6 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\CustomMethod;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\CustomProperty;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Hooks\UnsetMethod;
-use Illuminate\Filesystem\Filesystem;
-use Mockery;
 
 class Test extends AbstractModelsCommand
 {
@@ -34,24 +32,6 @@ class Test extends AbstractModelsCommand
 
     public function test(): void
     {
-        $actualContent = null;
-
-        $mockFilesystem = Mockery::mock(Filesystem::class)->makePartial();
-        $mockFilesystem
-            ->shouldReceive('get')
-            ->andReturn(file_get_contents(__DIR__ . '/Models/Simple.php'))
-            ->once();
-        $mockFilesystem
-            ->shouldReceive('put')
-            ->with(
-                Mockery::any(),
-                Mockery::capture($actualContent)
-            )
-            ->andReturn(1) // Simulate we wrote _something_ to the file
-            ->once();
-
-        $this->instance(Filesystem::class, $mockFilesystem);
-
         $command = $this->app->make(ModelsCommand::class);
 
         $tester = $this->runCommand($command, [
@@ -60,33 +40,6 @@ class Test extends AbstractModelsCommand
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertStringContainsString('Written new phpDocBlock to', $tester->getDisplay());
-
-        $expectedContent = <<<'PHP'
-<?php
-
-declare(strict_types=1);
-
-namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\ModelHooks\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * 
- *
- * @property int $id
- * @property-read string $custom
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple custom($custom)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple whereId($value)
- * @mixin \Eloquent
- */
-class Simple extends Model
-{
-}
-
-PHP;
-
-        $this->assertSame($expectedContent, $actualContent);
+        $this->assertMatchesMockedSnapshot();
     }
 }

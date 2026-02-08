@@ -1,56 +1,71 @@
 <?php
 
-function vsCodeGetTranslationsFromFile($file, $path, $namespace)
+function vsCodeGetTranslationsFromFile(Symfony\Component\Finder\SplFileInfo $file, $path, $namespace)
 {
-    $key = pathinfo($file, PATHINFO_FILENAME);
-
-    if ($namespace) {
-        $key = "{$namespace}::{$key}";
+    if ($file->getExtension() !== 'php') {
+        return null;
     }
 
-    $lang = collect(explode(DIRECTORY_SEPARATOR, str_replace($path, '', $file)))
-        ->filter()
-        ->first();
+    $filePath = $file->getRealPath();
 
-    $fileLines = Illuminate\Support\Facades\File::lines($file);
+    $relativePath = trim(str_replace($path, '', $file->getPath()), DIRECTORY_SEPARATOR);
+    $lang = explode(DIRECTORY_SEPARATOR, $relativePath)[0] ?? null;
+
+    if (!$lang) {
+        return null;
+    }
+
+    $keyPath = str_replace($path . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR, '', $filePath);
+    $keyWithSlashes = str_replace('.php', '', $keyPath);
+    $baseKey = str_replace(DIRECTORY_SEPARATOR, '.', $keyWithSlashes);
+
+    if ($namespace) {
+        $baseKey = "{$namespace}::{$baseKey}";
+    }
+
+    try {
+        $translations = require $filePath;
+    } catch (Throwable $e) {
+        return null;
+    }
+
+    if (!is_array($translations)) {
+        return null;
+    }
+
+    $fileLines = Illuminate\Support\Facades\File::lines($filePath);
     $lines = [];
     $inComment = false;
 
     foreach ($fileLines as $index => $line) {
         $trimmed = trim($line);
-
-        if (substr($trimmed, 0, 2) === '/*') {
+        if (str_starts_with($trimmed, '/*')) {
             $inComment = true;
-            continue;
         }
-
         if ($inComment) {
-            if (substr($trimmed, -2) !== '*/') {
-                continue;
+            if (str_ends_with($trimmed, '*/')) {
+                $inComment = false;
             }
-
-            $inComment = false;
-        }
-
-        if (substr($trimmed, 0, 2) === '//') {
             continue;
         }
-
+        if (str_starts_with($trimmed, '//')) {
+            continue;
+        }
         $lines[] = [$index + 1, $trimmed];
     }
 
     return [
-        'k' => $key,
+        'k' => $baseKey,
         'la' => $lang,
-        'vs' => collect(Illuminate\Support\Arr::dot((Illuminate\Support\Arr::wrap(__($key, [], $lang)))))
-            ->map(
-                fn ($value, $key) => vsCodeTranslationValue(
-                    $key,
-                    $value,
-                    str_replace(base_path(DIRECTORY_SEPARATOR), '', $file),
-                    $lines
-                )
+        'vs' => collect(Illuminate\Support\Arr::dot($translations))
+        ->map(
+            fn ($value, $dotKey) => vsCodeTranslationValue(
+                $dotKey,
+                $value,
+                str_replace(base_path(DIRECTORY_SEPARATOR), '', $filePath),
+                $lines
             )
+        )
             ->filter(),
     ];
 }
@@ -63,13 +78,12 @@ function vsCodeTranslationValue($key, $value, $file, $lines): ?array
 
     $lineNumber = 1;
     $keys = explode('.', $key);
-    $index = 0;
     $currentKey = array_shift($keys);
 
-    foreach ($lines as $index => $line) {
+    foreach ($lines as $line) {
         if (
-            strpos($line[1], '"' . $currentKey . '"', 0) !== false ||
-            strpos($line[1], "'" . $currentKey . "'", 0) !== false
+            strpos($line[1], '"' . $currentKey . '"') !== false ||
+            strpos($line[1], "'" . $currentKey . "'") !== false
         ) {
             $lineNumber = $line[0];
             $currentKey = array_shift($keys);
@@ -98,9 +112,9 @@ function vscodeCollectTranslations(string $path, ?string $namespace = null)
         return collect();
     }
 
-    return collect(Illuminate\Support\Facades\File::allFiles($realPath))->map(
-        fn ($file) => vsCodeGetTranslationsFromFile($file, $path, $namespace)
-    );
+    return collect(Illuminate\Support\Facades\File::allFiles($realPath))
+        ->map(fn ($file) => vsCodeGetTranslationsFromFile($file, $path, $namespace))
+        ->filter();
 }
 
 $loader = app('translator')->getLoader();
@@ -110,7 +124,6 @@ $reflection = new ReflectionClass($loader);
 $property = $reflection->hasProperty('paths')
     ? $reflection->getProperty('paths')
     : $reflection->getProperty('path');
-$property->setAccessible(true);
 
 $paths = Illuminate\Support\Arr::wrap($property->getValue($loader));
 
@@ -125,6 +138,10 @@ $namespaced = collect($namespaces)->flatMap(
 $final = [];
 
 foreach ($default->merge($namespaced) as $value) {
+    if (!isset($value['vs']) || !is_iterable($value['vs'])) {
+        continue;
+    }
+
     foreach ($value['vs'] as $key => $v) {
         $dotKey = "{$value['k']}.{$key}";
 

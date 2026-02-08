@@ -35,7 +35,6 @@ class Generator
     protected $magic = [];
     protected $interfaces = [];
     protected $helpers;
-    protected array $macroableTraits = [];
 
     /**
      * @param \Illuminate\Config\Repository $config
@@ -58,9 +57,13 @@ class Generator
         // Find the drivers to add to the extra/interfaces
         $this->detectDrivers();
 
-        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra'), []);
-        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic'), []);
-        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces'), []);
+        $this->extra = array_merge($this->extra, $this->config->get('ide-helper.extra', []));
+        $this->magic = array_merge($this->magic, $this->config->get('ide-helper.magic', []));
+        $this->interfaces = array_merge($this->interfaces, $this->config->get('ide-helper.interfaces', []));
+        Macro::setDefaultReturnTypes($this->config->get('ide-helper.macro_default_return_types', [
+            \Illuminate\Http\Client\Factory::class => \Illuminate\Http\Client\PendingRequest::class,
+        ]));
+
         // Make all interface classes absolute
         foreach ($this->interfaces as &$interface) {
             $interface = '\\' . ltrim($interface, '\\');
@@ -71,7 +74,7 @@ class Generator
     /**
      * Generate the helper file contents;
      *
-     * @return string;
+     * @return string
      */
     public function generate()
     {
@@ -82,7 +85,6 @@ class Generator
             ->with('real_time_facades', $this->getRealTimeFacades())
             ->with('helpers', $this->detectHelpers())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
-            ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
     }
 
@@ -360,7 +362,7 @@ class Generator
                 continue;
             }
 
-            $aliases[] = new Alias($this->config, $class, $class, [], $this->interfaces, true);
+            $aliases[] = new Alias($this->config, $class, $class, [], $this->interfaces);
         }
     }
 
@@ -382,18 +384,8 @@ class Generator
             ->filter(function ($class) {
                 $traits = class_uses_recursive($class);
 
-                if (isset($traits[Macroable::class])) {
-                    return true;
-                }
-
-                // Filter only classes with a macroable trait
-                foreach ($this->config->get('ide-helper.macroable_traits', []) as $trait) {
-                    if (isset($traits[$trait])) {
-                        return true;
-                    }
-                }
-
-                return false;
+                // Filter only classes with the macroable trait
+                return isset($traits[Macroable::class]);
             })
             ->filter(function ($class) use ($aliases) {
                 $class = Str::start($class, '\\');

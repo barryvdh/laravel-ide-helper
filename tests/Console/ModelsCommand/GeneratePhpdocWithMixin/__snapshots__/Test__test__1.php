@@ -45,8 +45,6 @@ class Post extends Model
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- * 
- *
  * @property $someProp
  * @method someMethod(string $method)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FinalPost newModelQuery()
@@ -60,8 +58,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithMixin\Models{
 /**
- * 
- *
  * @property $someProp
  * @method someMethod(string $method)
  * @property int $id
@@ -99,8 +95,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWi
  * @property float $float_not_nullable
  * @property float|null $double_nullable
  * @property float $double_not_nullable
- * @property string|null $decimal_nullable
- * @property string $decimal_not_nullable
+ * @property numeric|null $decimal_nullable
+ * @property numeric $decimal_not_nullable
  * @property int|null $boolean_nullable
  * @property int $boolean_not_nullable
  * @property string|null $enum_nullable

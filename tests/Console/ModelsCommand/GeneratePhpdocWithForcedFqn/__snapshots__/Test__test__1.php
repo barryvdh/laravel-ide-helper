@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * 
- *
  * @property int $id
  * @property string|null $char_nullable
  * @property string $char_not_nullable
@@ -46,8 +44,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float $float_not_nullable
  * @property float|null $double_nullable
  * @property float $double_not_nullable
- * @property string|null $decimal_nullable
- * @property string $decimal_not_nullable
+ * @property numeric|null $decimal_nullable
+ * @property numeric $decimal_not_nullable
  * @property int|null $boolean_nullable
  * @property int $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -84,6 +82,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post> $posts
  * @property-read int|null $posts_count
+ * @property-read bool|null $posts_exists
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post null(string $unusedParam)
@@ -160,7 +159,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post whereUuidNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post whereYearNotNullable($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post whereYearNullable($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpdocWithForcedFqn\Models\Post withoutTrashed()
  * @mixin \Eloquent
  */

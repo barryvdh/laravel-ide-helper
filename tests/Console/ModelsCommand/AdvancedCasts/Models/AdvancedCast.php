@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AdvancedCasts\Models;
 
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AdvancedCasts\Collections\AdvancedCastCollection;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AdvancedCasts\Collections\AdvancedCastMap;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AdvancedCasts\Enums\AdvancedCastEnum;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
@@ -29,7 +30,9 @@ class AdvancedCast extends Model
             'cast_to_encrypted_json' => 'encrypted:json',
             'cast_to_encrypted_object' => 'encrypted:object',
             'cast_to_as_collection' => AsCollection::class,
+            'cast_to_as_collection_of' => AsCollection::class . ':,' . AdvancedCastMap::class, // since 12.10
             'cast_to_as_collection_using' => AsCollection::using(AdvancedCastCollection::class),
+            'cast_to_as_collection_using_and_map' => AsCollection::class . ':' . AdvancedCastCollection::class . ',' . AdvancedCastMap::class, // since 12.10
             'cast_to_as_enum_collection' => AsEnumCollection::class,
             'cast_to_as_enum_collection_of' => AsEnumCollection::of(AdvancedCastEnum::class),
             'cast_to_as_array_object' => AsArrayObject::class,

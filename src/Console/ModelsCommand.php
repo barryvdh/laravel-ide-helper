@@ -114,6 +114,7 @@ class ModelsCommand extends Command
 
     protected $write_model_magic_where;
     protected $write_model_relation_count_properties;
+    protected $write_model_relation_exists_properties;
     protected $properties = [];
     protected $methods = [];
     protected $write = false;
@@ -173,6 +174,8 @@ class ModelsCommand extends Command
         $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
+        $this->write_model_relation_exists_properties =
+            $this->laravel['config']->get('ide-helper.write_model_relation_exists_properties', false);
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
@@ -410,9 +413,6 @@ class ModelsCommand extends Command
             $params = [];
 
             switch ($type) {
-                case 'encrypted':
-                    $realType = 'mixed';
-                    break;
                 case 'boolean':
                 case 'bool':
                     $realType = 'bool';
@@ -420,6 +420,7 @@ class ModelsCommand extends Command
                 case 'decimal':
                     $realType = 'numeric';
                     break;
+                case 'encrypted':
                 case 'string':
                 case 'hashed':
                     $realType = 'string';
@@ -475,7 +476,11 @@ class ModelsCommand extends Command
             }
 
             if (Str::startsWith($type, AsCollection::class)) {
-                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?? '\Illuminate\Support\Collection';
+                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?: '\Illuminate\Support\Collection';
+                $relatedModel = $this->getTypeInModel($model, $params[1] ?? null);
+                if ($relatedModel) {
+                    $realType = $this->getCollectionTypeHint($realType, $relatedModel);
+                }
             }
 
             if (Str::startsWith($type, AsEnumCollection::class)) {
@@ -578,6 +583,8 @@ class ModelsCommand extends Command
 
                     'float', 'real', 'float4',
                     'double', 'float8' => 'float',
+
+                    'decimal', 'numeric' => 'numeric',
 
                     default => 'string',
                 };
@@ -821,6 +828,15 @@ class ModelsCommand extends Command
                                             // What kind of comments should be added to the relation count here?
                                         );
                                     }
+                                    if ($this->write_model_relation_exists_properties) {
+                                        $this->setProperty(
+                                            Str::snake($method) . '_exists',
+                                            'bool|null',
+                                            true,
+                                            false
+                                            // What kind of comments should be added to the relation count here?
+                                        );
+                                    }
                                 } elseif (
                                     $relationReturnType === 'morphTo' ||
                                     (
@@ -876,7 +892,6 @@ class ModelsCommand extends Command
 
         if (in_array($relation, ['hasOne', 'hasOneThrough', 'morphOne'], true)) {
             $defaultProp = $reflectionObj->getProperty('withDefault');
-            $defaultProp->setAccessible(true);
 
             return !$defaultProp->getValue($relationObj);
         }
@@ -886,7 +901,6 @@ class ModelsCommand extends Command
         }
 
         $fkProp = $reflectionObj->getProperty('foreignKey');
-        $fkProp->setAccessible(true);
 
         $enforceNullableRelation = $this->laravel['config']->get('ide-helper.enforce_nullable_relationships', true);
 
@@ -900,7 +914,29 @@ class ModelsCommand extends Command
             }
         }
 
+        if ($this->relatedModelUsesSoftDeletes($relationObj)) {
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Check if the related model uses the SoftDeletes trait
+     *
+     * @param Relation $relationObj
+     *
+     * @return bool
+     */
+    protected function relatedModelUsesSoftDeletes(Relation $relationObj): bool
+    {
+        if (!$this->laravel['config']->get('ide-helper.soft_deletes_force_nullable', true)) {
+            return false;
+        }
+
+        $relatedModel = $relationObj->getRelated();
+
+        return in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', class_uses_recursive($relatedModel));
     }
 
     /**
@@ -919,7 +955,6 @@ class ModelsCommand extends Command
         }
 
         $fkProp = $reflectionObj->getProperty('foreignKey');
-        $fkProp->setAccessible(true);
 
         foreach (Arr::wrap($fkProp->getValue($relationObj)) as $foreignKey) {
             if (isset($this->nullableColumns[$foreignKey])) {
@@ -1101,6 +1136,7 @@ class ModelsCommand extends Command
 
         $serializer = new DocBlockSerializer();
         $docComment = $serializer->getDocComment($phpdoc);
+        $mixinClassName = null;
 
         if ($this->write_mixin) {
             $phpdocMixin = new DocBlock($reflection, new Context($namespace));
@@ -1189,7 +1225,7 @@ class ModelsCommand extends Command
                     $default = '[]';
                 } elseif (is_null($default)) {
                     $default = 'null';
-                } elseif (is_int($default)) {
+                } elseif (is_int($default) || is_float($default)) {
                     //$default = $default;
                 } elseif ($default instanceof \UnitEnum) {
                     $default = '\\' . get_class($default) . '::' . $default->name;
@@ -1272,9 +1308,6 @@ class ModelsCommand extends Command
      */
     protected function getAttributeTypes(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
-        // Private/protected ReflectionMethods require setAccessible prior to PHP 8.1
-        $reflectionMethod->setAccessible(true);
-
         /** @var Attribute $attribute */
         $attribute = $reflectionMethod->invoke($model);
 
@@ -1410,7 +1443,7 @@ class ModelsCommand extends Command
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class);
-            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, []);
+            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, ['bool $withTrashed = true']);
             $this->setMethod('withoutTrashed', $builder . '<static>|' . $modelName, []);
             $this->setMethod('onlyTrashed', $builder . '<static>|' . $modelName, []);
         }
@@ -1632,7 +1665,8 @@ class ModelsCommand extends Command
             $type = implode('|', $types);
 
             if ($paramType->allowsNull()) {
-                if (count($types) == 1) {
+                // Use ?Type syntax only for single named types, not for intersection types
+                if (count($types) == 1 && !str_starts_with($type, '(')) {
                     $type = '?' . $type;
                 } else {
                     $type .= '|null';
@@ -1650,7 +1684,7 @@ class ModelsCommand extends Command
 
         preg_match(
             '/@param ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
-            $docComment ?? '',
+            $docComment,
             $matches
         );
         $type = $matches[1] ?? '';
@@ -1705,22 +1739,51 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    protected function extractReflectionTypes(ReflectionType $reflection_type)
+    protected function extractReflectionTypes(ReflectionType $reflection_type): array
     {
         if ($reflection_type instanceof ReflectionNamedType) {
-            $types[] = $this->getReflectionNamedType($reflection_type);
-        } else {
-            $types = [];
-            foreach ($reflection_type->getTypes() as $named_type) {
-                if ($named_type->getName() === 'null') {
+            return [$this->getReflectionNamedType($reflection_type)];
+        }
+
+        if ($reflection_type instanceof \ReflectionIntersectionType) {
+            return [$this->formatIntersectionType($reflection_type)];
+        }
+
+        if ($reflection_type instanceof \ReflectionUnionType) {
+            return $this->extractUnionTypes($reflection_type);
+        }
+
+        // Unknown type - return empty array as fallback
+        return [];
+    }
+
+    protected function extractUnionTypes(\ReflectionUnionType $union_type): array
+    {
+        $types = [];
+
+        foreach ($union_type->getTypes() as $inner_type) {
+            if ($inner_type instanceof ReflectionNamedType) {
+                if ($inner_type->getName() === 'null') {
                     continue;
                 }
-
-                $types[] = $this->getReflectionNamedType($named_type);
+                $types[] = $this->getReflectionNamedType($inner_type);
+            } elseif ($inner_type instanceof \ReflectionIntersectionType) {
+                $types[] = $this->formatIntersectionType($inner_type);
             }
+            // ReflectionUnionType cannot be nested per PHP's DNF rules
         }
 
         return $types;
+    }
+
+    protected function formatIntersectionType(\ReflectionIntersectionType $intersection_type): string
+    {
+        $parts = [];
+        foreach ($intersection_type->getTypes() as $type) {
+            $parts[] = $this->getReflectionNamedType($type);
+        }
+
+        return '(' . implode('&', $parts) . ')';
     }
 
     protected function getReflectionNamedType(ReflectionNamedType $paramType): string

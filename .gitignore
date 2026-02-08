@@ -1,5 +1,5 @@
 .phpunit.result.cache
-
+/build
 /.idea
 /.php-cs-fixer.cache
 /.php-cs-fixer.php

@@ -13,8 +13,6 @@
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\Interfaces\Models{
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()

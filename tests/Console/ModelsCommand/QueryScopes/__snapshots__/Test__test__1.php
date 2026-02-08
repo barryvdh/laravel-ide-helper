@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @method static Builder<static>|Comment local() Scope using the 'Scope' attribute
  * @method static Builder<static>|Comment newModelQuery()
  * @method static Builder<static>|Comment newQuery()
@@ -48,8 +46,6 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryScopes\Models;
 
 /**
- * 
- *
  * @property int $id
  * @property string|null $char_nullable
  * @property string $char_not_nullable
@@ -85,8 +81,8 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryScopes\Mode
  * @property float $float_not_nullable
  * @property float|null $double_nullable
  * @property float $double_not_nullable
- * @property string|null $decimal_nullable
- * @property string $decimal_not_nullable
+ * @property numeric|null $decimal_nullable
+ * @property numeric $decimal_not_nullable
  * @property int|null $boolean_nullable
  * @property int $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -215,8 +211,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryScopes\Mode
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PostParent active()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PostParent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PostParent newQuery()

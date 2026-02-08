@@ -11,7 +11,7 @@
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
 
-The 3.x branch supports Laravel 10 and 11. For older version, use the 2.x releases.
+The 3.x branch supports Laravel 10 and later. For older version, use the 2.x releases.
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -51,7 +51,7 @@ php artisan ide-helper:models -RW
 
 If you don't want the full _ide_helper.php file, you can run add `--write-eloquent-helper` to the model command to generate small version, which is required for the `@mixin \Eloquent` to be able to add the QueryBuilder methods.
 
-If you don't want to add all the phpdocs to your Models directly, you can use `--nowrite` to create a seperate file. The  `--write-mixin` option can be used to only add a `@mixin` to your models, but add the generated phpdocs in a seperate file. This avoids having the results marked as duplicate.
+If you don't want to add all the phpdocs to your Models directly, you can use `--nowrite` to create a separate file. The  `--write-mixin` option can be used to only add a `@mixin` to your models, but add the generated phpdocs in a separate file. This avoids having the results marked as duplicate.
 
 
 _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
@@ -114,8 +114,6 @@ Str::macro('concat', function(string $str1, string $str2) : string {
     return $str1 . $str2;
 });
 ```
-
-You can add any custom Macroable traits to detect in the `macroable_traits` config option.
 
 ### Automatic PHPDocs for models
 
@@ -212,11 +210,11 @@ Eloquent allows calling `where<Attribute>` on your models, e.g. `Post::whereTitl
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_magic_where` and setting it to `false`.
 
-#### Magic `*_count` properties
+#### Magic `*_count` and `*_exists` properties
 
-You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) method to count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columname>_count` convention.
+You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relationships#counting-related-models) and [`::withExists`](https://laravel.com/docs/master/eloquent-relationships#other-aggregate-functions) methods to count the number results from a relationship without actually loading them. Those results are then placed in attributes following the `<columnname>_count` and `<columnname>_exists` convention.
 
-By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
+By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` and `write_model_relation_exists_properties` to `false`.
 
 #### Generics annotations
 

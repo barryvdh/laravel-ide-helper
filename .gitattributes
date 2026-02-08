@@ -6,9 +6,7 @@
 /.gitattributes               export-ignore
 /.github                      export-ignore
 /.gitignore                   export-ignore
-/.php-cs-fixer.cache          export-ignore
-/.php-cs-fixer.php            export-ignore
-/.php-cs-fixer.tests.cache    export-ignore
+/.php-cs-fixer*               export-ignore
 /phpunit.xml.dist             export-ignore
 /psalm-baseline.xml           export-ignore
 /psalm.xml                    export-ignore

@@ -57,7 +57,7 @@ return [
     */
 
     'write_query_methods' => true,
- 
+
     /*
     |--------------------------------------------------------------------------
     | Write model magic methods

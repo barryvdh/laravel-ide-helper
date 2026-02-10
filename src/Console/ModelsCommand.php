@@ -526,9 +526,25 @@ class ModelsCommand extends Command
         }
 
         if ($isNullable) {
-            $type .= '|null';
+            $type = $this->wrapIntersectionType($type) . '|null';
         } else {
             $type = str_replace($nullString, '', $type);
+        }
+
+        return $type;
+    }
+
+    /**
+     * Wraps a bare intersection type in parentheses for correct DNF syntax.
+     *
+     * For example, `A&B` becomes `(A&B)` so that adding `|null` produces
+     * `(A&B)|null` instead of the ambiguous `A&B|null`.
+     * Types that are already parenthesized or contain union types are returned as-is.
+     */
+    protected function wrapIntersectionType(string $type): string
+    {
+        if (str_contains($type, '&') && !str_contains($type, '|') && $type[0] !== '(') {
+            return '(' . $type . ')';
         }
 
         return $type;
@@ -982,7 +998,7 @@ class ModelsCommand extends Command
         if ($type !== null) {
             $newType = $this->getTypeOverride($type);
             if ($nullable) {
-                $newType .= '|null';
+                $newType = $this->wrapIntersectionType($newType) . '|null';
             }
             $this->properties[$name]['type'] = $newType;
         }

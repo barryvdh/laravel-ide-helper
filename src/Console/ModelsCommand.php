@@ -124,6 +124,14 @@ class ModelsCommand extends Command
     protected $phpstorm_noinspections;
     protected $write_model_external_builder_methods;
     /**
+     * @var array<string, \SplFileObject>
+     */
+    protected $fileCache = [];
+    /**
+     * @var array<string, Context>
+     */
+    protected $contextCache = [];
+    /**
      * @var array<string, true>
      */
     protected $nullableColumns = [];
@@ -721,14 +729,19 @@ class ModelsCommand extends Command
                         $type = (string)$this->getReturnTypeFromDocBlock($reflection);
                     }
 
-                    $file = new \SplFileObject($reflection->getFileName());
+                    $fileName = $reflection->getFileName();
+                    if (!isset($this->fileCache[$fileName])) {
+                        $this->fileCache[$fileName] = new \SplFileObject($fileName);
+                    }
+                    $file = $this->fileCache[$fileName];
                     $file->seek($reflection->getStartLine() - 1);
 
-                    $code = '';
+                    $lines = [];
                     while ($file->key() < $reflection->getEndLine()) {
-                        $code .= $file->current();
+                        $lines[] = $file->current();
                         $file->next();
                     }
+                    $code = implode('', $lines);
                     $code = trim(preg_replace('/\s\s+/', '', $code));
                     $begin = strpos($code, 'function(');
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
@@ -1275,13 +1288,18 @@ class ModelsCommand extends Command
         }
     }
 
+    protected ?array $cachedRelationTypes = null;
+    protected ?array $cachedRelationReturnTypes = null;
+
     /**
      * Returns the available relation types
      */
     protected function getRelationTypes(): array
     {
-        $configuredRelations = $this->laravel['config']->get('ide-helper.additional_relation_types', []);
-        return array_merge(self::RELATION_TYPES, $configuredRelations);
+        return $this->cachedRelationTypes ??= array_merge(
+            self::RELATION_TYPES,
+            $this->laravel['config']->get('ide-helper.additional_relation_types', [])
+        );
     }
 
     /**
@@ -1289,7 +1307,7 @@ class ModelsCommand extends Command
      */
     protected function getRelationReturnTypes(): array
     {
-        return $this->laravel['config']->get('ide-helper.additional_relation_return_types', []);
+        return $this->cachedRelationReturnTypes ??= $this->laravel['config']->get('ide-helper.additional_relation_return_types', []);
     }
 
     /**
@@ -1364,11 +1382,7 @@ class ModelsCommand extends Command
      */
     protected function getCommentFromDocBlock(\ReflectionMethod $reflection)
     {
-        $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
-        $context = new Context(
-            $phpDocContext->getNamespace(),
-            $phpDocContext->getNamespaceAliases()
-        );
+        $context = $this->getDocBlockContext($reflection);
         $comment = '';
         $phpdoc = new DocBlock($reflection, $context);
 
@@ -1389,11 +1403,7 @@ class ModelsCommand extends Command
      */
     protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, ?\Reflector $reflectorForContext = null)
     {
-        $phpDocContext = (new ContextFactory())->createFromReflector($reflectorForContext ?? $reflection);
-        $context = new Context(
-            $phpDocContext->getNamespace(),
-            $phpDocContext->getNamespaceAliases()
-        );
+        $context = $this->getDocBlockContext($reflectorForContext ?? $reflection);
         $type = null;
         $phpdoc = new DocBlock($reflection, $context);
 
@@ -1409,6 +1419,31 @@ class ModelsCommand extends Command
         }
 
         return $type;
+    }
+
+    protected function getDocBlockContext(\Reflector $reflector): Context
+    {
+        if ($reflector instanceof \ReflectionMethod) {
+            $key = $reflector->getDeclaringClass()->getName();
+        } elseif ($reflector instanceof ReflectionClass) {
+            $key = $reflector->getName();
+        } else {
+            $phpDocContext = (new ContextFactory())->createFromReflector($reflector);
+            return new Context(
+                $phpDocContext->getNamespace(),
+                $phpDocContext->getNamespaceAliases()
+            );
+        }
+
+        if (!isset($this->contextCache[$key])) {
+            $phpDocContext = (new ContextFactory())->createFromReflector($reflector);
+            $this->contextCache[$key] = new Context(
+                $phpDocContext->getNamespace(),
+                $phpDocContext->getNamespaceAliases()
+            );
+        }
+
+        return $this->contextCache[$key];
     }
 
     protected function getReturnTypeFromReflection(\ReflectionMethod $reflection): ?string
@@ -1616,9 +1651,10 @@ class ModelsCommand extends Command
      */
     protected function getUsedClassNames(ReflectionClass $reflection): array
     {
+        $context = $this->getDocBlockContext($reflection);
         $namespaceAliases = array_flip(array_map(function ($alias) {
             return ltrim($alias, '\\');
-        }, (new ContextFactory())->createFromReflector($reflection)->getNamespaceAliases()));
+        }, $context->getNamespaceAliases()));
         $namespaceAliases[$reflection->getName()] = $reflection->getShortName();
 
         return $namespaceAliases;

@@ -101,7 +101,7 @@ class Alias
         }
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
-            $this->usedMethods = ['decrement', 'increment'];
+            $this->usedMethods = ['decrement' => true, 'increment' => true];
         }
     }
 
@@ -381,7 +381,7 @@ class Alias
             $method = new \ReflectionMethod($className, $name);
             $class = new ReflectionClass($className);
 
-            if (!in_array($magic, $this->usedMethods)) {
+            if (!isset($this->usedMethods[$magic])) {
                 if ($class !== $this->root) {
                     $this->methods[] = new Method(
                         $method,
@@ -393,7 +393,7 @@ class Alias
                         $this->getTemplateNames()
                     );
                 }
-                $this->usedMethods[] = $magic;
+                $this->usedMethods[$magic] = true;
             }
         }
     }
@@ -410,7 +410,7 @@ class Alias
             $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
             if ($methods) {
                 foreach ($methods as $method) {
-                    if (!in_array($method->name, $this->usedMethods)) {
+                    if (!isset($this->usedMethods[$method->name])) {
                         // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
                         if ($this->extends !== $class && substr($method->name, 0, 2) !== '__') {
@@ -424,7 +424,7 @@ class Alias
                                 $this->getTemplateNames(),
                             );
                         }
-                        $this->usedMethods[] = $method->name;
+                        $this->usedMethods[$method->name] = true;
                     }
                 }
             }
@@ -435,7 +435,7 @@ class Alias
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
-                    if (!in_array($macro_name, $this->usedMethods)) {
+                    if (!isset($this->usedMethods[$macro_name])) {
                         try {
                             $method = $this->getMacroFunction($macro_func);
                         } catch (Throwable $e) {
@@ -451,7 +451,7 @@ class Alias
                             $this->classAliases,
                             $this->getReturnTypeNormalizers($reflection)
                         );
-                        $this->usedMethods[] = $macro_name;
+                        $this->usedMethods[$macro_name] = true;
                     }
                 }
             }
@@ -589,12 +589,13 @@ class Alias
      */
     protected function removeDuplicateMethodsFromPhpDoc()
     {
-        $methodNames = array_map(function (Method $method) {
-            return $method->getName();
-        }, $this->getMethods());
+        $methodNames = [];
+        foreach ($this->getMethods() as $method) {
+            $methodNames[$method->getName()] = true;
+        }
 
         foreach ($this->phpdoc->getTags() as $tag) {
-            if ($tag instanceof MethodTag && in_array($tag->getMethodName(), $methodNames)) {
+            if ($tag instanceof MethodTag && isset($methodNames[$tag->getMethodName()])) {
                 $this->phpdoc->deleteTag($tag);
             }
         }

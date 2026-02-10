@@ -11,6 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand\SchemaAggregator;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Barryvdh\LaravelIdeHelper\Generator;
 use Barryvdh\LaravelIdeHelper\Parsers\PhpDocReturnTypeParser;
@@ -44,7 +45,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Schema\Builder;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -131,6 +131,8 @@ class ModelsCommand extends Command
      * @var string[]
      */
     protected $foreignKeyConstraintsColumns = [];
+
+    protected SchemaAggregator $schemaAggregator;
 
     /**
      * During initialization we use Laravels Date Facade to
@@ -270,6 +272,8 @@ class ModelsCommand extends Command
 
     protected function generateDocs($loadModels, $ignore = '')
     {
+        $this->schemaAggregator = new SchemaAggregator();
+
         $output = "<?php
 
 // @formatter:off
@@ -556,16 +560,16 @@ class ModelsCommand extends Command
     public function getPropertiesFromTable($model)
     {
         $table = $model->getTable();
-        $schema = $model->getConnection()->getSchemaBuilder();
-        $columns = $schema->getColumns($table);
-        $driverName = $model->getConnection()->getDriverName();
+        $connection = $model->getConnection();
+        $columns = $this->schemaAggregator->getColumns($connection, $table);
+        $driverName = $connection->getDriverName();
 
 
         if (!$columns) {
             return;
         }
 
-        $this->setForeignKeys($schema, $table);
+        $this->setForeignKeys($connection, $table);
         foreach ($columns as $column) {
             $name = $column['name'];
             if (in_array($name, $model->getDates())) {
@@ -1816,12 +1820,12 @@ class ModelsCommand extends Command
     }
 
     /**
-     * @param Builder $schema
+     * @param \Illuminate\Database\Connection $connection
      * @param string $table
      */
-    protected function setForeignKeys($schema, $table)
+    protected function setForeignKeys($connection, $table)
     {
-        foreach ($schema->getForeignKeys($table) as $foreignKeyConstraint) {
+        foreach ($this->schemaAggregator->getForeignKeys($connection, $table) as $foreignKeyConstraint) {
             foreach ($foreignKeyConstraint['columns'] as $columnName) {
                 $this->foreignKeyConstraintsColumns[] = $columnName;
             }

@@ -720,13 +720,16 @@ class ModelsCommand extends Command
                         );
                         $this->setMethod($name, $builder . '<static>|' . $modelName, $args, $comment);
                     }
-                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])
+                ) {
+                    if ($this->laravel['config']->get('ide-helper.write_query_methods', true)) {
+                        $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
-                    $this->setMethod(
-                        $method,
-                        $builder . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model))
-                    );
+                        $this->setMethod(
+                            $method,
+                            $builder . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model))
+                        );
+                    }
 
                     if ($this->write_model_external_builder_methods) {
                         $this->writeModelExternalBuilderMethods($model);

@@ -6,14 +6,16 @@ on:
       - master
   pull_request:
     branches:
-      - "*"
+      - *
   schedule:
-  - cron: '0 0 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   php-tests:
     runs-on: ${{ matrix.os }}
+
     timeout-minutes: 15
+
     env:
       COMPOSER_NO_INTERACTION: 1
 
@@ -22,36 +24,40 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.5, 8.4, 8.3, 8.2]
-        laravel: [~11.15, 12.x]
+        laravel: [12.x, '13.0', ~11.15]
         stability: [prefer-lowest, prefer-stable]
         include:
           - os: windows-latest
             php: 8.3
             laravel: 12.x
             stability: prefer-stable
+        exclude:
+          - laravel: 13.x
+            php: 8.2
+
     steps:
-    - name: Set git to use LF
-      if: ${{ matrix.os == 'windows-latest' }}
-      run: |
-        git config --global core.autocrlf false
-        git config --global core.eol lf
+      - name: Set git to use LF
+        if: "${{ matrix.os == 'windows-latest' }}"
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
-    - name: Checkout code
-      uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        coverage: none
-        extensions: pdo_sqlite, fileinfo
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          extensions: pdo_sqlite, fileinfo
 
-    - name: Install dependencies
-      run: |
-        composer remove vimeo/psalm --no-update --dev
-        composer remove friendsofphp/php-cs-fixer --no-update --dev
-        composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
-        composer update --prefer-dist --no-progress --${{ matrix.stability }}
+      - name: Install dependencies
+        run: |
+          composer remove vimeo/psalm --no-update --dev
+          composer remove friendsofphp/php-cs-fixer --no-update --dev
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-update --no-progress
+          composer update --prefer-dist --no-progress --${{ matrix.stability }}
 
-    - name: Execute Unit Tests
-      run: composer test-ci
+      - name: Execute Unit Tests
+        run: composer test-ci

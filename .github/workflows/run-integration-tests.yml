@@ -1,75 +1,79 @@
 name: Integration Tests
 
 on:
-    push:
-        branches:
-            - master
-    pull_request:
-        branches:
-            - "*"
-    schedule:
-        - cron: '0 0 * * *'
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "*"
 
 jobs:
-    php-laravel-integration-tests:
-        runs-on: ubuntu-22.04
-        timeout-minutes: 15
-        env:
-            COMPOSER_NO_INTERACTION: 1
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [8.5, 8.4, 8.3, 8.2]
-                laravel: [11.x, 12.x]
+  php-laravel-integration-tests:
+    runs-on: ubuntu-22.04
 
-        name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v6
-              with:
-                  path: src
+    timeout-minutes: 15
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php }}
-                  coverage: none
+    env:
+      COMPOSER_NO_INTERACTION: 1
 
-            - name: Install dependencies
-              run: |
-                  composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample
-                  cd sample
-                  composer config minimum-stability dev
-                  composer update --prefer-stable --prefer-dist --no-progress
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.5, 8.4, 8.3, 8.2]
+        laravel: [11.x, 12.x, 13.x]
+        exclude:
+          - laravel: 13.x
+            php: 8.2
 
-            - name: Add package from source
-              run: |
-                  cd sample
-                  sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
-                  composer require --dev "barryvdh/laravel-ide-helper:*" --with-all-dependencies
+    name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
 
-            - name: Execute generate run
-              run: |
-                  cd sample
-                  php artisan ide-helper:generate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          path: src
 
-            - name: Execute meta run
-              run: |
-                  cd sample
-                  php artisan ide-helper:meta -v
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
 
-            - name: Check file existence
-              run: |
-                ls sample/_ide_helper.php
-                ls sample/.phpstorm.meta.php
+      - name: Install dependencies
+        run: |
+          composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample
+          cd sample
+          composer config minimum-stability dev
+          composer update --prefer-stable --prefer-dist --no-progress
 
+      - name: Add package from source
+        run: |
+          cd sample
+          sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
+          composer require --dev "barryvdh/laravel-ide-helper:*" --with-all-dependencies
 
-            - name: Check logs
-              run: |
-                if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ]; then
-                  for logfile in sample/storage/logs/*; do
-                    echo "-- $logfile --"
-                    cat $logfile
-                  done
-                  exit 1
-                fi
+      - name: Execute generate run
+        run: |
+          cd sample
+          php artisan ide-helper:generate
+
+      - name: Execute meta run
+        run: |
+          cd sample
+          php artisan ide-helper:meta -v
+
+      - name: Check file existence
+        run: |
+          ls sample/_ide_helper.php
+          ls sample/.phpstorm.meta.php
+
+      - name: Check logs
+        run: |
+          if [ `ls -1q "sample/storage/logs/" | wc -l` -gt 0 ]; then
+            for logfile in sample/storage/logs/*; do
+              echo "-- $logfile --"
+              cat $logfile
+            done
+            exit 1
+          fi

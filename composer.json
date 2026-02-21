@@ -25,21 +25,21 @@
         "ext-json": "*",
         "barryvdh/reflection-docblock": "^2.4",
         "composer/class-map-generator": "^1.0",
-        "illuminate/console": "^11.15 || ^12",
-        "illuminate/database": "^11.15 || ^12",
-        "illuminate/filesystem": "^11.15 || ^12",
-        "illuminate/support": "^11.15 || ^12"
+        "illuminate/console": "^11.15 || ^12 || ^13.0",
+        "illuminate/database": "^11.15 || ^12 || ^13.0",
+        "illuminate/filesystem": "^11.15 || ^12 || ^13.0",
+        "illuminate/support": "^11.15 || ^12 || ^13.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "friendsofphp/php-cs-fixer": "^3",
-        "illuminate/config": "^11.15 || ^12",
-        "illuminate/view": "^11.15 || ^12",
+        "illuminate/config": "^11.15 || ^12 || ^13.0",
+        "illuminate/view": "^11.15 || ^12 || ^13.0",
         "larastan/larastan": "^3.1",
         "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^9.2 || ^10",
+        "orchestra/testbench": "^9.2 || ^10 || ^11.0",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^10.5 || ^11.5.3",
+        "phpunit/phpunit": "^10.5 || ^11.5.3 || ^12.5.12",
         "spatie/phpunit-snapshot-assertions": "^4 || ^5",
         "vlucas/phpdotenv": "^5"
     },
@@ -86,7 +86,7 @@
             "php-cs-fixer fix --config=.php-cs-fixer.tests.php"
         ],
         "test": "phpunit",
-        "test-ci": "phpunit -d --without-creating-snapshots",
+        "test-ci": "phpunit",
         "test-regenerate": "phpunit -d --update-snapshots"
     }
 }

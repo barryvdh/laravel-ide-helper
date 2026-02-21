@@ -6,9 +6,7 @@ on:
       - master
   pull_request:
     branches:
-      - *
-  schedule:
-    - cron: '0 0 * * *'
+      - "*"
 
 jobs:
   php-tests:
@@ -24,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.5, 8.4, 8.3, 8.2]
-        laravel: [12.x, '13.0', ~11.15]
+        laravel: [12.x, 13.x, ~11.15]
         stability: [prefer-lowest, prefer-stable]
         include:
           - os: windows-latest

@@ -1,4 +1,5 @@
 .phpunit.result.cache
+/auth.json
 /build
 /.idea
 /.php-cs-fixer.cache

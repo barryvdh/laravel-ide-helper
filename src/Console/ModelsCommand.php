@@ -1206,7 +1206,7 @@ class ModelsCommand extends Command
                     // declaration, insert the docblock before the first attribute so that
                     // the resulting order is: docblock → attributes → class.
                     $before = substr($contents, 0, $pos);
-                    if (preg_match('/(\s*(?:#\[.+?\]\s*)+)$/s', $before, $matches)) {
+                    if (preg_match('/((?:#\[.+?\]\s*)+)$/s', $before, $matches)) {
                         $pos -= strlen($matches[1]);
                         $replace = "{$modelDocComment}\n";
                     }

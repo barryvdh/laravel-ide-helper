@@ -1164,7 +1164,7 @@ class ModelsCommand extends Command
         }
 
         $serializer = new DocBlockSerializer();
-        $docComment = $serializer->getDocComment($phpdoc);
+        $docComment = $this->stripTrailingSpaces($serializer->getDocComment($phpdoc));
         $mixinClassName = null;
 
         if ($this->write_mixin) {
@@ -1178,7 +1178,7 @@ class ModelsCommand extends Command
 
             $mixinClassName = "IdeHelper{$classname}";
             $phpdocMixin->appendTag(Tag::createInstance("@mixin {$mixinClassName}", $phpdocMixin));
-            $mixinDocComment = $serializer->getDocComment($phpdocMixin);
+            $mixinDocComment = $this->stripTrailingSpaces($serializer->getDocComment($phpdocMixin));
             // remove blank lines if there's no text
             if (!$phpdocMixin->getText()) {
                 $mixinDocComment = preg_replace("/\s\*\s*\n/", '', $mixinDocComment);
@@ -1189,7 +1189,7 @@ class ModelsCommand extends Command
                     $phpdoc->deleteTag($tag);
                 }
             }
-            $docComment = $serializer->getDocComment($phpdoc);
+            $docComment = $this->stripTrailingSpaces($serializer->getDocComment($phpdoc));
         }
 
         if ($this->write) {
@@ -1881,5 +1881,16 @@ class ModelsCommand extends Command
                 $this->foreignKeyConstraintsColumns[] = $columnName;
             }
         }
+    }
+
+    /**
+     * Remove trailing whitespace from docblock lines.
+     *
+     * The serializer may produce lines like " * " (with a trailing space)
+     * for empty docblock lines. This trims them to " *".
+     */
+    protected function stripTrailingSpaces(string $docComment): string
+    {
+        return preg_replace('/^(\s*\*)\s+$/m', '$1', $docComment);
     }
 }

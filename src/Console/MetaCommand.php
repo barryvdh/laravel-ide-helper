@@ -195,6 +195,18 @@ class MetaCommand extends Command
                 return;
             }
 
+            // Don't throw when class existence is being checked via class_exists(),
+            // interface_exists(), trait_exists(), or enum_exists(). These functions
+            // expect the autoloader to return gracefully when the class doesn't exist.
+            // Throwing here would break libraries that use class_exists() to check for
+            // optional dependencies (e.g. Doctrine ORM checking for removed classes).
+            $existsFunctions = ['class_exists', 'interface_exists', 'trait_exists', 'enum_exists'];
+            foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3) as $frame) {
+                if (isset($frame['function']) && in_array($frame['function'], $existsFunctions, true)) {
+                    return;
+                }
+            }
+
             throw new \ReflectionException("Class '$class' not found.");
         };
 

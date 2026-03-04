@@ -187,7 +187,7 @@ class Alias
     public function shouldExtendParentClass()
     {
         return $this->parentClass
-            && !is_subclass_of($this->extends, \Illuminate\Support\Facades\Facade::class);
+            && !is_subclass_of($this->extends, Facade::class);
     }
 
     /**

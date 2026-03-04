@@ -7,7 +7,7 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\PhpAttributesClo
 use Illuminate\Database\Eloquent\Model;
 
 // Tests: closure expression inside an attribute argument (PHP 8.5+)
-#[SomeClosureAttr(fn() => true)]
+#[SomeClosureAttr(fn () => true)]
 class ClosureInAttribute extends Model
 {
     protected $table = 'simples';

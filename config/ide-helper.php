@@ -201,29 +201,29 @@ return [
     ],
 
     /*
-     |--------------------------------------------------------------------------
-     | Support for camel cased models
-     |--------------------------------------------------------------------------
-     |
-     | There are some Laravel packages (such as Eloquence) that allow for accessing
-     | Eloquent model properties via camel case, instead of snake case.
-     |
-     | Enabling this option will support these packages by saving all model
-     | properties as camel case, instead of snake case.
-     |
-     | For example, normally you would see this:
-     |
-     |  * @property \Illuminate\Support\Carbon $created_at
-     |  * @property \Illuminate\Support\Carbon $updated_at
-     |
-     | With this enabled, the properties will be this:
-     |
-     |  * @property \Illuminate\Support\Carbon $createdAt
-     |  * @property \Illuminate\Support\Carbon $updatedAt
-     |
-     | Note, it is currently an all-or-nothing option.
-     |
-     */
+    |--------------------------------------------------------------------------
+    | Support for camel cased models
+    |--------------------------------------------------------------------------
+    |
+    | There are some Laravel packages (such as Eloquence) that allow for accessing
+    | Eloquent model properties via camel case, instead of snake case.
+    |
+    | Enabling this option will support these packages by saving all model
+    | properties as camel case, instead of snake case.
+    |
+    | For example, normally you would see this:
+    |
+    |  * @property \Illuminate\Support\Carbon $created_at
+    |  * @property \Illuminate\Support\Carbon $updated_at
+    |
+    | With this enabled, the properties will be this:
+    |
+    |  * @property \Illuminate\Support\Carbon $createdAt
+    |  * @property \Illuminate\Support\Carbon $updatedAt
+    |
+    | Note, it is currently an all-or-nothing option.
+    |
+    */
     'model_camel_case_properties' => false,
 
     /*

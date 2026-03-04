@@ -1202,6 +1202,14 @@ class ModelsCommand extends Command
                 $replace = "{$modelDocComment}\n";
                 $pos = strpos($contents, "final class {$classname}") ?: strpos($contents, "class {$classname}");
                 if ($pos !== false) {
+                    // If PHP 8 attributes (e.g. #[ObservedBy(...)]) precede the class
+                    // declaration, insert the docblock before the first attribute so that
+                    // the resulting order is: docblock → attributes → class.
+                    $before = substr($contents, 0, $pos);
+                    if (preg_match('/(\s*(?:#\[.+?\]\s*)+)$/s', $before, $matches)) {
+                        $pos -= strlen($matches[1]);
+                        $replace = "{$modelDocComment}\n";
+                    }
                     $contents = substr_replace($contents, $replace, $pos, 0);
                 }
             }

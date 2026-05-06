@@ -1040,9 +1040,10 @@ class ModelsCommand extends Command
 
     public function unsetMethod($name)
     {
-        foreach ($this->methods as $k => $v) {
-            if (strtolower($k) === strtolower($name)) {
-                unset($this->methods[$k]);
+        foreach (array_keys($this->methods) as $method) {
+            if (strtolower($method) === strtolower($name)) {
+                unset($this->methods[$method]);
+
                 return;
             }
         }

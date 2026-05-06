@@ -101,7 +101,12 @@ class Alias
         }
 
         if ($facade === '\Illuminate\Database\Eloquent\Model') {
-            $this->usedMethods = ['decrement' => true, 'increment' => true];
+            $this->usedMethods = [
+                'decrement' => true,
+                'decrementEach' => true,
+                'increment' => true,
+                'incrementEach' => true,
+            ];
         }
     }
 

@@ -17,6 +17,21 @@ class ModelWithRelations extends Model
         return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id');
     }
 
+    public function softDeletableWithTrashed(): BelongsTo
+    {
+        return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id')->withTrashed();
+    }
+
+    public function softDeletableOnlyTrashed(): BelongsTo
+    {
+        return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id')->onlyTrashed();
+    }
+
+    public function softDeletableWithoutTrashed(): BelongsTo
+    {
+        return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id')->withoutTrashed();
+    }
+
     public function nonSoftDeletable(): BelongsTo
     {
         return $this->belongsTo(NonSoftDeletableModel::class, 'non_soft_deletable_model_id');

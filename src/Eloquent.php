@@ -25,8 +25,9 @@ class Eloquent
      * @param Filesystem $files
      *
      * @return void
+     * @throws \ReflectionException|\Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public static function writeEloquentModelHelper(Command $command, Filesystem $files)
+    public static function writeEloquentModelHelper(Command $command, Filesystem $files): void
     {
         $class = 'Illuminate\Database\Eloquent\Model';
 

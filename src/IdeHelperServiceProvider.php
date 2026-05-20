@@ -15,6 +15,7 @@ use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
 use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Console\RequestCommand;
 use Barryvdh\LaravelIdeHelper\Listeners\GenerateModelHelper;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Contracts\Support\DeferrableProvider;
@@ -28,7 +29,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if (!$this->app->runningUnitTests() && $this->app['config']->get('ide-helper.post_migrate', [])) {
             $this->app['events']->listen(CommandFinished::class, GenerateModelHelper::class);
@@ -56,7 +57,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $configPath = __DIR__ . '/../config/ide-helper.php';
         $this->mergeConfigFrom($configPath, 'ide-helper');
@@ -67,6 +68,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
                 ModelsCommand::class,
                 MetaCommand::class,
                 EloquentCommand::class,
+                RequestCommand::class,
              ]
         );
     }
@@ -76,13 +78,14 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [
             GeneratorCommand::class,
             ModelsCommand::class,
             MetaCommand::class,
             EloquentCommand::class,
+            RequestCommand::class,
         ];
     }
 }

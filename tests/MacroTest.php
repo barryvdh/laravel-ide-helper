@@ -63,7 +63,7 @@ class MacroTest extends TestCase
 
         $this->assertNotNull($phpdoc);
         $this->assertEmpty($phpdoc->getText());
-        $this->assertEquals('@param int|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@param int|null $a [optional]', $this->tagsToString($phpdoc, 'param'));
         $this->assertEquals('@return int', $this->tagsToString($phpdoc, 'return'));
         $this->assertTrue($phpdoc->hasTag('see'));
     }
@@ -87,7 +87,7 @@ class MacroTest extends TestCase
 
         $this->assertNotNull($phpdoc);
         $this->assertStringContainsString('Test docblock', $phpdoc->getText());
-        $this->assertEquals('@param int|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@param int|null $a [optional]', $this->tagsToString($phpdoc, 'param'));
         $this->assertEquals('@return int', $this->tagsToString($phpdoc, 'return'));
         $this->assertTrue($phpdoc->hasTag('see'));
     }
@@ -111,7 +111,7 @@ class MacroTest extends TestCase
 
         $this->assertNotNull($phpdoc);
         $this->assertStringContainsString('Test docblock', $phpdoc->getText());
-        $this->assertEquals('@param int|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@param int|null $a [optional]', $this->tagsToString($phpdoc, 'param'));
         $this->assertFalse($phpdoc->hasTag('return'));
         $this->assertTrue($phpdoc->hasTag('see'));
     }
@@ -160,7 +160,7 @@ class MacroTest extends TestCase
 
         $this->assertNotNull($phpdoc);
         $this->assertStringContainsString('Test docblock', $phpdoc->getText());
-        $this->assertEquals('@param \stdClass|null $a aaaaa', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@param \stdClass|null $a aaaaa [optional]', $this->tagsToString($phpdoc, 'param'));
         $this->assertEquals('@return int', $this->tagsToString($phpdoc, 'return'));
     }
 
@@ -184,7 +184,7 @@ class MacroTest extends TestCase
 
         $this->assertNotNull($phpdoc);
         $this->assertStringContainsString('Test docblock', $phpdoc->getText());
-        $this->assertEquals('@param mixed $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@param mixed $a [optional]', $this->tagsToString($phpdoc, 'param'));
         $this->assertEquals('@return \stdClass|null rrrrrrr', $this->tagsToString($phpdoc, 'return'));
     }
 
@@ -203,7 +203,7 @@ class MacroTest extends TestCase
 
         $this->assertNotNull($phpdoc);
         $this->assertStringContainsString('Test docblock', $phpdoc->getText());
-        $this->assertEquals('@param \Stringable|string|null $a', $this->tagsToString($phpdoc, 'param'));
+        $this->assertEquals('@param \Stringable|string|null $a [optional]', $this->tagsToString($phpdoc, 'param'));
         $this->assertEquals('@return \Stringable|string|null', $this->tagsToString($phpdoc, 'return'));
     }
 
@@ -300,7 +300,7 @@ class MacroTest extends TestCase
         $output = <<<'DOC'
 /**
  * @param string $foo
- * @param int $bar
+ * @param int $bar [optional]
  * @return string
  * @see \Barryvdh\LaravelIdeHelper\Tests\UrlGeneratorMacroClass::__invoke()
  * @static

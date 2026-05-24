@@ -264,9 +264,22 @@ class Method
                 $content = $this->convertKeywords($tag->getContent());
                 $tag->setContent($content);
 
-                // Get the expanded type and re-set the content
-                $content = $tag->getType() . ' ' . $tag->getVariableName() . ' ' . $tag->getDescription();
-                $tag->setContent(trim($content));
+                        // Get the expanded type and re-set the content
+                $description = $tag->getDescription();
+                $content = $tag->getType() . ' ' . $tag->getVariableName();
+                if ($description) {
+                    $content .= ' ' . $description;
+                }
+
+                $paramName = ltrim($tag->getVariableName(), '$');
+                foreach ($this->method->getParameters() as $reflectionParam) {
+                    if ($reflectionParam->getName() === $paramName && $reflectionParam->isOptional()) {
+                        $content .= ' [optional]';
+                        break;
+                    }
+                }
+
+                $tag->setContent($content);
             }
         }
     }

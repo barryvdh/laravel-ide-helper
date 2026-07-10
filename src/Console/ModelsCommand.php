@@ -11,6 +11,7 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
+use Barryvdh\LaravelIdeHelper\Contracts\ModelConnectionResolverInterface;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Barryvdh\LaravelIdeHelper\Generator;
 use Barryvdh\LaravelIdeHelper\Parsers\PhpDocReturnTypeParser;
@@ -123,6 +124,7 @@ class ModelsCommand extends Command
     protected $reset;
     protected $phpstorm_noinspections;
     protected $write_model_external_builder_methods;
+    protected ?ModelConnectionResolverInterface $connectionResolver = null;
     /**
      * @var array<string, \SplFileObject>
      */
@@ -200,6 +202,18 @@ class ModelsCommand extends Command
         $this->dateClass = class_exists(\Illuminate\Support\Facades\Date::class)
             ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
             : '\Illuminate\Support\Carbon';
+
+        $resolverClass = $this->laravel['config']->get('ide-helper.model_connection_resolver');
+        if ($resolverClass !== null) {
+            $resolver = $this->laravel->make($resolverClass);
+            if (!$resolver instanceof ModelConnectionResolverInterface) {
+                throw new \RuntimeException(
+                    'Your IDE helper model connection resolver must implement ' .
+                    ModelConnectionResolverInterface::class
+                );
+            }
+            $this->connectionResolver = $resolver;
+        }
 
         $content = $this->generateDocs($model, $ignore);
 
@@ -333,7 +347,15 @@ class ModelsCommand extends Command
 
                     $model = $this->laravel->make($name);
 
+                    if ($this->connectionResolver !== null) {
+                        $this->connectionResolver->resolve($model);
+                    }
+
                     $this->getPropertiesFromTable($model);
+
+                    if ($this->connectionResolver !== null) {
+                        $this->connectionResolver->after($model);
+                    }
 
                     if (method_exists($model, 'getCasts')) {
                         $this->castPropertiesType($model);

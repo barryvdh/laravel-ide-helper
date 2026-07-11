@@ -355,7 +355,17 @@ class Method
                 if (is_bool($default)) {
                     $default = $default ? 'true' : 'false';
                 } elseif (is_array($default)) {
-                    $default = '[]';
+                    if (empty($default)) {
+                        $default = '[]';
+                    } else {
+                        $items = [];
+                        foreach ($default as $k => $v) {
+                            $items[] = is_string($k)
+                                ? var_export($k, true) . ' => ' . var_export($v, true)
+                                : var_export($v, true);
+                        }
+                        $default = '[' . implode(', ', $items) . ']';
+                    }
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {

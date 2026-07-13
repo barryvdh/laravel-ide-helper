@@ -37,8 +37,8 @@ class MethodTest extends TestCase
         $output = <<<'DOC'
 /**
  * @param string $last
- * @param string $first
- * @param string $middle
+ * @param string $first [optional]
+ * @param string $middle [optional]
  * @static
  */
 DOC;
@@ -68,7 +68,7 @@ DOC;
  *
  * @param array $values
  * @param array|string $uniqueBy
- * @param array|null $update
+ * @param array|null $update [optional]
  * @return int
  * @static
  */
@@ -99,9 +99,9 @@ DOC;
  * Add a basic where clause to the query.
  *
  * @param (\Closure(static): mixed)|string|array|\Illuminate\Contracts\Database\Query\Expression $column
- * @param mixed $operator
- * @param mixed $value
- * @param string $boolean
+ * @param mixed $operator [optional]
+ * @param mixed $value [optional]
+ * @param string $boolean [optional]
  * @return \Illuminate\Database\Eloquent\Builder<static>
  * @static
  */
@@ -130,8 +130,8 @@ DOC;
  * Add a "where null" clause to the query.
  *
  * @param string|array|\Illuminate\Contracts\Database\Query\Expression $columns
- * @param string $boolean
- * @param bool $not
+ * @param string $boolean [optional]
+ * @param bool $not [optional]
  * @return \Illuminate\Database\Eloquent\Builder<static>
  * @static
  */
@@ -202,8 +202,8 @@ DOC;
  * Execute the query and get the first result or call a callback.
  *
  * @template TValue
- * @param (\Closure(): TValue)|list<string> $columns
- * @param (\Closure(): TValue)|null $callback
+ * @param (\Closure(): TValue)|list<string> $columns [optional]
+ * @param (\Closure(): TValue)|null $callback [optional]
  * @return TModel|TValue
  * @static
  */

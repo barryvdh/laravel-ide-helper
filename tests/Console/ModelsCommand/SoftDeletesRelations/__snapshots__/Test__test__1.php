@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletesRelations\Models\NonSoftDeletableModel|null $nonSoftDeletableHasOne
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletesRelations\Models\SoftDeletableModel|null $softDeletable
  * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletesRelations\Models\SoftDeletableModel|null $softDeletableHasOne
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletesRelations\Models\SoftDeletableModel|null $softDeletableOnlyTrashed
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletesRelations\Models\SoftDeletableModel $softDeletableWithTrashed
+ * @property-read \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\SoftDeletesRelations\Models\SoftDeletableModel|null $softDeletableWithoutTrashed
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithRelations newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithRelations newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ModelWithRelations query()
@@ -31,6 +34,21 @@ class ModelWithRelations extends Model
     public function softDeletable(): BelongsTo
     {
         return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id');
+    }
+
+    public function softDeletableWithTrashed(): BelongsTo
+    {
+        return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id')->withTrashed();
+    }
+
+    public function softDeletableOnlyTrashed(): BelongsTo
+    {
+        return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id')->onlyTrashed();
+    }
+
+    public function softDeletableWithoutTrashed(): BelongsTo
+    {
+        return $this->belongsTo(SoftDeletableModel::class, 'soft_deletable_model_id')->withoutTrashed();
     }
 
     public function nonSoftDeletable(): BelongsTo

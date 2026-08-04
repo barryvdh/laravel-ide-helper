@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -943,11 +944,53 @@ class ModelsCommand extends Command
             }
         }
 
-        if ($this->relatedModelUsesSoftDeletes($relationObj)) {
+        if (
+            $this->relatedModelUsesSoftDeletes($relationObj)
+            && !$this->relationIncludesNonTrashedParents($relationObj)
+        ) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Check whether the relation explicitly opts into returning non-soft-deleted parents
+     * via ->withTrashed(), in which case the SoftDeletes-based nullability no longer applies.
+     *
+     * Returns false for ->onlyTrashed() and ->withoutTrashed(), which still leave the
+     * relation potentially empty depending on the parent's soft-delete state.
+     *
+     * @param Relation $relationObj
+     *
+     * @return bool
+     */
+    protected function relationIncludesNonTrashedParents(Relation $relationObj): bool
+    {
+        $query = $relationObj->getQuery();
+
+        if (!in_array(SoftDeletingScope::class, $query->removedScopes(), true)) {
+            return false;
+        }
+
+        $relatedModel = $relationObj->getRelated();
+
+        if (!method_exists($relatedModel, 'getQualifiedDeletedAtColumn')) {
+            return true;
+        }
+
+        $deletedAtColumn = $relatedModel->getQualifiedDeletedAtColumn();
+
+        foreach ($query->getQuery()->wheres ?? [] as $where) {
+            if (
+                ($where['column'] ?? null) === $deletedAtColumn
+                && in_array($where['type'] ?? null, ['Null', 'NotNull'], true)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

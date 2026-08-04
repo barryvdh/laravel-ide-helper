@@ -101,7 +101,6 @@ DOC;
  * @param (\Closure(static): mixed)|string|array|\Illuminate\Contracts\Database\Query\Expression $column
  * @param mixed $operator
  * @param mixed $value
- * @param string $boolean
  * @return \Illuminate\Database\Eloquent\Builder<static>
  * @static
  */
@@ -130,8 +129,6 @@ DOC;
  * Add a "where null" clause to the query.
  *
  * @param string|array|\Illuminate\Contracts\Database\Query\Expression $columns
- * @param string $boolean
- * @param bool $not
  * @return \Illuminate\Database\Eloquent\Builder<static>
  * @static
  */

@@ -1646,9 +1646,40 @@ class ModelsCommand extends Command
 
         $methodReflection = $castReflection->getMethod('get');
 
-        return $this->getReturnTypeFromReflection($methodReflection) ??
+        $resolvedType = $this->getReturnTypeFromReflection($methodReflection) ??
             $this->getReturnTypeFromDocBlock($methodReflection, $reflection) ??
             $type;
+
+        return $this->preferMoreSpecificCastableType($type, $resolvedType);
+    }
+
+    /**
+     * A resolved Cast's `get()` method may only be able to declare the upper
+     * bound of a generic template (e.g. spatie/laravel-data's
+     * `DataEloquentCast<TData>` must declare `get(): BaseData|
+     * TransformableData|null`, because PHP has no runtime generics to
+     * express the concrete `TData` for a given `Castable`). When the
+     * original Castable class is already at least as specific as one of the
+     * resolved type's members, it is the more accurate answer — use it
+     * instead. Nullability is intentionally left for the caller to
+     * re-derive, since it is normalised from the model's own nullability
+     * (e.g. the backing column) further down the pipeline regardless of
+     * what the resolved type says.
+     */
+    protected function preferMoreSpecificCastableType(string $type, string $resolvedType): string
+    {
+        $classMembers = array_filter(
+            explode('|', $resolvedType),
+            static fn (string $member) => strtolower(ltrim($member, '?\\')) !== 'null'
+        );
+
+        foreach ($classMembers as $member) {
+            if (is_a($type, ltrim($member, '\\'), true)) {
+                return $type;
+            }
+        }
+
+        return $resolvedType;
     }
 
     /**

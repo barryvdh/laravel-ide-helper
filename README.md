@@ -15,14 +15,14 @@ The 3.x branch supports Laravel 10 and later. For older version, use the 2.x rel
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Automatic PHPDoc generation for Laravel Facades](#automatic-phpdoc-generation-for-laravel-facades)
-  - [Automatic PHPDocs for models](#automatic-phpdocs-for-models)
-    - [Model Directories](#model-directories)
-    - [Ignore Models](#ignore-models)
-    - [Model Hooks](#model-hooks)
-  - [Automatic PHPDocs generation for Laravel Fluent methods](#automatic-phpdocs-generation-for-laravel-fluent-methods)
-  - [Auto-completion for factory builders](#auto-completion-for-factory-builders)
-  - [PhpStorm Meta for Container instances](#phpstorm-meta-for-container-instances)
+    - [Automatic PHPDoc generation for Laravel Facades](#automatic-phpdoc-generation-for-laravel-facades)
+    - [Automatic PHPDocs for models](#automatic-phpdocs-for-models)
+        - [Model Directories](#model-directories)
+        - [Ignore Models](#ignore-models)
+        - [Model Hooks](#model-hooks)
+    - [Automatic PHPDocs generation for Laravel Fluent methods](#automatic-phpdocs-generation-for-laravel-fluent-methods)
+    - [Auto-completion for factory builders](#auto-completion-for-factory-builders)
+    - [PhpStorm Meta for Container instances](#phpstorm-meta-for-container-instances)
 - [License](#license)
 
 ## Installation
@@ -33,33 +33,31 @@ Require this package with composer using the following command:
 composer require --dev barryvdh/laravel-ide-helper
 ```
 
-
 ## Usage
 
 ### TL;DR
 
-Run this to generate autocompletion for Facades. This creates _ide_helper.php
+Run this to generate autocompletion for Facades. This creates \_ide_helper.php
 
 ```
 php artisan ide-helper:generate
 ```
 
 Run this to add phpdocs for your models. Add -RW to Reset existing phpdocs and Write to the models directly.
+
 ```
 php artisan ide-helper:models -RW
 ```
 
-If you don't want the full _ide_helper.php file, you can run add `--write-eloquent-helper` to the model command to generate small version, which is required for the `@mixin \Eloquent` to be able to add the QueryBuilder methods.
+If you don't want the full \_ide_helper.php file, you can run add `--write-eloquent-helper` to the model command to generate small version, which is required for the `@mixin \Eloquent` to be able to add the QueryBuilder methods.
 
-If you don't want to add all the phpdocs to your Models directly, you can use `--nowrite` to create a separate file. The  `--write-mixin` option can be used to only add a `@mixin` to your models, but add the generated phpdocs in a separate file. This avoids having the results marked as duplicate.
-
+If you don't want to add all the phpdocs to your Models directly, you can use `--nowrite` to create a separate file. The `--write-mixin` option can be used to only add a `@mixin` to your models, but add the generated phpdocs in a separate file. This avoids having the results marked as duplicate.
 
 _Check out [this Laracasts video](https://laracasts.com/series/how-to-be-awesome-in-phpstorm/episodes/15) for a quick introduction/explanation!_
 
 - `php artisan ide-helper:generate` - [PHPDoc generation for Laravel Facades ](#automatic-phpdoc-generation-for-laravel-facades)
 - `php artisan ide-helper:models` - [PHPDocs for models](#automatic-phpdocs-for-models)
 - `php artisan ide-helper:meta` - [PhpStorm Meta file](#phpstorm-meta-for-container-instances)
-
 
 > Note: You do need CodeComplice for Sublime Text: https://github.com/spectacles/CodeComplice
 
@@ -96,7 +94,7 @@ The generator tries to identify the real class, but if it cannot be found, you c
 Some classes need a working database connection. If you do not have a default working connection, some facades will not be included.
 You can use an in-memory SQLite driver by adding the `-M` option.
 
-If you use [real-time facades](https://laravel.com/docs/master/facades#real-time-facades) in your app, those will also be included in the generated file using a `@mixin` annotation and extending the original class underneath the facade. 
+If you use [real-time facades](https://laravel.com/docs/master/facades#real-time-facades) in your app, those will also be included in the generated file using a `@mixin` annotation and extending the original class underneath the facade.
 
 > **Note**: this feature uses the generated real-time facades files in the `storage/framework/cache` folder. Those files are generated on-demand as you use the real-time facade, so if the framework has not generated that first, it will not be included in the helper file. Run the route/command/code first and then regenerate the helper file and this time the real-time facade will be included in it.
 
@@ -132,7 +130,7 @@ The class name will be different from the model, avoiding the IDE duplicate anno
 
 > Please make sure to back up your models, before writing the info.
 
-> You need the _ide_helper.php file to add the QueryBuilder methods. You can add --write-eloquent-helper/-E to generate a minimal version. If this file does not exist, you will be prompted for it.
+> You need the \_ide_helper.php file to add the QueryBuilder methods. You can add --write-eloquent-helper/-E to generate a minimal version. If this file does not exist, you will be prompted for it.
 
 Writing to the models should keep the existing comments and only append new properties/methods. It will not update changed properties/methods.
 
@@ -164,6 +162,7 @@ php artisan ide-helper:models "App\Models\Post"
 ```
 
 With the `--write-mixin (-M)` option
+
 ```php
 /**
  * …
@@ -225,6 +224,7 @@ These can be disabled by setting the config `use_generics_annotations` to `false
 #### Support `@comment` based on DocBlock
 
 In order to better support IDEs, relations and getters/setters can also add a comment to a property like table columns. Therefore a custom docblock `@comment` is used:
+
 ```php
 class Users extends Model
 {
@@ -243,7 +243,7 @@ class Users extends Model
 
 /**
  * App\Models\Users
- * 
+ *
  * @property-read string $full_name Get User's full name
  * …
  */
@@ -251,7 +251,7 @@ class Users extends Model
 
 #### Dedicated Eloquent Builder methods
 
-A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can 
+A new method to the eloquent models was added called `newEloquentBuilder` [Reference](https://timacdonald.me/dedicated-eloquent-model-query-builders/) where we can
 add support for creating a new dedicated class instead of using local scopes in the model itself.
 
 If for some reason it's undesired to have them generated (one for each column), you can disable this via config `write_model_external_builder_methods` and setting it to `false`.
@@ -279,12 +279,12 @@ If your custom relationships don't follow this traditional naming scheme you can
 #### Model Hooks
 
 If you need additional information on your model from sources that are not handled by default, you can hook in to the
- generation process with model hooks to add extra information on the fly.
- Simply create a class that implements `ModelHookInterface` and add it to the `model_hooks` array in the config:
- 
- ```php
+generation process with model hooks to add extra information on the fly.
+Simply create a class that implements `ModelHookInterface` and add it to the `model_hooks` array in the config:
+
+```php
 'model_hooks' => [
-    MyCustomHook::class,
+   MyCustomHook::class,
 ],
 ```
 
@@ -313,6 +313,40 @@ class MyCustomHook implements ModelHookInterface
  * @property integer $id
  * @property-read string $custom
 ```
+
+#### Model Connection Resolver
+
+If your application uses dynamic database connections or schemas, for example a multi-tenant setup where each tenant has its own PostgreSQL schema, you can configure a resolver that fires before each model's table columns are introspected, giving you a chance to point the connection at the right place.
+
+Set `model_connection_resolver` in the config to a class implementing `ModelConnectionResolverInterface`:
+
+```php
+'model_connection_resolver' => App\Support\IdeHelper\MyConnectionResolver::class,
+```
+
+The class must implement two methods:
+
+```php
+use Barryvdh\LaravelIdeHelper\Contracts\ModelConnectionResolverInterface;
+use Illuminate\Database\Eloquent\Model;
+
+class MyConnectionResolver implements ModelConnectionResolverInterface
+{
+    public function resolve(Model $model): void
+    {
+        // Called before getPropertiesFromTable().
+        // Set your connection, search_path, or any other context here.
+    }
+
+    public function after(Model $model): void
+    {
+        // Called after getPropertiesFromTable().
+        // Revert whatever you changed in resolve().
+    }
+}
+```
+
+The resolver is instantiated once per command run and is a no-op when model_connection_resolver is null (the default), so existing behaviour is completely unchanged.
 
 ### Automatic PHPDocs generation for Laravel Fluent methods
 
@@ -376,4 +410,3 @@ You can change the generated filename via the config `meta_filename`. This can b
 ## License
 
 The Laravel IDE Helper Generator is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
-

@@ -712,7 +712,7 @@ class ModelsCommand extends Command
                         //Remove the first ($query) argument
                         array_shift($args);
                         $builder = $this->getClassNameInDestinationFile(
-                            $reflection->getDeclaringClass(),
+                            new ReflectionClass($model),
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(

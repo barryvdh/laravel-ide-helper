@@ -4,6 +4,45 @@ declare(strict_types=1);
 
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryScopes\Models;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Article draft()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Article newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Article newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Article query()
+ * @mixin \Eloquent
+ */
+class Article extends ArticleParent
+{
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryScopes\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @method static Builder<static>|ArticleParent draft()
+ * @method static Builder<static>|ArticleParent newModelQuery()
+ * @method static Builder<static>|ArticleParent newQuery()
+ * @method static Builder<static>|ArticleParent query()
+ * @mixin \Eloquent
+ */
+class ArticleParent extends Model
+{
+    public function scopeDraft(Builder $query): Builder
+    {
+        return $query;
+    }
+}
+<?php
+
+declare(strict_types=1);
+
+namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\QueryScopes\Models;
+
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

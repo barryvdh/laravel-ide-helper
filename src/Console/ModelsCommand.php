@@ -133,6 +133,10 @@ class ModelsCommand extends Command
      */
     protected $contextCache = [];
     /**
+     * @var array<string, array<int, string>>
+     */
+    protected $localTypeAliasCache = [];
+    /**
      * @var array<string, true>
      */
     protected $nullableColumns = [];
@@ -1485,10 +1489,53 @@ class ModelsCommand extends Command
                 return $typeAlias;
             }
 
+            $localTypeAlias = strtok(trim($returnTag->getContent()), " \t\n\r");
+
+            if ($localTypeAlias !== false
+                && in_array($localTypeAlias, $this->getLocalTypeAliases($reflection->getDeclaringClass()), true)
+            ) {
+                return $localTypeAlias;
+            }
+
             $type = $phpdoc->getTagsByName('return')[0]->getType();
         }
 
         return $type;
+    }
+
+    /**
+     * Get the type aliases declared or imported on the given class and its parents.
+     *
+     * These are local names rather than classes, so they must be left as-is
+     * instead of being resolved against the class namespace.
+     *
+     * @return array<int, string>
+     */
+    protected function getLocalTypeAliases(ReflectionClass $class): array
+    {
+        $key = $class->getName();
+
+        if (isset($this->localTypeAliasCache[$key])) {
+            return $this->localTypeAliasCache[$key];
+        }
+
+        $aliases = [];
+
+        for ($current = $class; $current !== false; $current = $current->getParentClass()) {
+            if (($docComment = $current->getDocComment()) === false) {
+                continue;
+            }
+
+            preg_match_all(
+                '/@(?:phpstan|psalm)-(?:import-)?type\s+([A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*)/',
+                $docComment,
+                $matches
+            );
+
+            $aliases = array_merge($aliases, $matches[1]);
+        }
+
+        return $this->localTypeAliasCache[$key] = array_values(array_unique($aliases));
     }
 
     protected function getDocBlockContext(\Reflector $reflector): Context

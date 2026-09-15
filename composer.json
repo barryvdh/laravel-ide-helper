@@ -23,23 +23,24 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "barryvdh/reflection-docblock": "^2.3",
+        "barryvdh/reflection-docblock": "^2.4",
         "composer/class-map-generator": "^1.0",
-        "illuminate/console": "^11.15 || ^12",
-        "illuminate/database": "^11.15 || ^12",
-        "illuminate/filesystem": "^11.15 || ^12",
-        "illuminate/support": "^11.15 || ^12"
+        "illuminate/console": "^11.15 || ^12 || ^13.0",
+        "illuminate/database": "^11.15 || ^12 || ^13.0",
+        "illuminate/filesystem": "^11.15 || ^12 || ^13.0",
+        "illuminate/support": "^11.15 || ^12 || ^13.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "friendsofphp/php-cs-fixer": "^3",
-        "illuminate/config": "^11.15 || ^12",
-        "illuminate/view": "^11.15 || ^12",
+        "illuminate/config": "^11.15 || ^12 || ^13.0",
+        "illuminate/view": "^11.15 || ^12 || ^13.0",
+        "larastan/larastan": "^3.1",
         "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^9.2 || ^10",
-        "phpunit/phpunit": "^10.5 || ^11.5.3",
+        "orchestra/testbench": "^9.2 || ^10 || ^11.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^10.5 || ^11.5.3 || ^12.5.12",
         "spatie/phpunit-snapshot-assertions": "^4 || ^5",
-        "vimeo/psalm": "^5.4",
         "vlucas/phpdotenv": "^5"
     },
     "suggest": {
@@ -65,7 +66,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.5-dev"
+            "dev-master": "3.7-dev"
         },
         "laravel": {
             "providers": [
@@ -74,7 +75,8 @@
         }
     },
     "scripts": {
-        "analyze": "psalm",
+        "analyze": "phpstan",
+        "analyze-set-baseline": "phpstan --generate-baseline",
         "check-style": [
             "php-cs-fixer fix --diff --diff-format=udiff --dry-run",
             "php-cs-fixer fix --diff --diff-format=udiff --dry-run --config=.php_cs.tests.php"
@@ -83,9 +85,8 @@
             "php-cs-fixer fix",
             "php-cs-fixer fix --config=.php-cs-fixer.tests.php"
         ],
-        "psalm-set-baseline": "psalm --set-baseline=psalm-baseline.xml",
         "test": "phpunit",
-        "test-ci": "phpunit -d --without-creating-snapshots",
+        "test-ci": "phpunit",
         "test-regenerate": "phpunit -d --update-snapshots"
     }
 }

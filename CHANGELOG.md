@@ -1,5 +1,92 @@
 # Changelog
 
+## v3.7.0 - 2026-03-17
+
+### What's Changed
+
+* Skip calling fake() when required parameters exist (Socialite compatibility) by @Jaspur in https://github.com/barryvdh/laravel-ide-helper/pull/1746
+* Make Soft Deleted Relationships Nullable by @evan-burrell in https://github.com/barryvdh/laravel-ide-helper/pull/1749
+* Support all DNF types from PHP RFC by @gurmanolog in https://github.com/barryvdh/laravel-ide-helper/pull/1751
+* Replace psalm with larastan by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1755
+* perf: reduce redundant lookups and file I/O in generation hot paths by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1757
+* fix: wrap bare intersection types in parentheses when adding nullable by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1756
+* feat(ModelsCommand): add configuration option to disable model query methods by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1692
+* ci: add PHP 8.5 to integration test matrix by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1760
+* chore: update test snapshots after merge order issue by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1762
+* Laravel 13.x Compatibility by @laravel-shift in https://github.com/barryvdh/laravel-ide-helper/pull/1763
+* fix: Correct indentation in camel case config comment block by @isaackaara in https://github.com/barryvdh/laravel-ide-helper/pull/1767
+* fix: Place PHPDoc before class attributes when writing to models by @isaackaara in https://github.com/barryvdh/laravel-ide-helper/pull/1765
+* fix: Don't extend root's parent class for facade stubs in helper file by @isaackaara in https://github.com/barryvdh/laravel-ide-helper/pull/1766
+* Fix PHPDoc placement before PHP 8 class attributes and add regression tests by @Copilot in https://github.com/barryvdh/laravel-ide-helper/pull/1769
+* fix: Skip autoload exception when class existence is being checked by @isaackaara in https://github.com/barryvdh/laravel-ide-helper/pull/1764
+* Remove closure in attribute test by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1772
+* Bump branch alias to 3.6 by @jnoordsij in https://github.com/barryvdh/laravel-ide-helper/pull/1774
+
+### New Contributors
+
+* @Jaspur made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1746
+* @evan-burrell made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1749
+* @gurmanolog made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1751
+* @laravel-shift made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1763
+* @isaackaara made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1767
+* @Copilot made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1769
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.6.1...v3.7.0
+
+## v3.6.1 - 2025-12-10
+
+### What's Changed
+
+* Fix `methodsto` typo in README by @peterchrjoergensen in https://github.com/barryvdh/laravel-ide-helper/pull/1723
+* Bump actions/checkout from 4 to 5 in the deps group by @dependabot[bot] in https://github.com/barryvdh/laravel-ide-helper/pull/1731
+* Fix typos in documentation and code comments by @kei1111 in https://github.com/barryvdh/laravel-ide-helper/pull/1733
+* Add php 8.5 support by @sergiy-petrov in https://github.com/barryvdh/laravel-ide-helper/pull/1735
+* Fix alias fake error by @WentTheFox in https://github.com/barryvdh/laravel-ide-helper/pull/1745
+* Remove calls to PHP 8.5-deprecated `setAccessible` by @jnoordsij in https://github.com/barryvdh/laravel-ide-helper/pull/1744
+* Bump the deps group across 1 directory with 2 updates by @dependabot[bot] in https://github.com/barryvdh/laravel-ide-helper/pull/1743
+* Add support for `decimal` column type by @BrainStone in https://github.com/barryvdh/laravel-ide-helper/pull/1739
+
+### New Contributors
+
+* @peterchrjoergensen made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1723
+* @kei1111 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1733
+* @WentTheFox made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1745
+* @BrainStone made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1739
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.6.0...v3.6.1
+
+## v3.6.0 - 2025-07-18
+
+### What's Changed
+
+* fix: Change AsArrayObject cast to be Laravel's ArrayObject by @wsamoht in https://github.com/barryvdh/laravel-ide-helper/pull/1675
+* Add extends declaration for Macroable classes to fix missing inherited methods by @KentarouTakeda in https://github.com/barryvdh/laravel-ide-helper/pull/1674
+* fix(meta): ignore aliases in the autoloader (Fixes #1671) by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1686
+* feat(ModelsCommand): add support for the new Scope attribute by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1694
+* fix type change for scope default float parameter by @nivseb in https://github.com/barryvdh/laravel-ide-helper/pull/1697
+* Revert #1629 - *Allow adding custom Macroable classes* by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1707
+* Configurable macro return type defaults by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1711
+* docs(readme): add Laravel 12 support information by @SantosVilanculos in https://github.com/barryvdh/laravel-ide-helper/pull/1717
+* Add multi-level directory support for translation files by @RosiersRobin in https://github.com/barryvdh/laravel-ide-helper/pull/1718
+* Support `AsCollection::of($map)`, `AsCollection::using($class, $map)` by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1714
+* fix: Fixed wrong doc for SoftDeletes `withTrashed` method by @eldair in https://github.com/barryvdh/laravel-ide-helper/pull/1688
+* Support other OS on tests by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1715
+* Fix tests on windows by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1720
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 in the deps group by @dependabot[bot] in https://github.com/barryvdh/laravel-ide-helper/pull/1719
+* Update .gitattributes - avoid all `.php-cs-fixer` files on vendor by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1708
+* fix(ModelsCommand): use 'string' as realType for 'encrypted' casts by @pataar in https://github.com/barryvdh/laravel-ide-helper/pull/1698
+* Trim strings and bump reflection docblock by @barryvdh in https://github.com/barryvdh/laravel-ide-helper/pull/1721
+* Add magic *_exists properties by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1712
+
+### New Contributors
+
+* @wsamoht made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1675
+* @nivseb made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1697
+* @SantosVilanculos made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1717
+* @RosiersRobin made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1718
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.5.5...v3.6.0
+
 ## v3.5.5 - 2025-02-21
 
 ### What's Changed

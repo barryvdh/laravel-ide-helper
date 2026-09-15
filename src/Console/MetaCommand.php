@@ -11,7 +11,6 @@
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\LaravelIdeHelper\Factories;
 use Dotenv\Parser\Entry;
 use Dotenv\Parser\Parser;
 use Illuminate\Console\Command;
@@ -108,9 +107,6 @@ class MetaCommand extends Command
      */
     public function handle()
     {
-        // Needs to run before exception handler is registered
-        $factories = $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [];
-
         $ourAutoloader = $this->registerClassAutoloadExceptions();
 
         $bindings = [];
@@ -149,7 +145,6 @@ class MetaCommand extends Command
         $content = $this->view->make('ide-helper::meta', [
             'bindings' => $bindings,
             'methods' => $this->methods,
-            'factories' => $factories,
             'configMethods' => $this->configMethods,
             'configValues' => $configValues,
             'expectedArgumentSets' => $this->getExpectedArgumentSets(),
@@ -198,6 +193,18 @@ class MetaCommand extends Command
             // ignore aliases as they're meant to be resolved elsewhere
             if (in_array($class, $aliases, true)) {
                 return;
+            }
+
+            // Don't throw when class existence is being checked via class_exists(),
+            // interface_exists(), trait_exists(), or enum_exists(). These functions
+            // expect the autoloader to return gracefully when the class doesn't exist.
+            // Throwing here would break libraries that use class_exists() to check for
+            // optional dependencies (e.g. Doctrine ORM checking for removed classes).
+            $existsFunctions = ['class_exists', 'interface_exists', 'trait_exists', 'enum_exists'];
+            foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3) as $frame) {
+                if (isset($frame['function']) && in_array($frame['function'], $existsFunctions, true)) {
+                    return;
+                }
             }
 
             throw new \ReflectionException("Class '$class' not found.");

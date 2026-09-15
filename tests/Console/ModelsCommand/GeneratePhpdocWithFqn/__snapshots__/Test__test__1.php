@@ -15,8 +15,6 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 
 /**
- * 
- *
  * @property int $id
  * @property string|null $char_nullable
  * @property CastType $char_not_nullable
@@ -52,8 +50,8 @@ use Illuminate\Support\Carbon;
  * @property float $float_not_nullable
  * @property float|null $double_nullable
  * @property float $double_not_nullable
- * @property string|null $decimal_nullable
- * @property string $decimal_not_nullable
+ * @property numeric|null $decimal_nullable
+ * @property numeric $decimal_not_nullable
  * @property int|null $boolean_nullable
  * @property int $boolean_not_nullable
  * @property string|null $enum_nullable
@@ -90,6 +88,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Post> $posts
  * @property-read int|null $posts_count
+ * @property-read bool|null $posts_exists
  * @method static EloquentBuilder<static>|Post newModelQuery()
  * @method static EloquentBuilder<static>|Post newQuery()
  * @method static EloquentBuilder<static>|Post null(string $unusedParam)
@@ -166,7 +165,7 @@ use Illuminate\Support\Carbon;
  * @method static EloquentBuilder<static>|Post whereUuidNullable($value)
  * @method static EloquentBuilder<static>|Post whereYearNotNullable($value)
  * @method static EloquentBuilder<static>|Post whereYearNullable($value)
- * @method static EloquentBuilder<static>|Post withTrashed()
+ * @method static EloquentBuilder<static>|Post withTrashed(bool $withTrashed = true)
  * @method static EloquentBuilder<static>|Post withoutTrashed()
  * @mixin Eloquent
  */

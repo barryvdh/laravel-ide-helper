@@ -14,6 +14,7 @@ class Test extends AbstractModelsCommand
         parent::getEnvironmentSetUp($app);
 
         $app['config']->set('ide-helper.write_model_relation_count_properties', false);
+        $app['config']->set('ide-helper.write_model_relation_exists_properties', false);
     }
 
     public function test(): void

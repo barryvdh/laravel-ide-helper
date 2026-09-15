@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * 
- *
  * @property int $id
  * @property string $both_same_name I'm a getter
  * @property string $both_without_getter_comment
@@ -23,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read string $not_comment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationHasMany HasMany relations.
  * @property-read int|null $relation_has_many_count
+ * @property-read bool|null $relation_has_many_exists
  * @property-read Simple|null $relationHasOne Others relations.
  * @property-read Model|\Eloquent $relationMorphTo MorphTo relations.
  * @property-write mixed $first_name Set the user's first name.

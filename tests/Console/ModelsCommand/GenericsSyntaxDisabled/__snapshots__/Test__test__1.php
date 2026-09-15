@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * 
- *
  * @property int $id
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $regularBelongsToMany
  * @property-read int|null $regular_belongs_to_many_count
+ * @property-read bool|null $regular_belongs_to_many_exists
  * @property-read \Illuminate\Database\Eloquent\Collection|Simple[] $regularHasMany
  * @property-read int|null $regular_has_many_count
+ * @property-read bool|null $regular_has_many_exists
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple query()

@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -114,6 +115,7 @@ class ModelsCommand extends Command
 
     protected $write_model_magic_where;
     protected $write_model_relation_count_properties;
+    protected $write_model_relation_exists_properties;
     protected $properties = [];
     protected $methods = [];
     protected $write = false;
@@ -122,6 +124,18 @@ class ModelsCommand extends Command
     protected $reset;
     protected $phpstorm_noinspections;
     protected $write_model_external_builder_methods;
+    /**
+     * @var array<string, \SplFileObject>
+     */
+    protected $fileCache = [];
+    /**
+     * @var array<string, Context>
+     */
+    protected $contextCache = [];
+    /**
+     * @var array<string, array<int, string>>
+     */
+    protected $localTypeAliasCache = [];
     /**
      * @var array<string, true>
      */
@@ -173,6 +187,8 @@ class ModelsCommand extends Command
         $this->write_model_external_builder_methods = $this->laravel['config']->get('ide-helper.write_model_external_builder_methods', true);
         $this->write_model_relation_count_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
+        $this->write_model_relation_exists_properties =
+            $this->laravel['config']->get('ide-helper.write_model_relation_exists_properties', false);
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
@@ -410,9 +426,6 @@ class ModelsCommand extends Command
             $params = [];
 
             switch ($type) {
-                case 'encrypted':
-                    $realType = 'mixed';
-                    break;
                 case 'boolean':
                 case 'bool':
                     $realType = 'bool';
@@ -420,6 +433,7 @@ class ModelsCommand extends Command
                 case 'decimal':
                     $realType = 'numeric';
                     break;
+                case 'encrypted':
                 case 'string':
                 case 'hashed':
                     $realType = 'string';
@@ -475,7 +489,11 @@ class ModelsCommand extends Command
             }
 
             if (Str::startsWith($type, AsCollection::class)) {
-                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?? '\Illuminate\Support\Collection';
+                $realType = $this->getTypeInModel($model, $params[0] ?? null) ?: '\Illuminate\Support\Collection';
+                $relatedModel = $this->getTypeInModel($model, $params[1] ?? null);
+                if ($relatedModel) {
+                    $realType = $this->getCollectionTypeHint($realType, $relatedModel);
+                }
             }
 
             if (Str::startsWith($type, AsEnumCollection::class)) {
@@ -521,9 +539,25 @@ class ModelsCommand extends Command
         }
 
         if ($isNullable) {
-            $type .= '|null';
+            $type = $this->wrapIntersectionType($type) . '|null';
         } else {
             $type = str_replace($nullString, '', $type);
+        }
+
+        return $type;
+    }
+
+    /**
+     * Wraps a bare intersection type in parentheses for correct DNF syntax.
+     *
+     * For example, `A&B` becomes `(A&B)` so that adding `|null` produces
+     * `(A&B)|null` instead of the ambiguous `A&B|null`.
+     * Types that are already parenthesized or contain union types are returned as-is.
+     */
+    protected function wrapIntersectionType(string $type): string
+    {
+        if (str_contains($type, '&') && !str_contains($type, '|') && $type[0] !== '(') {
+            return '(' . $type . ')';
         }
 
         return $type;
@@ -578,6 +612,8 @@ class ModelsCommand extends Command
 
                     'float', 'real', 'float4',
                     'double', 'float8' => 'float',
+
+                    'decimal', 'numeric' => 'numeric',
 
                     default => 'string',
                 };
@@ -680,7 +716,7 @@ class ModelsCommand extends Command
                         //Remove the first ($query) argument
                         array_shift($args);
                         $builder = $this->getClassNameInDestinationFile(
-                            $reflection->getDeclaringClass(),
+                            new ReflectionClass($model),
                             get_class($model->newModelQuery())
                         );
                         $modelName = $this->getClassNameInDestinationFile(
@@ -689,13 +725,16 @@ class ModelsCommand extends Command
                         );
                         $this->setMethod($name, $builder . '<static>|' . $modelName, $args, $comment);
                     }
-                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+                } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])
+                ) {
+                    if ($this->laravel['config']->get('ide-helper.write_query_methods', true)) {
+                        $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
 
-                    $this->setMethod(
-                        $method,
-                        $builder . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model))
-                    );
+                        $this->setMethod(
+                            $method,
+                            $builder . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model))
+                        );
+                    }
 
                     if ($this->write_model_external_builder_methods) {
                         $this->writeModelExternalBuilderMethods($model);
@@ -714,14 +753,19 @@ class ModelsCommand extends Command
                         $type = (string)$this->getReturnTypeFromDocBlock($reflection);
                     }
 
-                    $file = new \SplFileObject($reflection->getFileName());
+                    $fileName = $reflection->getFileName();
+                    if (!isset($this->fileCache[$fileName])) {
+                        $this->fileCache[$fileName] = new \SplFileObject($fileName);
+                    }
+                    $file = $this->fileCache[$fileName];
                     $file->seek($reflection->getStartLine() - 1);
 
-                    $code = '';
+                    $lines = [];
                     while ($file->key() < $reflection->getEndLine()) {
-                        $code .= $file->current();
+                        $lines[] = $file->current();
                         $file->next();
                     }
+                    $code = implode('', $lines);
                     $code = trim(preg_replace('/\s\s+/', '', $code));
                     $begin = strpos($code, 'function(');
                     $code = substr($code, $begin, strrpos($code, '}') - $begin + 1);
@@ -818,6 +862,15 @@ class ModelsCommand extends Command
                                             // What kind of comments should be added to the relation count here?
                                         );
                                     }
+                                    if ($this->write_model_relation_exists_properties) {
+                                        $this->setProperty(
+                                            Str::snake($method) . '_exists',
+                                            'bool|null',
+                                            true,
+                                            false
+                                            // What kind of comments should be added to the relation count here?
+                                        );
+                                    }
                                 } elseif (
                                     $relationReturnType === 'morphTo' ||
                                     (
@@ -873,7 +926,6 @@ class ModelsCommand extends Command
 
         if (in_array($relation, ['hasOne', 'hasOneThrough', 'morphOne'], true)) {
             $defaultProp = $reflectionObj->getProperty('withDefault');
-            $defaultProp->setAccessible(true);
 
             return !$defaultProp->getValue($relationObj);
         }
@@ -883,7 +935,6 @@ class ModelsCommand extends Command
         }
 
         $fkProp = $reflectionObj->getProperty('foreignKey');
-        $fkProp->setAccessible(true);
 
         $enforceNullableRelation = $this->laravel['config']->get('ide-helper.enforce_nullable_relationships', true);
 
@@ -897,7 +948,71 @@ class ModelsCommand extends Command
             }
         }
 
+        if (
+            $this->relatedModelUsesSoftDeletes($relationObj)
+            && !$this->relationIncludesNonTrashedParents($relationObj)
+        ) {
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Check whether the relation explicitly opts into returning non-soft-deleted parents
+     * via ->withTrashed(), in which case the SoftDeletes-based nullability no longer applies.
+     *
+     * Returns false for ->onlyTrashed() and ->withoutTrashed(), which still leave the
+     * relation potentially empty depending on the parent's soft-delete state.
+     *
+     * @param Relation $relationObj
+     *
+     * @return bool
+     */
+    protected function relationIncludesNonTrashedParents(Relation $relationObj): bool
+    {
+        $query = $relationObj->getQuery();
+
+        if (!in_array(SoftDeletingScope::class, $query->removedScopes(), true)) {
+            return false;
+        }
+
+        $relatedModel = $relationObj->getRelated();
+
+        if (!method_exists($relatedModel, 'getQualifiedDeletedAtColumn')) {
+            return true;
+        }
+
+        $deletedAtColumn = $relatedModel->getQualifiedDeletedAtColumn();
+
+        foreach ($query->getQuery()->wheres ?? [] as $where) {
+            if (
+                ($where['column'] ?? null) === $deletedAtColumn
+                && in_array($where['type'] ?? null, ['Null', 'NotNull'], true)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if the related model uses the SoftDeletes trait
+     *
+     * @param Relation $relationObj
+     *
+     * @return bool
+     */
+    protected function relatedModelUsesSoftDeletes(Relation $relationObj): bool
+    {
+        if (!$this->laravel['config']->get('ide-helper.soft_deletes_force_nullable', true)) {
+            return false;
+        }
+
+        $relatedModel = $relationObj->getRelated();
+
+        return in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', class_uses_recursive($relatedModel));
     }
 
     /**
@@ -916,7 +1031,6 @@ class ModelsCommand extends Command
         }
 
         $fkProp = $reflectionObj->getProperty('foreignKey');
-        $fkProp->setAccessible(true);
 
         foreach (Arr::wrap($fkProp->getValue($relationObj)) as $foreignKey) {
             if (isset($this->nullableColumns[$foreignKey])) {
@@ -947,7 +1061,7 @@ class ModelsCommand extends Command
         if ($type !== null) {
             $newType = $this->getTypeOverride($type);
             if ($nullable) {
-                $newType .= '|null';
+                $newType = $this->wrapIntersectionType($newType) . '|null';
             }
             $this->properties[$name]['type'] = $newType;
         }
@@ -1098,6 +1212,7 @@ class ModelsCommand extends Command
 
         $serializer = new DocBlockSerializer();
         $docComment = $serializer->getDocComment($phpdoc);
+        $mixinClassName = null;
 
         if ($this->write_mixin) {
             $phpdocMixin = new DocBlock($reflection, new Context($namespace));
@@ -1134,6 +1249,14 @@ class ModelsCommand extends Command
                 $replace = "{$modelDocComment}\n";
                 $pos = strpos($contents, "final class {$classname}") ?: strpos($contents, "class {$classname}");
                 if ($pos !== false) {
+                    // If PHP 8 attributes (e.g. #[ObservedBy(...)]) precede the class
+                    // declaration, insert the docblock before the first attribute so that
+                    // the resulting order is: docblock → attributes → class.
+                    $before = substr($contents, 0, $pos);
+                    if (preg_match('/((?:#\[.+?\]\s*)+)$/s', $before, $matches)) {
+                        $pos -= strlen($matches[1]);
+                        $replace = "{$modelDocComment}\n";
+                    }
                     $contents = substr_replace($contents, $replace, $pos, 0);
                 }
             }
@@ -1239,13 +1362,18 @@ class ModelsCommand extends Command
         }
     }
 
+    protected ?array $cachedRelationTypes = null;
+    protected ?array $cachedRelationReturnTypes = null;
+
     /**
      * Returns the available relation types
      */
     protected function getRelationTypes(): array
     {
-        $configuredRelations = $this->laravel['config']->get('ide-helper.additional_relation_types', []);
-        return array_merge(self::RELATION_TYPES, $configuredRelations);
+        return $this->cachedRelationTypes ??= array_merge(
+            self::RELATION_TYPES,
+            $this->laravel['config']->get('ide-helper.additional_relation_types', [])
+        );
     }
 
     /**
@@ -1253,7 +1381,7 @@ class ModelsCommand extends Command
      */
     protected function getRelationReturnTypes(): array
     {
-        return $this->laravel['config']->get('ide-helper.additional_relation_return_types', []);
+        return $this->cachedRelationReturnTypes ??= $this->laravel['config']->get('ide-helper.additional_relation_return_types', []);
     }
 
     /**
@@ -1269,9 +1397,6 @@ class ModelsCommand extends Command
      */
     protected function getAttributeTypes(Model $model, \ReflectionMethod $reflectionMethod): Collection
     {
-        // Private/protected ReflectionMethods require setAccessible prior to PHP 8.1
-        $reflectionMethod->setAccessible(true);
-
         /** @var Attribute $attribute */
         $attribute = $reflectionMethod->invoke($model);
 
@@ -1331,11 +1456,7 @@ class ModelsCommand extends Command
      */
     protected function getCommentFromDocBlock(\ReflectionMethod $reflection)
     {
-        $phpDocContext = (new ContextFactory())->createFromReflector($reflection);
-        $context = new Context(
-            $phpDocContext->getNamespace(),
-            $phpDocContext->getNamespaceAliases()
-        );
+        $context = $this->getDocBlockContext($reflection);
         $comment = '';
         $phpdoc = new DocBlock($reflection, $context);
 
@@ -1356,11 +1477,7 @@ class ModelsCommand extends Command
      */
     protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection, ?\Reflector $reflectorForContext = null)
     {
-        $phpDocContext = (new ContextFactory())->createFromReflector($reflectorForContext ?? $reflection);
-        $context = new Context(
-            $phpDocContext->getNamespace(),
-            $phpDocContext->getNamespaceAliases()
-        );
+        $context = $this->getDocBlockContext($reflectorForContext ?? $reflection);
         $type = null;
         $phpdoc = new DocBlock($reflection, $context);
 
@@ -1372,10 +1489,78 @@ class ModelsCommand extends Command
                 return $typeAlias;
             }
 
+            $localTypeAlias = strtok(trim($returnTag->getContent()), " \t\n\r");
+
+            if ($localTypeAlias !== false
+                && in_array($localTypeAlias, $this->getLocalTypeAliases($reflection->getDeclaringClass()), true)
+            ) {
+                return $localTypeAlias;
+            }
+
             $type = $phpdoc->getTagsByName('return')[0]->getType();
         }
 
         return $type;
+    }
+
+    /**
+     * Get the type aliases declared or imported on the given class and its parents.
+     *
+     * These are local names rather than classes, so they must be left as-is
+     * instead of being resolved against the class namespace.
+     *
+     * @return array<int, string>
+     */
+    protected function getLocalTypeAliases(ReflectionClass $class): array
+    {
+        $key = $class->getName();
+
+        if (isset($this->localTypeAliasCache[$key])) {
+            return $this->localTypeAliasCache[$key];
+        }
+
+        $aliases = [];
+
+        for ($current = $class; $current !== false; $current = $current->getParentClass()) {
+            if (($docComment = $current->getDocComment()) === false) {
+                continue;
+            }
+
+            preg_match_all(
+                '/@(?:phpstan|psalm)-(?:import-)?type\s+([A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*)/',
+                $docComment,
+                $matches
+            );
+
+            $aliases = array_merge($aliases, $matches[1]);
+        }
+
+        return $this->localTypeAliasCache[$key] = array_values(array_unique($aliases));
+    }
+
+    protected function getDocBlockContext(\Reflector $reflector): Context
+    {
+        if ($reflector instanceof \ReflectionMethod) {
+            $key = $reflector->getDeclaringClass()->getName();
+        } elseif ($reflector instanceof ReflectionClass) {
+            $key = $reflector->getName();
+        } else {
+            $phpDocContext = (new ContextFactory())->createFromReflector($reflector);
+            return new Context(
+                $phpDocContext->getNamespace(),
+                $phpDocContext->getNamespaceAliases()
+            );
+        }
+
+        if (!isset($this->contextCache[$key])) {
+            $phpDocContext = (new ContextFactory())->createFromReflector($reflector);
+            $this->contextCache[$key] = new Context(
+                $phpDocContext->getNamespace(),
+                $phpDocContext->getNamespaceAliases()
+            );
+        }
+
+        return $this->contextCache[$key];
     }
 
     protected function getReturnTypeFromReflection(\ReflectionMethod $reflection): ?string
@@ -1407,7 +1592,7 @@ class ModelsCommand extends Command
         if (in_array('Illuminate\\Database\\Eloquent\\SoftDeletes', $traits)) {
             $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
             $builder = $this->getClassNameInDestinationFile($model, \Illuminate\Database\Eloquent\Builder::class);
-            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, []);
+            $this->setMethod('withTrashed', $builder . '<static>|' . $modelName, ['bool $withTrashed = true']);
             $this->setMethod('withoutTrashed', $builder . '<static>|' . $modelName, []);
             $this->setMethod('onlyTrashed', $builder . '<static>|' . $modelName, []);
         }
@@ -1583,9 +1768,10 @@ class ModelsCommand extends Command
      */
     protected function getUsedClassNames(ReflectionClass $reflection): array
     {
+        $context = $this->getDocBlockContext($reflection);
         $namespaceAliases = array_flip(array_map(function ($alias) {
             return ltrim($alias, '\\');
-        }, (new ContextFactory())->createFromReflector($reflection)->getNamespaceAliases()));
+        }, $context->getNamespaceAliases()));
         $namespaceAliases[$reflection->getName()] = $reflection->getShortName();
 
         return $namespaceAliases;
@@ -1629,7 +1815,8 @@ class ModelsCommand extends Command
             $type = implode('|', $types);
 
             if ($paramType->allowsNull()) {
-                if (count($types) == 1) {
+                // Use ?Type syntax only for single named types, not for intersection types
+                if (count($types) == 1 && !str_starts_with($type, '(')) {
                     $type = '?' . $type;
                 } else {
                     $type .= '|null';
@@ -1647,7 +1834,7 @@ class ModelsCommand extends Command
 
         preg_match(
             '/@param ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
-            $docComment ?? '',
+            $docComment,
             $matches
         );
         $type = $matches[1] ?? '';
@@ -1702,22 +1889,51 @@ class ModelsCommand extends Command
         return $type;
     }
 
-    protected function extractReflectionTypes(ReflectionType $reflection_type)
+    protected function extractReflectionTypes(ReflectionType $reflection_type): array
     {
         if ($reflection_type instanceof ReflectionNamedType) {
-            $types[] = $this->getReflectionNamedType($reflection_type);
-        } else {
-            $types = [];
-            foreach ($reflection_type->getTypes() as $named_type) {
-                if ($named_type->getName() === 'null') {
+            return [$this->getReflectionNamedType($reflection_type)];
+        }
+
+        if ($reflection_type instanceof \ReflectionIntersectionType) {
+            return [$this->formatIntersectionType($reflection_type)];
+        }
+
+        if ($reflection_type instanceof \ReflectionUnionType) {
+            return $this->extractUnionTypes($reflection_type);
+        }
+
+        // Unknown type - return empty array as fallback
+        return [];
+    }
+
+    protected function extractUnionTypes(\ReflectionUnionType $union_type): array
+    {
+        $types = [];
+
+        foreach ($union_type->getTypes() as $inner_type) {
+            if ($inner_type instanceof ReflectionNamedType) {
+                if ($inner_type->getName() === 'null') {
                     continue;
                 }
-
-                $types[] = $this->getReflectionNamedType($named_type);
+                $types[] = $this->getReflectionNamedType($inner_type);
+            } elseif ($inner_type instanceof \ReflectionIntersectionType) {
+                $types[] = $this->formatIntersectionType($inner_type);
             }
+            // ReflectionUnionType cannot be nested per PHP's DNF rules
         }
 
         return $types;
+    }
+
+    protected function formatIntersectionType(\ReflectionIntersectionType $intersection_type): string
+    {
+        $parts = [];
+        foreach ($intersection_type->getTypes() as $type) {
+            $parts[] = $this->getReflectionNamedType($type);
+        }
+
+        return '(' . implode('&', $parts) . ')';
     }
 
     protected function getReflectionNamedType(ReflectionNamedType $paramType): string

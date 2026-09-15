@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 
 /**
- * 
- *
  * @property-read string|int|null $foo
  * @property-read \Illuminate\Database\Eloquent\Collection<int, UnionTypeModel> $withUnionTypeReturn
  * @property-read int|null $with_union_type_return_count
+ * @property-read bool|null $with_union_type_return_exists
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UnionTypeModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UnionTypeModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UnionTypeModel query()

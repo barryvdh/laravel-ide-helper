@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * 
- *
  * @property string $relation_morph_to_type
  * @property int $relation_morph_to_id
  * @property string|null $nullable_relation_morph_to_type

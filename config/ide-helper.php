@@ -62,17 +62,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Factory builders
+    | Write model query methods
     |--------------------------------------------------------------------------
     |
-    | Set to true to generate factory generators for better factory()
-    | method auto-completion.
-    |
-    | Deprecated for Laravel 8 or latest.
+    | Set to false to disable generated docs for the 'query()', 'newQuery()' and 'newModelQuery()' methods.
     |
     */
 
-    'include_factory_builders' => false,
+    'write_query_methods' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -98,14 +95,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Write model relation count properties
+    | Write model relation count and exists properties
     |--------------------------------------------------------------------------
     |
-    | Set to false to disable writing of relation count properties to model DocBlocks.
+    | Set to false to disable writing of relation count and exists properties
+    | to model DocBlocks.
     |
     */
 
     'write_model_relation_count_properties' => true,
+    'write_model_relation_exists_properties' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -215,29 +214,29 @@ return [
     ],
 
     /*
-     |--------------------------------------------------------------------------
-     | Support for camel cased models
-     |--------------------------------------------------------------------------
-     |
-     | There are some Laravel packages (such as Eloquence) that allow for accessing
-     | Eloquent model properties via camel case, instead of snake case.
-     |
-     | Enabling this option will support these packages by saving all model
-     | properties as camel case, instead of snake case.
-     |
-     | For example, normally you would see this:
-     |
-     |  * @property \Illuminate\Support\Carbon $created_at
-     |  * @property \Illuminate\Support\Carbon $updated_at
-     |
-     | With this enabled, the properties will be this:
-     |
-     |  * @property \Illuminate\Support\Carbon $createdAt
-     |  * @property \Illuminate\Support\Carbon $updatedAt
-     |
-     | Note, it is currently an all-or-nothing option.
-     |
-     */
+    |--------------------------------------------------------------------------
+    | Support for camel cased models
+    |--------------------------------------------------------------------------
+    |
+    | There are some Laravel packages (such as Eloquence) that allow for accessing
+    | Eloquent model properties via camel case, instead of snake case.
+    |
+    | Enabling this option will support these packages by saving all model
+    | properties as camel case, instead of snake case.
+    |
+    | For example, normally you would see this:
+    |
+    |  * @property \Illuminate\Support\Carbon $created_at
+    |  * @property \Illuminate\Support\Carbon $updated_at
+    |
+    | With this enabled, the properties will be this:
+    |
+    |  * @property \Illuminate\Support\Carbon $createdAt
+    |  * @property \Illuminate\Support\Carbon $updatedAt
+    |
+    | Note, it is currently an all-or-nothing option.
+    |
+    */
     'model_camel_case_properties' => false,
 
     /*
@@ -349,6 +348,29 @@ return [
     */
 
     'enforce_nullable_relationships' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Make soft deletable relations nullable
+    |--------------------------------------------------------------------------
+    |
+    | When set to true (default), relationships to models using SoftDeletes trait
+    | will be marked as nullable. This is because soft-deleted records are excluded
+    | from queries by default, meaning even non-nullable foreign keys can return
+    | null when the related model is soft-deleted.
+    |
+    | Default: true
+    | A relationship to a soft-deletable model will include |null in the type:
+    |  * @property-read Team|null $team
+    |
+    | Option: false
+    | A relationship to a soft-deletable model will NOT include |null (unless
+    | nullable for other reasons such as nullable foreign key column):
+    |  * @property-read Team $team
+    |
+    */
+
+    'soft_deletes_force_nullable' => true,
 
     /*
     |--------------------------------------------------------------------------

@@ -55,6 +55,11 @@ abstract class TestCase extends BaseTestCase
         $this->assertMatchesSnapshot($actualContent, new SnapshotTxtDriver());
     }
 
+    protected function assertMatchesMockedSnapshot()
+    {
+        $this->assertMatchesSnapshot($this->mockFilesystemOutput, new SnapshotPhpDriver());
+    }
+
     protected function mockFilesystem()
     {
         $mockFilesystem = Mockery::mock(Filesystem::class)->makePartial();
@@ -66,6 +71,7 @@ abstract class TestCase extends BaseTestCase
                 Mockery::any()
             )
             ->andReturnUsing(function ($path, $contents) {
+                $contents = str_replace(["\r\n", "\r"], "\n", $contents);
                 $this->mockFilesystemOutput .= $contents;
 
                 return strlen($contents);

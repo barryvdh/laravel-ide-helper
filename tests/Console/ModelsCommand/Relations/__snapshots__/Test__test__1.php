@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
- *
  * @property int $id
  * @property int $not_null_column_with_foreign_key_constraint
  * @property int $not_null_column_with_no_foreign_key_constraint
@@ -61,8 +59,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
- *
  * @property int $id
  * @property int $not_null_column_with_foreign_key_constraint
  * @property int $not_null_column_with_no_foreign_key_constraint
@@ -132,33 +128,39 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
- * 
- *
  * @property int $id
  * @property-read Simple|null $relationBelongsTo
  * @property-read AnotherModel|null $relationBelongsToInAnotherNamespace
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToMany
  * @property-read int|null $relation_belongs_to_many_count
+ * @property-read bool|null $relation_belongs_to_many_exists
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToManyWithSub
  * @property-read int|null $relation_belongs_to_many_with_sub_count
+ * @property-read bool|null $relation_belongs_to_many_with_sub_exists
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationBelongsToManyWithSubAnother
  * @property-read int|null $relation_belongs_to_many_with_sub_another_count
+ * @property-read bool|null $relation_belongs_to_many_with_sub_another_exists
  * @property-read AnotherModel|null $relationBelongsToSameNameAsColumn
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationHasMany
  * @property-read int|null $relation_has_many_count
+ * @property-read bool|null $relation_has_many_exists
  * @property-read Simple|null $relationHasOne
  * @property-read Simple $relationHasOneWithDefault
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationMorphMany
  * @property-read int|null $relation_morph_many_count
+ * @property-read bool|null $relation_morph_many_exists
  * @property-read Simple|null $relationMorphOne
  * @property-read Model|\Eloquent $relationMorphTo
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
+ * @property-read bool|null $relation_morphed_by_many_exists
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleRelationType
  * @property-read int|null $relation_sample_relation_type_count
+ * @property-read bool|null $relation_sample_relation_type_exists
  * @property-read Model|\Eloquent $relationSampleToAnyMorphedRelationType
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationSampleToAnyRelationType
  * @property-read int|null $relation_sample_to_any_relation_type_count
+ * @property-read bool|null $relation_sample_to_any_relation_type_exists
  * @property-read Simple $relationSampleToBadlyNamedNotManyRelation
  * @property-read Simple $relationSampleToManyRelationType
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()

@@ -74,7 +74,7 @@ class Generator
     /**
      * Generate the helper file contents;
      *
-     * @return string;
+     * @return string
      */
     public function generate()
     {
@@ -85,7 +85,6 @@ class Generator
             ->with('real_time_facades', $this->getRealTimeFacades())
             ->with('helpers', $this->detectHelpers())
             ->with('include_fluent', $this->config->get('ide-helper.include_fluent', true))
-            ->with('factories', $this->config->get('ide-helper.include_factory_builders') ? Factories::all() : [])
             ->render();
     }
 

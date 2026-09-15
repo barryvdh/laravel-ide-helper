@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
-use Barryvdh\LaravelIdeHelper\Tests\SnapshotPhpDriver;
 use Barryvdh\LaravelIdeHelper\Tests\TestCase;
 
 abstract class AbstractModelsCommand extends TestCase
@@ -51,10 +50,7 @@ abstract class AbstractModelsCommand extends TestCase
 
         // Don't override integer -> int for tests
         $config->set('ide-helper.type_overrides', []);
-    }
 
-    protected function assertMatchesMockedSnapshot()
-    {
-        $this->assertMatchesSnapshot($this->mockFilesystemOutput, new SnapshotPhpDriver());
+        $config->set('ide-helper.write_model_relation_exists_properties', true);
     }
 }

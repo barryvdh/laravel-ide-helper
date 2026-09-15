@@ -44,7 +44,6 @@ class Method
 
     /**
      * @param \ReflectionMethod|\ReflectionFunctionAbstract $method
-     * @param string $alias
      * @param \ReflectionClass $class
      * @param string|null $methodName
      * @param array $interfaces
@@ -52,7 +51,7 @@ class Method
      * @param array $returnTypeNormalizers
      * @param string[] $templateNames
      */
-    public function __construct($method, $alias, $class, $methodName = null, $interfaces = [], array $classAliases = [], array $returnTypeNormalizers = [], array $templateNames = [])
+    public function __construct($method, $class, $methodName = null, $interfaces = [], array $classAliases = [], array $returnTypeNormalizers = [], array $templateNames = [])
     {
         $this->method = $method;
         $this->interfaces = $interfaces;
@@ -76,6 +75,8 @@ class Method
             $this->normalizeDescription($this->phpdoc);
         } catch (\Exception $e) {
         }
+
+        $this->removePhpDocParamTagsForOptionalParameters();
 
         //Get the parameters, including formatted default values
         $this->getParameters($method);
@@ -178,7 +179,7 @@ class Method
     /**
      * Get the parameters for this method
      *
-     * @param bool $implode Wether to implode the array or not
+     * @param bool $implode Whether to implode the array or not
      * @return string
      */
     public function getParams($implode = true)
@@ -208,7 +209,7 @@ class Method
     /**
      * Get the parameters for this method including default values
      *
-     * @param bool $implode Wether to implode the array or not
+     * @param bool $implode Whether to implode the array or not
      * @return string
      */
     public function getParamsWithDefault($implode = true)
@@ -244,6 +245,50 @@ class Method
                 foreach ($inheritTags as $tag) {
                     $tag->setDocBlock();
                     $phpdoc->appendTag($tag);
+                }
+            }
+        }
+    }
+
+    /**
+     * Remove @param tags for optional reflection parameters so generated stubs match arity
+     * checks in static analysis (optional params still appear in the PHP signature).
+     */
+    protected function removePhpDocParamTagsForOptionalParameters(): void
+    {
+        if (!$this->method instanceof \ReflectionMethod) {
+            return;
+        }
+
+        $declaring = $this->method->getDeclaringClass()->getName();
+        if (
+            $declaring !== \Illuminate\Database\Query\Builder::class
+            && $declaring !== \Illuminate\Database\Eloquent\Builder::class
+        ) {
+            return;
+        }
+
+        foreach ($this->method->getParameters() as $param) {
+            if (!$param->isOptional() || $param->isVariadic()) {
+                continue;
+            }
+            if (!$param->isDefaultValueAvailable()) {
+                continue;
+            }
+
+            $default = $param->getDefaultValue();
+            // Keep @param for null/array defaults (nullable and list defaults stay documented).
+            // Strip only non-null scalars (e.g. $boolean = 'and', $not = false) so tools that
+            // count @param tags do not report false "missing argument" errors on shortened calls.
+            if ($default === null || is_array($default) || !is_scalar($default)) {
+                continue;
+            }
+
+            $varName = '$' . $param->getName();
+            $paramTags = $this->phpdoc->getTagsByName('param');
+            foreach (array_values($paramTags) as $tag) {
+                if ($tag instanceof ParamTag && $tag->getVariableName() === $varName) {
+                    $this->phpdoc->deleteTag($tag);
                 }
             }
         }

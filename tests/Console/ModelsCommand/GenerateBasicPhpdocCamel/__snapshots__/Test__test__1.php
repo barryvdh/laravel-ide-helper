@@ -7,8 +7,6 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GenerateBasicPhp
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property int $id
  * @property string|null $charNullable
  * @property string $charNotNullable
@@ -44,8 +42,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $floatNotNullable
  * @property float|null $doubleNullable
  * @property float $doubleNotNullable
- * @property string|null $decimalNullable
- * @property string $decimalNotNullable
+ * @property numeric|null $decimalNullable
+ * @property numeric $decimalNotNullable
  * @property int|null $booleanNullable
  * @property int $booleanNotNullable
  * @property string|null $enumNullable

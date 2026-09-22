@@ -95,6 +95,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Write model scopes
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable writing of local query scope methods
+    | (scope* methods and methods using the #[Scope] attribute) to model DocBlocks.
+    |
+    */
+
+    'write_model_scopes' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Write Eloquent model mixins
     |--------------------------------------------------------------------------
     |

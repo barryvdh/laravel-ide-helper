@@ -216,6 +216,12 @@ You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relatio
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` and `write_model_relation_exists_properties` to `false`.
 
+#### Local query scopes
+
+Local query scope methods (methods prefixed with `scope`, or using the `#[Scope]` attribute) are documented as `@method` tags on the model, e.g. `scopePopular($query)` becomes `Post::popular()`.
+
+If for some reason it's undesired to have them generated, you can disable this via config `write_model_scopes` and setting it to `false`.
+
 #### Generics annotations
 
 Laravel 9 introduced generics annotations in DocBlocks for collections. PhpStorm 2022.3 and above support the use of generics annotations within `@property` and `@property-read` declarations in DocBlocks, e.g. `Collection<User>` instead of `Collection|User[]`.

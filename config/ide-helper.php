@@ -172,6 +172,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Model connection resolver
+    |--------------------------------------------------------------------------
+    |
+    | A class that resolves/configures the database connection before
+    | ide-helper introspects each model's table columns. This is called
+    | before getPropertiesFromTable() so you can set the correct schema,
+    | search_path, or tenant context.
+    |
+    | The class must implement:
+    | Barryvdh\LaravelIdeHelper\Contracts\ModelConnectionResolverInterface
+    |
+    | Example use case: Stancl Tenancy with PostgreSQL schemas-per-tenant.
+    | Set this to a class that initialises a tenant context before column
+    | introspection, then reverts it after.
+    |
+    */
+
+    'model_connection_resolver' => null,
+    // 'model_connection_resolver' => App\Support\IdeHelper\TenantConnectionResolver::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Extra classes
     |--------------------------------------------------------------------------
     |

@@ -325,7 +325,8 @@ class MetaCommand extends Command
     /**
      * Get the config entries from the configs template, with a base path at the start of a
      * key segment made relative (when enabled), so the keys don't depend on where the app lives.
-     * The relative path uses forward slashes, so the keys are the same on every OS.
+     * The relative path uses forward slashes, so the keys are the same on every OS, and is
+     * '.' for the base path itself ('./' with a trailing separator).
      *
      * @return Collection
      */
@@ -337,12 +338,14 @@ class MetaCommand extends Command
             return $configs;
         }
 
-        $pattern = '/(^|\.)' . preg_quote(rtrim(base_path(), '/\\'), '/') . '[\/\\\\](.*)$/s';
+        $pattern = '/(^|\.)' . preg_quote(rtrim(base_path(), '/\\'), '/') . '([\/\\\\].*)?$/s';
 
         return $configs->map(function ($config) use ($pattern) {
             if (isset($config['name'])) {
                 $config['name'] = preg_replace_callback($pattern, function ($matches) {
-                    return $matches[1] . str_replace('\\', '/', $matches[2]);
+                    $suffix = str_replace('\\', '/', $matches[2] ?? '');
+
+                    return $matches[1] . ($suffix === '' || $suffix === '/' ? '.' . $suffix : substr($suffix, 1));
                 }, $config['name']);
             }
 

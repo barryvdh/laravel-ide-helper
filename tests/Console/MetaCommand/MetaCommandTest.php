@@ -77,13 +77,17 @@ class MetaCommandTest extends TestCase
     {
         $this->mockConfigsTemplate([
             'filesystems.links.' . base_path('public/storage') => storage_path('app/public'),
+            'root.' . base_path() => 'value',
+            'root-slash.' . base_path() . DIRECTORY_SEPARATOR => 'value',
         ]);
 
         $this->artisan('ide-helper:meta');
 
         self::assertStringContainsString("'filesystems.links.public/storage' => 'string',", $this->mockFilesystemOutput);
         self::assertStringContainsString("'filesystems.links.public/storage',", $this->mockFilesystemOutput);
-        self::assertStringNotContainsString(base_path('public/storage'), $this->mockFilesystemOutput);
+        self::assertStringContainsString("'root..' => 'string',", $this->mockFilesystemOutput);
+        self::assertStringContainsString("'root-slash../' => 'string',", $this->mockFilesystemOutput);
+        self::assertStringNotContainsString(base_path(), $this->mockFilesystemOutput);
     }
 
     public function testConfigKeysUseForwardSlashesInRelativeBasePath(): void

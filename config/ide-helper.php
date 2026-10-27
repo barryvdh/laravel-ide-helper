@@ -38,6 +38,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | PhpStorm meta relative config keys
+    |--------------------------------------------------------------------------
+    |
+    | Write config keys that start with the base path (e.g. the absolute path
+    | in 'filesystems.links') relative to it, with forward slashes, so the meta
+    | file is the same on every machine and OS. Set to false to keep the
+    | absolute path in those keys.
+    |
+    */
+
+    'meta_relative_config_keys' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Fluent helpers
     |--------------------------------------------------------------------------
     |

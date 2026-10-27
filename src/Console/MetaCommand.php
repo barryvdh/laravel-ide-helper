@@ -136,7 +136,7 @@ class MetaCommand extends Command
 
         $this->unregisterClassAutoloadExceptions($ourAutoloader);
 
-        $configValues = $this->loadTemplate('configs')->pluck('value', 'name')->map(function ($value, $key) {
+        $configValues = $this->getConfigs()->pluck('value', 'name')->map(function ($value, $key) {
             return gettype($value);
         });
 
@@ -219,7 +219,7 @@ class MetaCommand extends Command
     {
         return [
             'auth' => $this->loadTemplate('auth')->keys()->filter()->toArray(),
-            'configs' => $this->loadTemplate('configs')->pluck('name')->filter()->toArray(),
+            'configs' => $this->getConfigs()->pluck('name')->filter()->toArray(),
             'middleware' => $this->loadTemplate('middleware')->keys()->filter()->toArray(),
             'routes' => $this->loadTemplate('routes')->pluck('name')->filter()->toArray(),
             'views' => $this->loadTemplate('views')->pluck('key')->filter()->map(function ($value) {
@@ -320,6 +320,34 @@ class MetaCommand extends Command
                 'argumentSet' => 'env',
             ],
         ];
+    }
+
+    /**
+     * Get the config entries from the configs template, with a base path at the start of a
+     * key segment made relative (when enabled), so the keys don't depend on where the app lives.
+     * The relative path uses forward slashes, so the keys are the same on every OS.
+     *
+     * @return Collection
+     */
+    protected function getConfigs()
+    {
+        $configs = $this->loadTemplate('configs');
+
+        if (!$this->config->get('ide-helper.meta_relative_config_keys', true)) {
+            return $configs;
+        }
+
+        $pattern = '/(^|\.)' . preg_quote(rtrim(base_path(), '/\\'), '/') . '[\/\\\\](.*)$/s';
+
+        return $configs->map(function ($config) use ($pattern) {
+            if (isset($config['name'])) {
+                $config['name'] = preg_replace_callback($pattern, function ($matches) {
+                    return $matches[1] . str_replace('\\', '/', $matches[2]);
+                }, $config['name']);
+            }
+
+            return $config;
+        });
     }
 
     /**

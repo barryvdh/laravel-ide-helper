@@ -6,11 +6,15 @@ namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\MorphToIntersect
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\AbstractModelsCommand;
+use Illuminate\Support\Facades\Config;
 
 class Test extends AbstractModelsCommand
 {
     public function test(): void
     {
+        // Keep nonNullableAssignee non-nullable: morph keys never have a foreign key constraint
+        Config::set('ide-helper.enforce_nullable_relationships', false);
+
         $command = $this->app->make(ModelsCommand::class);
 
         $tester = $this->runCommand($command, [

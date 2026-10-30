@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read int|null $relation_has_many_count
  * @property-read bool|null $relation_has_many_exists
  * @property-read Simple|null $relationHasOne Others relations.
- * @property-read Model|\Eloquent $relationMorphTo MorphTo relations.
+ * @property-read Model|\Eloquent|null $relationMorphTo MorphTo relations.
  * @property-write mixed $first_name Set the user's first name.
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple active() Scope a query to only include active users.
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Simple newModelQuery()

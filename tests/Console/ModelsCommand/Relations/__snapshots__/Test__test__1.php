@@ -150,7 +150,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read int|null $relation_morph_many_count
  * @property-read bool|null $relation_morph_many_exists
  * @property-read Simple|null $relationMorphOne
- * @property-read Model|\Eloquent $relationMorphTo
+ * @property-read Model|\Eloquent|null $relationMorphTo
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Simple> $relationMorphedByMany
  * @property-read int|null $relation_morphed_by_many_count
  * @property-read bool|null $relation_morphed_by_many_exists

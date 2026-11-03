@@ -637,8 +637,8 @@ class ModelsCommand extends Command
 
                 $this->setMethod(
                     Str::camel('where_' . $name),
-                    $this->getClassNameInDestinationFile($model, $builderClass)
-                    . '<static>|'
+                    $this->getBuilderTypeInDestinationFile($model, $builderClass)
+                    . '|'
                     . $this->getClassNameInDestinationFile($model, get_class($model)),
                     ['$value']
                 );
@@ -715,7 +715,7 @@ class ModelsCommand extends Command
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument
                         array_shift($args);
-                        $builder = $this->getClassNameInDestinationFile(
+                        $builder = $this->getBuilderTypeInDestinationFile(
                             new ReflectionClass($model),
                             get_class($model->newModelQuery())
                         );
@@ -723,16 +723,16 @@ class ModelsCommand extends Command
                             new ReflectionClass($model),
                             get_class($model)
                         );
-                        $this->setMethod($name, $builder . '<static>|' . $modelName, $args, $comment);
+                        $this->setMethod($name, $builder . '|' . $modelName, $args, $comment);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])
                 ) {
                     if ($this->laravel['config']->get('ide-helper.write_query_methods', true)) {
-                        $builder = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+                        $builder = $this->getBuilderTypeInDestinationFile($model, get_class($model->newModelQuery()));
 
                         $this->setMethod(
                             $method,
-                            $builder . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model))
+                            $builder . '|' . $this->getClassNameInDestinationFile($model, get_class($model))
                         );
                     }
 
@@ -1098,8 +1098,28 @@ class ModelsCommand extends Command
     public function getMethodType(Model $model, string $classType)
     {
         $modelName = $this->getClassNameInDestinationFile($model, get_class($model));
-        $builder = $this->getClassNameInDestinationFile($model, $classType);
-        return $builder . '<static>|' . $modelName;
+        $builder = $this->getBuilderTypeInDestinationFile($model, $classType);
+        return $builder . '|' . $modelName;
+    }
+
+    /**
+     * Get the builder type, adding the `<static>` generic only if the builder class declares a template itself.
+     */
+    protected function getBuilderTypeInDestinationFile(object $model, string $builderClass): string
+    {
+        $builder = $this->getClassNameInDestinationFile($model, $builderClass);
+
+        return $this->isGenericClass($builderClass) ? $builder . '<static>' : $builder;
+    }
+
+    protected function isGenericClass(string $className): bool
+    {
+        $className = ltrim($className, '\\');
+
+        return $this->genericClasses[$className] ??= (bool) preg_match(
+            '/@(?:phpstan-|psalm-)?template(?:-covariant|-contravariant)?\s/',
+            (new ReflectionClass($className))->getDocComment() ?: ''
+        );
     }
 
     /**
@@ -1362,6 +1382,8 @@ class ModelsCommand extends Command
         }
     }
 
+    /** @var array<class-string, bool> */
+    protected array $genericClasses = [];
     protected ?array $cachedRelationTypes = null;
     protected ?array $cachedRelationReturnTypes = null;
 
@@ -1793,7 +1815,7 @@ class ModelsCommand extends Command
 
         // after we have retrieved the builder's methods
         // get the class of the builder based on the FQCN option
-        $builderClassBasedOnFQCNOption = $this->getClassNameInDestinationFile($model, get_class($model->newModelQuery()));
+        $builderClassBasedOnFQCNOption = $this->getBuilderTypeInDestinationFile($model, get_class($model->newModelQuery()));
 
         foreach ($newMethodsFromNewBuilder as $builderMethod) {
             $reflection = new \ReflectionMethod($fullBuilderClass, $builderMethod);
@@ -1801,7 +1823,7 @@ class ModelsCommand extends Command
 
             $this->setMethod(
                 $builderMethod,
-                $builderClassBasedOnFQCNOption . '<static>|' . $this->getClassNameInDestinationFile($model, get_class($model)),
+                $builderClassBasedOnFQCNOption . '|' . $this->getClassNameInDestinationFile($model, get_class($model)),
                 $args
             );
         }

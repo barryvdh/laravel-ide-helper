@@ -1038,7 +1038,8 @@ class ModelsCommand extends Command
             }
         }
 
-        return false;
+        // A polymorphic key can never have a foreign key constraint, so the related model may not exist
+        return $this->laravel['config']->get('ide-helper.enforce_nullable_relationships', true);
     }
 
     /**

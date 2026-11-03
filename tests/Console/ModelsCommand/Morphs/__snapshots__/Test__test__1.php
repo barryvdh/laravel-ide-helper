@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $nullable_relation_morph_to_type
  * @property int|null $nullable_relation_morph_to_id
  * @property-read Model|\Eloquent|null $nullableRelationMorphTo
- * @property-read Model|\Eloquent $relationMorphTo
+ * @property-read Model|\Eloquent|null $relationMorphTo
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Morphs query()

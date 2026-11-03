@@ -322,6 +322,9 @@ return [
     | However, in cases where the application logic ensures the presence of related
     | records it may be desirable to set this option to false to avoid unwanted null warnings.
     |
+    | Polymorphic (morphTo) keys never have a foreign key constraint, so they follow
+    | the same rule.
+    |
     | Default: true
     | A not null column with no foreign key constraint will have a "nullable" relationship.
     |  * @property int $not_null_column_with_no_foreign_key_constraint

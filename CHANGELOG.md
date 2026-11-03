@@ -1,5 +1,28 @@
 # Changelog
 
+## v3.8.0 - 2026-11-03
+
+### What's Changed
+
+* Skip incrementEach and decrementEach for Eloquent helper by @Dayoebe in https://github.com/barryvdh/laravel-ide-helper/pull/1782
+* test: add regression test for unique() column type resolution by @YoussefMansour9 in https://github.com/barryvdh/laravel-ide-helper/pull/1787
+* fix: Don't force `|null` on BelongsTo relations using `->withTrashed()` by @Khartir in https://github.com/barryvdh/laravel-ide-helper/pull/1783
+* fix: drop redundant @param tags for optional scalar defaults on query builders by @stephenjason89 in https://github.com/barryvdh/laravel-ide-helper/pull/1785
+* Keep imported phpstan/psalm types unqualified by @hugomyb in https://github.com/barryvdh/laravel-ide-helper/pull/1797
+* fix: resolve scope builder class against the model being documented by @lazerg in https://github.com/barryvdh/laravel-ide-helper/pull/1796
+* Add phpstan files to export-ignore in .gitattributes by @erikn69 in https://github.com/barryvdh/laravel-ide-helper/pull/1799
+
+### New Contributors
+
+* @Dayoebe made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1782
+* @YoussefMansour9 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1787
+* @Khartir made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1783
+* @stephenjason89 made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1785
+* @hugomyb made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1797
+* @lazerg made their first contribution in https://github.com/barryvdh/laravel-ide-helper/pull/1796
+
+**Full Changelog**: https://github.com/barryvdh/laravel-ide-helper/compare/v3.7.0...v3.8.0
+
 ## v3.7.0 - 2026-03-17
 
 ### What's Changed

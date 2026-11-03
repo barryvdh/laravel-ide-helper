@@ -115,6 +115,8 @@ Str::macro('concat', function(string $str1, string $str2) : string {
 });
 ```
 
+Macros are also detected when the `Macroable` trait is inherited from a parent class.
+
 ### Automatic PHPDocs for models
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate

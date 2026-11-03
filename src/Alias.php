@@ -436,7 +436,8 @@ class Alias
 
             // Check if the class is macroable
             // (Eloquent\Builder is also macroable but doesn't use Macroable trait)
-            if ($class === EloquentBuilder::class || in_array(Macroable::class, $reflection->getTraitNames())) {
+            $traits = class_uses_recursive($class);
+            if ($class === EloquentBuilder::class || isset($traits[Macroable::class])) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {

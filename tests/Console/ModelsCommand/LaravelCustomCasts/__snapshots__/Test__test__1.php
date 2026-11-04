@@ -21,6 +21,7 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Cas
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\InboundAttributeCaster;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\SelfCastingCasterWithStaticDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\SelfCastingCasterWithThisDocblockReturn;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\SpecificCastableData;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -38,6 +39,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property ExtendedSelfCastingCasterWithStaticDocblockReturn $extended_casted_property_with_static_return_docblock
  * @property ExtendedSelfCastingCasterWithThisDocblockReturn $extended_casted_property_with_this_return_docblock
  * @property SelfCastingCasterWithStaticDocblockReturn $casted_property_with_static_return_docblock_and_param
+ * @property SpecificCastableData|null $casted_property_with_generic_castable
  * @property CustomCasterWithStaticReturnType $casted_property_with_static_return_type
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_castable
  * @property \Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\CastedProperty $casted_property_with_anonymous_cast
@@ -47,6 +49,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomCast newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomCast newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomCast query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomCast whereCastedPropertyWithGenericCastable($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomCast whereCastedPropertyWithParam($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomCast whereCastedPropertyWithReturnDocblock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomCast whereCastedPropertyWithReturnDocblockFqn($value)
@@ -86,5 +89,6 @@ class CustomCast extends Model
         'casted_property_with_static_return_docblock_and_param' => SelfCastingCasterWithStaticDocblockReturn::class . ':param',
         'cast_without_property' => CustomCasterWithReturnType::class,
         'cast_inbound_attribute' => InboundAttributeCaster::class,
+        'casted_property_with_generic_castable' => SpecificCastableData::class,
     ];
 }

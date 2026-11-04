@@ -21,6 +21,7 @@ use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Cas
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\InboundAttributeCaster;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\SelfCastingCasterWithStaticDocblockReturn;
 use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\SelfCastingCasterWithThisDocblockReturn;
+use Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\LaravelCustomCasts\Casts\SpecificCastableData;
 use Illuminate\Database\Eloquent\Model;
 
 class CustomCast extends Model
@@ -46,5 +47,6 @@ class CustomCast extends Model
         'casted_property_with_static_return_docblock_and_param' => SelfCastingCasterWithStaticDocblockReturn::class . ':param',
         'cast_without_property' => CustomCasterWithReturnType::class,
         'cast_inbound_attribute' => InboundAttributeCaster::class,
+        'casted_property_with_generic_castable' => SpecificCastableData::class,
     ];
 }

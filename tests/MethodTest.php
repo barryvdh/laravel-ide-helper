@@ -193,7 +193,6 @@ DOC;
         $reflectionMethod = $reflectionClass->getMethod('firstOr');
 
         $method = new Method($reflectionMethod, $reflectionClass, null, [], [], [], ['TModel']);
-
         $output =  <<<'DOC'
 /**
  * Execute the query and get the first result or call a callback.
@@ -208,6 +207,32 @@ DOC;
         $this->assertSame($output, $method->getDocComment(''));
         $this->assertSame('firstOr', $method->getName());
         $this->assertSame('\\' . EloquentBuilder::class, $method->getDeclaringClass());
+    }
+
+    /**
+     * Non-empty array defaults must be preserved, not collapsed to [].
+     *
+     * @see https://github.com/barryvdh/laravel-ide-helper/issues/1790
+     */
+    public function testNonEmptyArrayDefaultIsPreserved()
+    {
+        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionMethod = $reflectionClass->getMethod('findByColumns');
+
+        $method = new Method($reflectionMethod, $reflectionClass);
+
+        $this->assertSame(['$id', '$columns = [\'*\']'], $method->getParamsWithDefault(false));
+        $this->assertSame('$id, $columns = [\'*\']', $method->getParamsWithDefault(true));
+    }
+
+    public function testEmptyArrayDefaultStaysEmpty()
+    {
+        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionMethod = $reflectionClass->getMethod('findWithEmptyDefault');
+
+        $method = new Method($reflectionMethod, $reflectionClass);
+
+        $this->assertSame(['$id', '$columns = []'], $method->getParamsWithDefault(false));
     }
 }
 
@@ -224,6 +249,16 @@ class ExampleClass
     }
 
     public function setSpecialChars($chars = "\$'\\")
+    {
+        return;
+    }
+
+    public function findByColumns($id, $columns = ['*'])
+    {
+        return;
+    }
+
+    public function findWithEmptyDefault($id, $columns = [])
     {
         return;
     }

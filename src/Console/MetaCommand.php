@@ -18,6 +18,7 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -224,6 +225,10 @@ class MetaCommand extends Command
             'routes' => $this->loadTemplate('routes')->pluck('name')->filter()->toArray(),
             'views' => $this->loadTemplate('views')->pluck('key')->filter()->map(function ($value) {
                 return (string) $value;
+            })->reject(function ($key) {
+                $excludeViews = $this->config->get('ide-helper.meta_exclude_views', []);
+
+                return is_bool($excludeViews) ? $excludeViews : Str::is($excludeViews, $key);
             })->toArray(),
             'translations' => $this->loadTemplate('translations')->filter()->keys()->toArray(),
             'env' => $this->getEnv(),

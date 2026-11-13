@@ -38,6 +38,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | PhpStorm meta excluded views
+    |--------------------------------------------------------------------------
+    |
+    | View keys or wildcard patterns (e.g. `pagination::*`) to exclude from
+    | the `views` argument set of the generated meta file. Set to `true` to
+    | exclude all views, or leave the array empty to include every view.
+    |
+    */
+    'meta_exclude_views' => [],
+
+    /*
+    |--------------------------------------------------------------------------
     | Fluent helpers
     |--------------------------------------------------------------------------
     |

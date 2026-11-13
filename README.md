@@ -373,6 +373,24 @@ app(App\SomeClass::class);
 
 You can change the generated filename via the config `meta_filename`. This can be useful for cases where you want to take advantage of PhpStorm's support of the _directory_ `.phpstorm.meta.php/`: all files placed there are parsed, should you want to provide additional files to PhpStorm.
 
+#### Excluding views
+
+The meta file contains a `views` argument set with every view key known to your application, so PhpStorm can autocomplete view names in `view(...)`, `redirect()->view(...)` etc. If some of those keys are noise (for example, all pagination views), you can exclude them with the `meta_exclude_views` config option. It accepts an array of view keys or wildcard patterns:
+
+```php
+'meta_exclude_views' => ['pagination::*', 'welcome'],
+```
+
+With this config, neither `welcome` nor any `pagination::*` view (e.g. `pagination::tailwind`, `pagination::bootstrap-5`) is added to the `views` argument set of the generated meta file; all other views are still included. Wildcard patterns follow the same syntax as Laravel's `Str::is` (so `*` matches any number of characters).
+
+If you don't need view autocompletion at all, set the option to `true` to exclude every view from the argument set:
+
+```php
+'meta_exclude_views' => true,
+```
+
+Leave the array empty (the default) to include every view.
+
 ## License
 
 The Laravel IDE Helper Generator is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)

@@ -116,6 +116,7 @@ class ModelsCommand extends Command
     protected $write_model_magic_where;
     protected $write_model_relation_count_properties;
     protected $write_model_relation_exists_properties;
+    protected $write_model_scopes;
     protected $properties = [];
     protected $methods = [];
     protected $write = false;
@@ -189,6 +190,7 @@ class ModelsCommand extends Command
             $this->laravel['config']->get('ide-helper.write_model_relation_count_properties', true);
         $this->write_model_relation_exists_properties =
             $this->laravel['config']->get('ide-helper.write_model_relation_exists_properties', false);
+        $this->write_model_scopes = $this->laravel['config']->get('ide-helper.write_model_scopes', true);
 
         $this->write = $this->write_mixin ? true : $this->write;
         //If filename is default and Write is not specified, ask what to do
@@ -710,7 +712,7 @@ class ModelsCommand extends Command
 
                     //Magic scope<name>Attribute
                     $name = $scopeUsingAttribute ? $method : Str::camel(substr($method, 5));
-                    if (!empty($name)) {
+                    if ($this->write_model_scopes && !empty($name)) {
                         $comment = $this->getCommentFromDocBlock($reflection);
                         $args = $this->getParameters($reflection);
                         //Remove the first ($query) argument

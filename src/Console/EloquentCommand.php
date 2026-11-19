@@ -32,7 +32,7 @@ class EloquentCommand extends Command
     /**
      * @var Filesystem $files
      */
-    protected $files;
+    protected Filesystem $files;
 
     /**
      * The console command description.
@@ -54,8 +54,9 @@ class EloquentCommand extends Command
      * Execute the console command.
      *
      * @return void
+     * @throws \ReflectionException|\Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle()
+    public function handle(): void
     {
         Eloquent::writeEloquentModelHelper($this, $this->files);
     }

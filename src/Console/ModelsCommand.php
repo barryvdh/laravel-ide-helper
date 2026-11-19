@@ -712,7 +712,7 @@ class ModelsCommand extends Command
                     $name = $scopeUsingAttribute ? $method : Str::camel(substr($method, 5));
                     if (!empty($name)) {
                         $comment = $this->getCommentFromDocBlock($reflection);
-                        $args = $this->getParameters($reflection);
+                        $args = $this->getParameters($reflection, $model);
                         //Remove the first ($query) argument
                         array_shift($args);
                         $builder = $this->getBuilderTypeInDestinationFile(
@@ -1306,10 +1306,11 @@ class ModelsCommand extends Command
      * Get the parameters and format them correctly
      *
      * @param $method
+     * @param object|null $model The model whose file the parameters are written to, to use the class names it imports
      * @return array
      * @throws \ReflectionException
      */
-    public function getParameters($method)
+    public function getParameters($method, ?object $model = null)
     {
         //Loop through the default values for parameters, and make the correct output string
         $paramsWithDefault = [];
@@ -1317,7 +1318,7 @@ class ModelsCommand extends Command
         foreach ($method->getParameters() as $param) {
             $paramStr = $param->isVariadic() ? '...$' . $param->getName() : '$' . $param->getName();
 
-            if ($paramType = $this->getParamType($method, $param)) {
+            if ($paramType = $this->getParamType($method, $param, $model)) {
                 $paramStr = $paramType . ' ' . $paramStr;
             }
 
@@ -1332,7 +1333,10 @@ class ModelsCommand extends Command
                 } elseif (is_int($default) || is_float($default)) {
                     //$default = $default;
                 } elseif ($default instanceof \UnitEnum) {
-                    $default = '\\' . get_class($default) . '::' . $default->name;
+                    $enumClass = $model !== null
+                        ? $this->getClassNameInDestinationFile($model, get_class($default))
+                        : '\\' . get_class($default);
+                    $default = $enumClass . '::' . $default->name;
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
@@ -1651,7 +1655,7 @@ class ModelsCommand extends Command
             return;
         }
 
-        $this->setMethod('factory', $factory, ['$count = null, $state = []']);
+        $this->setMethod('factory', $this->getClassNameInDestinationFile($model, $factory), ['$count = null, $state = []']);
     }
 
     /**
@@ -1819,7 +1823,7 @@ class ModelsCommand extends Command
 
         foreach ($newMethodsFromNewBuilder as $builderMethod) {
             $reflection = new \ReflectionMethod($fullBuilderClass, $builderMethod);
-            $args = $this->getParameters($reflection);
+            $args = $this->getParameters($reflection, $model);
 
             $this->setMethod(
                 $builderMethod,
@@ -1829,10 +1833,19 @@ class ModelsCommand extends Command
         }
     }
 
-    protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
+    protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter, ?object $model = null): ?string
     {
         if ($paramType = $parameter->getType()) {
             $types = $this->extractReflectionTypes($paramType);
+
+            if ($model !== null) {
+                $types = array_map(
+                    fn (string $type): string => str_starts_with($type, '\\')
+                        ? $this->getClassNameInDestinationFile($model, $type)
+                        : $type,
+                    $types
+                );
+            }
 
             $type = implode('|', $types);
 

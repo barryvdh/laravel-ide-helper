@@ -1436,8 +1436,14 @@ class ModelsCommand extends Command
             }
         }
 
+        $documentedTypes = $this->getAttributeTypesFromDocBlock($reflectionMethod);
+
         return $methods
-            ->map(function ($type) {
+            ->map(function ($type, $method) use ($documentedTypes) {
+                if (isset($documentedTypes[$method])) {
+                    return $documentedTypes[$method];
+                }
+
                 if ($type === null) {
                     $types = collect([]);
                 } elseif ($type instanceof \ReflectionUnionType) {
@@ -1457,6 +1463,58 @@ class ModelsCommand extends Command
 
                 return $types->join('|');
             });
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function getAttributeTypesFromDocBlock(\ReflectionMethod $reflection): array
+    {
+        $type = ltrim($this->getReturnTypeFromDocBlock($reflection) ?? '', '\\');
+        $prefix = Attribute::class . '<';
+
+        if (!str_starts_with($type, $prefix) || !str_ends_with($type, '>')) {
+            return [];
+        }
+
+        $types = [];
+        $current = '';
+        $depth = 0;
+        $quote = null;
+        $escaped = false;
+
+        foreach (str_split(substr($type, strlen($prefix), -1)) as $character) {
+            if ($quote !== null) {
+                $current .= $character;
+                if ($character === $quote && !$escaped) {
+                    $quote = null;
+                }
+                $escaped = $character === '\\' && !$escaped;
+                continue;
+            }
+
+            if ($character === '"' || $character === "'") {
+                $quote = $character;
+            } elseif (str_contains('<([{', $character)) {
+                $depth++;
+            } elseif (str_contains('>)]}', $character)) {
+                $depth--;
+            } elseif ($character === ',' && $depth === 0) {
+                $types[] = trim($current);
+                $current = '';
+                continue;
+            }
+
+            $current .= $character;
+        }
+
+        $types[] = trim($current);
+
+        if (count($types) !== 2 || $depth !== 0 || $quote !== null || in_array('', $types, true)) {
+            return [];
+        }
+
+        return ['get' => $types[0], 'set' => $types[1]];
     }
 
     protected function getReturnType(\ReflectionMethod $reflection): ?string

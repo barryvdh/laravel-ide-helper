@@ -373,6 +373,8 @@ app(App\SomeClass::class);
 
 You can change the generated filename via the config `meta_filename`. This can be useful for cases where you want to take advantage of PhpStorm's support of the _directory_ `.phpstorm.meta.php/`: all files placed there are parsed, should you want to provide additional files to PhpStorm.
 
+The meta file also lists your config keys, for completion in `config()`. Keys that start with your project's base path, such as the storage link in `filesystems.links` (`public_path('storage') => ...`), are written relative to it with forward slashes (`filesystems.links.public/storage`), so the file comes out the same on every machine, OS and container. Set the config `meta_relative_config_keys` to `false` to keep the absolute path.
+
 ## License
 
 The Laravel IDE Helper Generator is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)

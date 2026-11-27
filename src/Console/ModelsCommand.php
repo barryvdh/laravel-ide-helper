@@ -1832,6 +1832,12 @@ class ModelsCommand extends Command
     protected function getParamType(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
     {
         if ($paramType = $parameter->getType()) {
+            if ($docType = $this->getParamTypeFromDocBlock($method, $parameter)) {
+                return $paramType->allowsNull() && !$this->isNullableDocType($docType)
+                    ? $docType . '|null'
+                    : $docType;
+            }
+
             $types = $this->extractReflectionTypes($paramType);
 
             $type = implode('|', $types);
@@ -1909,6 +1915,44 @@ class ModelsCommand extends Command
         // if we have a match on index 1
         // then we have found the type of the variable if not we return null
         return $type;
+    }
+
+    /**
+     * Get the type of a parameter from the PHPDoc @param tag naming it, which may be more
+     * precise than its native type (e.g. `array<string, int>` for `array`).
+     */
+    protected function getParamTypeFromDocBlock(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
+    {
+        if (!$method->getDocComment()) {
+            return null;
+        }
+
+        $context = $this->getDocBlockContext($method);
+        $phpdoc = new DocBlock($method, $context);
+
+        foreach ($phpdoc->getTagsByName('param') as $tag) {
+            if (!$tag instanceof Tag\ParamTag || $tag->getVariableName() !== '$' . $parameter->getName()) {
+                continue;
+            }
+
+            $type = $tag->getType();
+            if ($type === '') {
+                return null;
+            }
+
+            $typeParser = new PhpDocReturnTypeParser($type, $context->getNamespaceAliases());
+
+            return $typeParser->parse() ?? $type;
+        }
+
+        return null;
+    }
+
+    protected function isNullableDocType(string $type): bool
+    {
+        return str_starts_with($type, '?')
+            || in_array('null', explode('|', $type), true)
+            || $type === 'mixed';
     }
 
     protected function extractReflectionTypes(ReflectionType $reflection_type): array

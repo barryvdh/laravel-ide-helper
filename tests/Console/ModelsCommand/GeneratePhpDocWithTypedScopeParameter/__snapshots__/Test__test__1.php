@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Barryvdh\LaravelIdeHelper\Tests\Console\ModelsCommand\GeneratePhpDocWithTypedScopeParameter\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -41,6 +42,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder<static>|Comment typed28(?float $value = 1.23) Scope with optional float parameter and default positive float value
  * @method static Builder<static>|Comment typed29(?float $value = -1.23) Scope with optional float parameter and default negative float value
  * @method static Builder<static>|Comment typed30(?float $value = null) Scope with optional float parameter and default null
+ * @method static Builder<static>|Comment typed31(array<string, int> $value) Scope with an array parameter typed by its PHPDoc
+ * @method static Builder<static>|Comment typed32(list<string>|null $value = null) Scope with a nullable array parameter typed by its PHPDoc
+ * @method static Builder<static>|Comment typed33(list<string>|null $value = null) Scope with a nullable array parameter typed by its PHPDoc without null
+ * @method static Builder<static>|Comment typed34(array<int, string>|string ...$values) Scope with a variadic parameter typed by its PHPDoc
+ * @method static Builder<static>|Comment typed35(\Illuminate\Database\Eloquent\Collection<int, Comment> $value) Scope with a generic class parameter typed by its PHPDoc
+ * @method static Builder<static>|Comment typed36(array $value) Scope with a PHPDoc describing another parameter
  * @mixin \Eloquent
  */
 class Comment extends Model
@@ -283,5 +290,60 @@ class Comment extends Model
     protected function scopeTyped30(Builder $query, ?float $value = null)
     {
         $query->where('type', $value);
+    }
+
+    /**
+     * @comment Scope with an array parameter typed by its PHPDoc
+     * @param Builder $query
+     * @param array<string, int> $value
+     */
+    protected function scopeTyped31(Builder $query, array $value)
+    {
+        $query->whereIn('type', $value);
+    }
+
+    /**
+     * @comment Scope with a nullable array parameter typed by its PHPDoc
+     * @param list<string>|null $value
+     */
+    protected function scopeTyped32(Builder $query, ?array $value = null)
+    {
+        $query->whereIn('type', $value);
+    }
+
+    /**
+     * @comment Scope with a nullable array parameter typed by its PHPDoc without null
+     * @param list<string> $value
+     */
+    protected function scopeTyped33(Builder $query, ?array $value = null)
+    {
+        $query->whereIn('type', $value);
+    }
+
+    /**
+     * @comment Scope with a variadic parameter typed by its PHPDoc
+     * @param array<int, string>|string ...$values
+     */
+    protected function scopeTyped34(Builder $query, array|string ...$values)
+    {
+        $query->whereIn('type', $values);
+    }
+
+    /**
+     * @comment Scope with a generic class parameter typed by its PHPDoc
+     * @param Collection<int, Comment> $value
+     */
+    protected function scopeTyped35(Builder $query, Collection $value)
+    {
+        $query->whereIn('id', $value->modelKeys());
+    }
+
+    /**
+     * @comment Scope with a PHPDoc describing another parameter
+     * @param array<int, string> $other
+     */
+    protected function scopeTyped36(Builder $query, array $value)
+    {
+        $query->whereIn('type', $value);
     }
 }
